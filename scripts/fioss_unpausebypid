@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Micha, 2007-05-15
+#        2007-05-16: multi PID
+[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
+source $COSI_BIN/helper_scripts
+
+function helptext {
+  echo "\
+Pause the fioss programm given by pid.
+It creates the file 'pause' in the directory of the PID only if the two files CARDS and fioss8.exe exist."
+}
+
+[[ "$1" == "" ]] && helptext && exit 0
+[[ "$1" == "-h" ]] && helptext && exit 0
+[[ "$1" == "--help" ]] && helptext && exit 0
+
+COUNTER=0;
+
+for A in $@; do
+  if [[ $A =~ '^[0-9]+$' ]]; then
+    cd `getCWD $A`
+    if  [[ -e CARDS ]] && [[ -e fioss8.exe ]] && [[ -e pause ]]; then 
+      rm pause
+      let COUNTER=COUNTER+1
+    else
+      echo  "PID $PID is not a fioss-run directory (`pwd`)"
+    fi 
+  else
+    echo "PID must be a number ($A)"
+  fi
+   
+done
+echo "Please wait until fioss is finished ($COUNTER runs continued)"
+

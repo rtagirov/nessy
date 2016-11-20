@@ -1,0 +1,81 @@
+#!/bin/bash
+## Several functions needed by the cosi scripts
+## 2007-05-18 Micha
+
+
+## returns to the bash from a  script with an error message
+## Input: The error message
+function error(){
+  echo "Abnormal Script Termination: $@"
+  exit
+}
+
+
+## Returns to the bash if the file does not exist.
+## Input: 1) The Filename to check for
+##        2) The error message to return if the file does not exist
+function error_f(){
+ if [[ ! -a $1 ]]; then 
+        echo "File/Directory not found: $1"
+        error $2
+ fi;
+}
+
+
+## check if a given variable is set
+## Input: The Variable
+function isSet(){
+ [[ "$1" != "" ]]
+}
+
+
+## Get the current working directory by PID
+## Input: PID
+## Output: on stdout the CWD of the given PID
+function getCWD(){
+  ls -ld /proc/$1/cwd | grep -o '\->.*' | cut -b 4-
+}
+
+## Check if the argument is numeric
+## Input: The string to check
+## Output: 1 if numeric, nothing otherwise
+function isNumeric {
+ [[ "$1" =~ ^[+-]?[0-9]+$ ]] && echo 1
+}
+## Get the variable whose name is saved in $1
+## input: Variable name
+## output: the content of the variable
+function getVar {
+set | grep "^$1=" | grep -o '=.*' | cut -b2-
+}
+
+## Read from standard prompt, giving a  standard answer that is used if 
+## input 1) the prompt, 2) the standard answer to use if no answer is given, 3) the variable to set
+## output: nothing
+function myread {
+  read -p "$1 [`getVar $2`]]: " TMP
+  [[ $2 == "" ]] && error "Empty Variables not allowed: $2"
+  [[ "$TMP" != "" ]] && export $2=$TMP
+}
+
+## Create a lock in the current directory or $1 if it is set. The directory must be writable and unique for each lock.
+## This requires an atomic mkdir. This is not the case on nfs mounts
+## example: 
+## > LOCK_DIR=${mktemp -d /tmp/lockXXX`
+## > program $LOCK_DIR &
+## program: 
+## > lock $LOCK_DIR
+## > #work in shared area
+## > release-lock $LOCK_DIR
+function lock(){
+A=${1:-.}
+until mkdir "$A/.lock" &> /dev/null ; do 
+  sleep 0.05
+done
+}
+
+## release the lock in the current directory or $1 if it is set.
+function release-lock(){
+A=${1:-.}
+  rmdir "$A/.lock"
+}

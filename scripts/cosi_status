@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+# Print the status of all running fioss programms and their controlling scripts.
+#
+# Status is the mem, cpu usage etc, the working directory and the last two lines of the frequencies.log
+#
+# It accepts one argument, a filter. If FILTER is set, it only displays the programms that contain 
+# FILTER in its directory name. E.g cosi_status hminus/IT4 
+#
+
+base1=/mnt/SSD/sim
+
+CONV_FILE=CONV/ALL
+
+#[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
+
+source $base1/scripts/helper_scripts
+
+bold=`tput bold`
+offbold=`tput sgr0`
+PROGSC=`pgrep 'fioss|hminus' -d,`
+#     ____________________Tue Sep 11 13:30:58 CEST 2007_
+#echo "${bold}—————————————`date                       `——————————————————————————————————————————————————————————${offbold}"
+echo "${bold}-------------`date                       `----------------------------------------------------------${offbold}"
+[[ "$PROGSC" ]] && ps --sort=uid -p $PROGSC  -H -o '%p%P%U%C%t%x%n  %a'  
+#[[ "$PROGSC" ]] && echo        "————————————————————————————————————————————————————————————————————————————————————————————————————"
+[[ "$PROGSC" ]] && echo        "${bold}----------------------------------------------------------------------------------------------------${offbold}"
+### Fioss8
+for PID in `pgrep fioss8.exe`; do
+  if  [[ -r /proc/$PID/cwd ]]; then
+    PATHNAME=$(echo " FIOSS `ls -hld /proc/$PID/cwd | grep -o '\->.*$'`")
+    if [[ `echo $PATHNAME | grep -- "$1" `    ]]; then
+      cd /proc/$PID/cwd/;
+      echo "$bold$PATHNAME$offbold"
+      echo -ne " F: $PID  \t"
+      if [[ -r "frequencies.log" ]]; then 
+        echo " frequencies(2): `[[ $(tail -n2 frequencies.log | wc -l) == 0 ]] && echo " - - - - - -" || tail -n2 frequencies.log | head -n1`"
+        echo -en " P: `ps -p $PID -o ppid=`  \t            (1): `tail -n1 frequencies.log` "
+        [[ -e pause || -e ../pause ]] && echo -n " ( paused )"
+        [[ -e stop || -e ../stop ]] && echo -n " ( stop at end )"
+        echo
+	FREQ="`tail -n1 frequencies.log | grep -o Freq:[^,]* | cut -b 7-`"
+	[[ -r output/fioss-$FREQ.out ]] &&   echo "                               `tail -n1 output/fioss-$FREQ.out | grep -Eo '.{11}ID.{20}'`"; echo
+      fi
+      #echo "\- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+    fi
+  else 
+   if [[ ! "$1" ]]; then
+    echo " FIOSS $PID (`ps hp $PID -O user,%cpu,comm,wchan,nice | cut -b 6-` )" 
+    #echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+    echo
+   fi
+  fi
+
+done
+echo  "${bold}----------------------------------------------------------------------------------------------------${offbold}"
+#echo "————————————————————————————————————————————————————————————————————————————————————————————————————"
+### HMinus
+for PID in `pgrep hminus.exe`; do
+
+    if [[ -r /proc/$PID/cwd ]]; then
+
+       PATHNAME=$(ls -hld /proc/$PID/cwd | grep -o '\->.*$')
+
+       if [[ `echo $PATHNAME | grep -- "$1"` ]]; then
+
+          echo -e "\n${bold}HMINUS $PATHNAME/ $offbold\n"
+
+          echo -e "PID: $PID; JOB: `cat /proc/$PID/cwd/fort.99`\n"
+
+          if [ -f /proc/$PID/cwd/$CONV_FILE ]; then
+
+             LAMBDA_ITE=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $1}')
+
+             CORMAX_ALL=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $2}')
+             CORMAX_NHN=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $4}')
+             CORMAX_HYD=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $5}')
+
+             echo -e "LAMBDA ITERATION: $LAMBDA_ITE\n"
+
+             echo -e "CORMAX: ALL = $CORMAX_ALL \n\tNHN = $CORMAX_NHN \n\tHYD = $CORMAX_HYD \n"
+
+          else
+
+             echo -e "NO LAMBDA ITERATION HAS BEEN COMPLETED YET.\n"
+
+          fi
+
+       fi
+
+       echo "---------------------------------------------------------------------------------------"
+
+    else
+
+       if [[ ! "$1" ]]; then echo "HMINUS $PID (`ps hp $PID -O user,%cpu,comm,wchan,nice | cut -b 6-` )"; echo; fi
+ 
+    fi
+
+    echo "---------------------------------------------------------------------------------------"
+
+done

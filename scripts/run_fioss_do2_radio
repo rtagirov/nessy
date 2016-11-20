@@ -1,0 +1,165 @@
+#!/bin/bash
+
+source ~/sim-rinat/sync_pool/aux_func.sh
+
+# Setting the working variables
+##############################################################################################
+RUN_DIR=`pwd`
+
+JOB_1_XXXXX_Directories=JOB-*/
+ctrl_XXXXX_Directories=ctrl-*
+
+OverallJobLogFileName=log.rad
+OverallJobLogFile=$RUN_DIR/$OverallJobLogFileName
+
+ExecutiveFileName=fioss8.exe
+ExecutiveFile=~/sim-rinat/cosi/out-intel-x86_64/$ExecutiveFileName
+
+ThisScriptName=run_fioss_do2_radio
+ComputationalScriptName=fioss_do2_radio
+
+OverallOutputDirectory=$RUN_DIR/radio/
+
+AbsorptionCoefficientsRatioDirectoryName=ABSCOEF/
+AbsorptionCoefficientsRatioFileName=absorption_coefratio.out
+OverallAbsorptionCoefficientsRatioFileName=ABSCOEF_OVERALL
+
+SpectrumFileName=SPECTRUM
+FormationHeightFileName=FORMATION
+
+MDISP=$RUN_DIR/mdisp_rad/
+TAU=$RUN_DIR/tau_rad/
+LOPA=$RUN_DIR/lopa_rad/
+TITLE=$RUN_DIR/title_rad/
+ABEMLIN=$RUN_DIR/abemlin_rad/
+CLV_DIR=$RUN_DIR/clv_rad
+CLV_TEMP_FILE=$RUN_DIR/clv.temp.rad
+CLV_FILE=$RUN_DIR/CLV_RAD
+##############################################################################################
+
+function process_fioss8_output
+{
+newest_JOB_1_XXXXX_Directory=./`ls -rtd $JOB_1_XXXXX_Directories | tail -n 1`
+
+cp $newest_JOB_1_XXXXX_Directory$AbsorptionCoefficientsRatioFileName $OverallOutputDirectory$AbsorptionCoefficientsRatioDirectoryName$1.out
+
+cat $OverallOutputDirectory$AbsorptionCoefficientsRatioDirectoryName$1.out >> $OverallOutputDirectory$AbsorptionCoefficientsRatioDirectoryName$OverallAbsorptionCoefficientsRatioFileName
+
+ProducedSpectrum=`ls -rt $MDISP | tail -n 1`
+
+sed -n 1p $MDISP$ProducedSpectrum >> $OverallOutputDirectory$SpectrumFileName
+ 
+ProducedFormationHeight=`ls -rt $TAU | tail -n 1`
+
+sed -n 1p $TAU$ProducedFormationHeight >> $OverallOutputDirectory$FormationHeightFileName
+}
+
+function process_wavelength
+{
+AngstromFactor=100000000
+LambdaDivisor=1000
+
+Lambda=`echo "$1*$AngstromFactor" | bc -l`
+
+DeltaLambda=`echo "$Lambda/$LambdaDivisor" | bc -l`
+
+$ComputationalScriptName ${Lambda/.*} ${DeltaLambda/.*} ${Lambda/.*}
+
+process_fioss8_output ${Lambda/.*} $AngstromFactor
+}
+
+function process_uniform_grid
+{
+DeltaWavelength=`echo "(($3-$1)/$2)*1.0" | bc -l`
+
+echo $DeltaWavelength | awk '{ sub("\\.*0+$","");print}' > temp1
+
+Flag=`echo "$DeltaWavelength < 1" | bc`
+  
+if [ "$Flag" -eq 1 ]; then DeltaWavelength=0`cat temp1`; else DeltaWavelength=`cat temp1`; fi
+
+message "RANGE: [$1 : $3] cm, STEP: $DeltaWavelength cm"
+
+for (( k=1; k<=$2; k++ ))
+  do
+
+   Lambda_cm=`echo "($1+$k*$DeltaWavelength)*1.0" | bc -l`
+
+   echo $Lambda_cm | awk '{ sub("\\.*0+$","");print}' > temp1
+
+   Flag=`echo "$Lambda_cm < 1" | bc`
+
+   if [ "$Flag" -eq 1 ]; then Lambda_cm=0`cat temp1`; else Lambda_cm=`cat temp1`; fi
+
+   process_wavelength $Lambda_cm
+
+   rm temp1
+
+   done
+
+}
+
+function process_grid
+{
+NumberOfGridArguments=`echo "$1" | wc -w`
+
+NumberOfGridArgumentsMinusOne=`echo "$NumberOfGridArguments - 1" | bc -l`
+NumberOfUniformGrids=`echo "$NumberOfGridArgumentsMinusOne/2" | bc -l`
+NumberOfUniformGridsMinusOne=`echo "$NumberOfUniformGrids - 1" | bc -l`
+
+GridArgumentsArray=($1)
+
+rm -rf output output2 $CLV_DIR $MDISP $TAU $LOPA $TITLE $ABEMLIN JOB-* ctrl-*
+rm -f  $OverallJobLogFile $CLV_FILE
+rm -rf $OverallOutputDirectory
+
+set -e
+
+mkdir -p $OverallOutputDirectory
+mkdir -p $OverallOutputDirectory$AbsorptionCoefficientsRatioDirectoryName
+
+process_wavelength ${GridArgumentsArray[0]}
+
+for (( j=0; j<=${NumberOfUniformGridsMinusOne/.*}; j++ ))
+  do
+
+   StartingWavelengthIndex=`echo "2*$j" | bc -l`
+   NumberOfIntervalsIndex=`echo "2*$j+1" | bc -l`
+   EndingWavelengthIndex=`echo "2*$j+2" | bc -l`
+
+   process_uniform_grid ${GridArgumentsArray[$StartingWavelengthIndex]} ${GridArgumentsArray[$NumberOfIntervalsIndex]} ${GridArgumentsArray[$EndingWavelengthIndex]}
+
+   done
+   
+rm -r $MDISP
+rm -r $TAU
+rm -r $LOPA
+rm -r $TITLE
+rmdir $ABEMLIN
+
+catenate $CLV_DIR $CLV_TEMP_FILE $CLV_FILE
+
+rm -rf output output2 $CLV_DIR JOB-* ctrl-*
+
+exit 0
+}
+
+#ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "tg:" --longoptions "trial-run,grid:" -- "$@")
+ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "g:" --longoptions "grid:" -- "$@")
+
+eval set -- "$ParsedOptions"
+
+while true
+  do
+   case "$1" in
+
+#        -t|--trial-run) TrialRun=Yes;           shift;;
+
+        -g|--grid)      GridArgumentsString=$2; shift 2;;
+
+        --)                                     shift;    break;;
+
+   esac
+  done
+
+process_grid "$GridArgumentsString"

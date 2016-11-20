@@ -1,0 +1,25 @@
+#!/bin/bash
+
+TO=${BASH_ARGV[0]} # the last argument
+
+mkdir -p $TO/{lopa_rad,mdisp_rad,title_rad,abemlin_rad,tau_rad,clv_rad}
+
+for A in `seq 1 $[BASH_ARGC-1]`; do
+  
+  FROM=${BASH_ARGV[$A]}
+
+  mv $FROM/abemlin/*.abemlin $TO/abemlin_rad/ &> /dev/null
+
+  mv $FROM/*.tau $TO/tau_rad/ &> /dev/null
+
+  mv $FROM/tau/*.tau $TO/tau_rad/ &> /dev/null
+
+  mv $FROM/mdisp/*.mdisp $TO/mdisp_rad/
+
+  mv $FROM/lopa/*.lopa  $TO/lopa_rad/
+
+  mv $FROM/title/*.title $TO/title_rad/
+
+  mv $FROM/clv/*.clv $TO/clv_rad/
+
+done

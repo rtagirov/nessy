@@ -1,0 +1,24 @@
+ODF_IT=$1
+
+PREV_ODF_IT=$(echo $ODF_IT-1 | bc -l)
+
+RUN=$2
+
+BASE_DIR=$HOME/sim-rinat/Asplund_C_final
+
+RUN_DIR="$BASE_DIR/fioss/"
+F_DIR=${RUN_DIR}calc/runs/runs
+CROSS_SECTION_FILES="/nfs/projects/cosi/input/cross_sections/002"
+ORIG_COSI="$BASE_DIR/hminus/IT$ODF_IT/$RUN"
+ORIG_EXE="${HOME}/sim-rinat/cosi/out-intel-x86_64"
+VELO_FILE="/nfs/projects/cosi/input/velo/velo_2"
+INPUT_SUN_FILE="/nfs/projects/cosi/input/input_sun/sunHHe10K10N10Th_PF2.inp5"
+INPUT_STARK_BROAD="/nfs/projects/cosi/input/linelist/002"
+LINELISTS="/nfs/projects/cosi/input/linelist/kurucz_comb_air_parts/"
+OUTPUT_DIR=$F_DIR/IT$ODF_IT/$RUN
+
+NTW_FILE_NAME=NLTEWAV
+NTP_FILE_NAME=NLTETRAPOP
+
+NTW_FILE=${ORIG_COSI}/$NTW_FILE_NAME
+NTP_FILE=${ORIG_COSI}/$NTP_FILE_NAME

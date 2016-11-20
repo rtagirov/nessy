@@ -1,0 +1,200 @@
+#!/bin/bash
+#****************************************************************
+
+source ~/sim-rinat/scripts/fioss.settings
+source ~/sim-rinat/sync_pool/aux_func.sh
+source $COSI_BIN/helper_scripts
+
+if [ -z "$1" ] || [ -z "$2" ]; then abort "One or more arguments are missing."; fi
+
+if [[ "$0" =~ '((/bin/)|(^-))bash' ]]; then
+  # We want to copy the scrip to the run directory. Not possible if sourced
+  echo "Error: Script must be called, not sourced! - exit"
+else
+
+function error_f(){
+__ERROR_F=""
+echo -n "Checking the files..."
+ for A in $@; do 
+   if [[ -a $1 ]]; then echo -n;  else
+     echo
+     echo "File/Directory not found: $1"
+     __ERROR_F=1
+   fi;
+ done
+ echo " done. $__ERROR_F"
+ [[ "$__ERROR_F" == "" ]] || error "File/Directory not found"
+}
+
+function error_ifunset() {
+  ERRVAR=""
+  for A in $@; do 
+    [[ `getVar $A` == "" ]] &&  ERRVAR="$ERRVAR $A"
+  done
+  [[ $ERRVAR == "" ]] ||  error "Variable(s)$ERRVAR is/are not set"
+}
+trap error ERR
+SCRIPT="$0"
+
+[[ `dirname $0` == '.' ]] && SCRIPT=`pwd`/`basename $SCRIPT`
+CP='kfmclient copy'
+CP='cp -rfv'
+
+change_dir $BASE_DIR
+
+error_ifunset CROSS_SECTION_FILES    \
+              ORIG_COSI       ORIG_EXE        VELO_FILE              \
+              INPUT_SUN_FILE  INPUT_STARK_BROAD  LINELISTS           \
+              OUTPUT_DIR 
+
+
+# Frequencies to calculate - FREQ_START:FREQ_STEP:FREQ_STOP
+function isSet(){
+ [[ 'X'$1 != 'X' ]]
+}
+
+echo \
+"--------------------------------------------------------------------------------------------------------------------------------------------------
+ORIG_COSI =         $ORIG_COSI
+ORIG_EXE =          $ORIG_EXE
+VELO_FILE =         $VELO_FILE
+INPUT_SUN_FILE =    $INPUT_SUN_FILE
+INPUT_STARK_BROAD = $INPUT_STARK_BROAD
+LINELISTS =         $LINELISTS
+OUTPUT_DIR =        $OUTPUT_DIR
+X_SECTION_FILES =   $CROSS_SECTION_FILES
+--------------------------------------------------------------------------------------------------------------------------------------------------"; echo
+
+error_f  $ORIG_COSI  $ORIG_EXE  $VELO_FILE   $INPUT_SUN_FILE  $INPUT_STARK_BROAD  $LINELISTS  $CROSS_SECTION_FILES 
+
+if [ -d $OUTPUT_DIR ]; then chmod u+rwx -R $OUTPUT_DIR; rm_dir $OUTPUT_DIR; fi
+
+set -v
+
+mkdir -p $OUTPUT_DIR
+
+change_dir $OUTPUT_DIR
+
+$CP ${ORIG_COSI}/FAL_VD     ./
+$CP ${ORIG_COSI}/MODFILE    ./
+$CP ${ORIG_COSI}/FGRID	    ./
+$CP ${ORIG_COSI}/DATOM	    ./
+$CP ${ORIG_COSI}/RADIOC     ./
+$CP ${ORIG_COSI}/RADIOL     ./
+$CP ${ORIG_COSI}/POPNUM     ./
+
+if [ -f $NTW_FILE ]; then $CP $NTW_FILE ./; fi
+if [ -f $NTP_FILE ]; then $CP $NTP_FILE ./; fi
+
+if [ -d ${ORIG_COSI}/src/ ]; then cmd "cp -r ${ORIG_COSI}/src/  ./"; fi
+
+#Added by Alexander Shapiro
+#######################################
+$CP ~/sim-rinat/data/Mollist/c2.asc ./ 
+$CP ~/sim-rinat/data/Mollist/ch.asc ./
+$CP ~/sim-rinat/data/Mollist/cn.asc ./
+$CP ~/sim-rinat/data/Mollist/co.asc ./
+$CP ~/sim-rinat/data/Mollist/h2.asc ./
+$CP ~/sim-rinat/data/Mollist/nh.asc ./
+$CP ~/sim-rinat/data/Mollist/oh.asc ./
+$CP ~/sim-rinat/data/Mollist/o2.asc ./
+$CP ~/sim-rinat/data/Mollist/O2_H   ./
+#######################################
+
+# Added by Rinat Tagirov
+###########################################################################
+$CP ~/sim-rinat/data/fudge_As.txt ./
+
+if [ $ODF_IT -eq 0 ]; then
+	
+   cmd "$CP $F_DIR/CARDS.FIOSS.TEMPLATE  ./CARDS.TEMPLATE"
+   
+else
+
+   if [ -f $F_DIR/IT$PREV_ODF_IT/$RUN/CARDS.TEMPLATE ]; then
+
+      cmd "$CP $F_DIR/IT$PREV_ODF_IT/$RUN/CARDS.TEMPLATE  ./CARDS.TEMPLATE"
+
+   else
+
+      cmd "$CP $F_DIR/CARDS.FIOSS.TEMPLATE  ./CARDS.TEMPLATE"
+
+   fi
+
+fi
+
+cmd "$CP $ORIG_COSI/fioss8.exe ./"
+###########################################################################
+
+$CP ${ORIG_COSI}/MolConc.txt     ./
+
+#Added by Alexander Shapiro
+#############################################
+$CP ${CROSS_SECTION_FILES}/*---* ./
+$CP $INPUT_STARK_BROAD/*         ./
+$CP ${VELO_FILE}                 ./VELO			
+$CP $INPUT_SUN_FILE              ./input_sun
+#############################################
+
+if [ ! -d $LINELISTS ]; then abort "The directory $LINELISTS with the linelists does not exist."; fi
+
+ls ${LINELISTS}* &> /dev/null
+
+exit_if_error "The linelists have not been found. The directory $LINELISTS is empty."
+
+if [ ! -L "$F_DIR/ITx/fort.19.d" ]; then abort "The symbolic link $F_DIR/ITx/fort.19.d to the directory $LINELISTS with the linelists does not exist."; fi
+
+ln -sv $F_DIR/ITx/fort.19.d fort.19.d
+
+if ( isSet $ORIG_COSI2 ); then
+  echo "Overwriting files from $ORIG_COSI with files from $ORIG_COSI2 in `pwd`"
+   cp -rf $ORIG_COSI2/* ./
+fi;
+
+cat > fort.55 << eof
+0 40 1
+1 0 0
+0 70717273 29 25 0 0 0
+4003. 6000. 30. 1.e-40 10.
+XXXXX
+eof
+
+cat > fort.56 << eof
+30
+    1      -1.000
+    2      -1.000
+    3      -1.000
+    4      -1.000
+    5      -1.000
+    6      -1.000
+    7      -1.000
+    8      -1.000
+    9      -1.000
+   10      -1.000
+   11      -1.000
+   12      -1.000
+   13      -1.000
+   14      -1.000
+   15      -1.000
+   16      -1.000
+   17      -1.000
+   18      -1.000
+   19      -1.000
+   20      -1.000
+   21      -1.000
+   22      -1.000
+   23      -1.000
+   24      -1.000
+   25      -1.000
+   26      -1.000
+   27      -1.000
+   28      -1.000
+   29      -1.000
+   30      -1.000
+eof
+
+echo -e "\nThe FIOSS run $OUTPUT_DIR/ has been prepared.\n"
+
+chmod u+rwx -R $OUTPUT_DIR
+
+fi
