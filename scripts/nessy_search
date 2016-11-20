@@ -1,0 +1,68 @@
+#!/bin/bash
+
+source ~/sim-rinat/sync_pool/aux_func.sh
+
+function identify_src
+{
+if [ -z "$1" ]; then break; fi
+
+if [ ! -z "$(echo "$1" | grep '.for')" ]; then
+
+   if [ "$(echo "$1" | awk '{print substr($0,length,1)}')" == "\\" ]; then
+
+      SRC=$(echo "$1" | rev | cut -c 2- | rev) 
+
+   else
+
+      SRC=$1
+
+   fi
+
+   for NAME in $SRCS; do if [ "$NAME" == "$SRC" ]; then continue 2; fi; done
+
+   SRCS=$SRCS' '$SRC
+
+fi
+}
+
+function cpl_src_list
+{
+while read -r LINE; do identify_src $LINE; done < "$1"
+}
+
+GREP='grep -iw --color'
+
+NESSY_DIR=~/sim-rinat/cosi/cosi_rinat
+MAKE_DIR=$NESSY_DIR/make
+NESSY_SRCS=$MAKE_DIR/Makefile.sources
+NESSY_SRCS_REV=$MAKE_DIR/Makefile.sources.rev
+CTRL_FILE=$MAKE_DIR/ns.ctrl
+
+if [ -z "$1" ]; then abort "The search string has not been provided."; fi
+
+if [ ! -z "$2" ]; then
+
+   if [ "$2" == "h" ]; then SEARCH_HMINUS=Yes; fi
+   if [ "$2" == "f" ]; then SEARCH_FIOSS=Yes;  fi
+
+   if [ "$2" != "h" ] && [ "$2" != "f" ]; then abort "The second argument is not understood."; fi
+
+else
+
+   SEARCH_NESSY=Yes
+
+fi
+
+SRCS=''
+
+rm -f $CTRL_FILE
+
+if [ $SEARCH_NESSY ];  then cpl_src_list $NESSY_SRCS; tac $NESSY_SRCS > $NESSY_SRCS_REV; cpl_src_list $NESSY_SRCS_REV; fi
+
+if [ $SEARCH_HMINUS ]; then tac $NESSY_SRCS > $NESSY_SRCS_REV; cpl_src_list $NESSY_SRCS_REV; fi
+
+if [ $SEARCH_FIOSS ];  then cpl_src_list $NESSY_SRCS; fi
+
+for SRC in $SRCS; do echo $SRC >> $CTRL_FILE; done
+
+cd $NESSY_DIR; $GREP "$1" $SRCS; rm -f $NESSY_SRCS_REV
