@@ -1,4 +1,6 @@
 # nessy-src
 source files of the NESSY code
 
-this branch works at PMOD servers (hminus + fioss) and MPS servers (hminus only verified)
+This branch doesn't work anywhere (currently).
+It is intended to work at PMOD, MPS and Imperial College HPC cluster as well as on
+the local Imperial College machines.
