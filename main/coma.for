@@ -8,7 +8,7 @@
      $                INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
      $                NFL,OPAC,SCNEW,DOPA,DETA,OPAL,SLNEW,DOPAL,DETAL,SIGMAKI,
      $                ETAC,NFEDGE,EXPFAC,SCOLIND,SCNEIND,OPACIND,NOTEMP,NODM,
-     $                XRED,XBLUE,WCHARM,EN,RSTAR,SCOLD,XJCAPP,VDOP,COCO,KEYCOL,
+     $                WCHARM,EN,RSTAR,SCOLD,XJCAPP,VDOP,COCO,KEYCOL,
      $                POPHIIL,POPHML,POPHIL,LOE,ITNEL,LEVEL,JOBNUM,IRESTA)
 
       use MOD_DERIV
@@ -73,11 +73,13 @@ C       : : :
       real*8             :: EINST(NDIM,NDIM), ENE,DELTAX
       real*8             :: ALTESUM(4,*), XMAX
 
+      real*8, dimension(lastind) :: opal
+
       integer,dimension(*)::NFEDGE
       real*8,dimension(*):: PHI, SCOLIND
-      real*8,dimension(*):: ENLTE,ELEVEL,EION,WEIGHT
-      real*8,dimension(*):: XBLUE, XRED, XLAMBDA,PWEIGHT,DETAL
-      real*8,dimension(*):: EXPFAC,DOPAL,OPAL,FWEIGHT
+      real*8,dimension(*):: ELEVEL,EION,WEIGHT
+      real*8,dimension(*):: XLAMBDA,PWEIGHT,DETAL
+      real*8,dimension(*):: EXPFAC,DOPAL,FWEIGHT
       real*8,dimension(*):: SCNEIND,OPACIND
       real*8,dimension(NF,N):: SIGMAKI
       real*8, dimension(NF)    ::  ETAC,DETA
@@ -85,7 +87,8 @@ C       : : :
       real*8, allocatable ::  ABXYZ(:)
       real*8, dimension(ND,NF) ::  XJC, WCHARM
       real*8, dimension(NF,ND) ::  SCOLD
-      real*8, dimension(NRANK)     ::  EN
+
+      real*8, dimension(N) ::  EN, ENLTE
 
       REAL*8, DIMENSION(LASTIND), INTENT(OUT) :: XJLAPP
 
@@ -261,11 +264,10 @@ CMH - new: needed to calculate new collision cross sections for Hminus
 
 !     CALCULATE LINE RADIATION FIELD WITH APPROXIMATE LAMBDA OPERATOR TERMS
 
-      CALL SETXJL(LASTIND, INDLOW, INDNUP, OPACIND,
-     $            SCNEIND, SCOLIND, SLNEW(1 : LASTIND),
+      CALL SETXJL(LASTIND, INDLOW, INDNUP, SLNEW(1 : LASTIND),
      $            SLOLD(1 : LASTIND), OPAL, XJLAPP(1 : LASTIND),
      $            NF, XLAMBDA, SCNEW, OPAC,
-     $            NFL, PHI, PWEIGHT, NDIM, EINST, ELEVEL, EN, WEIGHT,
+     $            NFL, PHI, PWEIGHT, N, EINST, ELEVEL, EN, WEIGHT,
      $            ND, XJL(1 : LASTIND), ENTOTL, RSTAR, VDOP, DELTAX, XMAX, L,
      $            LOE(1 : LASTIND), AccFact(1 : LASTIND),
      $            NODM, LEVEL, NFIRST, NLAST, NATOM, ENLTE, ITNEL)

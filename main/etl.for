@@ -164,6 +164,20 @@ C***  READING OF THE MODEL FILE
 
       close(IFL)
 
+!      print*, size(z, 1), size(z, 2)
+
+!      do ii = 1, size(z, 1)
+
+!         do iii = 1, size(z, 2)
+
+!            print*, ii, iii, z(ii, iii)
+
+!         enddo
+
+!      enddo
+
+!      stop
+
       print *,'ETL: ND = ',ND,' NP = ',NP
       call assert(ND*NP>1,'ND*NP <= 1')
 
@@ -351,8 +365,8 @@ c***     ... and write it for use in the next iteration
       ETA(:ND)=ETA(:ND)+OPA(:ND)*THOMSON(:ND)*XJCIND(:ND)
       !9 CONTINUE
 
-      CALL LIOP(EINST(NUP,LOW),WEIGHT(LOW),WEIGHT(NUP),LOW,NUP,
-     $          ND,XLAM,ENTOT,POPNUM,RSTAR,OPAL,ETAL,VDOP, NDIM)
+      CALL LIOP_RTE(EINST(NUP,LOW),WEIGHT(LOW),WEIGHT(NUP),LOW,NUP,
+     $              ND,XLAM,ENTOT,POPNUM,RSTAR,OPAL,ETAL,VDOP, N)
  
 C***  FORMAL SOLUTION OF RAD.TRANSFER IN THE COMOVING FRAME
 C***  IN ORDER TO OBTAIN THE 0. TO 3. MOMENTS OF THE RADIATION FIELD

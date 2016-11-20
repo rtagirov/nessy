@@ -1,8 +1,7 @@
       MODULE MOD_BFCROSS
       contains
-      SUBROUTINE BFCROSS (SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,NDIM,
-     $                    XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR,
-     $					NFDIM)
+      SUBROUTINE BFCROSS (SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
+     $                    XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR)
 C***********************************************************************
 C***  THIS ROUTINE PREPARES AN ARRAY SIGMAKI WITH THE BOUND-FREE CROSS SECTIONS
 C***  ( IN CM**2) TO AVOID UNNECCESSARY MULTIPLE CALCULATIONS
@@ -10,13 +9,13 @@ C***********************************************************************
       USE MOD_PHOTOCS_M 
       !implicit real*8(a-h,o-z)
       implicit none
-      integer,intent(in) :: NF,N,NFDIM,NDIM
-      integer,intent(in) :: NOM(N),NCHARG(NDIM)
-      real*8,intent(in)  :: EION(NDIM),ELEVEL(NDIM),EINST(NDIM,NDIM)
+      integer,intent(in) :: NF, N
+      integer,intent(in) :: NOM(N), NCHARG(N)
+      real*8,intent(in)  :: EION(N),ELEVEL(N),EINST(N,N)
       real*8,intent(out),dimension(NF,N)       :: SIGMAKI
       real*8,intent(in), dimension(*)          :: ALPHA,SEXPO
-      character*8,intent(in) :: agaunt(NDIM)
-      real*8,intent(in), dimension(NDIM,NFDIM) :: WAVARR,SIGARR
+      character*8,intent(in) :: agaunt(N)
+      real*8,intent(in), dimension(N,NF) :: WAVARR,SIGARR
       real*8,intent(in), dimension(NF)         :: XLAMBDA
       integer :: NUP,K,LOW
       real*8:: SIGMATH,EDGE,WAVENUM

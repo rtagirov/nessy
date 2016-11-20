@@ -48,7 +48,7 @@
             I=(J-1)*ND+L   
             Z(I)=SQRT(RR-PJPJ)
 
-!            write(*,'(A,2x,3(i4,2x),3(e15.7,2x))') 'geomesh:', l, j, i, rr, pjpj, z(i)
+            write(*,'(A,2x,3(i4,2x),3(e15.7,2x))') 'geomesh:', l, j, i, rr, pjpj, z(i)
 !            write(*,'(A8,2x,3(i4,2x),A,1(2x,d15.7))') 'geomesh:', l, j, i, '                                ', z(i)
 
     2   enddo

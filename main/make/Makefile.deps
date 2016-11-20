@@ -43,7 +43,6 @@ intrfc_m.for:             $(addprefix $(OUT), inibl0.o synsubm.o stateq.o utils.
 inv.for:                  $(addprefix $(OUT), error.o )
 isrchfgt.for:             $(addprefix $(OUT), error.o )
 jstart.for:               $(addprefix $(OUT), writmsc.o writms.o writmsi.o writmsi.o bnue.o error.o formats.o )
-lcore.for:                $(addprefix $(OUT), liop.o cofreq.o prilc.o )
 linop_ms.for:             $(addprefix $(OUT), synsubm.o tictoc.o error.o decf_syn.o chemeq.o constants.o common_block.o phys.o )
 linpop_aux.for:           $(addprefix $(OUT), file_operations.o string_operations.o common_block.o file_operations.o string_operations.o common_block.o file_operations.o common_block.o file_operations.o string_operations.o common_block.o file_operations.o string_operations.o common_block.o file_operations.o common_block.o )
 linpop.for:               $(addprefix $(OUT), acopy.o bfcross.o dbclose.o dbload.o dbopen.o dbsave.o erf_inf.o error.o flgrid.o inv.o invtri.o isrchfgt.o ltepop.o prirat.o vadd.o vaddm.o vaddm.o vdiff.o vmd.o vmf.o vmt.o vmv.o vsub.o xrudi.o ccore.o coma.o abund.o liop.o file_operations.o common_block.o linpop_aux.o )

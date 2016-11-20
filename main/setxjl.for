@@ -2,10 +2,9 @@
 
       CONTAINS
 
-      SUBROUTINE SETXJL(LASTIND, INDLOW, INDNUP, OPACIND,
-     $                  SCNEIND, SCOLIND, SLNEW, SLOLD, OPAL, XJLAPP,
+      SUBROUTINE SETXJL(LASTIND, INDLOW, INDNUP, SLNEW, SLOLD, OPAL, XJLAPP,
      $                  NF, XLAMBDA, SCNEW, OPAC,
-     $                  NFL, PHI, PWEIGHT, NDIM, EINST, ELEVEL, EN, WEIGHT,
+     $                  NFL, PHI, PWEIGHT, N, EINST, ELEVEL, EN, WEIGHT,
      $                  ND, XJL, ENTOTL, RSTAR, VDOP, DELTAX, XMAX, L, LOE,
      $                  AccFact, NODM, LEVEL, NFIRST, NLAST, NATOM, ENLTE, ITNEL)
 
@@ -21,8 +20,9 @@
 
       PARAMETER (one = 1.d0, two = 2.d0)
 
-      DIMENSION EINST(NDIM,NDIM),ELEVEL(NDIM),EN(NDIM),WEIGHT(NDIM)
-      DIMENSION OPACIND(LASTIND),SCNEIND(LASTIND),SCOLIND(LASTIND)
+      integer, intent(in) :: lastind, N
+
+      DIMENSION EINST(N, N), ELEVEL(N), EN(N), WEIGHT(N)
 
       DIMENSION XLAMBDA(NF),SCNEW(NF),OPAC(NF)
       DIMENSION PHI(NFL),PWEIGHT(NFL)
@@ -32,7 +32,9 @@
 
       INTEGER, DIMENSION(NATOM), INTENT(IN) :: NFIRST, NLAST
 
-      REAL*8    ETAL(1)
+      REAL*8 :: etalind, opalind
+
+      REAL*8, DIMENSION(LASTIND), INTENT(OUT) :: opal
 
       REAL*8, DIMENSION(LASTIND), INTENT(IN) ::  XJL
 
@@ -45,11 +47,11 @@
       REAL*8, DIMENSION(LASTIND), INTENT(IN) ::  LOE
 
       REAL*8, DIMENSION(LASTIND), INTENT(IN) ::  SLOLD
-      REAL*8, DIMENSION(LASTIND), INTENT(OUT) :: SLNEW, OPAL, AccFact
+      REAL*8, DIMENSION(LASTIND), INTENT(OUT) :: SLNEW, AccFact
 
-      CHARACTER*10, DIMENSION(NDIM), INTENT(IN) :: LEVEL
+      CHARACTER*10, DIMENSION(N), INTENT(IN) :: LEVEL
 
-      REAL*8, DIMENSION(NDIM), INTENT(IN) :: ENLTE
+      REAL*8, DIMENSION(N), INTENT(IN) :: ENLTE
 
       LOGICAL, INTENT(IN) :: NODM
 
@@ -61,11 +63,7 @@
 
       LOGICAL :: PRINT_COND, DEPTH_ACC_COND
 
-!      do i = 1, 114
-
-!         print*, 'here:', i, EN(i)
-
-!      enddo
+      opal(1 : lastind) = 0.0d0
 
       DEPTH_ACC_COND = L .NE. ND
 
@@ -98,29 +96,37 @@
 
       XLAM = 1.0D8 / (ELEVEL(NUP) - ELEVEL(LOW))
 
-      CALL LIOP(EINST(NUP,LOW), WEIGHT(LOW), WEIGHT(NUP), LOW, NUP,
-     $          1, XLAM, [ENTOT L], EN, RSTAR, OPAL(IND : IND),
-     $          ETAL, VDOP, NDIM) ! [ENTOT L] is ok because of intent in
+      if (ind .eq. 1) print*, 'setxjl:', en(low), en(nup)
+
+!      stop
+
+      CALL LIOP_SBE(EINST(NUP, LOW), WEIGHT(LOW), WEIGHT(NUP), LOW, NUP,
+     $              XLAM, ENTOTL, EN, RSTAR, opalind, etalind, VDOP, N)
 
 C***  LASER SECURITY
 
-      IF (OPAL(IND) .LE. 0.0D0) THEN
+      IF (opalind .LE. 0.0D0) THEN
 
          IF (PRINT_COND) WRITE(*, 10000), LAMBDA_ITER, L, ITNEL, IND,
      $                                    LEVEL(LOW), LEVEL(NUP),
      $                                    UpperLevelDep, LowerLevelDep,
      $                                    '<---------------- OPAL  IS NEGATIVE'
 
-         OPAL(IND) = 0.0D0
-
          CYCLE
 
       ENDIF
 
-      SLNEW(IND) = ETAL(1) / OPAL(IND)
+      opal(ind) = opalind
 
-!     Alexander, this WRITE statement is responsible for the NaNs in Jacobian
-!      IF (IND .EQ. 1) WRITE(*, '(A,1x,I3,1x,ES9.3,1x,ES9.3)') 'SETXJL:', IND, ETAL(1), OPAL(IND)
+      slnew(ind) = etalind / opalind
+
+!      if (ind .eq. 1) then
+
+!         write(*, '(A,2x,i4,4(2x,e15.7))'), 'setxjl:', ind, slnew(ind), etalind, opalind, opal(ind)
+
+!         stop
+
+!      endif
 
       IF (SLOLD(IND) .EQ. 0.0D0) THEN
 
