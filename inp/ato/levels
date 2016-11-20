@@ -1,0 +1,114 @@
+LEVEL       H MINUS..1 -1    1      0.00   6090.5
+LEVEL       H I......1  0    2      0.00 109677.38
+LEVEL       H I......2  0    8                      2
+LEVEL       H I......3  0   18                      3
+LEVEL       H I......4  0   32                      4
+LEVEL       H I......5  0   50                      5
+LEVEL       H I......6  0   72                      6
+LEVEL       H I......7  0   98                      7
+LEVEL       H I......8  0  128                      8
+LEVEL       H I......9  0  162                      9
+LEVEL       H I.....10  0  200                     10
+LEVEL       H II......  1    1
+LEVEL       HEI 1S1..1  0    1      0.00 198310.76
+LEVEL       HEI 2S3..2  0    3 159856.07
+LEVEL       HEI 2S1..3  0    1 166277.55
+LEVEL       HEI 2P3..4  0    9 169086.94
+LEVEL       HEI 2P1..5  0    3 171135.00
+LEVEL       HEI 3S3..6  0    3 183236.89
+LEVEL       HEI 3S1..7  0    1 184864.55
+LEVEL       HEI 3P3..8  0    9 185564.68
+LEVEL       HEI 3D3..9  0   15 186101.65
+LEVEL       HEI 3D1.10  0    5 186105.07
+LEVEL       HE II....1  1    2      0.00 438908.85
+LEVEL       LiI------1  0    2      0.0   43487.15
+LEVEL       LiII-----1  1    1
+LEVEL       BeI------1  0    1      0.0   75192.64
+LEVEL       BeII-----1  1    2
+LEVEL       BI-------1  0    2      0.0   66928.10
+LEVEL       BII------1  1    1
+LEVEL       CI-------1  0    9     29.57  90820.42 
+LEVEL       CI-------2  0    5  10192.63    
+LEVEL       CI-------3  0    1  21648.01
+LEVEL       CII------1  1    6           
+LEVEL       NI-------1  0    4      0.0  117314.58
+LEVEL       NII------1  1    9
+LEVEL       OI-------1  0    9     77.97 109837.02
+LEVEL       OII------1  1    4
+LEVEL       FI-------1  0    6    134.70 140524.50
+LEVEL       FII------1  1    9
+LEVEL       NeI------1  0    1      0.0  173929.75
+LEVEL       NeII-----1  1    6
+LEVEL       NaI------1  0    2      0.00 41449.62
+LEVEL       NaI------2  0    6  16967.64
+LEVEL       NaI------3  0    2  25739.99 
+LEVEL       NaI------4  0   10  29172.86
+LEVEL       NaI------5  0    6  30270.72
+LEVEL       NaI------6  0    2  33200.68
+LEVEL       NaI------7  0   10  34548.74
+LEVEL       NaI------8  0   14  34586.92
+LEVEL       NaI------9  0    6  35042.03
+LEVEL       NaI-----10  0    2  36372.62
+LEVEL       NaII-----1  1    1  
+LEVEL       MgI------1  0    1      0.00  61671.02
+LEVEL       MgI------2  0    9  21877.30
+LEVEL       MgI------3  0    3  35051.26 
+LEVEL       MgII-----1  1    2
+LEVEL       AlI------1  0    6     74.71  48278.2
+LEVEL       AlII-----1  1    1
+LEVEL       SiI------1  0    9    149.68 65747.76
+LEVEL       SiI------2  0    5   6298.85
+LEVEL       SiI------3  0    1  15394.37
+LEVEL       SiI------4  0    5  33326.04
+LEVEL       SiI------5  0    9  39799.50
+LEVEL       SiI------6  0    3  40991.88
+LEVEL       SiII-----1  1    6
+LEVEL       PI-------1  0    4     0.0    84580.83  
+LEVEL       PII------1  1    9
+LEVEL       SI-------1  0    9    107.74  83559.1 
+LEVEL       SI-------2  0    5   9238.61
+LEVEL       SI-------3  0    1  22179.95 
+LEVEL       SII------1  1    4  
+LEVEL       ClI------1  0    6    294.11 104591.0
+LEVEL       ClII-----1  1    9
+LEVEL       ArI------1  0    1      0.0  127109.80
+LEVEL       ArII-----1  1    6
+LEVEL       KI-------1  0    2      0.00 35009.81 
+LEVEL       KI-------2  0    6  13023.64 
+LEVEL       KI-------3  0    2  21026.55 
+LEVEL       KI-------4  0   10  21535.60
+LEVEL       KI-------5  0    6  24713.90
+LEVEL       KI-------6  0   10  27397.50
+LEVEL       KI-------7  0    2  27450.71
+LEVEL       KI-------8  0   14  28127.85
+LEVEL       KI-------9  0    6  29004.90
+LEVEL       KI------10  0   10  30185.40
+LEVEL       KII------1  1    1  
+LEVEL       CaI------1  0    1      0.00  49305.95 
+LEVEL       CaI------2  0    9  15263.09
+LEVEL       CaI------3  0    5  21849.63
+LEVEL       CaII-----1  1    2      0.00  95751.87   
+LEVEL       ScI------1  0   10    101.00  52922.0
+LEVEL       ScII-----1  1   15
+LEVEL       TiI------1  0   21    198.21  55010.0
+LEVEL       TiII-----1  1   28
+LEVEL       VI-------1  0   30    316.48  54360.0 
+LEVEL       VII------1  1   25
+LEVEL       CrI------1  0    7      0.0   54575.6
+LEVEL       CrII-----1  1    6
+LEVEL       MnI------1  0    6      0.0   59959.40
+LEVEL       MnII-----1  1    7
+LEVEL       FeI------1  0   25    402.96  63737.
+LEVEL       FeI------2  0   35   7457.82
+LEVEL       FeI------3  0   21  12408.10
+LEVEL       FeI------4  0   15  17761.40
+LEVEL       FeI------5  0    9  19232.20
+LEVEL       FeII-----1  1   30
+LEVEL       CoI------1  0   28    792.80  63430.0
+LEVEL       CoII-----1  1   21
+LEVEL       NiI------1  0   21    971.80  61600.0 
+LEVEL       NiII-----1  1   10
+LEVEL       CuI------1  0    2      0.0   62317.44 
+LEVEL       CuII-----1  1    1
+LEVEL       ZnI------1  0    1      0.0   75769.33 
+LEVEL       ZnII-----1  1    2
