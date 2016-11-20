@@ -1,0 +1,69 @@
+DEBUG_FLAGS= -traceback -debug inline-debug-info,all 
+F90FLAGS=-O3 -g -warn ignore_loc,nodeclarations,argument_checking \
+ -fp-model fast=1 -r8 -real-size 64 -integer-size 32 \
+ -warn all -132  ${DEBUG_FLAGS} $(PROFILING) 
+# -fp-model precise -unroll -parallel -lsvml
+#PROFILING= -p
+#F90FLAGS +=-CB
+LDFLAGS=-O -X $(PROFILING) 
+
+
+ifeq ($(COMPILER),intel)
+F90FLAGS       += -module $(OUT) 
+LDFLAGS        += -module $(OUT) 
+ifeq ($(ARCH),64)
+OUT=../out-intel-x86_64/
+#F90=ifort
+#F90             =/opt/intel/Compiler/current/bin/intel64/ifort
+F90             =ifort
+LIBRARY_PATH    =/opt/intel/Compiler/current/lib/intel64/
+LD_LIBRARY_PATH =/opt/intel/Compiler/current/lib/intel64/
+#F90FLAGS       += -fPIC -xP 
+F90FLAGS       += -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2
+LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -i-dynamic 
+#LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -i-static
+SET__=1
+endif # arch=64
+ifeq ($(ARCH),32)
+OUT             =../out-intel-i686/
+F90             =/opt/intel/fc32/9.1.039/bin/ifort
+LIBRARY_PATH    =/opt/intel/fc32/9.1.039/lib/
+LD_LIBRARY_PATH =/opt/intel/fc32/9.1.039/lib/
+LDFLAGS	       += -L$(LD_LIBRARY_PATH)
+F90FLAGS       += -L$(LD_LIBRARY_PATH) 
+SET__           =1
+endif # arch=32
+endif # COMPILER=intel
+
+ifndef SET__
+.PHONY: FAIL
+FAIL:
+	-echo "unknown arch/compiler combination: $(ARCH)/$(COMPILER)"
+endif
+
+.PHONY: clean all
+OBJS=$(addprefix ${OUT},$(SRCS:.for=.o))
+
+all: $(PROG)-all
+
+$(PROG)-all: $(OBJS)
+	mkdir -p ${OUT}
+	$(F90) $(LDFLAGS) -o $(PROG) $(OBJS)
+
+$(PROG)-debug: $(OBJS)
+	$(F90) $(LDFLAGS) -o $(PROG) $(OBJS)
+clean:
+	rm -f $(PROG) $(OBJS)
+
+debug: $(PROG)-debug
+
+.SUFFIXES: $(SUFFIXES) .for
+
+${OUT}second.for  ${OUT}inv.o: error.for 
+
+${OUT}%.o:%.for
+	@tput bold
+	@echo -e "*** `basename $(F90)` $< \033[0m"
+	@$(F90) $(F90FLAGS) -o $@ -c $<
+
+include make/Makefile.deps

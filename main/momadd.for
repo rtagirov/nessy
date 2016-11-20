@@ -1,0 +1,114 @@
+      module MOD_MOMADD
+      contains
+C**********  MODULNAME: MOMADD    ******* 24/03/87  19.29.57.******   109 KARTEN
+      SUBROUTINE MOMADD (JP,LMAX,ND,NP,Z,RADIUS,P,W0,W1,W2,W3,
+     $                   WBMHO,WBMNO,WBMHI,WBMNI )
+C***  AT GIVEN IMPACT-PARAMETER INDEX JP, THIS SUBROUTINE CALCULATES THE
+C***  WEIGHTS FOR THE ANGLE INTEGRATION OF THE 0. TO 3. MOMENTS
+C***  THE WEIGHTS W0 AND W2 ARE CALCULATED FOR THE ORIGINAL DEPTH POINTS
+C***  THE WEIGHTS W1 AND W3 ARE CALCULATED FOR INTERMESH POINTS
+C***  SPECIAL WEIGHTS WBMH AND WBMN ARE CALCULATED FOR THE OUTER BOUNDARY
+      implicit real*8(a-h,o-z)
+
+	parameter (two=2.0d0,three=3.0d0,four=4.0d0,six=6.0d0,half=0.5d0)
+
+      DIMENSION W0(ND),W1(ND),W2(ND),W3(ND)
+      DIMENSION Z(ND,NP),P(NP),RADIUS(ND)
+     
+C***  0. AND 2. MOMENT. THE INTEGRATION IS PERFORMED IN THE Z VARIABLE
+      DO 10 L=1,LMAX
+      RL=RADIUS(L)
+      RL2=RL+RL
+      RRR12=RL*RL*RL*12.d0
+      IF (JP.GT.1) GOTO 8
+C***  FIRST STEP IF JP=1
+      B=Z(L,1)
+      A=Z(L,2)
+      W0(L)=(B-A)/RL2
+      AA=A*A
+      BB=B*B
+      W2(L)=(B*(three*BB-AA)-A*(BB+AA))/RRR12
+      GOTO 10
+    8 IF (L.EQ.LMAX .AND. JP.GT.(NP-ND) ) GOTO 9
+C***  INTERMEDIATE STEP
+      A=Z(L,JP+1)
+      B=Z(L,JP)
+      C=Z(L,JP-1)
+      W0(L)=(C-A)/RL2
+      AA=A*A
+      BB=B*B
+      CC=C*C
+      W2(L)=(B*(CC-AA)+C*(CC+BB)-A*(BB+AA))/RRR12
+      GOTO 10
+C***  LAST STEP, IMPLYING Z(L,JMAX)=0
+    9 B=Z(L,JP-1)
+      W0(L)=B/RL2
+      W2(L)=B*B*B/RRR12
+   10 CONTINUE
+     
+C***  THE FEAUTRIER FLUX V IS ADDED TO THE 1. AND 3. MOMENTS .
+C***  THE DEPTH POINTS FOR THE MOMENTS ARE ASSUMED TO LIE ON THE RADIUS-
+C***  INTERMESH. THIS IS ONLY APPROXIMATELY, BECAUSE FROM THE RAY-BY-RAY
+C***  FORMAL SOLUTION V RESULTS AT INTERSTICES IN THE Z COORDINATE.
+C***  THE INTEGRATION IS CARRIED OUT IN P
+C***  1. MOMENT    MUE DMUE  =  P DP / R**2
+C***  3. MOMENT   MUE**3 DMUE  =  P DP /R**2  -  P**3 DP /R**4
+C***  THE WEIGHTS ARE INDEPENDENT OF THE DEPTH, EXCEPT OF THE DIVISOR
+C***  CONTAINING R, AND EXCEPT OF THE LAST POINT LZ
+      LZ=LMAX-1
+C***  FIRST STEP
+      IF (JP.GT.1 ) GOTO 2
+      B=P(2)
+      BB=B*B
+      WW1=BB
+      WW3=BB*BB
+      GOTO 5
+C***  INTERMEDIATE STEPS
+    2 A=P(JP-1)
+      B=P(JP)
+      C=P(JP+1)
+      WW1=(A+B+C)*(C-A)
+      AA=A*A
+      BB=B*B
+      CC=C*C
+      WW3=(B-A)*(AA*(A+two*B)+BB*(three*A+four*B))
+     $  +(C-B)*(CC*(C+two*B)+BB*(three*C+four*B))
+C***  FOR THE LAST INTERVAL (L=LZ TO THE P AXIS), THE NEXT POINT IS AN
+C***  INTERMESH-POINT IN P
+      C=half*(B+C)
+      W1LZ=(A+B+C)*(C-A)
+      CC=C*C
+      W3LZ=(B-A)*(AA*(A+two*B)+BB*(three*A+four*B))
+     $  +(C-B)*(CC*(C+two*B)+BB*(three*C+four*B))
+C***  NO WEIGHT FOR THE Z=0 POINT IS CALCULATED, AS V=0 THERE FOR SYMMETRY .
+     
+C***  LOOP OVER DEPTH INDEX L
+    5 DO 1 L=1,LZ
+      RZ=half*(RADIUS(L)+RADIUS(L+1))
+      RZQ6=RZ*RZ*six
+      RRRR20=RZ*RZ*RZ*RZ*20.d0
+      IF (L.NE.LZ .OR. JP.LE.(NP-ND) ) GOTO 4
+         W1(L)=W1LZ/RZQ6
+         W3(L)=W1(L)-W3LZ/RRRR20
+         GOTO 1
+    4 W1(L)=WW1/RZQ6
+      W3(L)=W1(L)-WW3/RRRR20
+    1 CONTINUE
+     
+C***  SPECIAL WEIGHTS AT THE OUTER BOUNDARY (FOR H AND N )
+      R=RADIUS(1)
+      WBMHO=WW1/R/R/six
+      WBMNO=WBMHO-WW3/R/R/R/R/20.d0
+C***  SPECIAL WEIGHTS AT THE INNER BOUNDARY
+      IF (LMAX.LT.ND) GOTO 99
+      IF (JP.LE.NP-ND) GOTO 3
+C***  CORE TANGENT RAY, LAST STEP OF INTEGRATION
+      WW1=(B-A)*(two*B+A)
+      WW3=(B-A)*(AA*(A+2*B)+BB*(three*A+4*B))
+    3 CONTINUE
+      WBMHI=WW1/six
+      WBMNI=WBMHI-WW3/20.d0
+     
+   99 RETURN
+      end subroutine
+      end module
