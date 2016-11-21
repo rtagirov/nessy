@@ -78,7 +78,7 @@ FIOSS_SRCS= \
         gff_temp.for\
         hyd_ion_step.for\
         common_block.for\
-        file_operations.for\
+        file_oper.for\
         fioss_aux.for\
 	fioss8.for
 
@@ -274,6 +274,6 @@ zcalc.for\
 hyd_col_rate.for\
 phys.for\
 math.for\
-file_operations.for\
-string_operations.for\
+file_oper.for\
+str_oper.for\
 common_block.for

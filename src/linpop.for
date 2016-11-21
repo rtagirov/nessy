@@ -75,11 +75,15 @@
       real*8, intent(out), dimension(N + 1, N + 1) :: DB, DM
 
       real*8, intent(in),  dimension(N, N) :: einst
-      real*8, intent(in),  dimension(N)    :: ELEVEL, EION, NCHARG, NFEDGE
+      real*8, intent(in),  dimension(N)    :: ELEVEL, EION
 
-      integer, intent(in), dimension(N)    :: NOM
+      integer, intent(in),  dimension(N)   :: NCHARG, NOM
+
+      integer, intent(out), dimension(N) :: NFEDGE
 
       real*8, intent(out), dimension(N, N) :: CRATE, RRATE
+
+      real*8, dimension(N) :: en
 
       character*8, intent(in), dimension(N) :: agaunt
 
@@ -233,8 +237,8 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 !     GENERATE ONCE FOR ALL PHOTOCROSSSECTIONS AT ALL FREQUENCIES
 !     SIGMAKI(K,LOW) IN CM**2
 
-      CALL BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,N,
-     $             XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR,NF)
+      CALL BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
+     $             XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR)
 
 !     DETERMINE THE WEIGHT FUNCTION WCHARM FOR THE CONTINUUM, AND SCOLD AT ALL DEPTH POINTS
       CALL CCORE(WCHARM,NF,DELTAC,IPRICC,MODHEAD,JOBNUM,

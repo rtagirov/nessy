@@ -8,13 +8,13 @@
 # FILTER in its directory name. E.g cosi_status hminus/IT4 
 #
 
-base1=/mnt/SSD/sim
+base=/mnt/SSD/sim
 
 CONV_FILE=CONV/ALL
 
 #[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
 
-source $base1/scripts/helper_scripts
+source $base/nessy/scr/helper_scripts
 
 bold=`tput bold`
 offbold=`tput sgr0`

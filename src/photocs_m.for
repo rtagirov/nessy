@@ -1,7 +1,9 @@
       MODULE MOD_PHOTOCS_M
+
       contains
-      SUBROUTINE PHOTOCS_M (SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,
-     $                    AGAUNT,LOW,N,WAVARR,SIGARR,NDIM,NFDIM) 
+
+      SUBROUTINE PHOTOCS_M(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,
+     $                     AGAUNT,LOW,WAVARR,SIGARR,N,NF) 
 C***  LEVLOW,ELEMENT)
 C***  CALCULATES SIGMA(NUE), THE FREQUENCY DEPENDENT PHOTO CROSS SECTION
 C***  THIS ROUTINE IS ONLY CALLED by BFCROSS AND COOP_M
@@ -10,11 +12,11 @@ C***  Returns SIGMA
 !      implicit real*8(a-h,o-z)
       implicit NONE
       REAL*8,intent(out) :: SIGMA  
-      INTEGER,intent(in) :: N, NDIM,NFDIM, LOW
+      INTEGER,intent(in) :: N, NF, LOW
       REAL*8,intent(in)  :: SIGMATH,EDGE,WAVENUM
       REAL*8,dimension(N),intent(in) :: ALPHA,SEXPO
       character*8,intent(in) :: agaunt(N)
-      REAL*8,dimension(NDIM,NFDIM),intent(in)::WAVARR,SIGARR
+      REAL*8,dimension(N,NF),intent(in)::WAVARR,SIGARR
       !local variables
       
       REAL*8 :: CN, DEN, U, GAUNT, FLAMDA
@@ -63,7 +65,7 @@ CMH   READING THE CONTINUUM CROSS SECTIONS FOR EACH ELEMENT, LEVEL AND WAVENUMBE
 CMH  FROM A TABLE
 CMH  else if (AGAUNT(LOW) .EQ. 7HTABLE01) THEN
       else if (AGAUNT(LOW) .EQ. 'TABLE') THEN
-        call cstabread (SIGMA,WAVENUM,LOW,N,WAVARR,SIGARR,NDIM,NFDIM) 
+        call cstabread (SIGMA,WAVENUM,LOW,WAVARR,SIGARR,N,NF) 
 c       print *,1.E8/WAVENUM,LOW,'SIGMA PHOTOCS = ',SIGMA
 C*****************************************************************
 CMH  HIER IST DAS PROBLEM, AGAUNT(LOW) WIRD NICHT ERKANNT ??

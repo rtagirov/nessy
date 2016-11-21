@@ -204,10 +204,7 @@
 !****     **************************************************************
 !***      Changes by Margit Haberreiter
 !MH       SIGMA IN CM^2
-!MH         CALL PHOTOCS (SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I )
-!MH         CALL PHOTOCS_M (SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I)
-              CALL PHOTOCS_M (SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,
-     $                     AGAUNT,I,N,WAVARR,SIGARR,NDIM,NFDIM)
+              CALL PHOTOCS_M(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,WAVARR,SIGARR,N,NF)
 !         LEVLOW,ELEMENT)
           !*************************************************************
 
