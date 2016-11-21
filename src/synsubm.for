@@ -22,8 +22,8 @@ C
       integer,intent(in   ) :: ID,ILINE
       real*8, intent(in   ) :: FREQ
       real*8 :: PHE1
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
       COMMON/PROHE1/PRFHE1(50,4,8,3),DLMHE1(50,8,3),XNEHE1(8),
      *              NWLAM(8,4)
       COMMON/PRO447/PRF447(80,4,7),DLM447(80,7),XNE447(7)
@@ -209,9 +209,9 @@ C
       integer,intent(in   ) :: ISPEC,ID
       real*8, intent(  out) :: ABLIN,EMLIN
         
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
       
       DIMENSION ABLIN(1),EMLIN(1),OSCHE2(19),PRF0(99),WLL(40)
       COMMON/HE2PRF/PRFHE2(19,MDEPTH,36),WLHE2(19,36),NWLHE2(19),
@@ -309,7 +309,7 @@ C
 C     Photoionization cross-section for neutral carbon 2p1D and 2p1S
 C     levels (G.B.Taylor - private communication)
 C
-      INCLUDE '../INCLUDE2/IMPLIC.FOR'
+      INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IB
       real*8, intent(in   ) :: FR
       real*8, intent(inout) :: SG
@@ -377,8 +377,8 @@ c      INCLUDE 'SYNTHP.FOR'
       integer,intent(in   ) :: NDIM,NFDIM
       real*8, intent(in   ) :: WAVARR,SIGARR
       
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
       DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
       common/phopar/cross(mcross,mfcont)
       COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,
@@ -430,7 +430,7 @@ C     of the parameter A ,ie. A for He II is equal to A for hydrogen
 C     minus ln(2)
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: BETAD
       real*8, intent(inout) :: A,DIV
       PARAMETER (UN=1.,TWO=2.,UNQ=1.25,UNH=1.5,TWH=2.5,FO=4.,FI=5.)
@@ -471,7 +471,7 @@ C                     DIV = solution of equation
 C                     exp(-(beta/betad)**2)/betad/sqrt(pi)=3*beta**-5/2
 C
 c      INCLUDE 'IMPLIC.FOR'
-      INCLUDE '../INCLUDE2/IMPLIC.FOR'
+      INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: BETAD
       real*8, intent(  out) :: A,DIV
       
@@ -505,7 +505,7 @@ C   NLTE PARAMETER EPSILON (COLLISIONAL/SPONTANEOUS DEEXCITATION)
 C   AFTER  KASTNER, 1981, J.Q.S.R.T. 26, 377
 C
 c     INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: ION,N
       real*8, intent(in   ) :: T,ANE,ALAM
       real*8 :: EPS
@@ -538,7 +538,7 @@ C     Smith tables
 C     Special formula suggested by Cooper
 C
 c     INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IT,ILINE
       real*8, intent(in   ) :: DLAM,ANEL,DLAST,PLAST
       real*8 :: EXTPRF
@@ -570,8 +570,8 @@ c     INCLUDE 'MODELP.FOR'
       real*8, intent(in   ) :: FREQ
       real*8  :: FEAUTR
         
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       DIMENSION DL(20),F05(20),F10(20),F20(20),F40(20),X(4)
       DATA F05 / 0.0537, 0.0964, 0.1330, 0.3105, 0.4585, 0.6772, 0.8229,
      *           0.8556, 0.9250, 0.9618, 0.9733, 1.1076, 1.0644, 1.0525,
@@ -622,8 +622,8 @@ c     INCLUDE 'MODELP.FOR'
       real*8, intent(in   ) :: T,ANE,ANP
       real*8, intent(  out) :: GAM
         
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       DIMENSION W(5,20),V(4,20),C(20)
 C
 C   ELECTRONS T= 5000   10000   20000   40000     LAMBDA
@@ -696,7 +696,7 @@ C
       FUNCTION GAUNT_W(I,FR)
       use constants
 C     ====================                                                                                                                                                  C
-        INCLUDE '../INCLUDE2/IMPLIC.FOR'
+        INCLUDE '../inc/IMPLIC.FOR'
 
       integer :: I
       real*8  :: FR
@@ -731,7 +731,7 @@ C
 C     Hydrogenic bound-free Gaunt factor for the principal quantum
 C     number I and frequency FR
 C
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: I
       real*8, intent(in   ) :: FR
       real*8  ::  GAUNT
@@ -783,7 +783,7 @@ C     Hydrogenic free-free Gaunt factor, for temperature T and
 C     frequency FR
 C
 c     INCLUDE 'IMPLIC.FOR'
-      INCLUDE '../INCLUDE2/IMPLIC.FOR'
+      INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: T,FR
       real*8  :: GFREE
         
@@ -817,8 +817,8 @@ C
       real*8, intent(in   ) :: ANE,FR,WGR
       real*8, intent(  out) :: GAM
         
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       DIMENSION WGR(4)
       J=JT(ID)
       GAM=(TI0(ID)*WGR(J)+TI1(ID)*WGR(J-1)+TI2(ID)*WGR(J-2))
@@ -846,8 +846,8 @@ C
       !implicit real*8(a-h,o-z)
       implicit none
       integer,intent(in   ) :: MODE,IH
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
       !*** PRFHE1(Wavelength,Temperature,Electrondensity,Line Number)
       real*8 :: PRFHE1,DLMHE1,XNEHE1
       integer:: NWLAM
@@ -923,8 +923,8 @@ c     INCLUDE 'PARAMS.FOR'
 c     INCLUDE 'MODELP.FOR'
       implicit real*8(a-h,o-z)
       integer,intent(in   ) :: MODE,IH
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       DIMENSION NLINE0(3),NLINE1(3)
       COMMON/HE2PRF/PRFHE2(19,MDEPTH,36),WLHE2(19,36),NWLHE2(19),
      *              ILHE2(19),IUHE2(19)
@@ -1026,9 +1026,9 @@ c     INCLUDE 'SYNTHP.FOR'
       real*8, intent(in   ) :: T,ANE
       real*8, intent(inout) :: ABSOH,EMISH
 
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
-	INCLUDE '../INCLUDE2/SYNTHP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
+	INCLUDE '../inc/SYNTHP.FOR'
 
       PARAMETER (SIXTH=1./6., UN=1.)
       DIMENSION PJ(80),SGF(12),FRHE(12),OSCHE2(19),PRF0(99),
@@ -1268,8 +1268,8 @@ C     Initialization procedure for treating the He II line opacity
 C
       implicit real*8(a-h,o-z)
 
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
       COMMON/HE2PAR/IFHE2,IHE2L,ILWHE2,MHE10,MHE20
       COMMON/DETLIN/ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2IR
       dimension frhe(12)
@@ -1385,7 +1385,7 @@ C
 C           DGH JUNE 1988 JILA, slightly modified by I.H.
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: S,L,N
       real*8, intent(in   ) :: FREQ
 !       integer,intent(inout) :: 
@@ -1575,8 +1575,8 @@ c      INCLUDE 'MODELP.FOR'
       integer,intent(in   ) :: IL,ION
       real*8, intent(in   ) :: ALM,EXCL,EXCU
       integer,intent(inout) :: IPRF0,ILWN,IUPN
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       PARAMETER (HC=5.0344731D15)
       DIMENSION JU(23),NU(23),IT(23)
       DATA IT/1,1,0,1,0,0,0,1,0,0,0,1,1,0,0,0,1,0,1,0,0,0,0/
@@ -1730,7 +1730,7 @@ C     Compute linearly interpolated value of the cross-section
 C     at the frequency FR.
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IB
       real*8, intent(in   ) :: FR
       real*8 :: HIDALG
@@ -1812,9 +1812,9 @@ C
 !       integer,intent(in   ) :: ID
 !       real*8, intent(in   ) :: T,ANE
 !       real*8, intent(inout) :: ABSOH,EMISH
-!       INCLUDE '../INCLUDE2/PARAMS.FOR'
-!       INCLUDE '../INCLUDE2/MODELP.FOR'
-!       INCLUDE '../INCLUDE2/SYNTHP.FOR'
+!       INCLUDE '../inc/PARAMS.FOR'
+!       INCLUDE '../inc/MODELP.FOR'
+!       INCLUDE '../inc/SYNTHP.FOR'
 !       PARAMETER (FRH1=3.28805E15,FRH2=FRH1/4.,UN=1.,SIXTH=1./6.)
 !       PARAMETER (CPP=4.1412E-16,CCOR=0.09,CPJ=157803.,CLST=1.1E3)
 !       PARAMETER (C00=1.25E-9,CDOP=1.284523E12,CID=0.02654,TWO=2.)
@@ -2047,9 +2047,9 @@ C
       integer,intent(in   ) :: ID
       real*8, intent(in   ) :: T,ANE
       real*8, intent(inout) :: ABSOH,EMISH
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
       PARAMETER (FRH1=3.28805E15,FRH2=FRH1/4.,UN=1.,SIXTH=1./6.)
       PARAMETER (CPP=4.1412E-16,CCOR=0.09,CPJ=157803.,CLST=1.1E3)
       PARAMETER (C00=1.25E-9,CDOP=1.284523E12,CID=0.02654,TWO=2.)
@@ -2297,8 +2297,8 @@ C
 c      INCLUDE 'PARAMS.FOR'
 c      INCLUDE 'SYNTHP.FOR'
       implicit real*8(a-h,o-z)
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/SYNTHP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/SYNTHP.FOR'
       DIMENSION ALB(15)
       COMMON/HYLPAR/IHYL,ILOWH,M10,M20
       COMMON/DETLIN/ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2IR
@@ -2441,10 +2441,10 @@ c      INCLUDE 'MODELP.FOR'
 c      INCLUDE 'SYNTHP.FOR'
 c      INCLUDE 'LINDAT.FOR'
       implicit real*8(a-h,o-z)
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
-	INCLUDE '../INCLUDE2/SYNTHP.FOR'
-	INCLUDE '../INCLUDE2/LINDAT.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
+	INCLUDE '../inc/SYNTHP.FOR'
+	INCLUDE '../inc/LINDAT.FOR'
       REAL*4 TYPION(9)
       logical test
       COMMON/LBLANK/IBLANK,NBLANK
@@ -2645,10 +2645,10 @@ c      INCLUDE 'LINDAT.FOR'
 
       implicit real*8(a-h,o-z)
       integer,intent(in   ) :: INLIST
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
-	INCLUDE '../INCLUDE2/SYNTHP.FOR'
-	INCLUDE '../INCLUDE2/LINDAT.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
+	INCLUDE '../inc/SYNTHP.FOR'
+	INCLUDE '../inc/LINDAT.FOR'
       COMMON/LIMPAR/ALAM0,ALAM1,FRMIN,FRLAST,FRLI0,FRLIM
       COMMON/BLAPAR/RELOP,SPACE,CUTOF0,CUTOFS,TSTD,DSTD
       COMMON/DETLIN/ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2IR
@@ -3030,8 +3030,8 @@ C
 c      INCLUDE 'PARAMS.FOR'
 c      INCLUDE 'MODELP.FOR'
       implicit real*8(a-h,o-z)
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       COMMON/BLAPAR/RELOP,SPACE,CUTOF0,CUTOFS,TSTD,DSTD
       COMMON/HPOPST/HPOP
 C
@@ -3139,7 +3139,7 @@ C
 C     This procedure is quite analogous to INTVCS for Balmer lines
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IWL,ILINE
       real*8, intent(in   ) :: X0,Z0
       real*8, intent(  out) :: W0
@@ -3228,7 +3228,7 @@ C                   = 0  - profile is taken as an ordinary Voigt profile
 C                   > 0  - special profile
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IAT,ION
       real*8, intent(in   ) :: ALAM
       integer*8  :: ISPEC
@@ -3294,7 +3294,7 @@ c      INCLUDE 'PARAMS.FOR'
       implicit real*8(a-h,o-z)
       real*8, intent(in   ) :: TAU
       real*8 :: XK2DOP
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
       DATA PI2SQ,PISQ /2.506628275D0,  1.772453851D0/
       DATA A0,A1,A2,A3,A4 /
      *  1.D0,  -1.117897000D-1,  -1.249099917D-1,  -9.136358767D-3,
@@ -3336,10 +3336,10 @@ C
 !       !real*8, intent(in   ) :: AVAB
 !       real*8, intent(inout) :: ABLIN,EMLIN
 !         
-! 	INCLUDE '../INCLUDE2/PARAMS.FOR'
-! 	INCLUDE '../INCLUDE2/MODELP.FOR'
-! 	INCLUDE '../INCLUDE2/SYNTHP.FOR'
-! 	INCLUDE '../INCLUDE2/LINDAT.FOR'
+! 	INCLUDE '../inc/PARAMS.FOR'
+! 	INCLUDE '../inc/MODELP.FOR'
+! 	INCLUDE '../inc/SYNTHP.FOR'
+! 	INCLUDE '../inc/LINDAT.FOR'
 !       LOGICAL LPR,lvi,lne,ltrad
 !       PARAMETER (UN=1., EXT0 = 3.17,  TEN = 10.)
 !       PARAMETER (FRHE1=5.945E15, FRHE2=1.316D16)
@@ -3597,9 +3597,9 @@ c      INCLUDE 'LINDAT.FOR'
       integer,intent(in   ) :: MODE,IL,ILW,IUN
       real*8, intent(in   ) :: GI,GJ,EXCU
 
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
-	INCLUDE '../INCLUDE2/LINDAT.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
+	INCLUDE '../inc/LINDAT.FOR'
       DIMENSION POPNLT(MLEV,MDEPTH),GNLT(MLEV),
      *          NPLUS(MLEV),IONT(MLEV),
      *          GION(MIOEX),EION(MIOEX)
@@ -3778,10 +3778,10 @@ C
 !       integer :: 
 !       real*8  :: 
         
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
-      INCLUDE '../INCLUDE2/LINDAT.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
+      INCLUDE '../inc/LINDAT.FOR'
       PARAMETER (MNION = 20,
      *           MNLEV = 50,
      *           ECONST=  5.03411142E15)
@@ -4074,8 +4074,8 @@ CMH      INCLUDE 'MODELP.FOR'
       integer,intent(in   ) :: MODE,IJ,ID
       real*8, intent(in   ) :: FR
       real*8, intent(  out) :: ABAD,EMAD,SCAD
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       COMMON/PHOPAR/CROSS(MCROSS,MFCONT)
       COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,
      $ IOPFE1
@@ -4261,7 +4261,7 @@ C        XOP(,)    = x     = alog10(nu/nu0)       of fit point
 C        SOP(,)    = sigma = alog10(sigma/10^-18) of fit point
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       PARAMETER    (MMAXOP = 200,! maximum number of levels in OP data
      +              MOP    =  15 )! maximum number of fit points per level
       CHARACTER*10  IDLVOP(MMAXOP) ! level identifyer Opacity-Project data
@@ -4331,10 +4331,10 @@ c      INCLUDE 'MODELP.FOR'
 c      INCLUDE 'SYNTHP.FOR'
 c      INCLUDE 'LINDAT.FOR'
       implicit none
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
-	INCLUDE '../INCLUDE2/SYNTHP.FOR'
-	INCLUDE '../INCLUDE2/LINDAT.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
+	INCLUDE '../inc/SYNTHP.FOR'
+	INCLUDE '../inc/LINDAT.FOR'
       COMMON/PRFQUA/DOPA1(MATOM,MDEPTH),VDWC(MDEPTH)
       DIMENSION WGR(4)
       real*8 :: wgr,pi4
@@ -4404,7 +4404,7 @@ C
 C     (At the moment, only a few transitions are considered)
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IB
       real*8, intent(in   ) :: FR
       DIMENSION HEV(30),F0(30),SIG0(30,2),SIGS(30)
@@ -4504,7 +4504,7 @@ c      INCLUDE 'PARAMS.FOR'
       integer,intent(in   ) :: II,IB
       real*8, intent(in   ) :: FR
       
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
 C
       NI=NQUANT(II)
       IGI=INT(G(II)+0.01)
@@ -4631,7 +4631,7 @@ C
 C     Bound-free cross-section for H- (negative hydrogen ion)
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: FR
       SBFHMI=0.
       FR0=1.8259E14
@@ -4656,7 +4656,7 @@ C
 C     Free-free cross section for H- (After Kurucz,1970,SAO 309, P.80)
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: POPI,FR,T
 CMH      SFFHMI=(1.3727E-25+(4.3748E-10-2.5993E-7/T)/FR)*POPI/FR
 	SFFHMI=(1.3727E-25+(4.3748E-10-2.5993E-7/T)/FR)*POPI/FR
@@ -4674,7 +4674,7 @@ C     Special formula for the photoionization cross-section from the
 C     averaged <n=2> level of He I
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: FR
       
       DATA C1/3.E0/,C2/9.E0/,C3/1.6E1/,
@@ -4709,7 +4709,7 @@ c      INCLUDE 'PARAMS.FOR'
       implicit real*8(a-h,o-z)
       integer,intent(in   ) :: ITR,MODE,NDIM,NFDIM
       real*8, intent(in   ) :: FR,WAVARR,SIGARR
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
       real*8,parameter :: SIH0=2.815D29
       DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
       logical,save :: first=.true.
@@ -4909,7 +4909,7 @@ C     Non-standard evaluation of the photoionization cross-sections
 C     Basically user-suppled procedure; here are some examples
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IB
       real*8, intent(in   ) :: FR
       real*8, intent(  out) :: SIGSP
@@ -4960,7 +4960,7 @@ C             FIJ0  - f-value for the undisplaced component of the line
 C
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: I,J,IZZ
       real*8, intent(  out) :: XKIJ,WL0,FIJ,FIJ0
 
@@ -5073,7 +5073,7 @@ C                    FAC should be taken to 2 for hydrogen, (and =1
 C                    for He II)
 C
 c      INCLUDE 'IMPLIC.FOR'
-      INCLUDE '../INCLUDE2/IMPLIC.FOR'
+      INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: BETA,BETAD,A,DIV,FAC
       real*8  :: STARKA
         
@@ -5115,7 +5115,7 @@ c
 c     stops the program and writes a text
 c
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       character*(*) text
       write(6,10) text
    10 format(1x,a)
@@ -5133,8 +5133,8 @@ C
 c     INCLUDE 'PARAMS.FOR'
 c     INCLUDE 'MODELP.FOR'
       implicit real*8(a-h,o-z)
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       DIMENSION TT(4)
       DATA TT /3.699, 4.000, 4.301, 4.602/
 C
@@ -5166,7 +5166,7 @@ CMH   FUNCTION TOPBAS(FREQ,FREQ0,TYPLV)
 ! C     Opacity-Project (OP) interpolation fit formula
 ! C
 ! c      INCLUDE 'IMPLIC.FOR'
-! 	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+! 	INCLUDE '../inc/IMPLIC.FOR'
 !       real*8, intent(in   ) :: FREQ,FREQ0
 !       character*10,intent(in) ::  TYPLV
 !       PARAMETER    (E10=2.3025851)
@@ -5224,7 +5224,7 @@ c  a=gamma/(4*pi*dnud)   and  v=(nu-nu0)/dnud.  this  is  done after
 c  traving (landolt-b\rnstein, p. 449).
 c
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: a,vs
       real*8  :: voigte
       
@@ -5327,7 +5327,7 @@ c            ane - electron density
 c            z   - ionic charge
 c
 c     Limitations: 
-      INCLUDE '../INCLUDE2/IMPLIC.FOR'
+      INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: xn,a,ane,z
       real*8  :: wn
         
@@ -5386,8 +5386,8 @@ C     Output: WTOT - Stark width in Angstroms
       real*8, intent(in   ) :: T,ANE
       real*8  :: WTOT
         
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       DIMENSION ALPH0(4,4),W0(4,4),ALAM0(4)
       DATA ALPH0 / 0.107, 0.119, 0.134, 0.154,
      *             0.206, 0.235, 0.272, 0.317,
@@ -5422,7 +5422,7 @@ C             YL - array of f(x)
 C             XL0 - the point x(0) to which one interpolates
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       real*8, intent(in   ) :: XL,YL,XL0
       DIMENSION XL(3),YL(3)
       A0=(XL(2)-XL(1))*(XL(3)-XL(2))*(XL(3)-XL(1))
@@ -5443,7 +5443,7 @@ C     linear interpolation routine. Determines YINT = Y(XINT) from
 C     grid Y(X) with N points and dimension NTOT.
 C
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: N,NTOT
       real*8, intent(in   ) :: XINT,X,Y
       real*8  :: YLINTP
@@ -5488,7 +5488,7 @@ C     200 steps per doppler width - up to 10 Doppler widths
 C
 c      INCLUDE 'PARAMS.FOR'
       implicit real*8(a-h,o-z)
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
       PARAMETER (VSTEPS=200.,MVOI=2001)
       real*8 :: H0TAB,H1TAB,H2TAB
       COMMON/VOITAB/H0TAB(MVOI),H1TAB(MVOI),H2TAB(MVOI)
@@ -5537,7 +5537,7 @@ c      INCLUDE 'PARAMS.FOR'
       implicit real*8(a-h,o-z)
       real*8, intent(in   ) :: A,V
       real*8  :: VOIGTK
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
       PARAMETER (MVOI=2001)
       PARAMETER (ONE=1., THREE=3., TEN=10., FIFTN=15., TWOH=200.,
      *           C14142=1.4142, C11283=1.12838, C15=1.5,C32=3.2,
@@ -5601,7 +5601,7 @@ C
       implicit real*8(a-h,o-z)
       integer,intent(in   ) :: NX,NXX,NPOL,ILOGX,ILOGY
       real*8, intent(inout) :: X,Y,XX,YY
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
       DIMENSION X(1),Y(1),XX(1),YY(1)
       EXP10(X0)=EXP(X0*2.30258509299405D0)
       IF(NPOL.LE.0.OR.NX.LE.0) GO TO 200
@@ -5664,9 +5664,9 @@ C
       use MOD_HYDTAB, only: MLINH,MHWL,MHE,MHT
       use PARAMS_ARRAY,only:NDDIM
       implicit none
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
       !*** MODELP: TEMP,VTURB,ELEC
-      INCLUDE '../INCLUDE2/MODELP.FOR'
+      INCLUDE '../inc/MODELP.FOR'
 !       COMMON/VCSDAT/WL(MHWL,MLINH),XT(MHT,MLINH),
 !      *              XNE(MHE,MLINH),PRF(MHWL,MHT,MHE),
 !      *              NWLH(MLINH),NTH(MLINH),NEH(MLINH)
@@ -5936,7 +5936,7 @@ C     temperature and electron density
 C
       integer :: NX,NZ,NT,NE,IZZ,IPZ,N0X,N1X,N0Z,N1Z,I0Z,IX,IPX,I0
       real*8  :: BETA,A,DIV
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
       real*8,parameter :: TWO=2d0
       real*8,dimension(3) :: ZZ,XX,WX,WZ
 C

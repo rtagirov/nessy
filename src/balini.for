@@ -19,8 +19,8 @@ c      INCLUDE 'PARAMS.FOR'
 c      INCLUDE 'MODELP.FOR'
       implicit real*8(a-h,o-z)
       integer,intent(in   ) :: IBVCS
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
 !      COMMON/VCSDAT/WL(36,8),XT(7,8),XNE(11,8),PRF(36,7,11)
 !     *              ,NWLH(8),NTH(8),NEH(8)
 
@@ -121,7 +121,7 @@ C     temperature and electron density
 C
       USE MOD_ERROR
 c      INCLUDE 'IMPLIC.FOR'
-      INCLUDE '../INCLUDE2/IMPLIC.FOR'
+      INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IWL,ILINE
       real*8, intent(in   ) :: X0,Z0
       real*8, intent(  out) :: W0

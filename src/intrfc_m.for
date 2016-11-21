@@ -24,8 +24,8 @@ c
       integer :: IOPHMI,IOPH2P,IOPHE1,IOPHE2,IOPFE1,IOPHLI
       integer :: JJ,ID,INMOD,INTRPL,ICHANG,NCH
       real*8  :: SIG
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
       DIMENSION NCHARG (NDIM), WEIGHT(NDIM),ELEVEL(NDIM)
       DIMENSION EION(NDIM),EINST(NDIM,NDIM)
 c     DIMENSION ALPHA(NDIM),SEXPO(NDIM)
@@ -396,9 +396,9 @@ c
       real*8  :: WW,XX,YY,ZZ, TURB,VELORMS, cl8,clkm,VEL
       integer :: I,L,LEV,KOPA
       integer :: nfcont_
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
+      INCLUDE '../inc/MODELP.FOR'
       DIMENSION POPNUM(nddim,N),ENTOT(nddim),rne(nddim),t(nddim)
      $         ,Tion_pot(nddim,Npot),dil(nddim)
       DIMENSION VELORMS(NDDIM),TURB(NDDIM)
@@ -547,9 +547,9 @@ c
       integer :: ID,IJ, i
       !integer,intent(inout) ::
       !real*8, intent(inout) ::
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
+      INCLUDE '../inc/MODELP.FOR'
       DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
 C     common opatot(mfreq,mdepth),etatot(mfreq,mdepth)
 CMH   MARGIT HABERREITER

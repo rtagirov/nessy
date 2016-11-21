@@ -24,9 +24,9 @@ C
       real*8  :: ALAST,CUTOF0,CUTOFS,RELOP,SPACE,VELMAX
       real*8  :: FRLAST,XX,ACOR,WPH,A1,A2,A3
       real*8  :: ALAM0,ALAM1,FRMIN,FRLI0,FRLIM,TSTD,DSTD
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
       real*8,parameter :: un=1.
       logical lwph
       real*8,dimension(MFREQ) :: ABSO,EMIS !,SCAT(2)
@@ -347,10 +347,10 @@ C
 c      INCLUDE 'PARAMS.FOR'
 c      INCLUDE 'MODELP.FOR'
       implicit none
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
-      INCLUDE '../INCLUDE2/LINDAT.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
+      INCLUDE '../inc/LINDAT.FOR'
       
       integer,intent(in) :: id,NFDIM,NDIM
       integer,intent(in) :: MODE
@@ -984,8 +984,8 @@ C
       use UTILS, only: ASSERT
       use SYNTHP_CONT, only: NFCONT
       implicit none
-      include '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
+      include '../inc/PARAMS.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
       integer i,getContIdx,idxFreq
       call assert(LOC(FRXIDX)/=0,'FRXIDX is not yet available')
       call assert(idxFreq>=1,'Frequency Index can not be negative')
@@ -1014,12 +1014,12 @@ C
 C     opacity and emissivity of hydrogen lines
 C
       implicit real*8(a-h,o-z)
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
       integer,intent(in   ) :: ID
       real*8, intent(in   ) :: T,ANE
       real*8, intent(inout) :: ABSOH(MFREQ),EMISH(MFREQ)
-      INCLUDE '../INCLUDE2/MODELP.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
+      INCLUDE '../inc/MODELP.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
       real*8,parameter:: FRH1=3.28805E15,FRH2=FRH1/4.,UN=1.,SIXTH=1./6.
       real*8,parameter:: CPP=4.1412E-16,CCOR=0.09,CPJ=157803.,CLST=1.1E3
       real*8,parameter:: CDOP=1.284523E12,TWO=2.

@@ -18,7 +18,7 @@
       use OPINT
       implicit real*8(a-h,o-z)
       real*8 :: RWLAE, DLAM(:)
-      !include '../INCLUDE2/OPINT.FOR'
+      !include '../inc/OPINT.FOR'
       real*8 :: XJK(:,:),CWK(:,:),DINT(:,:),XJ(:,:),XNU(:)
       DIMENSION RRAY(LTOT),ZRAY(LTOT),XCMF(LTOT)
       DIMENSION EMINT(NFOBR)

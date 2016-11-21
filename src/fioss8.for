@@ -98,7 +98,7 @@
       !        good idea to make NFODIM quite a bit larger
 
       !-cray      PARAMETER ( MAXADR = 3000 )
-      !include '../INCLUDE2/OPINT.FOR'
+      !include '../inc/OPINT.FOR'
       COMMON // R(NDDIM),ENTOT(NDDIM),T(NDDIM)
      $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
      $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)

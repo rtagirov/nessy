@@ -2,7 +2,7 @@
       implicit none
       integer,private :: NFCONT__ = -1
 
-      !include '../INCLUDE2/PARAMS.FOR'
+      !include '../inc/PARAMS.FOR'
       real*8,allocatable :: FREQC(:),ABSOC(:),EMISC(:),SCATC(:)
       contains
       subroutine setNFCONT(NFCONT_VAL)

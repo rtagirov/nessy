@@ -10,7 +10,7 @@ C     Initialization of basic parameters for the Saha equations
 C
 c      INCLUDE 'PARAMS.FOR'
       implicit real*8(a-h,o-z)
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
       COMMON/INTKEY/INMOD,INTRPL,ICHANG,ICHEMC
       DIMENSION D(4,MATOM),XI(9,MATOM),iatex(matom)
       !DIMENSION XIFE(10)
@@ -461,8 +461,8 @@ c      INCLUDE 'PARAMS.FOR'
 c      INCLUDE 'MODELP.FOR'
       implicit real*8(a-h,o-z)
       integer,intent(in   ) :: ID
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       dimension FFI(MION0)
 	!REAL*8 SUM2,UM3
 C
@@ -564,7 +564,7 @@ c      INCLUDE 'PARAMS.FOR'
       integer,intent(in   ) :: IAT,IZI
       real*8, intent(in   ) :: T,ANE,XMAXN
       real*8, intent(inout) :: U
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
       REAL*4 AHH( 6),  ALB(12),  AB (11),  AC (19),  AN (30),  AO (49),
      *       AF (34),  ANN(23),  ANA(19),  AMG(15),  AAL(17),  ASI(23),
      *       AP (19),  AS (29),  ACL(28),  AAR(25),  AK (30),  ACA(17),
@@ -1368,7 +1368,7 @@ c
 c     Output:  PF   partition function
 c
 c      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: ion
       real*8, intent(in   ) :: t,ane
       real*8, intent(inout) :: pf
@@ -1692,7 +1692,7 @@ C
 * M.A.Barstow - University of Leicester, Dept of Physics & Astronomy
 *
 C      INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IAT,IZI
       real*8, intent(in   ) :: T,ANE
 !       integer,intent(inout) :: 
@@ -3385,7 +3385,7 @@ C
 * 
 	SUBROUTINE PARTDV(TEMP,DNE,Z,NLEV,NE,GEE,ENRGY,S,U)
 * 
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: NLEV,NE(*)
       real*8, intent(in   ) :: TEMP,DNE,Z,GEE,ENRGY,S
       real*8, intent(inout) :: U
@@ -3755,8 +3755,8 @@ c
 C      INCLUDE 'PARAMS.FOR'
 C      include 'MODELP.FOR'
       implicit real*8(a-h,o-z)
-	INCLUDE '../INCLUDE2/PARAMS.FOR'
-	INCLUDE '../INCLUDE2/MODELP.FOR'
+	INCLUDE '../inc/PARAMS.FOR'
+	INCLUDE '../inc/MODELP.FOR'
       parameter (mtemp=100,melec=60,mion1=30)
       dimension xt(mdepth),xne(mdepth)
       dimension kt0(mdepth),kn0(mdepth)
@@ -3853,7 +3853,7 @@ c
 c     =========================
 c
 C     INCLUDE 'IMPLIC.FOR'
-	INCLUDE '../INCLUDE2/IMPLIC.FOR'
+	INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(inout) :: iatnum
       parameter (mtemp=100,
      *           melec= 60,

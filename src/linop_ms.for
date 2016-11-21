@@ -22,10 +22,10 @@
 
 C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       implicit none
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
-      INCLUDE '../INCLUDE2/SYNTHP.FOR'
-      INCLUDE '../INCLUDE2/LINDAT.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
+      INCLUDE '../inc/SYNTHP.FOR'
+      INCLUDE '../inc/LINDAT.FOR'
       integer,intent(in) :: ID
       logical :: LPR,ltrad
 

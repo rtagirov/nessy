@@ -21,9 +21,9 @@
 ! !      use MOD_SYNSUBM,only:STARK0
 !       use PARAMS_ARRAY,only:NDDIM
 !       implicit none
-!       INCLUDE '../INCLUDE2/PARAMS.FOR'
+!       INCLUDE '../inc/PARAMS.FOR'
 !       !*** MODELP: TEMP,VTURB,ELEC
-!       INCLUDE '../INCLUDE2/MODELP.FOR'
+!       INCLUDE '../inc/MODELP.FOR'
 ! !       COMMON/VCSDAT/WL(MHWL,MLINH),XT(MHT,MLINH),
 ! !      *              XNE(MHE,MLINH),PRF(MHWL,MHT,MHE),
 ! !      *              NWLH(MLINH),NTH(MLINH),NEH(MLINH)
@@ -282,7 +282,7 @@
 ! C
 !       integer :: NX,NZ,NT,NE,IZZ,IPZ,N0X,N1X,N0Z,N1Z,I0Z,IX,IPX,I0
 !       real*8  :: BETA,A,DIV
-!       INCLUDE '../INCLUDE2/PARAMS.FOR'
+!       INCLUDE '../inc/PARAMS.FOR'
 !       real*8,parameter :: TWO=2d0
 !       real*8,dimension(3) :: ZZ,XX,WX,WZ
 ! C

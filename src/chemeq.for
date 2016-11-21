@@ -97,8 +97,8 @@
 
       SUBROUTINE readmollines
       IMPLICIT NONE 
-      INCLUDE '../INCLUDE2/PARAMS.FOR'
-      INCLUDE '../INCLUDE2/MODELP.FOR'
+      INCLUDE '../inc/PARAMS.FOR'
+      INCLUDE '../inc/MODELP.FOR'
       integer i, j, nunit1
       integer ni
  !    integer ND  
