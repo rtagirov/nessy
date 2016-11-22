@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ~/sim-rinat/sync_pool/aux_func.sh
+source ./aux_func.sh
 
 function identify_src
 {
@@ -32,7 +32,7 @@ while read -r LINE; do identify_src $LINE; done < "$1"
 
 GREP='grep -iw --color'
 
-NESSY_DIR=~/sim-rinat/cosi/cosi_rinat
+NESSY_DIR=/mnt/SSD/sim/nessy/src
 MAKE_DIR=$NESSY_DIR/make
 NESSY_SRCS=$MAKE_DIR/Makefile.sources
 NESSY_SRCS_REV=$MAKE_DIR/Makefile.sources.rev
