@@ -10,7 +10,6 @@
       !***  PROGRAM READS THE BINNED LINE OPACITIES
       !***  AND INCLUDES THEM IN THE HMINUS CODE TO
       !***  CALCULATE THE CONTINUUMS OPACITIES
-      !***  CALLED BY COOP_M
       !*** L = 1 : MOST OUTWARD DEPTH POINT
       !***  L = ND: MOST INWARD DEPTH POINT
       !*********************************************

@@ -49,7 +49,8 @@ C***  GAUSS-ELIMINATION
           CALL MDV (A,WX(1,L),JMAX)
           CALL VADD (W,WX(1,L),JMAX)
         endif
-        CALL INV (JMAX,NPDIM,B)
+!        CALL INV (JMAX,NPDIM,B)
+        CALL INV (JMAX,B)
         CALL MVV (WX(1,L),B,W,JMAX,JMAX,NPDIM)
         IF (L.EQ.ND) GOTO 2
         CALL MVMD (BX(1,1,L),B,C,JMAX,JMAX-1,NPDIM)

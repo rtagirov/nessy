@@ -2,11 +2,11 @@
 
       contains
 
-      subroutine DATOM_M(NDIM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      subroutine DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $                   EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $                   INDNUP,INDLOW,LASTIND,MAXIND,MAXATOM,NATOM,
+     $                   INDNUP,INDLOW,LASTIND,NATOM,
      $                   ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $                   NLAST,WAVARR,SIGARR,NFDIM)
+     $                   NLAST,WAVARR,SIGARR, NFDIM)
 C2     DATOM_M
 C3     | RDCSARR
 
@@ -66,41 +66,52 @@ C*******************************************************************************
       use MOD_RDCSARR
       use MOD_ERROR
 
+      use file_operations
+
       implicit none
 
       !public variables - out
 
-      integer, intent(out) :: N, NATOM
+      integer, intent(out) ::                            N, NATOM, LASTIND
 
-      integer, intent(out), allocatable, dimension(:) :: KODAT, NOM
+      integer, intent(out), allocatable, dimension(:) :: KODAT, NOM, NFIRST, NLAST, INDLOW, INDNUP, NCHARG, MAINQN
 
-      integer, intent(out), allocatable, dimension(:) :: NFIRST, NLAST
+      real*8,  intent(out), allocatable, dimension(:) :: ATMASS, ALPHA, EION, ELEVEL, SEXPO, WEIGHT, STAGE
 
-      integer,intent(out):: INDLOW, INDNUP
-      integer,intent(out):: LASTIND,NCHARG,MAINQN
-      real*8,intent(out) :: ALTESUM,ATMASS,ALPHA,COCO
-      character*8,intent(out) :: agaunt
-      real*8,intent(out) ::  EINST,EION, ELEVEL,SEXPO,WEIGHT,STAGE
-      real*8,intent(out) ::  SIGARR, WAVARR ! get changed in RDCSARR
-      !public variables - in
-      integer,intent(in) :: MAXATOM,MAXIND
-      integer,intent(in) :: NDIM,NFDIM
+      real*8,  intent(out), allocatable, dimension(:, :) :: ALTESUM, EINST, SIGARR, WAVARR
+
+      real*8,  intent(out), allocatable, dimension(:, :, :) :: COCO
+
+      character*2, intent(out), allocatable, dimension(:) ::  symbol
+
+      character*4, intent(out), allocatable, dimension(:, :) ::  keycol
+
+      character*8, intent(out), allocatable, dimension(:) ::  agaunt
+
+      character*10, intent(out), allocatable, dimension(:) :: level, element
+
+      !public variable - in
+      integer, intent(in) :: NFDIM
+
       !private variables
-      integer I,IND,IRANGE,IECHO,J,LEV,LEVSEQ,LOW,LOWP
-      integer MQN,NA,NCHG,NUP,NW
-      real*8  ALPLOW,AUPLOW
-      real*8  ASUM,CO1,CO2,CO3,CO4,COEFF1,COEFF2
+      integer ::     I, IND, IRANGE, IECHO, J, LEV, LEVSEQ, LOW, LOWP
+      integer ::     MQN, NA, NCHG, NUP, NW
+      real*8 ::      ALPLOW, AUPLOW
+      real*8 ::      ASUM, CO1, CO2, CO3, CO4, COEFF1, COEFF2
+      real*8 ::      E, ELEV, F, GFG, SLOW, SIGMA
       character*8 :: AGLOW
-      real*8  E,ELEV,F,GFG,SLOW,SIGMA
+
+      integer ::     elenum, levnum, linnum
+
       !constants
-      real*8,parameter ::  ONE = 1.D+0
+      real*8, parameter :: ONE = 1.D+0
+
       !strings
-      CHARACTER KARTE*80
-      CHARACTER*10 LEVEL(NDIM),LEVUP,LEVLOW,Lread
-      CHARACTER*10 ELEMENT(MAXATOM),LINECA
-      CHARACTER*4 CEY,KEYCOL(NDIM,NDIM)
-      CHARACTER*3 KRUDI
-      CHARACTER*2 SYMBOL(MAXATOM) 
+      CHARACTER*80 KARTE
+      CHARACTER*10 LEVUP, LEVLOW, LINECA, lread
+      CHARACTER*4  CEY
+      CHARACTER*3  KRUDI
+
       !dimensions
 !      DIMENSION NCHARG(NDIM), WEIGHT(NDIM), ELEVEL(NDIM)
 !      DIMENSION EION(NDIM),MAINQN(NDIM),EINST(NDIM,NDIM)
@@ -113,22 +124,123 @@ C*******************************************************************************
 !      DIMENSION NFIRST(MAXATOM),NLAST(MAXATOM)
 !      DIMENSION INDNUP(MAXIND),INDLOW(MAXIND)
 !      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
+!      DIMENSION LEVEL(NDIM)
+!      DIMENSION SYMBOL(MAXATOM), ELEMENT(MAXATOM)
+!      DIMENSION KEYCOL(NDIM, NDIM)
 
       CHARACTER*(*),parameter ::
      $FORMAT_LEVEL='(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)',
      $FORMAT_ELEMENT='(12X,A10,2X,A2,4X,F6.2,3X,F5.0)',
      $FORMAT_LTESUM='(10X,A10,1X,A8,1X,G9.0,1X,F7.0,1X,F7.0)'
+!     ---------------------- Array Allocation ------------------
+
+      if (allocated(kodat))   deallocate(kodat)
+      if (allocated(nom))     deallocate(nom)
+      if (allocated(nfirst))  deallocate(nfirst)
+      if (allocated(nlast))   deallocate(nlast)
+      if (allocated(indlow))  deallocate(indlow)
+      if (allocated(indnup))  deallocate(indnup)
+      if (allocated(ncharg))  deallocate(ncharg)
+      if (allocated(mainqn))  deallocate(mainqn)
+      if (allocated(atmass))  deallocate(atmass)
+      if (allocated(alpha))   deallocate(alpha)
+      if (allocated(eion))    deallocate(eion)
+      if (allocated(elevel))  deallocate(elevel)
+      if (allocated(sexpo))   deallocate(sexpo)
+      if (allocated(weight))  deallocate(weight)
+      if (allocated(stage))   deallocate(stage)
+      if (allocated(altesum)) deallocate(altesum)
+      if (allocated(einst))   deallocate(einst)
+      if (allocated(sigarr))  deallocate(sigarr)
+      if (allocated(wavarr))  deallocate(wavarr)
+      if (allocated(coco))    deallocate(coco)
+      if (allocated(symbol))  deallocate(symbol)
+      if (allocated(keycol))  deallocate(keycol)
+      if (allocated(agaunt))  deallocate(agaunt)
+      if (allocated(level))   deallocate(level)
+      if (allocated(element)) deallocate(element)
+
+      call system('grep -irw ELEMENT DATOM > ele.temp')
+      call system('grep -irw LEVEL DATOM   > lev.temp')
+      call system('grep -irw LINE DATOM    > lin.temp')
+
+      elenum = num_of_lines('ele.temp')
+      linnum = num_of_lines('lin.temp')
+      levnum = num_of_lines('lev.temp')
+
+      call system('rm -f ele.temp')
+      call system('rm -f lev.temp')
+      call system('rm -f lin.temp')
+
+      allocate(kodat(elenum))
+      allocate(nfirst(elenum))
+      allocate(nlast(elenum))
+      allocate(atmass(elenum))
+      allocate(stage(elenum))
+      allocate(symbol(elenum))
+      allocate(element(elenum))
+
+      allocate(nom(levnum))
+      allocate(ncharg(levnum))
+      allocate(mainqn(levnum))
+      allocate(alpha(levnum))
+      allocate(eion(levnum))
+      allocate(elevel(levnum))
+      allocate(sexpo(levnum))
+      allocate(weight(levnum))
+      allocate(agaunt(levnum))
+      allocate(level(levnum))
+
+      allocate(coco(levnum, levnum, levnum))
+      allocate(keycol(levnum, levnum))
+      allocate(einst(levnum, levnum))
+      allocate(altesum(4, levnum))
+
+      allocate(indlow(linnum))
+      allocate(indnup(linnum))
+
+      allocate(sigarr(levnum, NFDIM))
+      allocate(wavarr(levnum, NFDIM))
+
       ! ------------------- Begin init -------------------------
+      NATOM = 0
+      N = 0
+      LEVSEQ = 0
+
       KODAT(:) = 0
-      NATOM=0
-      N=0
-      LEVSEQ=0
-      ALTESUM(1,:)   =-one
-      COCO(:,:,:)    =0d0
-      KEYCOL(:,:)    ='    '
-      EINST (:,:)    =-one
-      OPEN (4,FILE='DATOM',status='old',readonly)
-      IECHO=0
+      ALTESUM(1, :) = -one
+      COCO(:, :, :) = 0d0
+      KEYCOL(:, :)  = '    '
+      EINST (:, :)  = -one
+
+      !--------------------- Initialisation Rinat Tagirov ----------------
+
+      nfirst(:) = 0
+      nlast(:) =  0
+
+      indlow(:) = 0
+      indnup(:) = 0
+
+      nom(:) =    0
+      ncharg(:) = 0
+      mainqn(:) = 0
+
+      atmass(:) =  0.0D0
+      alpha(:) =   0.0D0
+
+      stage(:) =   0.0D0
+      eion(:) =    0.0D0
+      elevel(:) =  0.0D0
+
+      sexpo(:) =   0.0D0
+      weight(:) =  0.0D0
+
+      !--------------------- Initialisation Rinat Tagirov ----------------
+
+      OPEN (4, FILE = 'DATOM', status='old', readonly)
+
+      IECHO = 0
+
       ! ------------- end init ------------------------------
     1 READ(4,'(A)',END=66) KARTE
 c      IF (IECHO.EQ.1) PRINT *,KARTE
@@ -151,10 +263,10 @@ c     ignore dielectronic option
 C***  ELEMENTS ---------------------------------------------------------
     5 NATOM=NATOM+1
       if (natom .gt. 30) stop 'datom_m natom > 30'
-      IF (NATOM .GT. MAXATOM) THEN
-          print *, 'DATOM: MORE ELEMENTS THAN ALLOWED'
-          STOP 'ERROR'
-          ENDIF
+!      IF (NATOM .GT. MAXATOM) THEN
+!          print *, 'DATOM: MORE ELEMENTS THAN ALLOWED'
+!          STOP 'ERROR'
+!          ENDIF
       LEVSEQ=0
       read (KARTE,FORMAT_ELEMENT) ELEMENT(NATOM),SYMBOL(NATOM),
      $                    ATMASS(NATOM),STAGE(NATOM)
@@ -262,19 +374,19 @@ CMH  MODEL ATOM OF "NICKEL" DECODED
      
 C***  LEVELS -----------------------------------------------------------
    10 N=N+1
-      if (n.gt.ndim) then
-         print *,N,NDIM
-         pause' N gt ndim'
-         stop
-         endif
+!      if (n.gt.ndim) then
+!         print *,N,NDIM
+!         pause' N gt ndim'
+!         stop
+!         endif
       IF (LEVSEQ.NE.0) THEN
           print *, 'DATOM: LEVEL CARD OUT OF SEQUENCE'
           STOP 'ERROR'
           ENDIF
-      IF(N.GT.NDIM) THEN
-          print *, 'DATOM : DIMENSION OVERFLOW'
-          STOP 'ERROR'
-          ENDIF
+!      IF(N.GT.NDIM) THEN
+!          print *, 'DATOM : DIMENSION OVERFLOW'
+!          STOP 'ERROR'
+!          ENDIF
       IF (NATOM .NE. 0) NOM(N)=NATOM
 c      DECODE(80,11,KARTE)   LEVEL(N),NCHARG(N),NW,ELEVEL(N),E,MAINQN(N)
 
@@ -521,7 +633,7 @@ c          NLAST(NA)= ISRCHEQ(N,NOM(1),1,NA+1) - 1
    90 CONTINUE
      
 C***  GENERATE VECTORS INDNUP, INDLOW: LEVEL INCICES OF THE LINES
-      DO 94 IND=1,MAXIND
+      DO 94 IND=1,linnum
       INDNUP(IND)=0
       INDLOW(IND)=0
    94 CONTINUE
@@ -536,10 +648,10 @@ C***  GENERATE VECTORS INDNUP, INDLOW: LEVEL INCICES OF THE LINES
    95 CONTINUE
       LASTIND=IND
 C***  ERROR STOP
-      IF (LASTIND .GT. MAXIND) THEN
-         print *, 'LASTIND .GT. MAXIND'
-      STOP 'ERROR'
-      ENDIF
+!      IF (LASTIND .GT. MAXIND) THEN
+!         print *, 'LASTIND .GT. MAXIND'
+!      STOP 'ERROR'
+!      ENDIF
      
 C***  ASSIGNMENT OF IONIZATION ENERGIES (INPUT VALUES OF GROUND STATE)
 C***  TO ALL LEVELS OF THE CORRESPONDING ELEMENT
@@ -562,16 +674,17 @@ C***  RYDBERG FORMULA
     4 CONTINUE
 
 C***  IF AGAUNT(LOW) EQ 'TABLE' READ CROSS SECTION FROM TABLE
-      J=0 
-      DO J=1,N
-        ! LOW=J
-        IF (AGAUNT(J) .EQ. 'TABLE') THEN 
-          ! print *,j,n 
+
+      DO J = 1, N
+
+         IF (AGAUNT(J) .EQ. 'TABLE') THEN
+
           ! read in WAVARR and SIGARR from the File LEVEL(J)
-          call RDCSARR(LEVEL,J,N,WAVARR,SIGARR,NDIM,NFDIM)
-          ! PRINT *,J,N
-        END IF
-      END DO
+             call RDCSARR(LEVEL,J,WAVARR,SIGARR,levnum,NFDIM)
+
+        ENDIF
+
+      ENDDO
 C********************************************************************
 
 c      do i = 1, ndim

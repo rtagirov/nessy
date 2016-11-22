@@ -1,11 +1,11 @@
       module MOD_COOP_M
       integer :: NDPMIN_WARN=0 !* set to true if an NDPMIN sanity check fails
       contains
-      SUBROUTINE COOP_M (XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
-     $       OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $       NDIM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $       ALPHA,SEXPO,AGAUNT,K,NF,SIGMAKI,WAVARR,SIGARR,
-     $     LBKG,XLBKG1,XLBKG2,NFDIM)
+      SUBROUTINE COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
+     $                  OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $                  N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $                  ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,
+     $                  LBKG,XLBKG1,XLBKG2,NF)
       use MOD_BNUE
 !***********************************************************************
 !***  NON-LTE CONTINUOUS OPACITY AT GIVEN FREQUENCY POINT K (XLAM)
@@ -40,42 +40,20 @@
 !MH  VERY IMPORTANT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !MH  ND = 1 WHEN COOP_M IS CALLED FROM OPAROSS_M!!!!!!!!!!!!!!
 !***********************************************************************
-! fflow ------------------ Flow chart ------------------------
-! 0     -> HMINUS
-! :
-! 1     | -> WRSTART, line 121 (wrstart.for, line 0)
-! :      \
-! 2     | | -> GREYM, line 207 (greym.for, line 1)
-! :        \
-! 3     | | | -> OPAROSS_M, line 184 (opaross_m.for, line 0)
-!---------------------------------------------------------
-! 4     | | | | -> COOP_M, line 38 (coop_m.for, line 0)
-! 5     | | | | | -> PHOTOCS_M, line 186 (photocs_m.for, line 0)
-! 6     | | | | | | -> cstabread, line 60 (cstabread.for, line 0)
-! 7     | | | | | | | -> intpl, line 28 (intpl.for, line 0)
-! 5     | | | | | -> GAUNTFF, line 218 (gauntff.for, line 0)
-! 5     | | | | | -> hminusff, line 253 (hminusff.for, line 0)
-! 5     | | | | | -> LINSCA, line 281 (linsca.for, line 0)
-! 5     | | | | | -> RDOPAC, line 308 (rdopac.for, line 0)
-! :     :  /
-! 3     | | | -> OPAROSS_M, line 255 (opaross_m.for, line 0)
-! 4     | | | | -> COOP_M, line 38 (coop_m.for, line 0)
-! :    : : : :
 
       use MOD_PHOTOCS_M
       use MOD_GAUNTFF
       use MOD_HMINUSFF
       use MOD_LINSCA
       use MOD_RDOPAC
-!      IMPLICIT REAL*8(A-H,O-Z)
+
       IMPLICIT NONE
 !MH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 !MH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       !global in/out
-      INTEGER:: NDIM, ND ! max #depthpoints, #depthpoints
-      INTEGER,dimension(ND):: IWARN
-      INTEGER :: K, NF,  N  ! N=Number of explicit levels
-      INTEGER    :: NFDIM
+      INTEGER:: N, ND ! max #depthpoints, #depthpoints ! N = Number of levels
+      INTEGER, dimension(ND):: IWARN
+      INTEGER :: K, NF
       
       INTEGER,dimension(N)  :: NCHARG, NOM
       CHARACTER*10          :: MAINPRO(ND),MAINLEV(ND)
@@ -83,13 +61,13 @@
       
       !global in
       
-      REAL*8 ::SIGMAKI(NF,NDIM), EINST(NDIM,NDIM)
+      REAL*8 ::SIGMAKI(NF,N), EINST(N,N)
       REAL*8 ::POPNUM(ND,N)
       REAL*8,dimension(N):: WEIGHT,ELEVEL,EION,ALPHA,SEXPO
       REAL*8,dimension(ND):: T, RNE, ENTOT
-      REAL*8,dimension(NDIM,NFDIM) ::SIGARR,WAVARR
+      REAL*8,dimension(N,NF) ::SIGARR,WAVARR
       REAL*8  :: XLAM
-      character*8 :: agaunt(NDIM) 
+      character*8 :: agaunt(N) 
       integer XLBKG1,XLBKG2
       REAL*8  :: RSTAR
       LOGICAL :: LBKG
@@ -204,9 +182,8 @@
 !****     **************************************************************
 !***      Changes by Margit Haberreiter
 !MH       SIGMA IN CM^2
+
               CALL PHOTOCS_M(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,WAVARR,SIGARR,N,NF)
-!         LEVLOW,ELEMENT)
-          !*************************************************************
 
           ENDIF
 !***      RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON

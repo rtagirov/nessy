@@ -80,6 +80,7 @@ FIOSS_SRCS= \
         comblock.for\
         fileoper.for\
         fioss_aux.for\
+        vardatom.for\
 	fioss8.for
 
 
@@ -187,7 +188,7 @@ isrchfle.for\
 isrchflt.for\
 jstart.for\
 linpop.for\
-linpop_aux.for\
+auxlinpop.for\
 linsca.for\
 lpplot.for\
 ltepop.for\
@@ -276,4 +277,5 @@ phys.for\
 math.for\
 fileoper.for\
 stroper.for\
+vardatom.for\
 comblock.for

@@ -1,7 +1,6 @@
       module MOD_HMINUSFF
       contains
       subroutine hminusff (sighmff,xlam,T)
-C***  CALLED BY COOP_M
 C***  source John 1988 A&A 193,189
 c     control table: Stilley & Callaway 1970, ApJ 160, 245
 !      IMPLICIT REAL*8(A-H,O-Z)

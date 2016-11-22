@@ -1,4 +1,5 @@
       PROGRAM FIOSS8
+
       use MOD_COOP_M
       use MOD_DATOM_M
       use MOD_READMOD
@@ -35,13 +36,12 @@
       USE FILE_OPERATIONS
       USE FIOSS_AUX
 
+      use VARDATOM
+
 ! 8tung!!!
 !             intrfc passes new a AGAUNT !!
-!
-!
 !*******************************************************************************
 !***  Formal Integral in the Observers frame for Sperically Symmetric geometry
-!***  =      =               =                   =          =
 !*******************************************************************************
 !  FIOSS8 PC version: new MODFILE and POPNUM read
 !  FIOSS7.01            routine INTRFC with fix of quantum numbers of HeI
@@ -67,48 +67,28 @@
 !*******************************************************************************
       implicit real*8(a-h,o-z)
       !***  Constant for thermal Gauss-Profile (= m(e)/(4k)) (cgs?)
-      PARAMETER (GAUKONST=1.649538d-12)
-      !***  DEFINE ARRAY DIMENSIONS
-      !***  CHANGES BY MARGIT HABERREITER
-      !PARAMETER ( MAXATOM = 90 )
-      !PARAMETER ( NDDIM = 160 ) ! 200
-      !PARAMETER ( NDDIM = 100 )
-      !MH	PARAMETER ( NDDIM = 73 )
-      !***  END OF CHANGES MARGIT HABERREITER
-      !PARAMETER ( NDIM =  200 )
-      !PARAMETER ( NFDIM = 2000 )
-      !PARAMETER ( NPDIM = 208 )
-      !PARAMETER ( NDDIM = 68 )
-      !PARAMETER ( NPDIM = 76 )
-      !PARAMETER ( MAXIND = 1000 )
-      !PARAMETER ( MAXHIST = 2 )
-      !PARAMETER ( MAXADR = 1 )
-      !***  DEFINE ARRAY DIMENSIONS
-      ! PARAMETER ( NDIM = 190 )
-      ! PARAMETER ( MAXIND = 1640 )
-      ! PARAMETER ( NFDIM = 420 )
-      ! PARAMETER ( NDDIM = 75 )
-      PARAMETER ( NDDOUB = 2*NDDIM )
-      PARAMETER ( NDADDIM = 2*NDDIM+12 )
+      PARAMETER (GAUKONST = 1.649538d-12)
+      PARAMETER (NDDOUB   = 2*NDDIM)
+      PARAMETER (NDADDIM  = 2*NDDIM+12)
       ! PARAMETER ( NPDIM = 84 )
       !PARAMETER ( NFODIM = 999 )
       !*** in principle NFODIM should be equal to NFMAX in OPINT.FOR
-      !    ... however since the routine XY likes to cut the number of
+      !        however since the routine XY likes to cut the number of
       !        points in order to be able to add other lines, it is a
       !        good idea to make NFODIM quite a bit larger
 
-      !-cray      PARAMETER ( MAXADR = 3000 )
-      !include '../inc/OPINT.FOR'
       COMMON // R(NDDIM),ENTOT(NDDIM),T(NDDIM)
      $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
      $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
      $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM),AINCRIT(NDDIM)
      $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-     $ ,WEIGHT(NDIM),ELEVEL(NDIM),EION(NDIM)
-     $ ,EINST(NDIM,NDIM),ALPHA(NDIM),SEXPO(NDIM)
-     $ ,ENLTE(NDIM),COCO(NDIM,NDIM,4),ALTESUM(4,NDIM)
+!     $ ,WEIGHT(NDIM),ELEVEL(NDIM),EION(NDIM)
+!     $ ,ELEVEL(NDIM),EION(NDIM)
+!     $ ,EINST(NDIM,NDIM),ALPHA(NDIM),SEXPO(NDIM)
+     $ ,ENLTE(NDIM)
+!     $ ,COCO(NDIM,NDIM,4),ALTESUM(4,NDIM)
      $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-     $ ,ATMASS(MAXATOM),STAGE(MAXATOM),AGAUNT(NDIM)
+!     $ ,ATMASS(MAXATOM),STAGE(MAXATOM),AGAUNT(NDIM)
      $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
      $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
     !***  up to here the common is identical to that of steal
@@ -127,52 +107,24 @@
     !-sabolt
      $ ,Tion_pot(nddim,3),dil(nddim)
     !*** the integers in the main common are identical to that in steal
-     $ ,KODAT(MAXATOM),NFIRST(MAXATOM),NLAST(MAXATOM)
-     $ ,NCHARG(NDIM),MAINQN(NDIM),NOM(NDIM),ITNE(NDDIM),NFEDGE(NDIM)
+!     $ ,KODAT(MAXATOM),NFIRST(MAXATOM),NLAST(MAXATOM)
+!     $ ,NCHARG(NDIM),MAINQN(NDIM),NOM(NDIM),ITNE(NDDIM),NFEDGE(NDIM)
+!     $ ,MAINQN(NDIM),NOM(NDIM)
+     $ ,ITNE(NDDIM),NFEDGE(NDIM)
      $ ,IWARN(NDDIM),LEVELPL(NDIM),MODHIST(MAXHIST)
     !***  in steal the COMIND common is larger
-      COMMON /COMIND/  INDNUP(MAXIND),INDLOW(MAXIND)
-!      COMMON // WEIGHT(NDIM),ELEVEL(NDIM),EION(NDIM)
-!     $ ,EINST(NDIM,NDIM),ALPHA(NDIM),SEXPO(NDIM)
-!     $ ,AGAUNT(NDIM),ALTESUM(4,NDIM),COCO(NDIM,NDIM,4),abxyz(maxatom)
-!     $ ,ATMASS(MAXATOM),STAGE(MAXATOM)
-!     $ ,XLAMBDA(NFDIM),AKEY(NFDIM),EMFLUX(NFDIM)
-!     $ ,OPA(NDDIM),ETA(NDDIM),THOMSON(NDDIM)
-!     $ ,DELW(NDDIM),ADELW(NDDIM),RDU(NDDIM)
-!     $ ,ENTOT(NDDIM),T(NDDIM),RNE(NDDIM),XJC(NDDIM),R(NDDIM)
-!     $ ,XLGR(NDDIM),VDU(NDDIM)
-!     $ ,VELO(NDDIM),GRADI(NDDIM)
-!-vs9 xjk has now nvdim ,XJK(NDDIM,NFODIM),CWK(NDDIM,NFODIM)
-!-vs9     $ ,XJ(NDDIM,NFODIM),XNU(NFODIM)
-!-vs9 DINT has now nvdim ,DINT(NFODIM,NDDOUB)
-!     $ ,U(NDDIM,NPDIM),EDDI(3,NDDIM)
-!     $ ,PROFILE(NFODIM),PROFN(NFODIM),DLAM(NFODIM),EMINT(NFODIM)
-!***  ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY!
-!     $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),WE(NPDIM)
-!     $ ,BX(NPDIM,NPDIM,NDDIM),WLK(NDDIM,NPDIM),WX(NPDIM,NDDIM)
-!     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM),APOP(NDDIM,2)
-!     $ ,ZRAY(NDADDIM),XCMF(NDADDIM),RRAY(NDADDIM)
-! arrays with dim NVDIM
-!     $ ,XJK(NDDIM,NVDIM),CWK(NDDIM,NVDIM),DINT(NVDIM,NDDOUB)
-!     $ ,XJ(NDDIM,NVDIM),XNU(NVDIM)
-!     $ ,xtot(nddim),htot(nddim),gtot(nddim),etot(nddim)
-!-sabolt
-!     $ ,Tion_pot(nddim,3),dil(nddim)
-!       integers...
-!     $ ,NCHARG(NDIM),NOM(NDIM),MAINQN(NDIM),KODAT(MAXATOM)
-!     $ ,NFIRST(MAXATOM),NLAST(MAXATOM),IWARN(NDDIM)
-!     $ ,INDNUP(MAXIND),INDLOW(MAXIND)
-!-cray     $ ,IADR(MAXADR),IADR7(NDDIM)
-     $ ,IRIND(NDADDIM)
-     $ ,IBACK(NDADDIM,NPDIM)
-      character*8 :: agaunt
+!      COMMON /COMIND/  INDNUP(MAXIND),INDLOW(MAXIND)
+      COMMON /COMIND/ IRIND(NDADDIM), IBACK(NDADDIM, NPDIM)
+!      character*8 :: agaunt
       PARAMETER ( NBLEND = 6 )
       !***  ARRAYS FOR TREATMENT OF LINE OVERLAPS (MAX. DIMENSION: NBLEND)
       COMMON / COMOLAP / INDLAP(NBLEND),XLAMLAP(NBLEND),DELXLAP(NBLEND)
       !***  CHANGES MARGIT HABERREITER
       !MH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
       !MH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF	
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
+
+!      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
+
       DIMENSION VERTVELO(NDDIM),VELOVAR(NDDIM)
       COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2	
       INTEGER XLBKG1,XLBKG2
@@ -180,10 +132,7 @@
       !***  END OF CHANGES MARGIT HABERREITER
       CHARACTER KARTE*80,MODHEAD*104,PHEAD*28
       CHARACTER*10 MAINPRO(NDDIM),MAINLEV(NDDIM)
-      CHARACTER LEVEL(NDIM)*10
-      CHARACTER*10 ELEMENT(MAXATOM)
-      CHARACTER*4 KEYCOL(NDIM,NDIM)
-      CHARACTER*2 SYMBOL(MAXATOM)
+
       CHARACTER flnam*70
 
       CHARACTER CLVFLNAM*70
@@ -214,6 +163,8 @@
       DATA JFIRSI,JLASI/0,0/
 
       real*8,allocatable :: dummy2(:,:) ! do not allocate - make sure noone uses it
+
+!      integer, allocatable, dimension(:) :: NFIRST, NLAST
      
       REAL*8, ALLOCATABLE :: WAV_CLV(:), FLUX_CLV(:, :)
        
@@ -254,11 +205,11 @@
       XMAX=3.
       CALL TIC()
       !***  Changes by Margit Haberreiter ******************************
-      call       DATOM_M (NDIM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $                  EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $                  INDNUP,INDLOW,LASTIND,MAXIND,MAXATOM,NATOM,
-     $                  ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $                  NLAST,WAVARR,SIGARR,NFDIM)
+      call       DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+     $                   EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $                   INDNUP,INDLOW,LASTIND,NATOM,
+     $                   ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+     $                   NLAST,WAVARR,SIGARR,NFDIM)
       !*****************************************************************
 
       !***  READING OF THE MODEL FILE ----------------------------------
@@ -332,9 +283,9 @@
       ! DATOM
       idat=1
       IF (IDAT.EQ.1)
-     $  call PRIDAT(NDIM,N,LEVEL,NCHARG , WEIGHT,ELEVEL,EION,EINST,
-     $      KODAT,AKEY,NF,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $                  NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
+     $  call PRIDAT(N,LEVEL,NCHARG, WEIGHT,ELEVEL,EION,EINST,
+     $              KODAT,AKEY,NF,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $              NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
 
       !***  ADDITIONAL CALCULATION FOR SUBROUTINE PRIPRO
       RSTAR2=RSTAR*RSTAR
@@ -546,11 +497,11 @@
       xobs0 = FREMAX-DXOBS
       CALL DIFFUS (XLAM,T,R,ND,BCORE,DBDR)   !BCORE=Plank (XLAM, T) at R(ND), DBDR=d(BCORE)/dR at R=ND
       ncoop=n
-      CALL COOP_M (XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
-     $           OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $       NDIM,Ncoop,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $      ALPHA,SEXPO,AGAUNT,0,NDUMMY0,DUMMY2,WAVARR,SIGARR,
-     $    LBKG,XLBKG1,XLBKG2,NFDIM)
+      CALL COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
+     $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $            N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,WAVARR,SIGARR,
+     $            LBKG,XLBKG1,XLBKG2,NFDIM)
       !***  CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
       CALL ELIMIN (XLAM,FNUCONT,DUMMY0,U,Z,A,B,C,W,BX,WX,XJC,R,P,
      $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP,NPDIM)

@@ -1,8 +1,10 @@
 C**********  MODULNAME: RADIO     ******* 06/08/87  20.14.58.******    99 KARTEN
       module MOD_RADIO
+
       contains
-      SUBROUTINE RADIO (NDIM,N,ENLTE,TL,WEIGHT,NCHARG,EION,ELEVEL,EINST,
-     $       RRATE,XLAMBDA,FWEIGHT,XJC,NF,L,XJL,ND,LASTIND,SIGMAKI,NOM)
+
+      SUBROUTINE RADIO(N,ENLTE,TL,WEIGHT,NCHARG,EION,ELEVEL,EINST,
+     $                 RRATE,XLAMBDA,FWEIGHT,XJC,NF,L,XJL,ND,LASTIND,SIGMAKI,NOM)
      
 C*******************************************************************************
 C***  RADIATIVE RATES ARE CALCULATED AT ONE DEPTH POINT L FROM THE GIVEN
@@ -16,12 +18,12 @@ C*******************************************************************************
       use IFCORE
       implicit real*8(a-h,o-z)
       real*8,intent(in   ) :: XJL(ND,LASTIND)
-      DIMENSION RRATE(NDIM,NDIM),EINST(NDIM,NDIM)
-      DIMENSION NCHARG(NDIM),ELEVEL(NDIM)
-      DIMENSION EION(NDIM),ENLTE(NDIM),WEIGHT(NDIM)
+      DIMENSION RRATE(N,N),EINST(N,N)
+      DIMENSION NCHARG(N),ELEVEL(N)
+      DIMENSION EION(N),ENLTE(N),WEIGHT(N)
       DIMENSION NOM(N)
       DIMENSION XJC(ND,NF)
-      DIMENSION SIGMAKI (NF,N)
+      DIMENSION SIGMAKI(NF,N)
       DIMENSION XLAMBDA(NF),FWEIGHT(NF)
 C***  C1 = H * C / K    ( CM * KELVIN )
       DATA C1 / 1.4388D0 /

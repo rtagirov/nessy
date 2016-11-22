@@ -22,17 +22,17 @@ C*********************************************************************
 
       real*8 :: WAV1, SIG1, WAV2, SIG2
 
-      do ii = 1, N
+!      do ii = 1, N
 
-         do k = 1, NF
+!         do k = 1, NF
 
-            write(*, '(A,2x,4(i4,2x),2(2x,e15.7))'), 'cstabread:', ii, N, k, NF, wavarr(ii, k), wavenum
+!            write(*, '(A,2x,4(i4,2x),2(2x,e15.7))'), 'cstabread:', ii, N, k, NF, wavarr(ii, k), wavenum
 
-         enddo
+!         enddo
 
-      enddo
+!      enddo
 
-      stop
+!      stop
 
       SIGMA = 0.
 

@@ -68,7 +68,9 @@ C
 C     Parameters for explicit ions
 C
       real*8 FF
+
       integer NFIRST,NLAST,NNEXT,IZ,IFREE
+
       COMMON/IONPAR/FF(MIOEX), 
      *              NFIRST(MIOEX),
      *              NLAST(MIOEX),

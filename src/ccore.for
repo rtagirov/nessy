@@ -1,17 +1,16 @@
       module MOD_CCORE
       contains
 C**********  MODULNAME: CCORE     ******* 06/08/87  20.27.56.******    87 KARTEN
-      SUBROUTINE CCORE (WCHARM,NF,DELTAC,IPRICC,MODHEAD,JOBNUM,
-     $      SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
-     $      OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $      NDIM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
-     $      WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,NFDIM)
+      SUBROUTINE CCORE(WCHARM,NF,DELTAC,IPRICC,MODHEAD,JOBNUM,
+     $                 SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
+     $                 OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $                 NDIM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
+     $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,NFDIM)
 C*******************************************************************************
 C***  DETERMINE THE FREQUENCY WEIGHTS WCHARM REPRESENTING THE APPROXIMATE
 C***  LAMBDA-OPERATORS AT EACH CONTINUUM FREQUENCY POINT
 C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
 C***  INITIALISED/CHANGED: WCHARM, SCOLD
-C***			in coop_m: OPA, ETA, THOMSON, IWARN, MAINPRO,MAINLEV
 C***	14.03.2006: removed calculation of WCHARM (micha)
 C*******************************************************************************
 !--- HMINUS --------
@@ -19,9 +18,7 @@ C*******************************************************************************
 !2     | LINPOP 			     212
 !:	 : :					:
 !3     | | CCORE 		      	93
-!4     | | | COOP_M 		      51
 !5     | | | | PHOTOCS_M 	     186
-!6     | | | | | cstabread 	      60
 !7     | | | | | | intpl 	      28
 !5     | | | | GAUNTFF 		     218
 !5     | | | | hminusff            253
@@ -69,13 +66,16 @@ CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
      
 C***  LOOP OVER ALL CONTINUUM FREQUENCIES  *************************************
-      DO K=1,NF
-        XLAM=XLAMBDA(K)
-        CALL  COOP_M (XLAM,ND,T,RNE,POP1  ,ENTOT,RSTAR,
-     $			  OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $			  NDIM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $			  DUMMY1,DUMMY1,CDUMMY1,K,NF,SIGMAKI,WAVARR,SIGARR,
-     $			  LBKG,XLBKG1,XLBKG2,NFDIM)
+      DO K = 1, NF
+
+        XLAM = XLAMBDA(K)
+
+        CALL  COOP_M(XLAM,ND,T,RNE,POP1,ENTOT,RSTAR,
+     $               OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $	             N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $	             DUMMY1,DUMMY1,CDUMMY1,K,SIGMAKI,WAVARR,SIGARR,
+     $		     LBKG,XLBKG1,XLBKG2,NF)
+
 C***  SOURCE FUNCTION WITH OLD POP.NUMBERS (WITHOUT THOMSON OPACITY)
 	  DO L=1,ND
 C***  LASER SECURITY - if medium acts as a laser reset it

@@ -156,6 +156,10 @@
 C***  C1 = H * C / K (CM * KELVIN)
       DATA C1 /1.4388D0/
 
+      print*, 'linpop: ', NF
+
+      stop
+
       CONV_FILE = CONV_DIR//'ALL'
 
       PRINT_LTE_ARR = .FALSE.
@@ -476,7 +480,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
         CALL VSUB(V1, V2, NRANK) ! V1 = V1 - V2
 
-        CALL INV(NRANK, NRANK, DM)
+        CALL INV(NRANK, DM)
 
         CALL VMF(ENDELTA, V1, DM, NRANK, NRANK) ! ENDELTA = DM * V1
 
@@ -496,8 +500,9 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
            IF (NOFILE(L)) THEN
 
 !           IF FORT.19 NOT FOUND AND THE FIRST ITERATION STEP, DB IS DM^T
-            CALL INV (NRANK,NRANK,DM)
-            CALL ACOPY (DB,DM,NRANK,NRANK)
+            CALL INV(NRANK, DM)
+
+            CALL ACOPY(DB, DM, NRANK)
 
            ENDIF
 
@@ -604,7 +609,7 @@ C      calculate the new population-correction vector ENDELTA = V1*DB
 !     END OF BROYDEN/NEWTON-ITERATION LOOP
 
 !     SAVE BROYDEN-MATRIX IN FORT19
-      IF (NEWRAP) CALL ACOPY(DB, DM, NRANK, NRANK)
+      IF (NEWRAP) CALL ACOPY(DB, DM, NRANK)
 
       CALL DBSAVE(DB, L, NRANK)
 

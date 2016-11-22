@@ -30,7 +30,10 @@ function cpl_src_list
 while read -r LINE; do identify_src $LINE; done < "$1"
 }
 
-GREP='grep -iw --color'
+if [ -z $3 ];                    then GREP='grep -iw --color'; fi
+if [ ! -z $3 ] && [ $3 == "-e" ]; then GREP='grep -iw --color --exclude='$1.for; fi
+
+if [ ! -z $3 ] && [ $3 != "-e" ]; then abort "The third argument is not understood."; fi
 
 NESSY_DIR=/mnt/SSD/sim/nessy/src
 MAKE_DIR=$NESSY_DIR/make
@@ -44,8 +47,9 @@ if [ ! -z "$2" ]; then
 
    if [ "$2" == "h" ]; then SEARCH_HMINUS=Yes; fi
    if [ "$2" == "f" ]; then SEARCH_FIOSS=Yes;  fi
+   if [ "$2" == "n" ]; then SEARCH_NESSY=Yes;  fi
 
-   if [ "$2" != "h" ] && [ "$2" != "f" ]; then abort "The second argument is not understood."; fi
+   if [ "$2" != "h" ] && [ "$2" != "f" ] && [ $2 != "n" ]; then abort "The second argument is not understood."; fi
 
 else
 

@@ -1,19 +1,25 @@
       module MOD_ACOPY
+
       contains
-C**********  MODULNAME: ACOPY     ******* 3/07/92  22.14.04.******    11 KARTEN
-      SUBROUTINE ACOPY (A1,A2,N,NDIM)
-C***  COPY OF ARRAY A1=A2
 
-      implicit real*8(a-h,o-z)
+      SUBROUTINE ACOPY (A1, A2, N)
 
-      DIMENSION A1(NDIM,NDIM),A2(NDIM,NDIM)
+      implicit real*8(a - h, o - z)
 
-      DO 1 J=1,NDIM
-      DO 2 I=1,NDIM
-      A1(J,I)=A2(J,I)
-    2 CONTINUE
-    1 CONTINUE
+      dimension A1(N, N), A2(N, N)
 
-      RETURN
-      END subroutine
+      do J = 1, N
+
+         do I = 1, N
+
+            A1(J, I) = A2(J, I)
+
+         enddo
+
+      enddo
+
+      return
+
+      end subroutine
+
       end module

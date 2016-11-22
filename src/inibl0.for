@@ -17,16 +17,19 @@ C
 C     AUXILIARY INITIALIZATION PROCEDURE
 C
       implicit none
-      integer,intent(in   ) :: NDIM,NFDIM
-      real*8, intent(in   ) :: WAVARR,SIGARR
+      integer,intent(in) :: NDIM,   NFDIM
+      real*8, intent(in) :: WAVARR, SIGARR
+
       integer :: IFHE2,IHE1,IHE144,IHE2UV,IHE2RE,IHE2VI,IHE2L,ILWHE2
       integer :: INLIST,NLTOFF,IEMOFF,I,I1,I2,ID,ILVCS,IBVCS,MHE10,MHE20
       real*8  :: ALAST,CUTOF0,CUTOFS,RELOP,SPACE,VELMAX
       real*8  :: FRLAST,XX,ACOR,WPH,A1,A2,A3
       real*8  :: ALAM0,ALAM1,FRMIN,FRLI0,FRLIM,TSTD,DSTD
+
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/MODELP.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
+
       real*8,parameter :: un=1.
       logical lwph
       real*8,dimension(MFREQ) :: ABSO,EMIS !,SCAT(2)
@@ -343,10 +346,8 @@ C
       USE MOD_HYD_ION_STEP
 !*****************************************************************************************************************
 
-C
-c      INCLUDE 'PARAMS.FOR'
-c      INCLUDE 'MODELP.FOR'
       implicit none
+
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/MODELP.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
@@ -356,8 +357,6 @@ c      INCLUDE 'MODELP.FOR'
       integer,intent(in) :: MODE
       real*8, intent(in)   ,dimension(NDIM,NFDIM)  :: WAVARR,SIGARR
       real*8, intent(inout),dimension(MFREQ) :: ABSO,EMIS
- 
-
 
       !*** DEBUG
       integer :: ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2RE
@@ -379,7 +378,7 @@ c      INCLUDE 'MODELP.FOR'
       integer :: M10,M20,MHE10,MHE20
       integer :: IOPADD,IOPHMI,IOPH2P,IOPHLI,IOPHE1,IOPHE2,IOPFE1
       integer :: ID_TMP, NFREQ_TMP
-      !real*8  :: SQRT,EXP
+
       real*8  :: ABAD,EMAD,SCAD,X1,X
       real*8  :: T,T1,TK,ANE,SRT,SGFF,CON,CONTS,FR,FR15,BNU,HKF,HKT
       real*8  :: ABF,EBF,AFF,ABLY,EMLY,SCLY,XN,SG,XW,WNSTAR,XNSTAR
@@ -613,7 +612,6 @@ C     **** calculated only in the first and the last frequency *****
 CMH       ABSOC(IJ)=ABF+ANE*(X1*AFF-X*EBF)+ANE*SIGEL+ABAD+ABLY
 CMH         HMINUSFF fit includes stimulated emission
 cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
-CMH       IN COOP_M: ETAL=ETAL+EMINDU*C2*W3/(1.-EXPFAC)
         ABSOC(IJ)=ABF+ANE*(AFF-X*EBF)+ANE*SIGEL+ABAD+ABLY
         EMISC(IJ)=BNE*(AFF/X1+EBF)+EMAD+EMLY
         SCATC(IJ)=SCAD+SCLY+ANE*SIGEL

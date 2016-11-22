@@ -1,55 +1,60 @@
       module MOD_INV
+
       contains
-      SUBROUTINE INV (N,NDIM,A)
+
+      SUBROUTINE INV(N, A)
+
 C******************************************************************************
 C***  MATRIX INVERSION (CRAY FORTRAN)
 C***  MATRIX A
 C***  N = RANK OF SUBMATRIX (LEFT UPPER BLOCK) TO BE INVERTED
-C***  NDIM = ROW DIMENSION OF TOTAL MATRIX
-C***  N .LE. NDIM .LE. 100
 C******************************************************************************
-      USE MOD_ERROR
-      implicit real*8(a-h,o-z)
 
-C      DIMENSION A(NDIM,NDIM),IK(106),JK(106)
-       DIMENSION A(NDIM,NDIM),IK(208),JK(208)
-      IF (N .GT. NDIM) THEN
-         print *,' INV: N .GT. NDIM'
-c-cray            CALL REMARK ('N .GT. NDIM')
-            STOP 'ERROR'
-            ENDIF
-      IF (NDIM .GT. 208) THEN
-         print *,' INV: NDIM .GT. 208'
-c-cray            CALL REMARK ('NDIM .GT. 106')
-            STOP 'ERROR'
-            ENDIF
-C
-      DO 100  K=1,N
+      USE MOD_ERROR
+
+      implicit real*8(a - h, o - z)
+
+      integer, intent(in) :: N
+
+      real*8, intent(inout) :: A(N, N)
+
+      integer :: IK(N), JK(N)
+
+      DO 100 K = 1, N
 C
 C     SUCHE MAXIMALES MATRIXELEMENT
-      AMAX=0.
-      ABSAMAX=0.
-      DO 30 J=K,N
-        L=N+1-K
-        ISAMAX=1
-        DO LL=1,L
+!      AMAX=0.
+!      ABSAMAX=0.
+
+!         do J = K, N
+!        L=N+1-K
+!        ISAMAX=1
+!        DO LL=1,L
 c           PRINT *, 'N=',N, 'J=',J,'LL=',LL,'A(LL,J)=',A(LL,J) 
-           IF (abs(A(K+LL-1,j)).gt.abs(A(K+isamax-1,j))) isamax=LL
-        ENDDO
-        imax=isamax+K-1
+!           IF (abs(A(K+LL-1,j)).gt.abs(A(K+isamax-1,j))) isamax=LL
+!        ENDDO
+!        imax=isamax+K-1
 c*cray      IMAX=ISAMAX(L,A(K,J),1)+K-1
-      IF(ABSAMAX.GT.ABS(A(IMAX,J))) GOTO 30
-      AMAX=A(IMAX,J)
-      ABSAMAX=ABS(AMAX)
-      IK(K)=IMAX
-      JK(K)=J
-   30 CONTINUE
+!      IF(ABSAMAX.GT.ABS(A(IMAX,J))) GOTO 30
+!      AMAX=A(IMAX,J)
+!      ABSAMAX=ABS(AMAX)
+
+            imax = maxloc(abs(A(k, k : n))
+
+            amax = a(imax, j)
+
+            absamax = abs(amax)
+
+            IK(K) = IMAX
+            JK(K) = J
+
+!         enddo
 C
 C***  STOP IN CASE OF SINGULARITY (PIVOT ELEMENT = 0 )
       IF (AMAX .EQ. .0) THEN
         print *,'INV: SINGULARITY DISCOVERED'
-        print *,'INV: ',NDIM, AMAX
-        CALL ERROR('inf.for: ERROR SINGULARITY DISCOVERED')
+        print *,'INV: ',N, AMAX
+        CALL ERROR('inv.for: ERROR SINGULARITY DISCOVERED')
       ENDIF
 C
 C     VERTAUSCHEN DER ZEILEN I UND K

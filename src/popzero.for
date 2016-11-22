@@ -252,7 +252,7 @@
               CALL LTEPOP(N, ENLTE, TL, ENE, WEIGHT, NCHARG, EION, ELEVEL, NOM,
      $                    ABXYZ_new, NFIRST, NLAST, NATOM)
 
-              CALL NLTEPOP(NDIM,N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,
+              CALL NLTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,
      $                     EN,EINST,XLAMBDA,FWEIGHT,XJC,NF,ITNEL,L,LEVEL,
      $                     XJL,ND,LASTIND,
      $                     CRATE,RRATE,RATCO,SIGMAKI,ALTESUM,COCO,
@@ -323,12 +323,12 @@
           CALL LTEPOP (N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,
      $           ABXYZ_new,NFIRST,NLAST,NATOM)
 
-          CALL NLTEPOP (NDIM,N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,
-     $             EN,EINST,XLAMBDA,FWEIGHT,XJC,NF,ITNEL,L,LEVEL,
-     $             XJL,ND,LASTIND,
-     $             CRATE,RRATE,RATCO,SIGMAKI,ALTESUM,COCO,
-     $             KEYCOL,NOM,NATOM,ABXYZ_new,KODAT,NFIRST,NLAST,
-     $             POPHIIL, POPHML, POPHIL)
+          CALL NLTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,
+     $                 EN,EINST,XLAMBDA,FWEIGHT,XJC,NF,ITNEL,L,LEVEL,
+     $                 XJL,ND,LASTIND,
+     $                 CRATE,RRATE,RATCO,SIGMAKI,ALTESUM,COCO,
+     $                 KEYCOL,NOM,NATOM,ABXYZ_new,KODAT,NFIRST,NLAST,
+     $                 POPHIIL, POPHML, POPHIL)
 
 !         for helium always LTE        
 

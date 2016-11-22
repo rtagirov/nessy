@@ -1,11 +1,11 @@
       module MOD_GREYM
       contains
 C**********  MODULNAME: GREY      ******* 06/08/87  20.46.41.******   233 KARTEN
-      SUBROUTINE GREYM (ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,ENTOT,RNE,RSTAR, 
-     $         ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,
-     $         LBKG,XLBKG1,XLBKG2,N, 
-     $         LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,ENLTE,KODAT, 
-     $         NOM,NFIRST,NLAST,NATOM,WAVARR,SIGARR) 
+      SUBROUTINE GREYM(ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,ENTOT,RNE,RSTAR, 
+     $                 ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,
+     $                 LBKG,XLBKG1,XLBKG2,N, 
+     $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,ENLTE,KODAT, 
+     $                 NOM,NFIRST,NLAST,NATOM,WAVARR,SIGARR)
 C***  CALLED BY WRSTART 
 C*********************************************************************** 
 C***  COMPUTATION OF THE TEMPERATURE STRUCTURE 
@@ -65,27 +65,19 @@ C***  PARAM(4) = NUMBER OF ALLOWED INTEGRATION STEPS
       !DATA PARAM / 3 * 0.,20000, 46 * 0.0 / 
       real*8,parameter :: ak=1.38062259d-16 
       REAL*8 :: RNEL
-      character*8 :: agaunt(NDIM)
+      character*8 :: agaunt(N)
       real*8 TL_(1)
 C******************************************************************************
 C***  CHANGES BY MARGIT HABERREITER, 20 MAY, 2002
 CMH  LEVLOW NEEDS TO BE DEFINED, AS IT IS USED AS A KEYWORD TO SELECT THE 
 CMH  ELEMENT AND LEVEL TO READ THE CONTINUUM OPACITIES FROM AN INPUT TABLE
       !CHARACTER*10 LEVLOW
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
+      DIMENSION WAVARR(N,NF),SIGARR(N,NF)
 C****************************************************************************** 
 C***************************************************************************** 
 C***  ABUNDANCES OF HELIUM AND HYDROGEN FOR THE MODIFIED START APPROXIMATION 
 C***************************************************************************** 
 
-!       do i=1, ND
-!        do j=1, NATOM
-!        print*, 'greym test', i, j,  ABXYZn(j,i)
-!!        enddo
-!       enddo
-!       stop
-
-           
             ABHE=0. 
             ABH=0. 
             IF (KODAT(1) .GT. 0) ABHE=ABXYZ_small(KODAT(1)) 
@@ -277,10 +269,10 @@ C*****************************************************************************
         IF (L .EQ. ND) GOTO 10
 C***************************************************************************** 
 
-        CALL OPAROSS_M (OPARL,ENLTE,TP,RNEL,ENTOT(L),RSTAR,NDIM,N, 
-     $           LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
+        CALL OPAROSS_M(OPARL,ENLTE,TP,RNEL,ENTOT(L),RSTAR,N,
+     $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
      $                 ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
-     $         WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,NFDIM) 
+     $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
 C***************************************************************************** 
 C***  COMPUTATION OF THE ROSSELAND MEAN OPACITY  AT POINT L+1 
 C***  IN THE FIRST ITERATION USING T(L) 
@@ -340,21 +332,11 @@ c     IF (ABS(RNEDIF/RNEL).GT.0.01 .OR. ABS(RNEDIF).GT.0.001)
      $    ABS(RNEDIF).GT. 1.e-13) 
      $    GOTO 13 
 
-c     print *,n13,'LOOP 13 RNEDIF/RNEL NOT ok!!!',ABS(RNEDIF/RNEL)
-c     $,'ABS(RNEDIF)',ABS(RNEDIF)
-c     pause
-c      IF (ABS(RNEDIF/RNEL).GT.0.01 .AND. ABS(RNEDIF).GT.0.001) 
-c     $  GOTO 13 
-c     PRINT *,'LOOP 13 FINALLY: ABS(RNEDIF) < 0.001! ',ABS(RNEDIF)
-c     PRINT *,'LOOP 13 FINALLY: ABS(RNEDIF/RNEL)<0.01! ',ABS(RNEDIF/RNEL)
-c     PRINT *,'LOOP 13 FINALLY: RNEL=',RNEL 
 C***************************************************************************** 
-        CALL OPAROSS_M (OPARL1,ENLTE,TP1,RNEL,ENTOT(L+1),
-     $       RSTAR,NDIM,N, 
-     $           LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
-     $           ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
-     $       WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,NFDIM)
-C     $      LEVLOW) 
+        CALL OPAROSS_M(OPARL1,ENLTE,TP1,RNEL,ENTOT(L+1),RSTAR,N,
+     $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
+     $                 ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
+     $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
 C***************************************************************************** 
 C***  ARITHMETIC MEAN OF OPARL AND OPARL1 
 C***************************************************************************** 

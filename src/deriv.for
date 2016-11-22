@@ -7,7 +7,7 @@
      $                 WCHARM,ND,L,TL,ENLTE,PHI,PWEIGHT,NFL,DELTAX,XMAX,
      $                 DETAL,DOPAL,SLNEW,OPAL,XJLAPP,XJCAPP,
      $                 FWEIGHT,DOPA,DETA,OPAC,SCNEW,XLAMBDA,NF,SCNEIND,OPACIND,
-     $                 NDIM,N,NCHARG,WEIGHT,ELEVEL,NOM,EINST,SIGMAKI,LASTIND,
+     $                 N,NCHARG,WEIGHT,ELEVEL,NOM,EINST,SIGMAKI,LASTIND,
      $                 XJL, AccFact, SLOLD)
 
 C*******************************************************************************
@@ -17,16 +17,16 @@ C*******************************************************************************
 
       USE COMMON_BLOCK
 
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT REAL*8(A - H, O - Z)
 
-      REAL*8, INTENT(IN), DIMENSION(NDIM, NDIM) :: CRATE ! Collision Rate
+      REAL*8, INTENT(IN), DIMENSION(N, N) :: CRATE ! Collision Rate
 
-      REAL*8, dimension(NDIM) :: EN, ENLTE ! population number in NLTE, LTE
-      REAL*8, dimension(ND,NF):: WCHARM
+      REAL*8, dimension(N)     :: EN, ENLTE ! population number in NLTE, LTE
+      REAL*8, dimension(ND, NF):: WCHARM
 
-      DIMENSION NCHARG(NDIM),RRATE(NDIM,NDIM)
-      DIMENSION EINST(NDIM,NDIM),ELEVEL(NDIM)
-      DIMENSION WEIGHT(NDIM),NFEDGE(NDIM)
+      DIMENSION NCHARG(N),RRATE(N,N)
+      DIMENSION EINST(N,N),ELEVEL(N)
+      DIMENSION WEIGHT(N),NFEDGE(N)
       DIMENSION NOM(N)
       DIMENSION DOPA(NF),DETA(NF),OPAC(NF),SCNEW(NF)
       DIMENSION FWEIGHT(NF),XLAMBDA(NF),XJCAPP(NF),EXPFAC(NF)

@@ -4,7 +4,7 @@
 
       CONTAINS
 
-      SUBROUTINE COLLI(NDIM, N, ENLTE, EN, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
+      SUBROUTINE COLLI(N, ENLTE, EN, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
      $                 EION, COCO, KEYCOL, WEIGHT, ALTESUM, NATOM, NOM, KODAT,
      $                 POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, DP)
 
@@ -21,21 +21,21 @@ CMH   ENLTE: LTE POPULATION NUMBER FOR EACH LEVEL
       USE COMMON_BLOCK
 
       implicit real*8(a-h,o-z)
-      integer,intent(in) :: NDIM, N, NCHARG, NATOM, NOM, KODAT
+      integer,intent(in) :: N, NCHARG, NATOM, NOM, KODAT
       real*8,intent(in)  :: ENLTE,TL,ENE,ELEVEL,EINST,EION,COCO,WEIGHT
       real*8,intent(in)  :: ALTESUM
 
       REAL*8, INTENT(IN) :: POPHIIL, POPHML, POPHIL
 
-      REAL*8, INTENT(OUT) :: CRATE(NDIM, NDIM)
+      REAL*8, INTENT(OUT) :: CRATE(N, N)
 
-      DIMENSION EINST(NDIM,NDIM)
-      DIMENSION ENLTE(NDIM),NCHARG(NDIM),ELEVEL(NDIM),WEIGHT(NDIM)
-      DIMENSION EION(NDIM),ALTESUM(4,NDIM)
-      DIMENSION COCO(NDIM,NDIM,4)
+      DIMENSION EINST(N,N)
+      DIMENSION ENLTE(N),NCHARG(N),ELEVEL(N),WEIGHT(N)
+      DIMENSION EION(N),ALTESUM(4,N)
+      DIMENSION COCO(N,N,4)
       DIMENSION NOM(N)
       DIMENSION KODAT(10)
-      CHARACTER*4 KEYCOL(NDIM,NDIM)
+      CHARACTER*4 KEYCOL(N,N)
 C***  C1 = H * C / K
       DATA C1 /1.4388D0/ ! (CGS, cm / K)
 
@@ -57,7 +57,7 @@ C***  C1 = H * C / K
 
       LOGICAL :: TRAN_COND, DEPTH_COND
 
-      CHARACTER*10, DIMENSION(NDIM), INTENT(IN) :: LEVEL
+      CHARACTER*10, DIMENSION(N), INTENT(IN) :: LEVEL
 
       IF (ALLOCATED(ACR)) ACR(DP, 1 : N, 1 : N) = 0.0D0
 
@@ -190,7 +190,7 @@ CMH	CP: cross section for collisions of Hminus with protons
 
       ENDIF
 
-      CRATE(1 : NDIM, 1 : NDIM) = 0D0
+      CRATE(1 : N, 1 : N) = 0D0
 
 C***  LOOP OVER ALL TRANSITIONS  ---------------------------------------
       DO 1 NUP = 2, N
