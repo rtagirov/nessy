@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./aux_func.sh
+source /mnt/SSD/sim/nessy/scr/aux_func.sh
 
 function identify_src
 {

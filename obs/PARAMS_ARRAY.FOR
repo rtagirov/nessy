@@ -1,6 +1,5 @@
       integer,parameter:: MAXATOM = 30 ! DEFINE ARRAY DIMENSIONS
-!      integer,parameter:: NDIM =  100  ! NUMBER OF LEVELS
-      integer,parameter:: NDIM =  114  ! NUMBER OF LEVELS
+      integer,parameter:: NDIM =  100  ! NUMBER OF LEVELS
       integer,parameter:: NDIMP2 = NDIM + 2
       integer,parameter:: NFDIM = 2000
       integer,parameter:: NFLDIM = 79
