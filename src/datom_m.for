@@ -1,5 +1,7 @@
       module MOD_DATOM_M
+
       contains
+
       subroutine DATOM_M(NDIM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $                   EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $                   INDNUP,INDLOW,LASTIND,MAXIND,MAXATOM,NATOM,
@@ -57,21 +59,29 @@ C**********************************************************
 C***                         COPPER    (CU)           29
 C***                         ZINK      (ZN)           30
 C**********************************************************
-C*** changed by Margit Haberreiter, May 2002            
+C*** changed by Margit Haberreiter, May 2002
+!    changed by Rinat Tagirov, November 2016
+!    Getting rid of NDIM, MAXATOM and MAXIND
 C*******************************************************************************
-!      IMPLICIT REAL*8(A-H,O-Z)
       use MOD_RDCSARR
       use MOD_ERROR
+
       implicit none
-      !public variables - in/out
-      integer,intent(inout):: KODAT,N,NATOM,NOM
-      integer,intent(inout):: NFIRST,NLAST
-      integer,intent(inout):: INDLOW,INDNUP
-      integer,intent(inout):: LASTIND,NCHARG,MAINQN
-      real*8,intent(inout) :: ALTESUM,ATMASS,ALPHA,COCO
-      character*8,intent(inout) :: agaunt
-      real*8,intent(inout) ::  EINST,EION, ELEVEL,SEXPO,WEIGHT,STAGE
-      real*8,intent(inout) ::  SIGARR, WAVARR ! get changed in RDCSARR
+
+      !public variables - out
+
+      integer, intent(out) :: N, NATOM
+
+      integer, intent(out), allocatable, dimension(:) :: KODAT, NOM
+
+      integer, intent(out), allocatable, dimension(:) :: NFIRST, NLAST
+
+      integer,intent(out):: INDLOW, INDNUP
+      integer,intent(out):: LASTIND,NCHARG,MAINQN
+      real*8,intent(out) :: ALTESUM,ATMASS,ALPHA,COCO
+      character*8,intent(out) :: agaunt
+      real*8,intent(out) ::  EINST,EION, ELEVEL,SEXPO,WEIGHT,STAGE
+      real*8,intent(out) ::  SIGARR, WAVARR ! get changed in RDCSARR
       !public variables - in
       integer,intent(in) :: MAXATOM,MAXIND
       integer,intent(in) :: NDIM,NFDIM
@@ -92,17 +102,17 @@ C*******************************************************************************
       CHARACTER*3 KRUDI
       CHARACTER*2 SYMBOL(MAXATOM) 
       !dimensions
-      DIMENSION NCHARG(NDIM), WEIGHT(NDIM), ELEVEL(NDIM)
-      DIMENSION EION(NDIM),MAINQN(NDIM),EINST(NDIM,NDIM)
+!      DIMENSION NCHARG(NDIM), WEIGHT(NDIM), ELEVEL(NDIM)
+!      DIMENSION EION(NDIM),MAINQN(NDIM),EINST(NDIM,NDIM)
 
-      DIMENSION ALPHA(NDIM),SEXPO(NDIM),AGAUNT(NDIM)
-      DIMENSION NOM(NDIM)
-      DIMENSION COCO(NDIM,NDIM,4)
-      DIMENSION ALTESUM(4,NDIM)
-      DIMENSION KODAT(MAXATOM),ATMASS(MAXATOM),STAGE(MAXATOM)
-      DIMENSION NFIRST(MAXATOM),NLAST(MAXATOM)
-      DIMENSION INDNUP(MAXIND),INDLOW(MAXIND)
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
+!      DIMENSION ALPHA(NDIM),SEXPO(NDIM),AGAUNT(NDIM)
+!      DIMENSION NOM(NDIM)
+!      DIMENSION COCO(NDIM,NDIM,4)
+!      DIMENSION ALTESUM(4,NDIM)
+!      DIMENSION KODAT(MAXATOM),ATMASS(MAXATOM),STAGE(MAXATOM)
+!      DIMENSION NFIRST(MAXATOM),NLAST(MAXATOM)
+!      DIMENSION INDNUP(MAXIND),INDLOW(MAXIND)
+!      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
 
       CHARACTER*(*),parameter ::
      $FORMAT_LEVEL='(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)',
