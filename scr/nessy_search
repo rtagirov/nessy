@@ -39,7 +39,7 @@ NESSY_DIR=/mnt/SSD/sim/nessy/src
 MAKE_DIR=$NESSY_DIR/make
 NESSY_SRCS=$MAKE_DIR/Makefile.sources
 NESSY_SRCS_REV=$MAKE_DIR/Makefile.sources.rev
-CTRL_FILE=$MAKE_DIR/ns.ctrl
+#CTRL_FILE=$MAKE_DIR/ns.ctrl
 
 if [ -z "$1" ]; then abort "The search string has not been provided."; fi
 
@@ -59,7 +59,7 @@ fi
 
 SRCS=''
 
-rm -f $CTRL_FILE
+#rm -f $CTRL_FILE
 
 if [ $SEARCH_NESSY ];  then cpl_src_list $NESSY_SRCS; tac $NESSY_SRCS > $NESSY_SRCS_REV; cpl_src_list $NESSY_SRCS_REV; fi
 
@@ -67,6 +67,6 @@ if [ $SEARCH_HMINUS ]; then tac $NESSY_SRCS > $NESSY_SRCS_REV; cpl_src_list $NES
 
 if [ $SEARCH_FIOSS ];  then cpl_src_list $NESSY_SRCS; fi
 
-for SRC in $SRCS; do echo $SRC >> $CTRL_FILE; done
+#for SRC in $SRCS; do echo $SRC >> $CTRL_FILE; done
 
 cd $NESSY_DIR; $GREP "$1" $SRCS; rm -f $NESSY_SRCS_REV
