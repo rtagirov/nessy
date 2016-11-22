@@ -1,22 +1,25 @@
 #!/bin/bash
 
-base1=/mnt/SSD/sim
-base2=/mnt/HDD
+base=/mnt/SSD/sim
 
-source $base1/scripts/aux_func.sh
-
-runs=$base1/runs
+runs=$base/runs
 
 FI_BASE_DIR=$runs/fioss
 HM_BASE_DIR=$runs/hminus
 
 LBKG_DIR=$runs/lbkg
 
-nessy=$base1/nessy
+nessy=$base/nessy
 
-nessy_inp=$base2/nessy/input
+nessy_scr=$nessy/scr
 
-OBJ_DIR=$nessy/obj
+nessy_src=$nessy/src
+
+nessy_inp=$nessy/inp
+
+nessy_obj=$nessy/obj
+
+source $nessy_scr/aux_func.sh
 
 HM_JOB_FILE=fort.99
 
@@ -43,8 +46,8 @@ COMPILE="make 64"
 HM_EXE_NAME=hminus.exe
 FI_EXE_NAME=fioss8.exe
 
-HM_EXE=$OBJ_DIR/$HM_EXE_NAME
-FI_EXE=$OBJ_DIR/$FI_EXE_NAME
+HM_EXE=$nessy_obj/$HM_EXE_NAME
+FI_EXE=$nessy_obj/$FI_EXE_NAME
 
 RadioShellScriptName=run_fioss_do2_radio
 
@@ -137,7 +140,7 @@ if [ "$ACC" == ${PossibleAccelerations[2]} ]; then sed -i "s/$AccelerationSwitch
 
 function compile_COSI
 {
-if [ $NEW_OBJ_FILES ]; then rm -f  $OBJ_DIR/*; fi
+if [ $NEW_OBJ_FILES ]; then rm -f  $nessy_obj/*; fi
 
 #echo; cp_to_src_dir $HAP_DIR
 
@@ -863,8 +866,8 @@ MAX_PROC=1
 branch=main
 ##############################################################################################
 
-ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "cb:kdseoR:M:nlF:zP:HLp:D:i:OITj:a:m:A:f:v:V:N:J:g:G:"\
-                --longoptions "comp,branch:,nobj,ndep,src,exe,old,rep:,mode:,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,job:,acc:,atm:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
+ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:M:nlF:zP:HLp:D:i:OITj:a:m:A:f:v:V:N:J:g:G:"\
+                --longoptions "comp,nobj,ndep,src,exe,old,rep:,mode:,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,job:,acc:,atm:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
 
 if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
@@ -875,8 +878,6 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
     case "$1" in
 
        -c|--comp)   COMPILATION=Yes;    shift;;
-
-       -b|--branch) branch=$2;          shift 2;;
 
        -k|--nobj)   NEW_OBJ_FILES=Yes;  shift;;
 
@@ -951,8 +952,6 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
    done
 
    if [ -z "$1" ]; then abort "$0: The list of runs has to be provided."; fi
-
-   nessy_src=$nessy/$branch
 
    if [ $ACC ]; then COMPILATION=Yes; fi
 
