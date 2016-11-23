@@ -41,7 +41,6 @@ inibl0.for:            $(addprefix $(OUT), synsubm.o synthp_cont.o utils.o decf_
 initvel.for:           $(addprefix $(OUT), regula.o deltagr.o )
 intplcs.for:           $(addprefix $(OUT), intplcs.o intpl.o )
 intrfc_m.for:          $(addprefix $(OUT), inibl0.o synsubm.o stateq.o utils.o opint.o synthp_cont.o synthp_cont.o synsubm.o inibl0.o synthp_cont.o opint.o )
-inv.for:               $(addprefix $(OUT), error.o )
 isrchfgt.for:          $(addprefix $(OUT), error.o )
 jstart.for:            $(addprefix $(OUT), writmsc.o writms.o writmsi.o writmsi.o bnue.o error.o formats.o )
 linop_ms.for:          $(addprefix $(OUT), synsubm.o tictoc.o error.o decf_syn.o chemeq.o constants.o comblock.o phys.o )
