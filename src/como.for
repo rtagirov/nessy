@@ -193,10 +193,12 @@ C***  DECODING INPUT OPTIONS *******************************************
       WCHARM(:,:)=0d0/0d0
 c***  read the radiation field from files RADIOC and RADIOL
 c          (pop1 is used as dummy storage) 
-      CALL READRAD    (NF,ND,POP1,XJCARR,XJC,XJL,
-     $                 HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $                NCHARG,EDDARR,EDDI,NOM,WCHARM,N,MAXIND,
-     $                EINST,NDIM,MODHEAD,JOBNUM)
+
+      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+     $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
+     $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,lastind,
+     $             EINST,MODHEAD,JOBNUM)
+
       JOBNUM=JOBNUM+1
 
 c***  the blanketing table is read by routine READMOD

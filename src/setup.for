@@ -1,34 +1,38 @@
       module MOD_SETUP
+
       contains
-      SUBROUTINE SETUP (L,A,B,C,W,JMAX,ND,NP,NPDIM,OPA,ETA,THOMSON,
-     $          XLAM,Z,RADIUS,BCORE,DBDR )
+
+      SUBROUTINE SETUP(L,A,B,C,W,JMAX,ND,NP,OPA,ETA,THOMSON,Z,RADIUS,BCORE,DBDR)
+
 C***  FEAUTRIER SCHEME FOR CONTINUOUS RADIATION TRANSFER IN SPHERICAL SYMMETRY:
 C***  SET UP THE MATRICES  A (DIAGONAL), B (FULL), C (DIAGONAL) AND W (VECTOR)
-!      implicit real*8(a-h,o-z)
+
       use MOD_MOMENT0
-	implicit NONE
-	integer,intent(in)::L,ND,NP,NPDIM
-	!global, intent(inout|out)
-	integer,intent(inout)  :: JMAX
-	real*8,intent(inout),dimension(NPDIM)::A,C,W
-	real*8,intent(inout),dimension(NPDIM,NPDIM)::B
-	!global, intent(in)
-	
-	real*8,intent(in)::BCORE,DBDR
-	real*8,intent(in):: XLAM !unused
-	real*8,dimension(ND),intent(in)::ETA,OPA,RADIUS,THOMSON
-	real*8,dimension(ND,NP),intent(in)::Z
-      !local variables
-      real*8 :: CORFAC,DT,DTP,DTM,DUMMY,ETAL,G
-      integer :: J,JMM, JS
-      real*8 :: PLUSI,WJG,X,XM,XP,ZLJ,ZLMIN,ZLPLUS
-      real*8,PARAMETER:: ONE = 1.D+0, two = 2.d0, three = 3.D0
-!      DIMENSION A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
-!      DIMENSION RADIUS(ND),OPA(ND),ETA(ND),THOMSON(ND)
-!      DIMENSION Z(ND,NP)
+
+      implicit none
+
+      integer,intent(in) :: L, ND, NP
+
+      !inout
+
+      integer,intent(inout) ::                    JMAX
+      real*8, intent(inout), dimension(NP) ::     A, C, W
+      real*8, intent(inout), dimension(NP, NP) :: B
+
+      !in
+      real*8, intent(in) ::                    BCORE, DBDR
+      real*8, intent(in), dimension(ND) ::     ETA, OPA, RADIUS, THOMSON
+      real*8, intent(in), dimension(ND, NP) :: Z
+
+      !local
+      integer :: J, JMM, JS
+      real*8 ::  CORFAC, DT, DTP, DTM, DUMMY, ETAL, G
+      real*8 ::  PLUSI, WJG, X, XM, XP, ZLJ, ZLMIN, ZLPLUS
+
+      real*8, parameter :: one = 1.D+0, two = 2.d0, three = 3.D0
      
-      JMAX=NP+1-L
-      JMM=JMAX-1
+      JMAX = NP + 1 - L
+      JMM =  JMAX - 1
      
 C***  EVERY L = 1 ... ND
       X=OPA(L)

@@ -1,7 +1,7 @@
       module MOD_PRICOMP
       contains
 C**********  MODULNAME: PRICOMP   ******* 06/08/87  20.09.12.******    75 KARTEN
-      SUBROUTINE PRICOMP (NDIM,EINST,N,NCHARG,NOM,NATOM,ABXYZ,ATMASS,
+      SUBROUTINE PRICOMP (N,EINST,NCHARG,NOM,NATOM,ABXYZ,ATMASS,
      $                   STAGE,NFIRST,NLAST,ELEMENT,SYMBOL,LASTIND,
      $                   INDLOW,INDNUP)
 C***********************************************************************
@@ -10,7 +10,7 @@ C***********************************************************************
 
       IMPLICIT REAL*8(A-H,O-Z)
      
-      DIMENSION EINST(NDIM,NDIM)
+      DIMENSION EINST(N,N)
       DIMENSION NCHARG(N),NOM(N)
       DIMENSION ABXYZ(NATOM)
       DIMENSION ATMASS(NATOM),STAGE(NATOM),NFIRST(NATOM),NLAST(NATOM)

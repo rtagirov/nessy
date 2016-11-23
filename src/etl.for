@@ -207,8 +207,8 @@ C***  READING OF THE MODEL FILE
 c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,MAXIND,
-     $             EINST,NDIM,MODHEAD,JOBNUM)
+     $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,lastind,
+     $             EINST,MODHEAD,JOBNUM)
 
       JOBNUM = JOBNUM + 1
 
@@ -356,7 +356,7 @@ c234567890 234567890 234567890 234567890 234567890 234567890 234567890 2
 C***     DATA FOR THAT LINE NOT PRESENT - CALCULATE IT NEW ...
 
       CALL ELIMIN(XLAM,DUMMY1,DUMMY0,U,Z,A,B,C,W,BX,WX,XJCIND,RADIUS,P,
-     $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP,NPDIM)
+     $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
 c***     ... and write it for use in the next iteration
       CALL WRITMS (ifl,U,ND*NP,NAMEU,-1,IERR)

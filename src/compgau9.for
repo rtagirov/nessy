@@ -39,7 +39,7 @@ c$$$        endif
             XJ(L,K)=XJ(L,K)+XJK(L,KK)
      $           *exp(-pot)*WEIGHT
           ENDDO
-c version with continuum contribution estimated from elimin
+
 c          XJ(L,K)=XJ(L,K)+CWK(L,K)
 c version with fraction of integral
           XJ(L,K)=XJ(L,K)/CWK(L,K)

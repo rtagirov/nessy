@@ -480,6 +480,8 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
         CALL VSUB(V1, V2, NRANK) ! V1 = V1 - V2
 
+        write(*, *) 'linpop flag 1'
+
         CALL INV(NRANK, DM)
 
         CALL VMF(ENDELTA, V1, DM, NRANK, NRANK) ! ENDELTA = DM * V1
@@ -500,6 +502,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
            IF (NOFILE(L)) THEN
 
 !           IF FORT.19 NOT FOUND AND THE FIRST ITERATION STEP, DB IS DM^T
+            write(*, *) 'linpop flag 2'
             CALL INV(NRANK, DM)
 
             CALL ACOPY(DB, DM, NRANK)

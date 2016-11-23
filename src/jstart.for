@@ -2,7 +2,7 @@
       contains
       SUBROUTINE JSTART (NF,XLAMBDA,AKEY,ND,R,T,XJC,XJL,
      $                   HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $                   NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,NDIM,  ! renamed WRCHARM to WCHARM 
+     $                   NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,  ! renamed WRCHARM to WCHARM 
      $                   MODHEAD,JOBNUM,TEFF)
 C******************************************************************************
 C***  CALLED BY WRSTART
@@ -24,10 +24,10 @@ C******************************************************************************
 C***  TRANSFER OF THE LTE-OPTION FROM SUBR. DECSTAR
       COMMON /COMLTE/ LTE
       real*8,  intent(inout),dimension(ND)  :: XJC,XJL ! Continuum and Line Radiation Field
-      integer, intent(in   ) :: NF, ND, N, NDIM
-      integer, intent(in   ) :: NCHARG(NDIM), NOM(N),JOBNUM
+      integer, intent(in   ) :: NF, ND, N
+      integer, intent(in   ) :: NCHARG(N), NOM(N),JOBNUM
       real*8,  intent(in   ) :: TOTIN, TOTOUT
-      real*8,  intent(in   ) :: ELEVEL(NDIM),EINST(NDIM,NDIM),EDDI(3,ND)
+      real*8,  intent(in   ) :: ELEVEL(N),EINST(N,N),EDDI(3,ND)
       real*8,  intent(in   ),dimension(ND)   :: R,T
       real*8,  intent(in   ),dimension(NF)   :: XLAMBDA,AKEY
       real*8,  intent(in   ),dimension(ND,NF):: WCHARM

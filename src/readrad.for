@@ -1,13 +1,11 @@
-      Module MOD_READRAD
-      Contains
-!       SUBROUTINE READRAD (NF,XLAMBDA,AKEY,ND,DUMMY,XJCREA,XJC,
-!      $           XJL,HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-!      $           NCHARG,ELEVEL,EDDREA,EDDI,NOM,WCHARM,N,
-!      $           MAXIND,EINST,NDIM,MODHEAD,JOBNUM)
-      SUBROUTINE READRAD (NF,ND,DUMMY,XJCREA,XJC,
-     $           XJL,HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $           NCHARG,EDDREA,EDDI,NOM,WCHARM,N,
-     $           MAXIND,EINST,NDIM,MODHEAD,JOBNUM)
+      module MOD_READRAD
+
+      contains
+
+      SUBROUTINE READRAD(NF,ND,DUMMY,XJCREA,XJC,
+     $                   XJL,HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
+     $                   NCHARG,EDDREA,EDDI,NOM,WCHARM,N,
+     $                   lastind,EINST,MODHEAD,JOBNUM)
 C******************************************************************************
 C***  READ THE RADIATION FIELD
 C***  XJC: CONTINUUM RADIATION FIELD
@@ -30,8 +28,8 @@ C******************************************************************************
       Real*8,Dimension(NF)::EMFLUX
       Real*8,Dimension(ND):: HTOT,GTOT,XTOT,ETOT
       Integer JOBRead, NFREA
-      DIMENSION EINST(NDIM,NDIM),XJL(ND,MAXIND)
-      DIMENSION NCHARG(NDIM),NOM(N)
+      DIMENSION EINST(N,N),XJL(ND,lastind)
+      DIMENSION NCHARG(N),NOM(N)
       CHARACTER CREAD*10, MODHEAD*104, MODREAD*104
       Character CNAME*10
 C***  CONTINUUM RADIATION FIELD XJC  *****************************************
@@ -134,8 +132,8 @@ C      CALL READMSC(IFL,MODREAD,104,CNAME,IERR)
       Enddo
    99 Enddo
    9  Enddo
-      If (Ind.Gt.Maxind) Then
-         Write (6,*) 'MAXIND Smaller Than IND'
+      If (Ind.Gt.lastind) Then
+         Write (6,*) 'lastind Smaller Than IND'
          Stop
       Endif
       Close (IFL)

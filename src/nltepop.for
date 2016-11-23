@@ -91,7 +91,7 @@ C***  INVERSION OF RATE COEFFICIENT MATRIX RATCO
 
 !      enddo
 
-      write(*, *) 'nltepop flag!!!'
+!      write(*, *) 'nltepop flag!!!'
 
       CALL INV(NDELP1, RATCO(1 : ndelp1, 1 : ndelp1))
 	

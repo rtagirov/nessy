@@ -234,10 +234,10 @@
       close (ifl)
       !***  read the radiation field from files RADIOC and RADIOL
       !*    (pop1 is used as dummy storage)
-      CALL READRAD    (NF,ND,POP1,XJCARR,XJC,XJL,
-     $                 HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $                NCHARG,EDDARR,EDDI,NOM,WCHARM,N,MAXIND,
-     $                EINST,NDIM,MODHEAD,JOBNUM)
+      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+     $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
+     $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,lastind,
+     $             EINST,MODHEAD,JOBNUM)
       !***  READING VERTICAL VELOCITY ASPLUND 2000, A&A 359, 729
       if (ADDVELO) then
         open (IFL,file='VELO',STATUS='OLD')
@@ -503,8 +503,7 @@
      $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,WAVARR,SIGARR,
      $            LBKG,XLBKG1,XLBKG2,NFDIM)
       !***  CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
-      CALL ELIMIN (XLAM,FNUCONT,DUMMY0,U,Z,A,B,C,W,BX,WX,XJC,R,P,
-     $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP,NPDIM)
+      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,A,B,C,W,BX,WX,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
       print *,' Continuum Flux interpolated from the model: ',FNUEC
       print *,'      "      "  from ELIMIN ',FNUCONT,
      $        ' at l=',XLAM

@@ -155,7 +155,7 @@ c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dum
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             NCHARG,EDDARR,EDDI,NOM,WCHARM,
-     $		   N,MAXIND,EINST,NDIM,MODHEAD,JOBNUM)
+     $		   N,lastind,EINST,MODHEAD,JOBNUM)
 
 c***  advance job-number counter
       JOBNUM = JOBNUM + 1

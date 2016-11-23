@@ -1,15 +1,18 @@
       module MOD_ELIMIN
+
       contains
-      SUBROUTINE ELIMIN (XLAM,EMFLUX,FLUXIN,U,Z,
-     $          A,B,C,W,BX,WX,XJC,RADIUS,P,BCORE,DBDR,
-     $                       OPA,ETA,THOMSON,EDDI,ND,NP,NPDIM)
-C***  CALLED BY FORMAL, ETL, FIOSS8, WRCONT
-C***  FEAUTRIER SCHEME FOR CONTINUOUS RADIATION TRANSFER IN SPHERICAL SYMMETRY
-C***  TAPE7 = MASS STORAGE FILE FOR FEAUTRIER MATRICES
-C***  LAST PARAMETER -1 IN WRITMS IS VERY IMPORTANT !
-C***  OTHERWISE "MASS STORAGE LIMIT" EXCEEDED BECAUSE OLD RECORDS ARE
-C***  NOT OVERWRITTEN .
-C***  ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
+
+      SUBROUTINE ELIMIN(XLAM,EMFLUX,FLUXIN,U,Z,A,B,C,W,BX,WX,XJC,RADIUS,P,BCORE,DBDR,
+     $                  OPA,ETA,THOMSON,EDDI,ND,NP)
+
+C     CALLED BY FORMAL, ETL, FIOSS8, WRCONT
+C     FEAUTRIER SCHEME FOR CONTINUOUS RADIATION TRANSFER IN SPHERICAL SYMMETRY
+C     TAPE7 = MASS STORAGE FILE FOR FEAUTRIER MATRICES
+C     LAST PARAMETER -1 IN WRITMS IS VERY IMPORTANT !
+C     OTHERWISE "MASS STORAGE LIMIT" EXCEEDED BECAUSE OLD RECORDS ARE
+C     NOT OVERWRITTEN .
+C     ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
+
       use MOD_INV
       use MOD_SETUP
       use MOD_MOMENT0
@@ -21,39 +24,46 @@ C***  ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
       use MOD_VADD
       use MOD_MVV
       use MOD_MVMD
+
       IMPLICIT NONE
+
       !global variables, intent(inout|out)
-      integer :: ND,NP,NPDIM
-      real*8  ::BX(NPDIM,NPDIM,ND)
-      real*8  ::FLUXIN,WX(NPDIM,ND),EMFLUX
-      real*8,dimension(ND,NP) ::U
-      real*8,dimension(3,ND)  ::EDDI
+      integer ::                  ND, NP
+      real*8  ::                  BX(NP, NP, ND)
+      real*8  ::                  FLUXIN, WX(NP, ND), EMFLUX
+      real*8,dimension(ND, NP) :: U
+      real*8,dimension(3, ND)  :: EDDI
+
       !global variables, intent(in)
-      real*8 :: B(:,:),BCORE,DBDR
-      real*8,dimension(ND) :: ETA,RADIUS,XJC,OPA,THOMSON
-      real*8 :: P(NPDIM),XLAM,Z(ND,NP)
-      real*8,dimension(*) :: W,C
-      real*8,dimension(:) :: A
+      real*8 ::               B(:, :), BCORE, DBDR
+      real*8,dimension(ND) :: ETA, RADIUS, XJC, OPA, THOMSON
+      real*8 ::               P(NP), XLAM, Z(ND,NP)
+      real*8,dimension(*) ::  W, C
+      real*8,dimension(:) ::  A
+
       !local variables
-      real*8 :: CORFAC,FL,FLP,H,HPLUS,RL, RLP, RRQ, XK
-      integer:: J,JC,JMAX,L,NC2
+      real*8 ::           CORFAC, FL, FLP, H, HPLUS, RL, RLP, RRQ, XK
+      integer::           J, JC, JMAX, L, NC2
+
       real*8,parameter :: ONE = 1.D+0, TWO = 2.D0, THREE = 3.D0
      
 C***  GAUSS-ELIMINATION
-      DO L=1,ND
-        CALL SETUP (L,A,B,C,W,JMAX,ND,NP,NPDIM,OPA,ETA,THOMSON,
-     $                  XLAM,Z,RADIUS,BCORE,DBDR )
+      DO L = 1, ND
+
+        CALL SETUP(L,A,B,C,W,JMAX,ND,NP,OPA,ETA,THOMSON,Z,RADIUS,BCORE,DBDR)
+
         if (L.NE.1) then
-          CALL MDMV (A,BX(1,1,L),JMAX,NPDIM)
-          CALL MSUB (B,BX(1,1,L),JMAX,NPDIM)
+          CALL MDMV (A,BX(1,1,L),JMAX,NP)
+          CALL MSUB (B,BX(1,1,L),JMAX,NP)
           CALL MDV (A,WX(1,L),JMAX)
           CALL VADD (W,WX(1,L),JMAX)
         endif
-!        CALL INV (JMAX,NPDIM,B)
-        CALL INV (JMAX,B)
-        CALL MVV (WX(1,L),B,W,JMAX,JMAX,NPDIM)
+!        CALL INV (JMAX,NP,B)
+        write(*, *) 'elimin flag'
+        CALL INV(JMAX, B)
+        CALL MVV (WX(1,L),B,W,JMAX,JMAX,NP)
         IF (L.EQ.ND) GOTO 2
-        CALL MVMD (BX(1,1,L),B,C,JMAX,JMAX-1,NPDIM)
+        CALL MVMD (BX(1,1,L),B,C,JMAX,JMAX-1,NP)
         !***  COMPRESSING THE MATRIX BX  AND VECTOR WX  INTO THE RANGE OF B AND C
         DO 7 J=1,JMAX
         WX(J,L+1)=WX(J,L)
@@ -99,7 +109,7 @@ c      DO 8  J=1,JMAX
 c      JC=1+(J-1)*JMAX
 c    8 CALL EQUAL (BX(1,J),B(JC)  ,JMAX)
 c      CALL EQUAL (WX,B (JMAX*JMAX+1)  ,JMAX)
-      CALL MVV (W,BX(1,1,L),A,JMAX,JMAX-1,NPDIM)
+      CALL MVV (W,BX(1,1,L),A,JMAX,JMAX-1,NP)
       CALL VADD (WX(1,L),W,JMAX)
 C***  WX(J) IS THE FEAUTRIER-INTENSITY U AT RADIUS R(L)
       U(L,:JMAX)=WX(:JMAX,L)

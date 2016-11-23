@@ -1,28 +1,33 @@
       module MOD_FGRID
+
       contains
-C**********  MODULNAME: FGRID     ******* 06/08/87  20.41.24.******   111 KARTEN
-      SUBROUTINE FGRID (NFDIM,NF,XLAMBDA,FWEIGHT,AKEY,NOM,SYMBOL,NATOM,
-     $                  N,NCHARG,ELEVEL,EION,EINST,NDIM )
+
+      SUBROUTINE FGRID(NFDIM,NF,XLAMBDA,FWEIGHT,AKEY,NOM,SYMBOL,NATOM,N,NCHARG,ELEVEL,EION,EINST)
+
       use MOD_BNUE,    only: BNUE
       use MOD_DECFREQ, only: DECFREQ
       use MOD_SEQUIN,  only: SEQUIN,SEQUINE
       use CONSTANTS,   only: CLIGHT_SI
+
 C***********************************************************************
 C***  GENERATION OF THE FREQUENCY GRID AND INTEGRATION WEIGHTS
 C***  INCLUDING PREDEFINED FREQUENCY POINTS (FROM TAPE6)
 C***  AND THE CONTINUUM FREQUENCY POINTS (NO LINE FREQUENCY POINTS)
 C***  XLAMBDA = CORRESPONDING WAVELENGTH POINTS IN ANGSTROEMS
 C***********************************************************************
+
       IMPLICIT REAL*8(A-H,O-Z)
-      real*8, intent(  out),dimension(NFDIM) :: AKEY,XLAMBDA,FWEIGHT
-      integer,intent(  out) :: NF
-      integer,intent(in   ) :: NFDIM,NOM,NATOM,N,NCHARG(N),NDIM
-      real*8, intent(in   ) :: ELEVEL(N),EION(N),EINST(NDIM,NDIM)
-      ! DIMENSION EINST(NDIM,NDIM)
-      ! DIMENSION XLAMBDA(NFDIM),FWEIGHT(NFDIM),AKEY(NFDIM)
-      ! DIMENSION NCHARG(N),ELEVEL(N),EION(N)
+
+      real*8, intent(out), dimension(NFDIM) :: AKEY,XLAMBDA,FWEIGHT
+      integer,intent(out) ::                   NF
+
+      integer,intent(in) :: NFDIM, NOM, NATOM, N, NCHARG(N)
+      real*8, intent(in) :: ELEVEL(N), EION(N), EINST(N, N)
+
+
+
       DIMENSION NOM(N)
-      CHARACTER*2,intent(in):: SYMBOL(NATOM)     
+      CHARACTER*2,intent(in):: SYMBOL(NATOM)
       PARAMETER (ONE=1.d0, TWO=2.d0)   
 C***  STEBOL = STEFAN-BOLTZMANN CONSTANT / PI  (ERG/CM**2/S/STERAD/KELVIN**4)
       DATA STEBOL / 1.8046D-5 /
@@ -31,11 +36,10 @@ C***  CLIGHT = SPEED OF LIGHT IN ANGSTROEM / SECOND IN VACUUM
       real*8 :: NEDGE  ! micha: NEDGE should be a real...
       PRINT 9
     9 FORMAT(//,20X,'2. FREQUENCY POINTS AND INTEGRATION WEIGHTS',/) 
+
 C***  DECODE THE FREQUENCY GRID (WAVELENGTHS IN A) FROM TAPE6 = FGRID
-      CALL       DECFREQ (XLAMBDA,NF,NFDIM,TREF)
-!      print *, XLAMBDA
-!      print *, NF, NFDIM, TREF, 'DONE'
-!      stop
+      CALL DECFREQ(XLAMBDA, NF, NFDIM, TREF)
+
 C***  SET KEYWORD ARRAY TO BLANKS
       DO 23 K=1,NF
    23 AKEY(K)=8H          

@@ -30,7 +30,7 @@ C***  Constant for thermal Gauss-Profile (= m(e)/(4k)) (cgs?)
             print *,' sum .gt. 1:',L,K,frac
          endif
          if (frac.gt.1.) frac=1.
-c version with continuum contribution estimated from elimin
+
 c         CWK(L,K)=(1.-frac)*xjc(L)
 c version with fraction of integral
          CWK(L,K)=frac
