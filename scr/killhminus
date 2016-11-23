@@ -1,0 +1,22 @@
+#!/bin/bash
+number_of_processes=$(ps aux | pgrep hminus.exe | wc -l)
+if [ $number_of_processes -gt 0 ]; then
+	time_elapsed=$(ps aux | grep hminus.exe | awk '{print $10}'| awk -F':' '{print $1}') #get the process run time
+	time_elapsed=( $time_elapsed ) #transform string into an array
+	unset time_elapsed[${#time_elapsed[@]}-1] #delete the last element of the array
+	pid=$(ps aux | grep hminus.exe | awk '{print $2}') #repeat the same with process ID (PID)
+	pid=( $pid )
+	unset pid[${#pid[@]}-1]
+	counter=0
+#	echo 'time: '"${time_elapsed[*]}"
+#	echo 'pid: '"${pid[*]}"
+	for time in ${time_elapsed[*]};
+	do
+		#echo "${time}"
+		if [ $((time)) -gt 9 ]; then
+			echo 'Killing process with time: '"${time}"' minutes, pid: '"${pid[$counter]}"'.'
+			kill -9 "${pid[$counter]}"
+		fi
+		counter=$counter+1
+	done
+fi

@@ -1,0 +1,13 @@
+COSIVERSION=529
+ATMOSPHERE=1999
+TYPE=
+USER=`whoami`
+CHEM_COMP=NaCaS
+
+if   [[ -e fioss.settings.template ]]; then
+ 	FIOSS_SETTINGS=fioss.settings.template
+elif [[ -e ~/.cosi/fioss.settings.template ]]; then
+	FIOSS_SETTINGS= ~/.cosi/fioss.settings.template
+elif [[ -e $COSI_BIN/fioss.settings.template ]]; then
+	FIOSS_SETTINGS=$COSI_BIN/fioss.settings.template
+fi

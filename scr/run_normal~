@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+echo 'Hello C'
+cp -r ~/data/Asplund_C_final/fioss/IT3_23022012 ~/data/Asplund_C_final/fioss/IT3_new
+cp -r ~/data/Asplund_C_final/fioss/IT3_23022012 ~/data/Asplund_C_final/fioss/IT3_CN
+cp -r ~/data/Asplund_C_final/fioss/IT3_23022012 ~/data/Asplund_C_final/fioss/IT3_CH
+cp -r ~/data/Asplund_C_final/fioss/IT3_23022012 ~/data/Asplund_C_final/fioss/IT3_no
+echo 'Hello A'
+cp -r ~/data/Asplund_A_final/fioss/IT3/ ~/data/Asplund_A_final/fioss/IT3_new
+cp -r ~/data/Asplund_A_final/fioss/IT3/ ~/data/Asplund_A_final/fioss/IT3_CN
+cp -r ~/data/Asplund_A_final/fioss/IT3/ ~/data/Asplund_A_final/fioss/IT3_CH
+cp -r ~/data/Asplund_A_final/fioss/IT3/ ~/data/Asplund_A_final/fioss/IT3_no
+echo 'Hello E'
+cp -r ~/data/Asplund_E_final/fioss/IT3/ ~/data/Asplund_E_final/fioss/IT3_new
+cp -r ~/data/Asplund_E_final/fioss/IT3/ ~/data/Asplund_E_final/fioss/IT3_CN
+cp -r ~/data/Asplund_E_final/fioss/IT3/ ~/data/Asplund_E_final/fioss/IT3_CH
+cp -r ~/data/Asplund_E_final/fioss/IT3/ ~/data/Asplund_E_final/fioss/IT3_no
+echo 'Hello F'
+cp -r ~/data/Asplund_F_final/fioss/IT3/ ~/data/Asplund_F_final/fioss/IT3_new
+cp -r ~/data/Asplund_F_final/fioss/IT3/ ~/data/Asplund_F_final/fioss/IT3_CN
+cp -r ~/data/Asplund_F_final/fioss/IT3/ ~/data/Asplund_F_final/fioss/IT3_CH
+cp -r ~/data/Asplund_F_final/fioss/IT3/ ~/data/Asplund_F_final/fioss/IT3_no
+echo 'Hello P'
+cp -r ~/data/Asplund_P_final/fioss/IT3/ ~/data/Asplund_P_final/fioss/IT3_new
+cp -r ~/data/Asplund_P_final/fioss/IT3/ ~/data/Asplund_P_final/fioss/IT3_CN
+cp -r ~/data/Asplund_P_final/fioss/IT3/ ~/data/Asplund_P_final/fioss/IT3_CH
+cp -r ~/data/Asplund_P_final/fioss/IT3/ ~/data/Asplund_P_final/fioss/IT3_no
+echo 'Hello S'
+cp -r ~/data/Asplund_S_NLTE/fioss/IT3/ ~/data/Asplund_S_NLTE/fioss/IT3_new
+cp -r ~/data/Asplund_S_NLTE/fioss/IT3/ ~/data/Asplund_S_NLTE/fioss/IT3_CN
+cp -r ~/data/Asplund_S_NLTE/fioss/IT3/ ~/data/Asplund_S_NLTE/fioss/IT3_CH
+cp -r ~/data/Asplund_S_NLTE/fioss/IT3/ ~/data/Asplund_S_NLTE/fioss/IT3_no

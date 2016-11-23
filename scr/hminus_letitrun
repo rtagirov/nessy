@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [[ $1 == '--help' ]]; then
+  echo "Usage: $0 HMINUS_DIRECTORY [ START [ FIRSTRUN ]]
+  repeatedly run hminus.exe, copying the popnum to oldmodel and make a backup to HMINUS_DIRECTORY-\"X\"
+  If START is set, set the first X to START
+  If FIRSTRUN is set, do a firstrun w/o an OLDSTART
+"
+exit
+fi
+
+
+RUN_DIR=`echo "$1" | grep -o '^.*[^/]'`
+START=${2:1}
+FIRSTRUN=$3
+echo RUNDIR=:$RUNDIR: START=:$START: FIRSTRUN=:$FIRSTRUN:
+
+if [[ "" == $RUN_DIR ]]; then
+  echo "Missing Parameter: hminusRunDir"
+  exit
+fi
+
+if [[ $FIRSTRUN != "" ]]; then
+  echo First Run
+  pushd .
+  cd $RUN_DIR
+  echo wrstart > fort.99
+  echo "`date`: let it run" >> model-all.out
+  ./hminus.exe &> model.out || exit
+  echo OLDSTART >> CARDS
+  popd
+fi
+
+while (true); do
+   
+  cp -rf   "$RUN_DIR" "${RUN_DIR}-$START"
+  let START=START+1
+  pushd .;
+  cd $RUN_DIR;
+  cp POPNUM OLDMODEL
+  echo wrstart > fort.99
+  echo "`date`: let it run" >> model-all.out
+  ./hminus.exe &> model.out || exit
+  popd;
+done

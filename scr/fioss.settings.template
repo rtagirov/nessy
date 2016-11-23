@@ -1,0 +1,13 @@
+__ITERATION=0
+
+RUN_DIR="`pwd`/fioss/"
+EXE_DIR="${RUN_DIR}/cosi515fmht2_exe"
+CROSS_SECTION_FILES="/data/cosi/input/cross_sections/002/"
+ORIG_COSI="`pwd`/hminus/IT${__ITERATION}"
+ORIG_EXE="${HOME}/svnroot/cosi/branches/sasha-cosi/out-intel-x86_64/"
+FIOSS_SRC="${HOME}/svnroot/cosi/branches/sasha-cosi/cosi/"
+VELO_FILE="/data/cosi/input/velo/velo_2"
+INPUT_SUN_FILE="/data/cosi/input/input_sun/sunHHe10K10N10Th_PF2.inp5"
+INPUT_STARK_BROAD="/data/cosi/input/linelist/002/"
+UVVISIR_FILE="/data/cosi/input/linelist/kurucz_comb_air_parts/"
+OUTPUT_DIR=${RUN_DIR}/IT${__ITERATION}

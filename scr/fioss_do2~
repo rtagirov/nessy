@@ -1,0 +1,214 @@
+#!/bin/bash
+#****************************************************************
+[[ $COSI_BIN ]] || (echo "Variable COSI_BIN must be declared!" && exit)
+#source /pmodwrc/sim/bin/helper_scripts
+source $COSI_BIN/helper_scripts
+
+### Display usage info if called with --help
+if [[ "$@" =~ "--help" ]]; then
+ echo "fioss_do2 --ctrl DIR 
+fioss_do2 FROM STEP TO
+Used Variables:
+MAX_PROC: Defines the number of processes run simultaniuosly. Preset to 2. Use export MAX_PROC=n && fioss_do2 ... to set otherwise
+"
+ exit
+fi
+
+
+################################3
+## fioss_runProg CTRL WORKING_DIR
+## 
+## Does the actual work,
+## cd into $WORKING_DIR, fetch the top most file from $CTRL Directory and run fioss8.exe on it
+## When finished, copy the files into $WORKING_DIR/{lopa,mdisp,title}
+function fioss_runProg (){
+CTRL=$1
+
+## Set up error control
+trap "rmdir $CTRL/.lock; error" 0
+trap "return 2" 1 2 3 15
+
+cd $2
+mkdir -p mdisp lopa title output
+## While there are files available, run them
+while [[ `ls $CTRL | head -1` ]]; do
+## Make the program pausable by placing the file pause in the directory or its parents directory
+if [[ -e '../pause' || -e 'pause' ]]; then
+  echo "Fioss is paused - rm pause to continue"
+  while [[ -e 'pause' || -e '../pause' ]]; do
+    sleep 1;
+  done
+fi
+
+if [[ -e '../stop' || -e 'stop'  ]]; then  # make the program stoppable
+  echo "Stop Code"
+  return 0
+fi
+#### Fetch new Control File {
+lock $CTRL
+FILE1=`ls $CTRL | grep -v 'wd$' | head -1`
+FILE=$CTRL/$FILE1
+mv $FILE . &> /dev/null || continue ## Fetch the topmost file, silently repeat loop if failed
+release-lock $CTRL
+echo $FILE1 @ $2
+##### Fetched }
+## Create CARDS from TEMPLATE and CTRL-FILE
+cat ../CARDS.TEMPLATE $FILE1 > CARDS
+
+## Get correct fort.19 file (LineDB)
+FREQ=`egrep -o 'INTERVAL +[0-9]*' $FILE1 | egrep -o '[0-9]+'`
+
+if [[ -d fort.19.d ]]; then
+   while IFS=" " read FGRID1 FGRID2 FGRIDN; do
+    if ((10#$FREQ > 10#$FGRID1)) && ((10#$FREQ <= 10#$FGRID2)) ;  then
+       echo Using /$FGRIDN/ for $FREQ
+       [[ -L fort.19 ]] && rm fort.19
+       [[ $FGRIDN =~ '^/' ]]\
+           && ln -s "$FGRIDN" fort.19 \
+           || ln -s "fort.19.d/$FGRIDN" fort.19
+      break 1 
+    fi
+  done < "fort.19.d/frequency.grid"
+fi
+
+  echo -n "`date +'%Y-%m-%d %H:%M:%S'` Freq: $FREQ, VDOP: $VDOP " | tee -a  frequencies.log
+  APPEND=""
+  ## Run fioss8.exe
+  ./fioss8.exe $FREQ  &> output/fioss-$FREQ.out && echo -n " done" >> frequencies.log ||
+  echo -n " failed" | tee -a  frequencies.log
+  if ` tail -n1 output/fioss-$FREQ.out | grep 'O.K.' &> /dev/null `; then
+    echo " O.K." | tee -a frequencies.log
+  else
+    tail -n1 output/fioss-$FREQ.out | tee -a frequencies.log
+    APPEND="fail"
+  fi
+  [[ -e save_out || -e ../save_out ]] && APPEND="${APPEND:+${APPEND}+}save"
+  ## Decide what to do with the fioss8.exe console output
+  if [[ "$APPEND"  ]]; then 
+    mv output/fioss-$FREQ.out output/fioss-$FREQ-$APPEND.out
+  else
+    rm output/fioss-$FREQ.out
+  fi
+  ## move the resulting mdisp lopa title files into its corresponding directory
+  [[ -d mdisp ]] && mv  [0-9]*.mdisp mdisp || true
+  [[ -d lopa  ]] && mv  [0-9]*.lopa  lopa  || true
+  [[ -d title ]] && mv  [0-9]*.title title || true
+  [[ -d tau ]] && mv  [0-9]*.tau tau || true
+  ## If failed, move the control file to the output directory
+  if [[ "$APPEND" =~ ".*fail.*" ]]; then 
+    mv $FILE1 output
+  else
+    rm $FILE1
+  fi
+done
+
+}
+
+
+trap error ERR
+[[ -e ../CARDS.TEMPLATE ]] || cp $COSI_BIN/CARDS.FIOSS.TEMPLATE ../CARDS.FIOSS.TEMPLATE
+if [[  ! -e CARDS.TEMPLATE ]];then 
+  cp ../CARDS.TEMPLATE CARDS.TEMPLATE
+  echo "CARDS.TEMPLATE created. Please check!"
+  exit
+fi
+
+if [[ "$1" == "--ctrl" ]]; then
+  CTRL_SET=1
+  if [[ "$CTRL" =~ '/.*' ]]; then
+    CTRL=$2
+  else
+    CTRL=`pwd`/$2
+  fi
+  echo "Use control Dir $CTRL"
+elif [[ "$1" == "--single" ]]; then
+  ## Frequencies to calculate BASH_ARGV[end:2] 
+  FREQ_STEP_E=$2
+  for ((i=BASH_ARGC-3;i>=0; i--)); do 
+    FREQ_TODO="$FREQ_TODO ${BASH_ARGV[10#$i]}";
+  done
+  echo Freqs todo:  $FREQ_TODO
+else
+  ## Frequencies to calculate - FREQ_START:FREQ_STEP:FREQ_STOP
+
+FREQ_START=${1:-900}
+FREQ_STEP=10
+FREQ_STOP=9990
+
+if [[ "$2" !=  "" ]]; then
+  if [[ "$3" != "" ]]; then    
+    FREQ_STEP=$2
+    FREQ_STOP=$3
+  else
+    FREQ_STOP=$2
+  fi
+fi
+
+FREQ_STEP_INC=${4:-$FREQ_STEP}
+[[ "$4" == "" ]] ||  echo "FREQ_STEP_INC set to $FREQ_STEP_INC"
+
+
+echo $FREQ_START $FREQ_STEP $FREQ_STOP $FREQ_STEP_INC
+(( $FREQ_STEP < 0 )) && let FREQ_STEP=-$FREQ_STEP
+FREQ_STEP_E=$FREQ_STEP
+
+(( FREQ_START > FREQ_STOP )) && let FREQ_STEP=-$FREQ_STEP
+(( FREQ_START > FREQ_STOP )) && let FREQ_STEP_INC=-$FREQ_STEP_INC
+
+echo Doing Frequencies  [ $FREQ_START:$FREQ_STEP_INC:$FREQ_STOP ]
+FREQ_TODO=`seq -w $FREQ_START $FREQ_STEP_INC $FREQ_STOP`
+
+fi;
+
+# move old files to input2
+rm -rf output2
+[[ -e output ]] && mv output output2
+mkdir output/
+
+
+if [[ -e frequencies.log ]]; then 
+  mkdir -p output2;  
+  mv frequencies.log output2/; 
+fi
+
+
+# go through all loops, start by $FREQ_START(900), step $FREQ_STEP(2), end FREQ_STOP(10000)
+CTRL=${CTRL:-`pwd`/ctrl-$$}
+mkdir -p $CTRL
+for FREQ in $FREQ_TODO; do
+  echo "INTERVAL $FREQ. $[10#$FREQ+10#$FREQ_STEP_E]."  > $CTRL/$FREQ
+done
+echo CTRL = $CTRL/
+
+[[ "$CTRL_SET" ]] || ln -s "`pwd`" "$CTRL-wd"
+
+MAX_PROC=${MAX_PROC:-2}
+echo MAX_PROC = $MAX_PROC
+ABEMLIN_DIR=$(egrep '^ABEMLIN .*' CARDS.TEMPLATE | sed 's/^ABEMLIN [A-Z]* *//')
+#echo ABEMLIN_DIR=\"$ABEMLIN_DIR\"
+# mkdir lopa title tau mdisp || true
+for ((A=1;A<=MAX_PROC;A++)); do
+  DIR=JOB-$A-$$ 
+  if [[ -e "$DIR" ]]; then
+    DIR="`mktemp -d ${DIR}_XX`"
+    echo "Start Job $DIR"
+    fioss_cplink_dir . $DIR --force
+  else
+    echo "Start Job $DIR"
+    fioss_cplink_dir . $DIR 
+  fi
+  [[ $ABEMLIN_DIR ]] &&  mkdir -p $DIR/${ABEMLIN_DIR}
+  fioss_runProg "$CTRL/" "$DIR" &
+  sleep 0.2
+  DIRS="$DIRS $DIR"
+done
+wait
+
+rmdir $CTRL &> /dev/null || true
+rm $CTRL-wd || true
+fioss_mv_results $DIRS . 
+A=1
+for A in JOB-*; do
+mv $A/frequencies.log frequencies-$A.log
+let A=A+1
+done

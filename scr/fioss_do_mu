@@ -1,0 +1,123 @@
+#!/bin/bash
+#****************************************************************
+[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
+source $COSI_BIN/helper_scripts
+
+trap error ERR
+# Frequencies to calculate - FREQ_START:FREQ_STEP:FREQ_STOP
+if [[ ! -e CARDS.TEMPLATE ]] ; then
+echo "PROLIB=xxx
+SHIFT=  0.
+NFOBS=      200
+VDOP=  1.5
+MAXITER= 1.
+#ABEMLIN READ abemlin/
+#ABEMLIN WRITE abemlin/" > CARDS.TEMPLATE
+echo "CARDS.TEMPLATE created. Please adjust"
+exit
+fi
+FREQ_START=${1:-900}
+FREQ_STEP=$2
+FREQ_STOP=$3
+PFIRST=$4
+PLAST=${5:?"All parameters must be set, FREQ_START STEP STOP, PFIRST, PLAST. FREQ_STEP_INC is optional"}
+
+FREQ_STEP_INC=${6:-$FREQ_STEP}
+[[ "$4" == "" ]] ||  echo "FREQ_STEP_INC set to $FREQ_STEP_INC"
+
+
+echo $FREQ_START $FREQ_STEP $FREQ_STOP $FREQ_STEP_INC
+
+# move old files to input2
+rm -rf output2
+[[ -e output ]] && mv output output2
+mkdir output/
+
+
+if [[ -e frequencies.log ]]; then 
+  mkdir -p output2;  
+  mv frequencies.log output2/; 
+fi
+
+[[ $FREQ_STEP -lt 0 ]] && let FREQ_STEP=-$FREQ_STEP
+FREQ_STEP_E=$FREQ_STEP
+
+[[ $FREQ_START -gt $FREQ_STOP ]] && let FREQ_STEP=-$FREQ_STEP
+[[ $FREQ_START -gt $FREQ_STOP ]] && let FREQ_STEP_INC=-$FREQ_STEP_INC
+
+echo Doing Frequencies  [ $FREQ_START:$FREQ_STEP_INC:$FREQ_STOP ]
+sleep 1
+
+mkdir -p mdisp lopa title
+
+
+# go through all loops, start by $FREQ_START(900), step $FREQ_STEP(2), end FREQ_STOP(10000)
+for FREQ in `seq $FREQ_START $FREQ_STEP_INC $FREQ_STOP`; do
+if [[ -e 'pause' ]]; then
+  echo "Fioss is paused - rm pause to continue"
+  while [[ -e 'pause' ]]; do
+       sleep 2;
+  done
+fi
+
+if [[ -e 'stop'  ]]; then  # make the program stoppable
+      rm 'stop'
+      echo "Stop Code"
+      exit
+fi
+
+# set Doppler Velocities
+let FREQE=FREQ+FREQ_STEP_E;
+# Create CARDS
+cp CARDS.TEMPLATE CARDS
+echo "PFIRST=    ${PFIRST}.
+PLAST=     ${PLAST}.
+INTERVAL  ${FREQ}.  ${FREQE}." >> CARDS
+if [[ -d fort.19.d ]]; then
+IFS="
+"
+  while read A; do
+IFS=" "
+FGRID=(`echo $A ` )
+FGRID1=${FGRID[0]}
+FGRID2=${FGRID[1]}
+FGRIDN=${FGRID[2]}
+    if [[ $FREQ -gt $FGRID1  ]] && [[ $FREQ -le $FGRID2 ]] ;  then
+       echo Using /$FGRIDN/ for $FREQ
+       [[ -L fort.19 ]] && rm fort.19
+       if [[ $FGRIDN =~ '^/' ]]; then
+         ln -s "$FGRIDN" fort.19
+       else
+         ln -s "fort.19.d/$FGRIDN" fort.19
+       fi
+    fi
+  done < "fort.19.d/frequency.grid"
+IFS=$IFS_O
+fi
+
+
+
+  echo -n "`date +'%Y-%m-%d %H:%M:%S'` Freq: $FREQ, VDOP: $VDOP " | tee -a  frequencies.log
+
+  ./fioss8.exe $FREQ  &> output/fioss-$FREQ.out && echo -n " done" >> frequencies.log ||
+  echo -n " failed" | tee -a  frequencies.log
+  if ` tail -n1 output/fioss-$FREQ.out | grep 'O.K.' &> /dev/null `; then
+    if [[ -e save_out ]]; then
+      mv output/fioss-$FREQ.out output/fioss-$FREQ-save.out
+    else
+      rm output/fioss-$FREQ.out ; 
+    fi
+    echo " O.K." | tee -a frequencies.log
+  else
+    tail -n1 output/fioss-$FREQ.out | tee -a frequencies.log
+  fi
+
+  [[ -d mdisp ]] && mv  [0-9]*.mdisp mdisp || true
+  [[ -d lopa  ]] && mv  [0-9]*.lopa  lopa  || true
+  [[ -d title ]] && mv  [0-9]*.title title || true
+
+
+done # END FOR
+
+grep failed frequencies.log > /dev/null && echo "Some runs failed!!! - see frequencies.log
+and then output/fioss-<FREQ>.out"

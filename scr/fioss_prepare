@@ -1,28 +1,26 @@
 #!/bin/bash
 #****************************************************************
-
-source ~/sim-rinat/scripts/fioss.settings
-source ~/sim-rinat/sync_pool/aux_func.sh
-source $COSI_BIN/helper_scripts
-
-if [ -z "$1" ] || [ -z "$2" ]; then abort "One or more arguments are missing."; fi
-
 if [[ "$0" =~ '((/bin/)|(^-))bash' ]]; then
   # We want to copy the scrip to the run directory. Not possible if sourced
   echo "Error: Script must be called, not sourced! - exit"
 else
+source $COSI_BIN/helper_scripts
+#function error(){
+#  echo "Abnormal Script Termination"
+#  exit
+#}
+
 
 function error_f(){
 __ERROR_F=""
-echo -n "Checking the files..."
+echo "checking files"
  for A in $@; do 
-   if [[ -a $1 ]]; then echo -n;  else
-     echo
+   if [[ -a $1 ]]; then echo -n;  else 
      echo "File/Directory not found: $1"
      __ERROR_F=1
    fi;
  done
- echo " done. $__ERROR_F"
+ echo "done: $__ERROR_F"
  [[ "$__ERROR_F" == "" ]] || error "File/Directory not found"
 }
 
@@ -38,13 +36,14 @@ SCRIPT="$0"
 
 [[ `dirname $0` == '.' ]] && SCRIPT=`pwd`/`basename $SCRIPT`
 CP='kfmclient copy'
-CP='cp -rfv'
+CP='cp -rfv '
 
-change_dir $BASE_DIR
+source fioss.settings
 
-error_ifunset CROSS_SECTION_FILES    \
-              ORIG_COSI       ORIG_EXE        VELO_FILE              \
-              INPUT_SUN_FILE  INPUT_STARK_BROAD  LINELISTS           \
+
+error_ifunset EXE_DIR         CROSS_SECTION_FILES    \
+              ORIG_COSI       ORIG_EXE                     \
+              INPUT_SUN_FILE  INPUT_STARK_BROAD  UVVISIR_FILE           \
               OUTPUT_DIR 
 
 
@@ -54,97 +53,84 @@ function isSet(){
 }
 
 echo \
-"--------------------------------------------------------------------------------------------------------------------------------------------------
-ORIG_COSI =         $ORIG_COSI
-ORIG_EXE =          $ORIG_EXE
-VELO_FILE =         $VELO_FILE
-INPUT_SUN_FILE =    $INPUT_SUN_FILE
-INPUT_STARK_BROAD = $INPUT_STARK_BROAD
-LINELISTS =         $LINELISTS
-OUTPUT_DIR =        $OUTPUT_DIR
-X_SECTION_FILES =   $CROSS_SECTION_FILES
---------------------------------------------------------------------------------------------------------------------------------------------------"; echo
+"--------------------------------------
+EXE_DIR=        $EXE_DIR
+ORIG_COSI=      $ORIG_COSI
+ORIG_EXE=       $ORIG_EXE
+INPUT_SUN_FILE= $INPUT_SUN_FILE
+INPUT_STARK_BROAD= $INPUT_START_BROAD
+UVVISIR_FILE=   $UVVISIR_FILE
+OUTPUT_DIR=     $OUTPUT_DIR
+X_SECTION_FILES=$CROSS_SECTION_FILES
 
-error_f  $ORIG_COSI  $ORIG_EXE  $VELO_FILE   $INPUT_SUN_FILE  $INPUT_STARK_BROAD  $LINELISTS  $CROSS_SECTION_FILES 
+-------------------------------------
+Nothing done yet."
 
-if [ -d $OUTPUT_DIR ]; then chmod u+rwx -R $OUTPUT_DIR; rm_dir $OUTPUT_DIR; fi
 
+error_f  $ORIG_COSI  $ORIG_EXE   $INPUT_SUN_FILE  $INPUT_STARK_BROAD  $UVVISIR_FILE  $CROSS_SECTION_FILES 
+
+[[ -e $OUTPUT_DIR ]] && error "direcotry $OUTPUT_DIR exists"
+#read -p "Wait 4sec or press any key to continue. Press C-c to chancel" # -n 1 -t 4;
+echo "Starting..."
 set -v
+mkdir -p ${EXE_DIR}
 
-mkdir -p $OUTPUT_DIR
 
-change_dir $OUTPUT_DIR
+mkdir -p  $OUTPUT_DIR
+$CP fioss.settings $OUTPUT_DIR
+cd "$FIOSS_SRC"
+  tar -czf $OUTPUT_DIR/fioss-src.tgz *.for
 
-$CP ${ORIG_COSI}/FAL_VD     ./
-$CP ${ORIG_COSI}/MODFILE    ./
-$CP ${ORIG_COSI}/FGRID	    ./
-$CP ${ORIG_COSI}/DATOM	    ./
-$CP ${ORIG_COSI}/RADIOC     ./
-$CP ${ORIG_COSI}/RADIOL     ./
-$CP ${ORIG_COSI}/POPNUM     ./
 
-if [ -f $NTW_FILE ]; then $CP $NTW_FILE ./; fi
-if [ -f $NTP_FILE ]; then $CP $NTP_FILE ./; fi
+$CP $ORIG_EXE/*.exe ${EXE_DIR}
+cd        $OUTPUT_DIR
+pwd
+#	mv radioc  RADIOC
+#	mv radiocl RADIOCL
+#	mv radiol  RADIOL
 
-if [ -d ${ORIG_COSI}/src/ ]; then cmd "cp -r ${ORIG_COSI}/src/  ./"; fi
+#     ${ORIG_COSI}/RADIOCL \
+$CP  ${ORIG_COSI}/FAL_VD   ./ 
+$CP  ${ORIG_COSI}/MODFILE  ./
+$CP  ${ORIG_COSI}/FGRID	   ./
+$CP  ${ORIG_COSI}/DATOM	   ./
+$CP  ${ORIG_COSI}/RADIOC   ./
+$CP  ${ORIG_COSI}/RADIOL   ./
+$CP  ${ORIG_COSI}/POPNUM   ./
+#  new sasha
+$CP  /scratch/shapiroa/Data/Mollist/c2.asc ./ 
+$CP  /scratch/shapiroa/Data/Mollist/ch.asc ./
+$CP  /scratch/shapiroa/Data/Mollist/cn.asc ./
+$CP  /scratch/shapiroa/Data/Mollist/co.asc ./
+$CP  /scratch/shapiroa/Data/Mollist/h2.asc ./
+$CP  /scratch/shapiroa/Data/Mollist/nh.asc ./
+$CP  /scratch/shapiroa/Data/Mollist/oh.asc ./
+$CP  /scratch/shapiroa/Data/Mollist/o2.asc ./
+$CP  /scratch/shapiroa/Data/Mollist/O2_H ./
+$CP  /scratch/shapiroa/Data/Mollist/add/fudge_As.txt ./
+$CP  ${ORIG_COSI}/MolConc.txt   ./
+#  new sasha
+$CP  $SCRIPT	           ./
+$CP  ${CROSS_SECTION_FILES}/*---*  ./
+$CP  $INPUT_STARK_BROAD/*  ./
+$CP  $ORIG_EXE/fioss8.exe ./
+#$CP  ${VELO_FILE} ./VELO			
+$CP  $INPUT_SUN_FILE ./input_sun
 
-#Added by Alexander Shapiro
-#######################################
-$CP ~/sim-rinat/data/Mollist/c2.asc ./ 
-$CP ~/sim-rinat/data/Mollist/ch.asc ./
-$CP ~/sim-rinat/data/Mollist/cn.asc ./
-$CP ~/sim-rinat/data/Mollist/co.asc ./
-$CP ~/sim-rinat/data/Mollist/h2.asc ./
-$CP ~/sim-rinat/data/Mollist/nh.asc ./
-$CP ~/sim-rinat/data/Mollist/oh.asc ./
-$CP ~/sim-rinat/data/Mollist/o2.asc ./
-$CP ~/sim-rinat/data/Mollist/O2_H   ./
-#######################################
 
-# Added by Rinat Tagirov
-###########################################################################
-$CP ~/sim-rinat/data/fudge_As.txt ./
-
-if [ $ODF_IT -eq 0 ]; then
-	
-   cmd "$CP $F_DIR/CARDS.FIOSS.TEMPLATE  ./CARDS.TEMPLATE"
-   
+## Check if the UVVISIR_FILE is a directory
+if [[ -d "../ITx/fort.19.d" ]];  then
+   ln -s ../ITx/fort.19.d fort.19.d
+elif [[ -f "../ITx/fort.19" ]]; then
+   ln -s ../ITx/fort.19.d fort.19.d
+elif [[ -d ${UVVISIR_FILE} ]]; then
+   $CP ${UVVISIR_FILE} ./fort.19.d/
+elif [[ `file -bi $UVVISIR_FILE` == "application/x-gzip" ]]; then
+     gunzip -vc $UVVISIR_FILE > ./fort.19 
 else
-
-   if [ -f $F_DIR/IT$PREV_ODF_IT/$RUN/CARDS.TEMPLATE ]; then
-
-      cmd "$CP $F_DIR/IT$PREV_ODF_IT/$RUN/CARDS.TEMPLATE  ./CARDS.TEMPLATE"
-
-   else
-
-      cmd "$CP $F_DIR/CARDS.FIOSS.TEMPLATE  ./CARDS.TEMPLATE"
-
-   fi
-
+     $CP $UVVISIR_FILE ./fort.19
 fi
 
-cmd "$CP $ORIG_COSI/fioss8.exe ./"
-###########################################################################
-
-$CP ${ORIG_COSI}/MolConc.txt     ./
-
-#Added by Alexander Shapiro
-#############################################
-$CP ${CROSS_SECTION_FILES}/*---* ./
-$CP $INPUT_STARK_BROAD/*         ./
-$CP ${VELO_FILE}                 ./VELO			
-$CP $INPUT_SUN_FILE              ./input_sun
-#############################################
-
-if [ ! -d $LINELISTS ]; then abort "The directory $LINELISTS with the linelists does not exist."; fi
-
-ls ${LINELISTS}* &> /dev/null
-
-exit_if_error "The linelists have not been found. The directory $LINELISTS is empty."
-
-if [ ! -L "$F_DIR/ITx/fort.19.d" ]; then abort "The symbolic link $F_DIR/ITx/fort.19.d to the directory $LINELISTS with the linelists does not exist."; fi
-
-ln -sv $F_DIR/ITx/fort.19.d fort.19.d
 
 if ( isSet $ORIG_COSI2 ); then
   echo "Overwriting files from $ORIG_COSI with files from $ORIG_COSI2 in `pwd`"
@@ -152,13 +138,12 @@ if ( isSet $ORIG_COSI2 ); then
 fi;
 
 cat > fort.55 << eof
-0 40 1
+0 10 1
 1 0 0
 0 70717273 29 25 0 0 0
 4003. 6000. 30. 1.e-40 10.
 XXXXX
 eof
-
 cat > fort.56 << eof
 30
     1      -1.000
@@ -193,8 +178,7 @@ cat > fort.56 << eof
    30      -1.000
 eof
 
-echo -e "\nThe FIOSS run $OUTPUT_DIR/ has been prepared.\n"
 
-chmod u+rwx -R $OUTPUT_DIR
-
-fi
+echo "-------------------- Prepared the run"
+pwd
+fi;

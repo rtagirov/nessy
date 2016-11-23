@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# Make a copy of a directory with all files linked to the old one but a few
+#
+# Need two arguments, the old directory and a suffix for the new directory
+#
+# New directory will be at BASEDIR/OLDDIR.SUFFIX
+#
+[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
+source $COSI_BIN/helper_scripts
+OLD=$1
+START=2
+FORCE=0
+if [[ "$2" == "--force" ]]; then
+START=3
+FORCE=1
+elif [[ "$1" == "--force" ]]; then
+FORCE=1
+START=3
+OLD=$2
+fi
+[[ "$3" == "--force" ]] && FORCE=1
+
+
+FILES="AlI------1  CI-------3    FeI------3   fioss_prepare   MgI------2  NaI------3  NaI------9  SI-------2  SiI------5
+CaI------1  DATOM         FeI------4     MgI------3  NaI------4  POPNUM      SI-------3  SiI------6
+CaI------2  Dilfac.mdisp  FeI------5  
+MODFILE     NaI------5 O2_H RADIOC MolConc.txt c2.asc  ch.asc  cn.asc  co.asc  h2.asc  nh.asc  oh.asc o2.asc SiI------1  VELO
+CaI------3  FAL_VD        FGRID        NaI------1  NaI------6  RADIOCL     SiI------2
+CI-------1  FeI------1    fioss8.exe   input_sun   NaI-----10  NaI------7  RADIOL      SiI------3
+CI-------2  FeI------2    fioss_do_mu  MgI------1  NaI------2  NaI------8  SI-------1  SiI------4  `echo fort.*`"
+cd $OLD
+OLD=`pwd`
+
+
+if [[ $1 ]]; then true; else
+   echo "Arguments not set!"
+   exit
+fi
+
+for A in `seq 0 $[BASH_ARGC-$START]`; do
+NEW=$OLD/${BASH_ARGV[$A]}
+cd $OLD
+echo Creating $NEW ...
+
+mkdir "$NEW" || [[ "$FORCE" == "1" ]] ||  error "Could not create new directory"
+cd    "$NEW" 
+
+for A in $FILES; do
+[[ -e $OLD/$A ]] &&  ln -s $OLD/$A . 
+done;
+
+[[ -h "$NEW/CARDS" ]] && rm "$NEW/CARDS"
+[[ -e "$OLD/CARDS" ]] && cp "$OLD/CARDS" "$NEW/"
+# find -type l -name "fioss_*"
+find -type l -name "fioss_*" -exec rm "{}" \; -exec cp "$OLD/{}" "$NEW/{}" \;
+done

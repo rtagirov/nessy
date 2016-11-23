@@ -1,46 +1,5 @@
 #!/bin/bash
 #****************************************************************
-
-source ~/sim-rinat/sync_pool/aux_func.sh
-
-if [ -z "$1" ] || [ -z "$2" ]; then abort "One or more arguments are missing."; fi
-
-##################################################################
-ODF_IT=$1
-
-PREV_ODF_IT=$(echo $ODF_IT-1 | bc -l)
-
-RUN=$2
-
-INIT_DIR=~/sim-rinat/Asplund_C_final
-
-PREV_RUN_DIR=$INIT_DIR/hminus/IT$PREV_ODF_IT/$RUN
-
-BASE_DIR=/nfs/projects/cosi
-DATA_DIR=${BASE_DIR}/input
-ORIG_SRC=~/sim-rinat/cosi/cosi_rinat/
-ORIG_EXE_FILE=$PREV_RUN_DIR/hminus.exe
-DATOM_FILE=$PREV_RUN_DIR/DATOM
-FGRID_FILE=${DATA_DIR}/fgrid/fgridHZN.dat
-FALVD_FILE=$PREV_RUN_DIR/FAL_VD
-CROSS_SECTION_FILES="${BASE_DIR}/input/cross_sections/002/"
-CHEMIN_FILE=$PREV_RUN_DIR/chem.in
-RUN_DIR=$INIT_DIR/hminus/IT${ODF_IT}/$RUN
-#DIR_EXE=dir_exe/
-
-if [ ${ODF_IT} != 0 ]; then
-
-   __OLD_COSI=$PREV_RUN_DIR
-   FIOSS_DIR=$INIT_DIR/fioss/calc/runs/runs/IT${PREV_ODF_IT}/$RUN
-   POPNUM=${FIOSS_DIR}/POPNUM
-   RADIOC=${FIOSS_DIR}/RADIOC
-   RADIOL=${FIOSS_DIR}/RADIOL
-   RADIOCL=${__OLD_COSI}/RADIOCL
-   LBKG=$INIT_DIR/lbkg/IT${PREV_ODF_IT}_IT$ODF_IT/$RUN
-
-fi
-#################################################################
-
 ### VARIABLES
 function error_ifunset() {
   ERRVAR=""
@@ -57,70 +16,131 @@ else
 source $COSI_BIN/helper_scripts
 trap error ERR
 
-change_dir $INIT_DIR
+source hminus.settings
 
-#[[ -e hminus-fioss.settings ]] && source hminus-fioss.settings
+[[ -e hminus-fioss.settings ]] && source hminus-fioss.settings
+
 
 THIS_SCRIPT=$0
-echo "===================================================================================================
-BASE_DIR =            $BASE_DIR
-DATA_DIR =            $DATA_DIR
-DATOM_FILE =          $DATOM_FILE
-FGRID_FILE =          $FGRID_FILE
-CROSS_SECTION_FILES = $CROSS_SECTION_FILES
-PREV_RUN_DIR =        $PREV_RUN_DIR
-ORIG_EXE_FILE =       $ORIG_EXE_FILE
-FALVD_FILE =          $FALVD_FILE
-CHEMIN_FILE =         $CHEMIN_FILE
-RUN_DIR =             $RUN_DIR
-ORIG_SRC =            $ORIG_SRC
-LBKG =                $LBKG
-==================================================================================================="; echo
+echo "================= DIRECTORIES ====================
+DIR_EXE       = ${DIR_EXE}
+DATOM_FILE    = ${DATOM_FILE}
+FGRID_FILE    = ${FGRID_FILE}
+FALVD_FILE    = ${FALVD_FILE}
+CROSS_SECTION_FILES = ${CROSS_SECTION_FILES}
+RUN_DIR       = ${RUN_DIR}
+OLD           =${OLD}
+------- Directory = `pwd` -----------------"
+[[ -e ${RUN_DIR} ]] && error "Run Dir already exist"
 
-error_ifunset CROSS_SECTION_FILES DATOM_FILE FGRID_FILE FALVD_FILE RUN_DIR ORIG_SRC 
+error_ifunset CROSS_SECTION_FILES DATOM_FILE FGRID_FILE FALVD_FILE RUN_DIR 
 
-rm_dir $RUN_DIR; create_dir $RUN_DIR
-
-pushd . &> /dev/null
-cd        ${ORIG_SRC}
+mkdir   ${RUN_DIR}
+cp        ${ORIG_EXE_FILE}   ${RUN_DIR}/
+pushd .
+#cd        ${ORIG_SRC}
 #tar -czf  ${RUN_DIR}/cosi-src.tgz `find -iname '*.for' ` `find -iname 'Makefile*'`
-popd &> /dev/null
+popd
 
-#[[ -e hminus-fioss.settings ]] && cp hminus-fioss.settings $RUN_DIR
+cp        $THIS_SCRIPT       $RUN_DIR/
+cp        hminus.settings    $RUN_DIR
+[[ -e hminus-fioss.settings ]] && cp hminus-fioss.settings $RUN_DIR
+cd ${RUN_DIR}
+echo " ------- Directory = `pwd` -----------------"
+pwd
+cp ${DATOM_FILE} ./DATOM
+cp ${FGRID_FILE} ./FGRID
+cp ${FALVD_FILE} ./FAL_VD
+cp ${CROSS_SECTION_FILES}/* ./
+cp /scratch/shapiroa/Data/Mollist/add/chem.in ./
 
-change_dir ${RUN_DIR}
 
-cp -v ${DATOM_FILE}            ./DATOM
-cp -v ${FGRID_FILE}            ./FGRID
-cp -v ${FALVD_FILE}            ./FAL_VD
-cp -v ${CROSS_SECTION_FILES}/* ./
-cp -v ${CHEMIN_FILE}           ./chem.in
-
-cmd "cp -v ${ORIG_EXE_FILE} ./"
-cmd "cp -v ${FIOSS_DIR}/fioss8.exe ./"
-cmd "cp -v $PREV_RUN_DIR/CARDS ./"
-
-cmd "cp -v $PREV_RUN_DIR/Uitenbroek_H_CE.dat ./"
-cmd "cp -v $PREV_RUN_DIR/Uitenbroek_H_CI.dat ./"
-
-cp_file "$PREV_RUN_DIR/vel_field.in" "./" "v"
-
-insert "wrstart" "fort.99" "r"
-
-if [ $ODF_IT -ge 1 ]; then
-
-   cp -v $POPNUM  ./OLDMODEL
-   cp -v $RADIOC  ./RADIOC
-   cp -v $RADIOL  ./RADIOL
-   cp -v $RADIOCL ./RADIOCL
-
-   if [ -d $FIOSS_DIR/src/ ]; then cmd "cp -r $FIOSS_DIR/src/ ./"; fi
-
-   process_message "Copying the ODFs from $LBKG to $RUN_DIR" "cp $LBKG/*.lbkg ./"
-
-   if [ $ODF_IT -eq 1 ]; then insert "LBKG 1000 9990" CARDS "a"; fi
-   if [ $ODF_IT -eq 1 ]; then insert "OLDSTART"       CARDS "a"; fi
-
+## If hminus run then
+if [[ "" != $LBKG ]]; then
+  cp $POPNUM  POPNUM;
+  cp $LBKG/*.lbkg .;
+  cp $RADIOC  RADIOC;
+  cp $RADIOL  RADIOL;
+  cp $RADIOCL RADIOCL;
+  cp POPNUM OLDMODEL
 fi
 
+
+cat > fort.99 << eof
+wrstart
+eof
+cp ../$OLD/CARDS ./CARDS
+if(false); then
+cat > CARDS <<  eof
+HEADLINE: T=5777K R=1 dM/dt=-11 lgg4.0 T Model "Micha"  with NLTELBKG
+ABH=  9.11E-01
+ALI=  1.02E-11
+ABE=  2.18E-11
+ABB=  4.57E-10
+ABC=  2.24E-04
+ABN=  5.49E-05
+ABO=  4.16E-04
+ABF=  3.31E-08
+ANE=  6.30E-05
+ANA=  1.35E-06
+AMG=  3.09E-05
+AAL=  2.13E-06
+ASI=  2.95E-05
+ABP=  2.09E-07
+ABS=  6.30E-06
+ACL=  2.88E-07
+AAR=  1.38E-06
+ABK=  1.10E-07
+ACA=  1.86E-06
+ASC=  1.02E-09
+ATI=  7.23E-08
+ABV=  9.11E-09
+ACR=  3.98E-07
+AMN=  2.24E-07
+AFE=  2.57E-05
+ACO=  7.58E-08
+ANI=  1.55E-06
+ACU=  1.48E-08
+AZN=  3.63E-08
+ATMEAN= 1.2979378
+TABLE
+FAL
+TEFF=    5777.
+RSTAR (SOLAR UNITS):    0.99975
+MDOT=   -7.9955
+-LINE BLANKETING ON
+VELPAR: VFINAL (KM/S)= 1.00  VMIN=4.2E-4BETA= 1. RMAX= 1.01 X
+RGRID: ND=56     ND2=TABLEND3= 0.  DLOGTAU= 0.16
+NO TEMPERATURE CORRECTION
+TMIN=  2000.
+VDOP=   5.
+LOG G=  4.44          1.
+DELTAC=  0.7
+GAMMAC=   900.
+GAMMAR=   6000.
+GAMMAL=   900.
+LINE  1 TO LINE 150
+JOBMAX=   900.
+NEWWRC=   3.
+NG
+NOACCEL
+EPSILON= 0.0001
+PRINT HISTORY
+PRINT DATOM
+PRINT FLUX
+eof
+fi
+
+
+if [[ "" != $LBKG ]]; then
+cat >> CARDS << eof
+
+LBKG  900 9990
+OLDSTART
+eof
+fi;
+
+cp ../$OLD/*.exe ./
+#./hminus.exe | tee model.out
+#rm hminus.exe
 fi

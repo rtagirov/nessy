@@ -8,20 +8,15 @@
 # FILTER in its directory name. E.g cosi_status hminus/IT4 
 #
 
-base1=/mnt/SSD/sim
-
-CONV_FILE=CONV/ALL
-
-#[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
-
-source $base1/scripts/helper_scripts
+[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
+source $COSI_BIN/helper_scripts
 
 bold=`tput bold`
 offbold=`tput sgr0`
 PROGSC=`pgrep 'fioss|hminus' -d,`
 #     ____________________Tue Sep 11 13:30:58 CEST 2007_
 #echo "${bold}—————————————`date                       `——————————————————————————————————————————————————————————${offbold}"
-echo "${bold}-------------`date                       `----------------------------------------------------------${offbold}"
+echo "${bold}-------------`date                       `-----------------------------------------------------------${offbold}"
 [[ "$PROGSC" ]] && ps --sort=uid -p $PROGSC  -H -o '%p%P%U%C%t%x%n  %a'  
 #[[ "$PROGSC" ]] && echo        "————————————————————————————————————————————————————————————————————————————————————————————————————"
 [[ "$PROGSC" ]] && echo        "${bold}----------------------------------------------------------------------------------------------------${offbold}"
@@ -56,46 +51,27 @@ done
 echo  "${bold}----------------------------------------------------------------------------------------------------${offbold}"
 #echo "————————————————————————————————————————————————————————————————————————————————————————————————————"
 ### HMinus
-for PID in `pgrep hminus.exe`; do
+for PID in `pgrep  hminus.exe`; do
+   if [[ -r /proc/$PID/cwd ]]; then
+     PATHNAME=$(ls -hld /proc/$PID/cwd | grep -o '\->.*$')
+     if [[ `echo $PATHNAME | grep -- "$1"` ]]; then
+       echo "$bold HMINUS $PATHNAME $offbold"
+       echo -ne " H: $PID \t";
+       LASTJN=`tail -n 1500 /proc/$PID/cwd/model.out | grep -o 'JOB NO.*$' | tail -1` 
+       LASTCM=`tail -n 1500 /proc/$PID/cwd/model.out | grep -o 'CORMAX=........' | tail -1` 
+       LAST="${LASTJN:+"$LASTJN :"}${LASTCM:+" Last $LASTCM"}"
+       echo -e " ${LAST:-" No JOB completed yet?"}   (@`cat /proc/$PID/cwd/fort.99`)"
+      #echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+      echo
 
-    if [[ -r /proc/$PID/cwd ]]; then
-
-       PATHNAME=$(ls -hld /proc/$PID/cwd | grep -o '\->.*$')
-
-       if [[ `echo $PATHNAME | grep -- "$1"` ]]; then
-
-          echo -e "\n${bold}HMINUS $PATHNAME/ $offbold\n"
-
-          echo -e "PID: $PID; JOB: `cat /proc/$PID/cwd/fort.99`\n"
-
-          if [ -f /proc/$PID/cwd/$CONV_FILE ]; then
-
-             LAMBDA_ITE=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $1}')
-
-             CORMAX_ALL=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $2}')
-             CORMAX_NHN=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $4}')
-             CORMAX_HYD=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $5}')
-
-             echo -e "LAMBDA ITERATION: $LAMBDA_ITE\n"
-
-             echo -e "CORMAX: ALL = $CORMAX_ALL \n\tNHN = $CORMAX_NHN \n\tHYD = $CORMAX_HYD \n"
-
-          else
-
-             echo -e "NO LAMBDA ITERATION HAS BEEN COMPLETED YET.\n"
-
-          fi
-
-       fi
-
-       echo "---------------------------------------------------------------------------------------"
-
-    else
-
-       if [[ ! "$1" ]]; then echo "HMINUS $PID (`ps hp $PID -O user,%cpu,comm,wchan,nice | cut -b 6-` )"; echo; fi
- 
-    fi
-
-    echo "---------------------------------------------------------------------------------------"
+   fi
+  else
+   if [[ ! "$1" ]]; then
+    echo " HMINUS $PID (`ps hp $PID -O user,%cpu,comm,wchan,nice | cut -b 6-` )"
+    #echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+    echo
+   fi
+  fi
 
 done
+

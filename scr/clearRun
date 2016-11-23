@@ -1,0 +1,6 @@
+#!/bin/bash
+for folder in T*: do
+	cd "$folder" || exit
+	rm -rf ctrl-* JOB-* freq*log mdisp* lopa*
+	cd .. || exit
+done

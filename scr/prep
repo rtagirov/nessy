@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/
+rm ./IT3_new/lopa/*
+cp -r IT3_new IT3_no_atom
+rm ./IT3_no_atom/mdisp/*
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/
+rm ./IT3_new/lopa/*
+cp -r IT3_new IT3_no_atom
+rm ./IT3_no_atom/mdisp/*
+echo 'Hello F'
+cd ~/data/Asplund_F_final/fioss/
+rm ./IT3_new/lopa/*
+cp -r IT3_new IT3_no_atom
+rm ./IT3_no_atom/mdisp/*
+echo 'Hello P'
+cd ~/data/Asplund_P_final/fioss/
+rm ./IT3_new/lopa/*
+cp -r IT3_new IT3_no_atom
+rm ./IT3_no_atom/mdisp/*
+echo 'Hello S'
+cd ~/data/Asplund_S_NLTE/fioss/
+rm ./IT3_new/lopa/*
+cp -r IT3_new IT3_no_atom
+rm ./IT3_no_atom/mdisp/*
+

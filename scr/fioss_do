@@ -1,0 +1,126 @@
+#!/bin/bash
+#****************************************************************
+[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
+source $COSI_BIN/helper_scripts
+
+trap error ERR
+[[ -e CARDS.TEMPLATE ]] || cp ../CARDS.TEMPLATE CARDS.TEMPLATE
+
+
+if [[ "$1" == "--single" ]]; then
+  ## Frequencies to calculate BASH_ARGV[end:2] 
+  FREQ_STEP_E=$2
+  for i in `seq $[$BASH_ARGC-3] -1 0`; do 
+    FREQ_TODO="$FREQ_TODO ${BASH_ARGV[$i]}";
+  done
+  echo Freqs todo:  $FREQ_TODO
+else
+  ## Frequencies to calculate - FREQ_START:FREQ_STEP:FREQ_STOP
+
+FREQ_START=${1:-900}
+FREQ_STEP=2
+FREQ_STOP=10000
+
+if [[ "$2" !=  "" ]]; then
+  if [[ "$3" != "" ]]; then    
+    FREQ_STEP=$2
+    FREQ_STOP=$3
+  else
+    FREQ_STOP=$2
+  fi
+fi
+
+FREQ_STEP_INC=${4:-$FREQ_STEP}
+[[ "$4" == "" ]] ||  echo "FREQ_STEP_INC set to $FREQ_STEP_INC"
+
+
+echo $FREQ_START $FREQ_STEP $FREQ_STOP $FREQ_STEP_INC
+(( $FREQ_STEP < 0 )) && let FREQ_STEP=-$FREQ_STEP
+FREQ_STEP_E=$FREQ_STEP
+
+(( FREQ_START > FREQ_STOP )) && let FREQ_STEP=-$FREQ_STEP
+(( FREQ_START > FREQ_STOP )) && let FREQ_STEP_INC=-$FREQ_STEP_INC
+
+echo Doing Frequencies  [ $FREQ_START:$FREQ_STEP_INC:$FREQ_STOP ]
+FREQ_TODO=`seq $FREQ_START $FREQ_STEP_INC $FREQ_STOP`
+fi;
+
+# move old files to input2
+rm -rf output2
+[[ -e output ]] && mv output output2
+mkdir output/
+
+
+if [[ -e frequencies.log ]]; then 
+  mkdir -p output2;  
+  mv frequencies.log output2/; 
+fi
+
+sleep 1
+
+mkdir -p mdisp lopa title
+
+
+# go through all loops, start by $FREQ_START(900), step $FREQ_STEP(2), end FREQ_STOP(10000)
+for FREQ in $FREQ_TODO; do
+if [[ -e 'pause' ]]; then
+  echo "Fioss is paused - rm pause to continue"
+  while [[ -e 'pause' ]]; do
+       sleep 2;
+  done
+fi
+
+if [[ -e 'stop'  ]]; then  # make the program stoppable
+      rm 'stop'
+      echo "Stop Code"
+      exit
+fi
+
+# set Doppler Velocities
+let FREQE=FREQ+FREQ_STEP_E;
+# Create CARDS
+cp CARDS.TEMPLATE CARDS
+echo "INTERVAL  ${FREQ}.  ${FREQE}." >> CARDS
+[[ -d fort.19.d ]] && \
+ while IFS=" " read FGRID1 FGRID2 FGRIDN; do
+    [[ "$FGRIDN" == "" ]] && continue # skip empty lines
+    if (( FREQ > $FGRID1  )) && (( $FREQ <= $FGRID2 )) ;  then
+      echo Using /$FGRIDN/ for $FREQ
+      [[ -L fort.19 ]] && rm fort.19
+      if [[ $FGRIDN =~ '^/' ]]; then
+        ln -s "$FGRIDN" fort.19
+      else
+        ln -s "fort.19.d/$FGRIDN" fort.19
+      fi
+      break 1 
+    fi
+done <  "fort.19.d/frequency.grid"
+
+
+  echo -n "`date +'%Y-%m-%d %H:%M:%S'` Freq: $FREQ, VDOP: $VDOP " | tee -a  frequencies.log
+
+  ./fioss8.exe $FREQ  &> output/fioss-$FREQ.out && echo -n " done" >> frequencies.log ||
+  echo -n " failed" | tee -a  frequencies.log
+  APPEND=""
+  if ` tail -n1 output/fioss-$FREQ.out | grep 'O.K.' &> /dev/null `; then
+    echo " O.K." | tee -a frequencies.log
+  else
+    tail -n1 output/fioss-$FREQ.out | tee -a frequencies.log
+    APPEND="fail"
+  fi
+  [[ -e save_out ]] && APPEND="${APPEND:+${APPEND}+}save"
+  if [[ "$APPEND"  ]]; then 
+    mv output/fioss-$FREQ.out output/fioss-$FREQ-$APPEND.out
+  else
+    rm output/fioss-$FREQ.out
+  fi
+  
+  [[ -d mdisp ]] && mv  [0-9]*.mdisp mdisp || true
+  [[ -d lopa  ]] && mv  [0-9]*.lopa  lopa  || true
+  [[ -d title ]] && mv  [0-9]*.title title || true
+
+
+done # END FOR
+
+grep failed frequencies.log > /dev/null && echo "Some runs failed!!! - see frequencies.log
+and then output/fioss-<FREQ>.out"

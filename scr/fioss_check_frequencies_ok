@@ -1,0 +1,12 @@
+#!/bin/bash
+# 
+# Prueft ob ein fioss lauf korrekt durchgelaufen ist.
+# (Ueberprueft ob die letzte Zeile in den uebergegeben Dateien O.K. enthaelt.)
+#
+
+[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
+source $COSI_BIN/helper_scripts
+
+for A in $@; do
+  tail -n1 $A | grep -v 'O.K.' && echo $A
+done

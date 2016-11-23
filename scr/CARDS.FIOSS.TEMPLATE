@@ -1,0 +1,8 @@
+PROLIB=xxx
+SHIFT=  0.
+NFOBS=      2000
+VDOP=  1.5
+MAXITER= 1.
+#ABEMLIN READ abemlin/
+#ABEMLIN WRITE abemlin/
+PRINT TAU

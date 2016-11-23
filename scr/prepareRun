@@ -1,0 +1,155 @@
+#!/bin/bash
+################################
+## Kill hminus.exe processes which take more than MAX_TIME minutes to converge
+##
+## First wait for the first hminus.exe to appear, proceed once it has appeared
+## Print number of processes currently running, their time and PID every 5 seconds
+## Exit either when there are no more processes executing or after killing the remaining ones after $MAX_TIME
+## 
+## Usage:
+##	set the MAX_TIME variable to your liking, default is 15 minutes
+(
+MAX_TIME=15 # time to wait before killing the process in minutes
+
+number_of_processes=$(ps aux | pgrep hminus.exe | wc -l)
+while [ "$number_of_processes" -eq 0 ]; do
+	echo "No processes found yet, sleeping 10s."
+	sleep 10
+	number_of_processes=$(ps aux | pgrep hminus.exe | wc -l)
+done
+
+hminus_exists=1
+while [ $hminus_exists -eq 1 ]; do
+	number_of_processes=$(ps aux | pgrep hminus.exe | wc -l)
+	if [ "$number_of_processes" -gt 0 ]; then
+		time_elapsed=$(ps aux | grep hminus.exe | awk '{print $10}'| awk -F':' '{print $1}') #get the process run time
+		time_elapsed=( $time_elapsed ) #transform string into an array
+		unset time_elapsed[${#time_elapsed[@]}-1] #delete the last element of the array
+		pid=$(ps aux | grep hminus.exe | awk '{print $2}') #repeat the same with process ID (PID)
+		pid=( $pid )
+		unset pid[${#pid[@]}-1]
+		counter=0 # array index
+		echo "Found ""$number_of_processes"" processes"
+		for time in ${time_elapsed[*]}; # walk over the array of runtimes and kill if exceeding $MAX_TIME
+		do
+			if [ $((time)) -ge $((MAX_TIME)) ]; then
+				echo 'Killing process with time: '"${time}"' minutes, pid: '"${pid[$counter]}"'.'
+				kill -9 "${pid[$counter]}"
+			else
+				if [ "$time" -eq 1 ]; then
+					echo Found a process with PID "${pid[$counter]}" running "for" "$time" minute.
+				else
+					echo Found a process with PID "${pid[$counter]}" running "for" "$time" minutes.
+				fi
+			fi
+			counter=$(( counter + 1 ))
+		done
+		sleep 5
+	fi
+
+	if [ "$number_of_processes" -eq 0 ]; then
+		echo number of processes is 0, exiting.
+		hminus_exists=0
+	fi
+
+done
+) &
+##
+## 
+##	
+################################
+
+################################
+## Prepare hminus and fioss directories and submit the job to a cluster
+##
+## Create and prepare hminus directory with the appropriate atmosphere
+## Create and prepare fioss directory
+## Create the job.sh file and submit it to a cluter
+##
+## Usage:
+##	edit the number of nodes by setting the $NODE variable, default is 3
+##	set the wavelength interval by changing the parameters of fioss_do2_cluster command 
+##		fioss_do2_cluster BEGINNING STEP END
+NODE=1
+
+for file in atmospheres/*.atm;
+do(
+  folder_name=$(echo "$file" |awk -F'.' '{print $1}' | awk -F'/' '{print $2}') # from atmosphere filename atmospheres/T5500.atm generate folder name T5500
+  echo 'Creating' "$folder_name"
+  cp -r hminus/template hminus/"$folder_name" # create the hminus folder for this atmosphere
+  cp "$file" hminus/"$folder_name"/FAL_VD # copy and rename atmosphere file
+  echo 'lte' > hminus/"$folder_name"/fort.99 # set hminus.exe parameters 
+  cd hminus/"$folder_name"/ || exit
+  ./hminus.exe # run hminus
+  a=$(cat fort.99) # check the exit status
+  if [ 'exit' = "$a" ] ; then # if the exit status is anything but 'exit' append 'failed' to the current folder name
+  # otherwise prepare fioss
+    echo 'hminus completed successfully'
+    cd ../.. || exit
+    if [ ! -d fioss ]; then
+      echo 'fioss directory does not exist, creating'
+      mkdir fioss
+    fi
+    echo "Running fioss_prepare for ""$folder_name"
+    fioss_prepare "$folder_name" #prepare fioss with the same folder name in fioss/$folder_name
+    cd fioss/"$folder_name" || exit
+    # create a job.sh file that is used to submit the job to a cluster
+    # if EOT has quotes ("") round it that means it will NOT expand variable names
+    # in order to set an unique name for our run we have to expand the $folder_name variable 
+	cat > job.sh <<- EOT 
+	#!/bin/bash
+	#PBS -q atlasq
+	#PBS -N nessy${folder_name}
+	#PBS -M cernetic@mps.mpg.de
+	#PBS -j oe
+	#PBS -l nodes=${NODE}:ppn=48
+	#PBS -l walltime=1:00:00
+	EOT
+	cat >> job.sh <<- "EOT"
+
+	# initialize modules environment
+	. $MODULESHOME/init/bash
+
+	# load module(s)
+	module load intel
+
+	# change to submit dir
+	cd $PBS_O_WORKDIR
+
+	# number of processes
+	NP=$(cat $PBS_NODEFILE | wc -l)
+
+	# number of processes per node
+	PPN=$(($NP/$(cat $PBS_NODEFILE|uniq|wc -l)))
+
+	# set number of hardware contexts
+	export PSM_SHAREDCONTEXTS_MAX=$(((($PPN+3))/4))
+	
+	# start your job
+	EOT
+	cat >> job.sh <<- EOT
+	export NODE_NUMBER=${NODE}
+	EOT
+	cat >> job.sh <<- "EOT"
+	export MAX_PROC=48
+	
+	fioss_do2_cluster 1010 10 8980 > nohup
+	
+	# unload module(s)
+	module unload intel
+	EOT
+    qsub job.sh # submit the job to the cluster
+  else
+    echo "Problem with atmosphere" "$file"
+    cd .. || exit
+    mv "$folder_name" "$folder_name""failed"
+    cd .. || exit
+  fi
+  ) &
+done
+##
+##
+##
+################################
+wait
+echo "All done, use 'qstat' to check the jobs queued on the cluster."

@@ -1,0 +1,72 @@
+#!/bin/bash
+#
+export MAX_PROC=16
+echo 'Here we start'
+
+work=IT0_Asplund_fast
+work_next=IT1_Asplund_fast
+rdir=COSI_runs_P
+cd /scratch/shapiroa/${rdir}/hminus/${work}
+./hminus_NLTE.exe 
+cd ../..
+fioss_prepare ${work}
+cd fioss/${work}
+fioss_do2
+cd ../../lbkg
+mkdir ${work}
+cp CL CARDS.LOPA
+line1="INPUT PATH  ../fioss/${work}/lopa/"
+line2="OUTPUT PATH ${work}/"
+echo $line1 >> CARDS.LOPA
+echo $line2 >> CARDS.LOPA
+opacity
+cd ..
+hminus_prepare ${work} ${work_next}
+
+work=IT1_Asplund_fast
+work_next=IT2_Asplund_fast
+cd /scratch/shapiroa/${rdir}/hminus/${work}
+./hminus_NLTE.exe 
+cd ../..
+fioss_prepare ${work}
+cd fioss/${work}
+fioss_do2
+cd ../../lbkg
+mkdir ${work}
+cp CL CARDS.LOPA
+line1="INPUT PATH  ../fioss/${work}/lopa/"
+line2="OUTPUT PATH ${work}/"
+echo $line1 >> CARDS.LOPA
+echo $line2 >> CARDS.LOPA
+opacity
+cd ..
+hminus_prepare ${work} ${work_next}
+
+work=IT2_Asplund_fast
+work_next=IT3_Asplund_fast
+cd /scratch/shapiroa/${rdir}/hminus/${work}
+./hminus_NLTE.exe 
+cd ../..
+fioss_prepare ${work}
+cd fioss/${work}
+fioss_do2
+cd ../../lbkg
+mkdir ${work}
+cp CL CARDS.LOPA
+line1="INPUT PATH  ../fioss/${work}/lopa/"
+line2="OUTPUT PATH ${work}/"
+echo $line1 >> CARDS.LOPA
+echo $line2 >> CARDS.LOPA
+opacity
+cd ..
+hminus_prepare ${work} ${work_next}
+
+work=IT3_Asplund_fast
+work_next=IT4_Asplund_fast
+cd /scratch/shapiroa/${rdir}/hminus/${work}
+./hminus_NLTE.exe 
+cd ../..
+fioss_prepare ${work}
+cd fioss/${work}
+fioss_do2
+

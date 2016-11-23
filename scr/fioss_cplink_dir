@@ -6,9 +6,6 @@
 #
 # New directory will be at BASEDIR/OLDDIR.SUFFIX
 #
-
-source ~/sim-rinat/scripts/fioss.settings
-
 [[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
 source $COSI_BIN/helper_scripts
 OLD=$1
@@ -32,9 +29,6 @@ MODFILE     NaI------5  O2_H   RADIOC MolConc.txt c2.asc  ch.asc  cn.asc  co.asc
 CaI------3  FAL_VD        FGRID        NaI------1  NaI------6  RADIOCL     SiI------2
 CI-------1  FeI------1    fioss8.exe   input_sun   NaI-----10  NaI------7  RADIOL      SiI------3
 CI-------2  FeI------2    fioss_do_mu  MgI------1  NaI------2  NaI------8  SI-------1  SiI------4  `echo fort.*`"
-
-if [ -f $NTW_FILE_NAME ] && [ -f $NTP_FILE_NAME ]; then FILES=$FILES" $NTW_FILE_NAME $NTP_FILE_NAME"; fi
-
 cd $OLD
 OLD=`pwd`
 
@@ -47,8 +41,7 @@ fi
 for A in `seq 0 $[BASH_ARGC-$START]`; do
 NEW=$OLD/${BASH_ARGV[$A]}
 cd $OLD
-#echo Creating $NEW/
-#echo
+echo Creating $NEW ...
 
 mkdir "$NEW" || [[ "$FORCE" == "1" ]] ||  error "Could not create new directory"
 cd    "$NEW" 

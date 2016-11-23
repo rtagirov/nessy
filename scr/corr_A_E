@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+export MAX_PROC=14
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_new
+fioss_do2 1000 10 50000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_new
+fioss_do2 1000 10 50000
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_no
+fioss_do2 1000 10 50000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_no
+fioss_do2 1000 10 50000
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_CN
+fioss_do2 1000 10 50000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_CN
+fioss_do2 1000 10 50000
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_CH
+fioss_do2 1000 10 50000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_CH
+fioss_do2 1000 10 50000
+

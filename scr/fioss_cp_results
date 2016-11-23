@@ -1,0 +1,11 @@
+#!/bin/bash
+
+TO=${BASH_ARGV[0]} # the last argument
+mkdir -p $TO/{lopa,mdisp,title}
+for A in `seq 1 $[BASH_ARGC-1]`; do
+  FROM=${BASH_ARGV[$A]}
+  echo $FROM/mdisp...; cp -u $FROM/mdisp/* $TO/mdisp/
+  echo $FROM/lopa....; cp -u $FROM/lopa/*  $TO/lopa/
+  echo $FROM/title...; cp -u $FROM/title/* $TO/title/
+
+done

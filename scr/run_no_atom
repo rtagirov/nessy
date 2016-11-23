@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+export MAX_PROC=14
+echo 'Hello C'
+cd ~/data/Asplund_C_final/fioss/IT3_no_atom
+cp ~/data/svnroot/cosi/branches/sasha-cosi.my/out-intel-x86_64/fioss8_no_a.exe ./fioss8.exe
+fioss_do2 1000 10 40000
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_no_atom
+cp ~/data/svnroot/cosi/branches/sasha-cosi.my/out-intel-x86_64/fioss8_no_a.exe ./fioss8.exe
+fioss_do2 1000 10 40000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_no_atom
+cp ~/data/svnroot/cosi/branches/sasha-cosi.my/out-intel-x86_64/fioss8_no_a.exe ./fioss8.exe
+fioss_do2 1000 10 40000
+echo 'Hello F'
+cd ~/data/Asplund_F_final/fioss/IT3_no_atom
+cp ~/data/svnroot/cosi/branches/sasha-cosi.my/out-intel-x86_64/fioss8_no_a.exe ./fioss8.exe
+fioss_do2 1000 10 40000
+echo 'Hello P'
+cd ~/data/Asplund_P_final/fioss/IT3_no_atom
+cp ~/data/svnroot/cosi/branches/sasha-cosi.my/out-intel-x86_64/fioss8_no_a.exe ./fioss8.exe
+fioss_do2 1000 10 40000
+echo 'Hello S'
+cd ~/data/Asplund_S_final/fioss/IT3_no_atom
+cp ~/data/svnroot/cosi/branches/sasha-cosi.my/out-intel-x86_64/fioss8_no_a.exe ./fioss8.exe
+fioss_do2 1000 10 40000
+

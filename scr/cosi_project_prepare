@@ -1,0 +1,54 @@
+#!/bin/bash
+# Prepare project.
+# 
+# Optional parameter: other default settings 
+#
+source $COSI_BIN/helper_scripts || { echo "script not found" ; exit ; }
+source $COSI_BIN/cosi_project.default.settings
+
+[[ "$1" != "" ]] && source $1
+
+myread "What is the Type (CPS?) " TYPE
+myread "The Cosi Version" COSIVERSION 
+myread "The atmosphere" ATMOSPHERE 
+myread "The username" USER 
+myread "The Chemical Composition" CHEM_COMP 
+
+DIR="`date '+%Y-%m-%d.%H-%M'`-cosi$COSIVER-$TYPE-$CHEM_COMP-$ATMOSPHERE-$USER"
+echo "DIR=$DIR"
+read -t 10 -p "Press enter or wait 10 seconds to continue. Press ^C to chancel"
+mkdir -p "$DIR/fioss"
+mkdir -p "$DIR/hminus"
+mkdir -p "$DIR/lbkg"
+mkdir -p "$DIR/scripts"
+echo "DIR=$DIR
+COSIVERSION=$COSIVERSION
+ATMOSPHERE=$ATMOSPHERE
+USER=$USER
+CHEM_COMP=$CHEMCOMP
+FIOSS_SETTINGS=$FIOSS_SETTINGS" > $DIR/README.SETTINGS
+
+echo "__ITERATION=0
+BASE_DIR=/data/cosi
+DATA_DIR=\${BASE_DIR}/input
+ORIG_SRC=/home/alexander/svnroot/cosi/branches/sasha-cosi/
+ORIG_EXE_FILE=/home/alexander/svnroot/cosi/branches/sasha-cosi/out-intel-x86_64/hminus.exe
+DATOM_FILE=\${DATA_DIR}/datom/sunHZn_v02.dat
+FGRID_FILE=\${DATA_DIR}/fgrid/fgridHZN.dat
+FALVD_FILE=\${DATA_DIR}/table/FAL_${TYPE}
+CROSS_SECTION_FILES="/data/cosi/input/cross_sections/002/"
+RUN_DIR=\`pwd\`/hminus/IT\${__ITERATION}
+DIR_EXE=dir_exe/
+
+if [[ "\${__ITERATION}" != "0" ]]; then
+__OLD_COSI=\`pwd\`/hminus/IT\$[__ITERATION-1]
+__FIOSS=\`pwd\`/fioss/IT\$[__ITERATION-1]
+POPNUM=\${__FIOSS}/POPNUM
+RADIOC=\${__FIOSS}/RADIOC
+RADIOL=\${__FIOSS}/RADIOL
+RADIOCL=\${__OLD_COSI}/RADIOCL
+LBKG=\`pwd\`/lbkg/IT\$[__ITERATION-1]/
+fi" > $DIR/hminus.settings
+cp $FIOSS_SETTINGS $DIR/fioss.settings
+cp $COSI_BIN/CARDS.HMINUS.TEMPLATE $DIR/hminus/CARDS.TEMPLATE
+cp $COSI_BIN/CARDS.FIOSS.TEMPLATE $DIR/fioss/CARDS.TEMPLATE

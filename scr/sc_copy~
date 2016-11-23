@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+echo 'Hello there'
+cp CH.txt CH1.txt
+

@@ -1,0 +1,100 @@
+#!/bin/bash
+#
+echo 'Hello C'
+cd ~/data/Asplund_C_final/fioss/IT3_new
+export MAX_PROC=14
+fioss_do2 5000 10 7500 
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_new
+export MAX_PROC=14
+fioss_do2 5000 10 7000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_new
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello F'
+cd ~/data/Asplund_F_final/fioss/IT3_new
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello P'
+cd ~/data/Asplund_P_final/fioss/IT3_new
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello S'
+cd ~/data/Asplund_S_NLTE/fioss/IT3_new
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello C'
+cd ~/data/Asplund_C_final/fioss/IT3_no
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_no
+export MAX_PROC=14
+fioss_do2 5000 10 7000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_no
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello F'
+cd ~/data/Asplund_F_final/fioss/IT3_no
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello P'
+cd ~/data/Asplund_P_final/fioss/IT3_no
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello S'
+cd ~/data/Asplund_S_NLTE/fioss/IT3_no
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello C'
+cd ~/data/Asplund_C_final/fioss/IT3_CN
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_CN
+export MAX_PROC=14
+fioss_do2 5000 10 7000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_CN
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello F'
+cd ~/data/Asplund_F_final/fioss/IT3_CN
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello P'
+cd ~/data/Asplund_P_final/fioss/IT3_CN
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello S'
+cd ~/data/Asplund_S_NLTE/fioss/IT3_CN
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello C'
+cd ~/data/Asplund_C_final/fioss/IT3_CH
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello A'
+cd ~/data/Asplund_A_final/fioss/IT3_CH
+export MAX_PROC=14
+fioss_do2 5000 10 7000
+echo 'Hello E'
+cd ~/data/Asplund_E_final/fioss/IT3_CH
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello F'
+cd ~/data/Asplund_F_final/fioss/IT3_CH
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello P'
+cd ~/data/Asplund_P_final/fioss/IT3_CH
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+echo 'Hello S'
+cd ~/data/Asplund_S_NLTE/fioss/IT3_CH
+export MAX_PROC=14
+fioss_do2 5000 10 7500
+
+

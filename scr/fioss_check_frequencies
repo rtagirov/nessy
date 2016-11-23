@@ -1,0 +1,39 @@
+#!/bin/bash
+# 
+# Ueberprueft ob die Dateien im Interval $1 $2 mit schrittweite 2 und der Endung $3 im Verzeichniss $4..$n existieren
+#
+# Wenn $4 nicht vorhanden dann wird mdisp voraussgesetzt.
+# Ex: check_frequencies 900 2 10000 lopa
+#
+
+
+[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
+source $COSI_BIN/helper_scripts || error "COSI_BIN/helper_scripts not found"
+
+
+FREQ_START=${1:-901}
+FREQ_STEP=${2:-2}
+FREQ_STOP=${3:-10001}
+EXTENSION=`echo ${4:mdisp} | sed 's/\///g'`
+
+[[ `isNumeric $FREQ_START` ]] || error "Frequencies must be numeric (START STEP STOP) [$FREQ_START]"
+[[ `isNumeric $FREQ_STEP`  ]] || error "Frequencies must be numeric (START STEP STOP) [$FREQ_STEP]"
+[[ `isNumeric $FREQ_STOP`  ]] || error "Frequencies must be numeric (START STEP STOP) [$FREQ_STOP]"
+
+ARGC=${BASH_ARGC:-0}
+for B in `seq 0 $((ARGC-1))`; do
+  ARGV[B]=${BASH_ARGV[$B]}
+done
+if [[ $ARGC -le 4 ]]; then
+ARGV[4]='.'
+ARGC=5
+fi;
+for B in `seq 0 $(($ARGC-5))`; do
+  DIR=`echo ${ARGV[$B]} | sed 's/\/$//'`
+  [[ "$DIR" == "" ]] && DIR="."
+  echo "Checking Directory $DIR"
+  for A in `seq $FREQ_START $FREQ_STEP $FREQ_STOP`; do
+    [[ -e $DIR/$A.$EXTENSION ]] || echo "$DIR/$A.$EXTENSION does not exist";
+  done
+done
+
