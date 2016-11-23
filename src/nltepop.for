@@ -80,17 +80,20 @@ C***  LAST COLUMN : NUMBER CONSERVATION
 
 C***  INVERSION OF RATE COEFFICIENT MATRIX RATCO
 
-      do fi = nfirna, nlana
+!      do fi = nfirna, nlana
 
-         do si = nfirna, nlana
+!         do si = nfirna, nlana
 
-            print*, 'ratco: ', fi, si, ratco(fi, si)
+!            write(*, '(A,3(2x,i4),3(2x,e15.7))'), 'ratco: ', NA, fi, si, ratco(fi, si),
+!     $                                             crate(fi, si), rrate(fi, si)
 
-         enddo
+!         enddo
 
-      enddo
+!      enddo
 
-      CALL INV(NDELP1, RATCO(nfirna : nlana, nfirna : nlana))
+      write(*, *) 'nltepop flag!!!'
+
+      CALL INV(NDELP1, RATCO(1 : ndelp1, 1 : ndelp1))
 	
 C***  POPULATION NUMBERS EN(J) = LAST ROW OF INVERSE MATRIX
       AB = ABXYZ(NA)

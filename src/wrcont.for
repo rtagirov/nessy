@@ -196,9 +196,7 @@ C***  READING OF THE MODEL FILE ----------------------------------------
      $                    NDDIM,NPDIM,NFDIM,NEXTK,LBLANK)
       close (IFL)
 
-      print*, 'wrcont: ', NF, NFDIM
-
-      stop
+!      print*, 'wrcont: ', NF, NFDIM; stop
 
       IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
 

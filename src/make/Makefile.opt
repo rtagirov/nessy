@@ -22,9 +22,9 @@ LD_LIBRARY_PATH =/opt/intel/Compiler/current/lib/intel64/
 #F90FLAGS       += -fPIC -xP 
 #F90FLAGS       += -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2
 #F90FLAGS       += -quiet -warn nogeneral -warn nounused -warn notruncated_source -warn nousage -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2
-F90FLAGS       += -mkl=parallel -diag-disable=cpu-dispatch -warn none -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2
+F90FLAGS       += -mkl=sequential -diag-disable=cpu-dispatch -warn none -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2
 #LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -i-dynamic 
-LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -mkl=parallel
+LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -mkl=sequential
 #LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -i-static
 SET__=1
 endif # arch=64
