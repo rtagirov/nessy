@@ -35,7 +35,7 @@ C     ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
       real*8,dimension(3, ND)  :: EDDI
 
       !global variables, intent(in)
-      real*8 ::               B(:, :), BCORE, DBDR
+      real*8 ::               B(NP, NP), BCORE, DBDR
       real*8,dimension(ND) :: ETA, RADIUS, XJC, OPA, THOMSON
       real*8 ::               P(NP), XLAM, Z(ND,NP)
       real*8,dimension(*) ::  W, C
@@ -52,16 +52,19 @@ C***  GAUSS-ELIMINATION
 
         CALL SETUP(L,A,B,C,W,JMAX,ND,NP,OPA,ETA,THOMSON,Z,RADIUS,BCORE,DBDR)
 
-        if (L.NE.1) then
-          CALL MDMV (A,BX(1,1,L),JMAX,NP)
-          CALL MSUB (B,BX(1,1,L),JMAX,NP)
-          CALL MDV (A,WX(1,L),JMAX)
-          CALL VADD (W,WX(1,L),JMAX)
+        if (L .NE. 1) then
+            CALL MDMV (A,BX(1,1,L),JMAX,NP)
+            CALL MSUB (B,BX(1,1,L),JMAX,NP)
+            CALL MDV (A,WX(1,L),JMAX)
+            CALL VADD (W,WX(1,L),JMAX)
         endif
+
 !        CALL INV (JMAX,NP,B)
-        write(*, *) 'elimin flag'
-        CALL INV(JMAX, B)
+!        write(*, *) 'elimin flag'
+
+        CALL INV(JMAX, B(1 : jmax, 1 : jmax))
         CALL MVV (WX(1,L),B,W,JMAX,JMAX,NP)
+
         IF (L.EQ.ND) GOTO 2
         CALL MVMD (BX(1,1,L),B,C,JMAX,JMAX-1,NP)
         !***  COMPRESSING THE MATRIX BX  AND VECTOR WX  INTO THE RANGE OF B AND C
@@ -69,12 +72,7 @@ C***  GAUSS-ELIMINATION
         WX(J,L+1)=WX(J,L)
         DO 7 JC=1,JMAX
   7     BX(JC,J,L+1)=BX(JC,J,L)
-c      DO 7 J=1,JMAX
-c      JC=1+(J-1)*JMAX
-c    7 CALL EQUAL (B (JC)  ,BX(1,J),JMAX)
-c      CALL EQUAL (B (JMAX*JMAX+1)  ,WX,JMAX)
-c      LL=JMAX*(JMAX+1)
-c      CALL WRITMS (7,B ,LL,L,-1,IDUMMY,IERR)
+
       ENDDO
      
 C***  BACK SUBSTITUTION

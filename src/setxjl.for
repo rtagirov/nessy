@@ -22,7 +22,7 @@
 
       integer, intent(in) :: lastind, N
 
-      DIMENSION EINST(N, N), ELEVEL(N), EN(N), WEIGHT(N)
+      DIMENSION EINST(N, N), ELEVEL(N), EN(N + 1), WEIGHT(N)
 
       DIMENSION XLAMBDA(NF),SCNEW(NF),OPAC(NF)
       DIMENSION PHI(NFL),PWEIGHT(NFL)

@@ -4,7 +4,7 @@
 
       CONTAINS
 
-      SUBROUTINE COLLI(N, ENLTE, EN, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
+      SUBROUTINE COLLI(N, ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
      $                 EION, COCO, KEYCOL, WEIGHT, ALTESUM, NATOM, NOM, KODAT,
      $                 POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, DP)
 
@@ -46,8 +46,6 @@ C***  C1 = H * C / K
       INTEGER, INTENT(IN) :: JOBNUM
 
       INTEGER, INTENT(IN) :: DP
-
-      REAL*8, DIMENSION(N), INTENT(IN) :: EN
 
       REAL*8 :: CRJohnUite, CRJohnNorm, CRJeff, RatioJJ, RatioUJ, NewRate
 

@@ -57,8 +57,8 @@ C***  DEFINE ARRAY DIMENSIONS
       integer MAXVAL,MINVAL,MODHIST
 !      integer N,NATOM,NBINW,NBMAX,NCHARG,NCON,ND
       integer N,NATOM,NBINW,NBMAX,NCON,ND
-!      integer NEXTK,NF,NFCDIM,NFEDGE,NFIRST,NLAST,NOM,NP
-      integer NEXTK,NF,NFCDIM,NFEDGE,NP
+
+      integer NF,NFCDIM,NFEDGE,NP
       real*8 A,ABSEVT,ABSFAC, AINCRIT,AKEY,ALMAX,ALMIN
 !      real*8 ALPHA(NDIM), ALTESUM,ATMASS,B
       real*8 B
@@ -170,13 +170,11 @@ C***  DECODING INPUT OPTIONS *******************************************
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
      $            GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
      $            ABXYZ,NATOM,MODHEAD,JOBNUM,
-     $            NDDIM,NPDIM,NFDIM,NEXTK,LBLANK)
+     $            NDDIM,NPDIM,NFDIM,LBLANK)
 
       close (IFL)
 
-      print*, 'como: ', NF, NFDIM
-
-      stop
+!      print*, 'como: ', NF, NFDIM; stop
 
 !      IF (LTE_RUN) ALLOCATE(XJC_LTE(ND, NF))
 !      IF (LTE_RUN) XJC_LTE(1 : ND, 1 : NF) = 0.0D0

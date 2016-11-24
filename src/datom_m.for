@@ -191,7 +191,7 @@ C*******************************************************************************
       allocate(agaunt(levnum))
       allocate(level(levnum))
 
-      allocate(coco(levnum, levnum, levnum))
+      allocate(coco(levnum, levnum, 4))
       allocate(keycol(levnum, levnum))
       allocate(einst(levnum, levnum))
       allocate(altesum(4, levnum))

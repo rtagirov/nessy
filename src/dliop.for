@@ -3,7 +3,7 @@
       CONTAINS
 
       SUBROUTINE DLIOP (I,ENTOTL,DOPAL,DETAL,VDOP,RSTAR,N,
-     $                  NDIM,EINST,WEIGHT,ELEVEL,LASTIND,INDLOW,INDNUP)
+     $                  EINST,WEIGHT,ELEVEL,LASTIND,INDLOW,INDNUP)
 C*******************************************************************************
 C***  DERIVATIVES OF ALL LINE OPACITIES AND EMISSIVITIES WITH RESPECT TO EN(I)
 C***  AT CURRENT DEPTH POINT
@@ -11,7 +11,7 @@ C*******************************************************************************
 
       implicit real*8(a-h,o-z)
      
-      DIMENSION EINST(NDIM,NDIM),WEIGHT(NDIM),ELEVEL(NDIM)
+      DIMENSION EINST(N,N),WEIGHT(N),ELEVEL(N)
       DIMENSION INDLOW(LASTIND),INDNUP(LASTIND)
       DIMENSION DETAL(LASTIND),DOPAL(LASTIND)
      

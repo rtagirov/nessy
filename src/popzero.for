@@ -359,7 +359,7 @@
               LM1=L-1
               IF (IFRRA.GT.0) LM1=L-IFRRA
               IF (((LM1)/LSRAT)*LSRAT.EQ.(LM1).OR.L.EQ.ND)
-     $          CALL PRIRAT (IDUMMY,N,LEVEL,NDIM,L,CRATE,RRATE,RATCO,EN,
+     $          CALL PRIRAT (IDUMMY,N,LEVEL,L,CRATE,RRATE,RATCO,EN,
      $            IFRRA,MODHEAD,JOBNUM,NETTO )
             ENDIF
           ENDIF

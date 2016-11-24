@@ -4,7 +4,6 @@
 
       CONTAINS
 
-
 !      FUNCTION INT_TO_CHAR(IntNum) RESULT(CharNum)
 
 !      INTEGER, INTENT(IN) ::       IntNum

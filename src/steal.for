@@ -134,24 +134,24 @@ C***  DECODING INPUT DATA ******************************************
      $     Y0,TEFFE,GRAD,ALDMDT,VINF,BET,PROLIB,LBLANK)
 
 C***  READING OF THE MODEL FILE ----------------------------------------
-      IFL = 3
-
-      open(IFL, file='MODFILE', STATUS='OLD')
+      IFL = 3; open(IFL, file='MODFILE', STATUS='OLD')
 
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
      $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,
-     $             NDDIM,NPDIM,NFDIM,NEXTK,LBLANK)
+     $             NDDIM,NPDIM,NFDIM,LBLANK)
 
       close(IFL)
 
-      IFL = 3
-      open(IFL, file='POPNUM', STATUS='OLD')
+      IFL = 3; open(IFL, file='POPNUM', STATUS='OLD')
+
 c***  pop1 is dummy read because it will be overwritten below
-      call readpop (ifl,T,popnum,pop2,pop3,pop1,rne,n,nd,modhead,jobnum)
+      call readpop(ifl,T,popnum,pop2,pop3,pop1,rne,n,nd,modhead,jobnum)
+
       close(IFL)
 
 c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)	
+
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             NCHARG,EDDARR,EDDI,NOM,WCHARM,
@@ -167,9 +167,9 @@ c***  advance job-number counter
 c***     the new blanketing table needs to be written to the model file
          IFL=3
          open (IFL,file='MODFILE',STATUS='UNKNOWN')
-         CALL WRITMOD       (IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                    GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $                    ABXYZ,NATOM,MODHEAD,JOBNUM)
+         CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
+     $                GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $                ABXYZ,NATOM,MODHEAD,JOBNUM)
          CLOSE (ifl)
       endif
 

@@ -242,8 +242,6 @@ C***  Read Line-blanketing table
  
 C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
-      print*, 'wrstart before greym:', NF
- 
       CALL GREYM(ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,ENTOT,RNE,RSTAR,
      $           ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,
      $           LBKG,XLBKG1,XLBKG2,N,
@@ -289,21 +287,21 @@ c      CALL OPENMS(3,IADR,MAXADR,1,IERR)
 
       WCHARM(:, :) = 0d0 / 0d0 ! WCHARM must be set but should not be used yet (NaN)
 
-      IFL = 3
+      IFL = 3; open(IFL, file='MODFILE', STATUS='UNKNOWN')
+
       JOBNUM = 0
 
-      open(IFL, file='MODFILE', STATUS='UNKNOWN')
       CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
      $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
      $             ABXYZ,NATOM,MODHEAD,JOBNUM)
-      CLOSE (ifl)
 
-      ifl = 3
+      CLOSE(ifl)
 
-      open(ifl, file='POPNUM', status='unknown')
+      ifl = 3; open(ifl, file='POPNUM', status='unknown')
 
       XNECLC(:ND)=RNE(:ND)*ENTOT(:ND)
 !***  hier entot mit uebergeben und rne*entot ausrechnen, in popnum schreiben
+
       call writpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
 
       close (ifl)

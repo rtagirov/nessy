@@ -177,7 +177,7 @@ C***  READING OF THE MODEL FILE ----------------------------------------
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
      $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,
-     $             NDDIM,NPDIM,NFDIM,NEXTK,LBLANK)
+     $             NDDIM,NPDIM,NFDIM,LBLANK)
 
       close(IFL)
 
@@ -209,14 +209,6 @@ C     initialize frequency integrated quantities
       XTOT(1:ND)=0.
       HTOT(1:ND)=0.
 
-      IF (NEXTK .ne. 1) THEN
-c        there was once the option to continue the frequency loop...
-         PRINT *,' NEXTK= ',NEXTK
-         write (6,*) 'this operation is no longer active'
-         pause
-         stop
-      ENDIF
- 
 c***  the blanketing table is read by routine READMOD
 c***  if lblank.gt.0 then read a new table from the file LIBLANK
       CALL REBLANK (LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
@@ -240,7 +232,7 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
       ALLOCATE(EDDI_OLD(3, ND));
       EDDI_OLD = EDDI(1 : 3, 1 : ND)
 
-      FRQS: DO K = NEXTK, NF
+      FRQS: DO K = 1, NF
 
         !*** now extract XJC and EDDI for the frequency K
 
@@ -348,35 +340,18 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
       endif
 
-
-
-
-
-
-
-
-
-
-
-
       open (7,file='MODHIST',status='old')
+
       do
         read (7,'(A80)',end=11) card
       enddo
  11   continue
-c      close (7)
+
 C***  UPDATING THE MODEL HISTORY
       write(LCARD,88) JOBNUM,'. WRCONT   LASTK=',LASTK,TOC(TIMER),' sec'
    88 FORMAT (1H/,I3,A,I5,' COMPLETE  -  run time all K: ',i10,A)
       write (7,'(A100)') LCARD
       close (7)
-
-c      IF (LASTK .EQ. NF) THEN
-c            NEXTK=1
-c         ELSE
-c            NEXTK=LASTK+1
-c         ENDIF
-c      CALL WRITMS (3,NEXTK,1,5HNEXTK,-1,IDUMMY,IERR)
 
       !***  PRINTOUTS
       IF (LSINT.GT.0 .AND. LASTK .EQ. NF)
@@ -389,9 +364,9 @@ c      CALL WRITMS (3,NEXTK,1,5HNEXTK,-1,IDUMMY,IERR)
       IF (LPRIH.GT.0)
      $   CALL PRIGH (LPRIH,ND,RADIUS,HTOT,GTOT,ETOT,TEFF,ENTOT,RNE,
      $               RSTAR,T,VELO,GRADI,ATMASS,ABXYZ,NATOM)
-      ! CALL WRITMS (3,GTOT,ND,4HGTOT,-1,IDUMMY,IERR)
-      ! CALL WRITMS (3,ETOT,ND,4HETOT,-1,IDUMMY,IERR)
-      ! CALL WRITMS (3,XTOT,ND,4HXTOT,-1,IDUMMY,IERR)
+
+
+
       !*** if POPNUM_CP is set, then check if writeout
       if(DECSTAR_OPT%POPNUM_CP>0) then
         if(mod(JOBNUM,DECSTAR_OPT%POPNUM_CP)==0) call cpPOPNUM(JOBNUM)

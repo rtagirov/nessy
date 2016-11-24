@@ -1,7 +1,7 @@
       module MOD_DCOOP
       contains
       SUBROUTINE DCOOP (I,DOPA,DETA,XLAMBDA,NF,TL,RNEL,ENTOTL,EN,RSTAR,
-     $                  WCHARM,ND,L,NFEDGE,EXPFAC,NDIM,N,NCHARG,WEIGHT,
+     $                  WCHARM,ND,L,NFEDGE,EXPFAC,N,NCHARG,WEIGHT,
      $                  ELEVEL,EION,NOM,EINST,SIGMAKI)
 C***********************************************************************
 C***  DERIVATIVE OF NON-LTE OPACITY AND EMISSIVITY WITH RESPECT TO EN(I)
@@ -17,17 +17,17 @@ C***********************************************************************
       implicit none
       !global variables
 	integer,intent(in):: I, L, N, ND 
-	integer,intent(in):: NDIM, NF
+	integer,intent(in):: NF
 	real*8,intent(in):: ENTOTL
 	real*8,intent(in):: RNEL,RSTAR,TL
 	integer,dimension(N),intent(in)::NCHARG,NFEDGE,NOM
 	real*8,dimension(N),intent(in) ::ELEVEL,EION(N),WEIGHT
 	real*8,dimension(NF),intent(in)::EXPFAC,XLAMBDA
 	real*8,dimension(NF),intent(out)::DOPA,DETA
-	real*8,dimension(NDIM,NDIM),intent(in)::EINST
-	real*8,dimension(NDIM),intent(in)::EN
+	real*8,dimension(N,N),intent(in)::EINST
+	real*8,dimension(N + 1),intent(in)::EN
 	real*8,dimension(ND,NF),intent(in)::WCHARM
-	real*8,dimension(NF,NDIM),intent(in)::SIGMAKI
+	real*8,dimension(NF,N),intent(in)::SIGMAKI
 	!output: DETA, DOPA	
 	
 	!local variables

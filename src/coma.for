@@ -2,7 +2,7 @@
 
       CONTAINS
 
-      SUBROUTINE COMA(CRATE,RRATE,RATCO,DM,N,NRANK,NDIM,V1,ABXYZ,
+      SUBROUTINE COMA(CRATE,RRATE,RATCO,DM,N,NRANK,V1,ABXYZ,
      $                ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,EION,WEIGHT,ALTESUM,
      $                XLAMBDA,FWEIGHT,XJC,NF,L,XJL,ND,XJLAPP,SLOLD,LASTIND,INDLOW,
      $                INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
@@ -61,16 +61,16 @@ C       : : :
 
       IMPLICIT NONE
 
-      integer,intent(in) ::  LASTIND, NDIM, NATOM, NRANK,  N
+      integer,intent(in) ::  LASTIND, NATOM, NRANK,  N
       integer,intent(in) ::  KODAT(*), NOM(N)
       integer,dimension(*):: INDNUP, INDLOW
       integer,intent(in) ::  ND, NF,  NFL
-      integer, dimension(NDIM)  ::  NCHARG
+      integer, dimension(N)  ::  NCHARG
       integer, dimension(NATOM) ::  NFIRST,NLAST
       real*8, dimension(NRANK),intent(inout) ::  V1
       real*8             :: TL, RSTAR
-      real*8             :: COCO(NDIM,NDIM,4), VDOP
-      real*8             :: EINST(NDIM,NDIM), ENE,DELTAX
+      real*8             :: COCO(N,N,4), VDOP
+      real*8             :: EINST(N,N), ENE,DELTAX
       real*8             :: ALTESUM(4,*), XMAX
 
       real*8, dimension(lastind) :: opal
@@ -88,11 +88,12 @@ C       : : :
       real*8, dimension(ND,NF) ::  XJC, WCHARM
       real*8, dimension(NF,ND) ::  SCOLD
 
-      real*8, dimension(N) ::  EN, ENLTE
+      real*8, dimension(N) :: ENLTE
+      real*8, dimension(N + 1) :: EN
 
       REAL*8, DIMENSION(LASTIND), INTENT(OUT) :: XJLAPP
 
-      REAL*8, DIMENSION(NDIM,  NDIM),  INTENT(INOUT) :: CRATE, RRATE
+      REAL*8, DIMENSION(N,  N),  INTENT(INOUT) :: CRATE, RRATE
       REAL*8, DIMENSION(NRANK, NRANK), INTENT(INOUT) :: RATCO
 
       INTEGER, INTENT(IN) :: L
@@ -128,11 +129,11 @@ C       : : :
 
       integer, parameter :: IONE = 1
 
-      CHARACTER*4 KEYCOL(NDIM, NDIM)
+      CHARACTER*4 KEYCOL(N, N)
 
       REAL*8, INTENT(IN) :: POPHIIL, POPHML, POPHIL
 
-      CHARACTER*10, DIMENSION(NDIM), INTENT(IN) :: LEVEL
+      CHARACTER*10, DIMENSION(N), INTENT(IN) :: LEVEL
 
       INTEGER, INTENT(IN) :: ITNEL, JOBNUM, IRESTA
 
@@ -152,9 +153,8 @@ C***  ONLY TRUE OPACITIES ARE ACCOUNTED FOR.
 
       ENTOTL = ENE / RNEL
 
-      CALL       COOPFRQ (NF,OPAC,ETAC,XLAMBDA,EXPFAC,SIGMAKI,N,NCHARG,
-     $                   WEIGHT,ELEVEL,EION,NFEDGE,EN,NOM,RSTAR,ENTOTL,
-     $                   RNEL,TL)
+      CALL COOPFRQ(NF,OPAC,ETAC,XLAMBDA,EXPFAC,SIGMAKI,N,NCHARG,
+     $             WEIGHT,ELEVEL,EION,NFEDGE,EN,NOM,RSTAR,ENTOTL,RNEL,TL)
 C***  CALCULATE NEW SOURCE FUNCTION AND SCHARMER'S RADIATION FIELD
 C***  LOOP OVER ALL CONT. FRQUENCIES  ----------------------------------
 
@@ -258,7 +258,7 @@ C***  SETUP THE COLLISIONAL AND RADIATIVE RATE COEFFICIENTS
 CMH - new: POPHIIL: population numbers of HII at depthpoint L
 CMH - new: needed to calculate new collision cross sections for Hminus
 
-      CALL COLLI(N,ENLTE,EN,TL,ENE,NCHARG,ELEVEL,EINST,CRATE,
+      CALL COLLI(N,ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,CRATE,
      $           EION,COCO,KEYCOL,WEIGHT,ALTESUM,NATOM,NOM,KODAT,
      $           POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, L)
 
@@ -275,7 +275,7 @@ CMH - new: needed to calculate new collision cross sections for Hminus
 C**  RADIATIVE RATES ARE CALCULATED WITH THE MODIFIED RADIATION FIELD
 C***  NOTE THE TRICKY USE OF THE ONE-DIMENSIONAL ARRAYS XJCAPP AND XJLAPP
 
-      CALL RADNET(NDIM, N, ENLTE, TL, WEIGHT, NCHARG ,EION, ELEVEL, EINST,
+      CALL RADNET(N, ENLTE, TL, WEIGHT, NCHARG ,EION, ELEVEL, EINST,
      $            SLNEW(1 : LASTIND), EN, NOM, RRATE, XLAMBDA, FWEIGHT,
      $            XJCAPP, NF, ione, XJLAPP(1 : LASTIND), ione, SIGMAKI, LASTIND,
      $            LEVEL, L, JOBNUM, ITNEL)
@@ -384,12 +384,12 @@ C***  FIRST TERMS : THE ORIGINAL MATRIX RATCO
 C***  CONSTRUCT DERIVATIVE VECTORS DOPA, DETA WITH RESPECT TO EN(I)
 
       CALL DCOOP(I,DOPA,DETA,XLAMBDA,NF,TL,RNEL,ENTOTL,EN,RSTAR,
-     $           WCHARM,ND,L,NFEDGE,EXPFAC,NDIM,N,NCHARG,WEIGHT,
+     $           WCHARM,ND,L,NFEDGE,EXPFAC,N,NCHARG,WEIGHT,
      $           ELEVEL,EION,NOM,EINST,SIGMAKI)
 
 C***  CONSTRUCT DERIVATIVE VECTORS DOPAL, DETAL (LINES) WITH RESPECT TO EN(I)
       CALL DLIOP(I,ENTOTL,DOPAL,DETAL,VDOP,RSTAR,N,
-     $           NDIM,EINST,WEIGHT,ELEVEL,LASTIND,INDLOW,INDNUP)
+     $           EINST,WEIGHT,ELEVEL,LASTIND,INDLOW,INDNUP)
      
       IND = 0
 

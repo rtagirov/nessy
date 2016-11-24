@@ -1,9 +1,11 @@
       module MOD_WRITMOD
+
       contains
-      SUBROUTINE WRITMOD (IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                    GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $                    ABXYZ,NATOM,MODHEAD,JOBNUM)
-C***  called by wrstart
+
+      SUBROUTINE WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
+     $                   GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $                   ABXYZ,NATOM,MODHEAD,JOBNUM)
+
       use MOD_WRITMS
       use MOD_WRITMSI
 
@@ -14,15 +16,17 @@ C***  called by wrstart
       COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
      $                                ABSEVT(IPDIM,NBDIM)
 
-      CHARACTER CNAME*10, MODHEAD*104
+      CHARACTER CNAME*7, MODHEAD*104
 
       dimension radius(nd),p(np),z(nd*np),entot(nd),
      $          velo(nd),gradi(nd),xlambda(nf),fweight(nf),
      $          akey(nf),abxyz(natom)
-      CNAME='MODHEAD'
-      write (ifl,'(A10)')  cname
-	write (ifl,'(A104)') MODHEAD 
-c      CALL WRITMSC(IFL,MODHEAD,104,CNAME,-1,IERR)
+
+      CNAME = 'MODHEAD'
+
+      write(ifl, '(A7)')   cname
+      write(ifl, '(A104)') MODHEAD 
+
       CALL WRITMSI1(IFL,JOBNUM,       'JOBNUM', -1,IERR)
       CALL WRITMS1 (IFL,TEFF,         'TEFF',   -1,IERR)
       CALL WRITMS1 (IFL,RSTAR,        'RSTAR',  -1,IERR)
@@ -38,11 +42,7 @@ c      CALL WRITMSC(IFL,MODHEAD,104,CNAME,-1,IERR)
       CALL WRITMS  (IFL,XLAMBDA,NF,   'XLAMBDA',-1,IERR)
       CALL WRITMS  (IFL,FWEIGHT,NF,   'FWEIGHT',-1,IERR)
       CALL WRITMS  (IFL,AKEY,   NF,   'KEY',    -1,IERR)
-c	do k=1,nf
-c      decode (5,99,akey(k)) AEDGE
-c   99 FORMAT (A5)
-c      print 99,aedge
-c      enddo
+
       CALL WRITMSI1(IFL,NP,       'NP', -1,IERR)
       CALL WRITMS  (IFL,P, NP,    'P',  -1,IERR)
       CALL WRITMS  (IFL,Z, ND*NP, 'Z',  -1,IERR)

@@ -3,18 +3,18 @@
      $  '(10H1$$$$$$$$$,/,1X,  A  ,20X,"JOB NO.",I5,//)'
       contains
 C**********  MODULNAME: PRIRAT    ******* 24/03/87  21.31.18.******   130 KARTEN
-      SUBROUTINE PRIRAT (ITNE,N,LEVEL,NDIM,L,CRATE,RRATE,RATCO,EN,
+      SUBROUTINE PRIRAT (ITNE,N,LEVEL,L,CRATE,RRATE,RATCO,EN,
      $           IFRRA,MODHEAD,JOBNUM,NETTO )
 C***  OUTPUT OF RATE MATRIX ON FT09   *********************************
       use MOD_AMBIPOLAR
       implicit none
-      integer, intent(in) :: JOBNUM, ITNE, N, NDIM, L, IFRRA, NETTO
-      real*8,intent(in)    :: EN(NDIM)
-      real*8,intent(in)    :: CRATE(NDIM,NDIM)
-      real*8,intent(in)    :: RRATE(NDIM,NDIM)
-      CHARACTER,intent(in) :: LEVEL(NDIM)*10
+      integer, intent(in) :: JOBNUM, ITNE, N, L, IFRRA, NETTO
+      real*8,intent(in)    :: EN(N)
+      real*8,intent(in)    :: CRATE(N,N)
+      real*8,intent(in)    :: RRATE(N,N)
+      CHARACTER,intent(in) :: LEVEL(N)*10
       CHARACTER,intent(in) :: MODHEAD*104
-      real*8,intent(inout) :: RATCO(NDIM,NDIM)
+      real*8,intent(inout) :: RATCO(N,N)
 
       CHARACTER*12 NUMBERS(10)
       logical,save :: FIRST_TIME__ = .true.

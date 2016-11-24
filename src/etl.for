@@ -166,23 +166,9 @@ C***  READING OF THE MODEL FILE
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
      $             GRADI,RSTAR,VDOPOLD,NF,XLAMBDA,FWEIGHT,AKEY,
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,
-     $             NDDIM,NPDIM,NFDIM,NEXTK,LBLANK)
+     $             NDDIM,NPDIM,NFDIM,LBLANK)
 
       close(IFL)
-
-!      print*, size(z, 1), size(z, 2)
-
-!      do ii = 1, size(z, 1)
-
-!         do iii = 1, size(z, 2)
-
-!            print*, ii, iii, z(ii, iii)
-
-!         enddo
-
-!      enddo
-
-!      stop
 
       print *,'ETL: ND = ',ND,' NP = ',NP
       call assert(ND*NP>1,'ND*NP <= 1')
@@ -496,7 +482,7 @@ C***  UPDATING THE LINE RADIATION FIELD IN THE MODEL FILE AND IN THE CURRENT XJL
 !      CLOSE(14)
 
 c***  store the line radiation field in file RADIOL
-      call writradl(XJL,XJLMEAN,EINST,NCHARG,NOM,nd,N,NDIM,LASTIND,MODHEAD,JOBNUM)
+      call writradl(XJL,XJLMEAN,EINST,NCHARG,NOM,ND,N,LASTIND,MODHEAD,JOBNUM)
 
       IF (LSINT.GT.0) CALL PRIINTL(NDIM,N,LEVEL,WEIGHT,EINST,LASTIND,LINE,NLINE,
      $                             INDLOW,INDNUP,ELEVEL,ND,XJL,LSINT,JOBNUM,MODHEAD)

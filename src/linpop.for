@@ -83,7 +83,7 @@
 
       real*8, intent(out), dimension(N, N) :: CRATE, RRATE
 
-      real*8, dimension(N) :: en
+      real*8, dimension(N + 1) :: en
 
       character*8, intent(in), dimension(N) :: agaunt
 
@@ -156,9 +156,7 @@
 C***  C1 = H * C / K (CM * KELVIN)
       DATA C1 /1.4388D0/
 
-      print*, 'linpop: ', NF
-
-      stop
+!      print*, 'linpop: ', NF; stop
 
       CONV_FILE = CONV_DIR//'ALL'
 
@@ -451,7 +449,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
 !      stop
 
-      CALL COMA(CRATE,RRATE,RATCO,DM,N,NRANK,N,V1,ABXYZ_new,
+      CALL COMA(CRATE,RRATE,RATCO,DM,N,NRANK,V1,ABXYZ_new,
      $          ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,EION,WEIGHT,ALTESUM,
      $          XLAMBDA,FWEIGHT,XJC,NF, L, XJL(L, 1 : LASTIND), ND, XJLAPP,
      $          SLOLD(L, 1 : LASTIND), LASTIND, INDLOW,
@@ -462,14 +460,6 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
      $          WCHARM,EN,RSTAR,SCOLD,XJCAPP,VDOP,COCO,KEYCOL,
      $          POPHIIL,POPHML, POPHIL, LOO(L, 1 : LASTIND), ITNE(L),
      $          LEVEL, JOBNUM, IRESTA)
-
-!      do i = 1, 114
-
-!         print*, 'after:', i, EN(i)
-
-!      enddo
-
-!      stop
 
       JNEW(L, 1 : LASTIND) = XJLAPP(1 : LASTIND)
 
@@ -663,7 +653,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
       LM1=L-1
       IF (IFRRA.GT.0) LM1=L-IFRRA
       IF  (((LM1)/LSRAT)*LSRAT.EQ.(LM1).OR.L.EQ.ND)
-     $CALL       PRIRAT (ITNE(L),N,LEVEL,N,L,CRATE,RRATE,RATCO,EN,
+     $CALL       PRIRAT (ITNE(L),N,LEVEL,L,CRATE,RRATE,RATCO,EN,
      $           IFRRA,MODHEAD,JOBNUM,NETTO )
       ENDIF
       ENDIF

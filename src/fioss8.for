@@ -217,10 +217,10 @@
       open (IFL,file='MODFILE',STATUS='OLD')
       rewind IFL
       lblank=0
-      CALL READMOD       (IFL,N,ND,TEFF,R,NP,P,Z,ENTOT,VELO,
-     $                    GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $                    ABXYZ,NATOM,MODHEAD,JOBNUM,
-     $                    NDDIM,NPDIM,NFDIM,NEXTK,LBLANK)
+      CALL READMOD(IFL,N,ND,TEFF,R,NP,P,Z,ENTOT,VELO,
+     $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $             ABXYZ,NATOM,MODHEAD,JOBNUM,
+     $             NDDIM,NPDIM,NFDIM,LBLANK)
       close (IFL)
 
 

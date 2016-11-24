@@ -38,7 +38,7 @@ C******************************************************************************
       integer :: fi, si
 
 C***  SET UP THE COEFFICIENT MATRICES CRATE AND RRATE FOR ALL ELEMENTS
-      CALL COLLI(N,ENLTE,ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,CRATE,
+      CALL COLLI(N,ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,CRATE,
      $           EION,COCO,KEYCOL,WEIGHT,ALTESUM,NATOM,NOM,KODAT,
      $           POPHIIL, POPHML, POPHIL, LEVEL, 0, L)
 

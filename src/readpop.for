@@ -1,23 +1,23 @@
       module MOD_READPOP
+
       contains
-      subroutine readpop (ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,
-     $                    modhead,jobnum)
-c     subroutine readpop (ifl,T,popnum,pop1,pop2,pop3,rne,xneclc,n,nd,
-c234567890 234567890 234567890 234567890 234567890 234567890 234567890 2
+
+      subroutine readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
+
       USE MOD_READMS
       USE MOD_READMSI
       USE MOD_ERROR
+
       IMPLICIT REAL*8(A-H,O-Z)
+
       real*8 T(ND), RNE(ND), POPNUM(ND*N),POP1(ND*N), POP2(ND*N), POP3(ND*N)
-	CHARACTER CNAME*10, CREAD*10, MODHEAD*104, MODREAD*104
-      INTEGER JOBREAD,NSAVE,NDREAD
-c	PRINT *,'1. IN READPOP: N=',N, 'ifl=',ifl
-c	PAUSE
+      CHARACTER CNAME*7, CREAD*7, MODHEAD*104, MODREAD*104
+      INTEGER JOBREAD, NSAVE, NDREAD
+
       CNAME='MODHEAD'
-c      CALL READMSC(IFL,MODREAD,104,CNAME,IERR)
-      READ (ifl,'(A10)') cread
-c	PRINT *,'2. IN READPOP, AFTER CREAD: N=',N, 'ifl=',ifl
-c	PAUSE
+
+      READ (ifl,'(A7)') cread
+
       if (cread.ne.cname) then
 	   write (6,*) 'READMOD: KEYWORD MISMATCH'
 	   write (6,*) cread,cname
@@ -25,29 +25,26 @@ c	PAUSE
          call error('READPOP: KEYWORD MISMATCH')
 	endif
 	READ (ifl,'(A104)') MODREAD
-c	PRINT *,'2. IN READPOP AFTER MODREAD: N=',N, 'ifl=',ifl
-c	PAUSE
-      IF (MODHEAD .NE. MODREAD) then
-!	   WRITE (6,*) 'mismatch between POPNUM and MODEL files'
-!	   stop
-	endif
-      CNAME='JOBNUM'
+
+      CNAME = 'JOBNUM'
+
       CALL READMSI1(IFL,JOBread,CNAME,IERR)
-      if (jobread.gt.jobnum) then
-c	   WRITE (6,*) 'readpop: mismatch between job-numbers'
-c	   pause
-         jobnum=jobread
-c	   stop
-	endif
+
+      if (jobread.gt.jobnum) jobnum = jobread
+
       CNAME='N'
+
       CALL READMSI1(IFL,NSAVE,CNAME,IERR)
-	if (nsave.ne.N) then
+      if (nsave .ne. N) then
 	   write (6,*) 'READPOP: atomic data file mismatch'
 	   stop 'file-read error'
-	endif
+      endif
+
       CNAME='ND'
+
       CALL READMSI1(IFL,NDREAD,CNAME,IERR)
-	if (nd.ne.NDREAD) then
+
+      if (nd .ne. NDREAD) then
 	   write (6,*) 'READPOP dimension of ND larger than NDREAD'
 	   pause
 	   stop

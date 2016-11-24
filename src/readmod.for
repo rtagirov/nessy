@@ -1,21 +1,23 @@
       module MOD_READMOD
+
       contains
-      SUBROUTINE READMOD (IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                    GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $                    ABXYZ,
-     $                    NATOM,MODHEAD,JOBNUM,
-     $                    NDDIM,NPDIM,NFDIM,NEXTK,LBLANK)
-c     $                    POPNUM,RNE,     
-c     $                    HTOT,GTOT,XTOT,ETOT,POP1,POP2,POP3,EMFLUX,TOTIN,TOTOUT,
-C234567890 234567890 234567890 234567890 234567890 234567890 234567890 234567890 
+
+      SUBROUTINE READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
+     $                   GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $                   ABXYZ,NATOM,MODHEAD,JOBNUM,
+     $                   NDDIM,NPDIM,NFDIM,LBLANK)
+
       USE MOD_READMS
       USE MOD_READMSI
       use MOD_ERROR
+
       IMPLICIT REAL*8(A-H,O-Z)
+
       REAL*8 TEFF,RSTAR, VDOP, ALMIN, ALMAX
       integer jobnum, NSAVE, ND, NF, NP, IPMAX, NBMAX,NBINW
       integer,parameter :: IPDIM=25,NBDIM=99
       integer,intent(in) :: NATOM
+
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
       COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
      $                                ABSEVT(IPDIM,NBDIM)
@@ -24,20 +26,21 @@ C234567890 234567890 234567890 234567890 234567890 234567890 234567890 234567890
      $          velo(nddim),gradi(nddim),xlambda(nfdim),fweight(nfdim),
      $          akey(nfdim),abxyz(natom)
 
-      CHARACTER CREAD*10, MODHEAD*104
+      CHARACTER CREAD*7, MODHEAD*104
 
-c***  the option with nextk is not usable anylonger
-	nextk=1
+      READ(ifl,'(A7)') cread
 
-c      CALL READMSC(IFL,MODHEAD,104,'MODHEAD',IERR)
-      READ (ifl,'(A10)') cread
-      if (cread.ne.'MODHEAD') then
-	   write (6,*) 'READMOD: KEYWORD MISMATCH'
-	   write (6,*) cread,'MODHEAD'
-         pause
-         call error('READMOD: KEYWORD MISMATCH')
-	endif
-	READ (ifl,'(A104)') MODHEAD
+      if (trim(adjustl(cread)) .ne. trim(adjustl('MODHEAD'))) then
+
+          write (6, *) 'READMOD: KEYWORD MISMATCH'
+          write (6, '(A7,2x,A7)') trim(adjustl(cread)), trim(adjustl('MODHEAD'))
+
+          call error('READMOD: KEYWORD MISMATCH')
+
+      endif
+
+      READ (ifl, '(A104)') MODHEAD
+
       CALL READMSI1(IFL,jobnum,'JOBNUM',IERR)
       CALL READMS1 (IFL,TEFF,'TEFF',IERR)
       CALL READMS1 (IFL,RSTAR,'RSTAR',IERR)
