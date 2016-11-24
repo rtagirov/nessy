@@ -101,7 +101,7 @@
 !      stop
 
       CALL LIOP_SBE(EINST(NUP, LOW), WEIGHT(LOW), WEIGHT(NUP), LOW, NUP,
-     $              XLAM, ENTOTL, EN, RSTAR, opalind, etalind, VDOP, N)
+     $              XLAM, ENTOTL, EN(1 : N), RSTAR, opalind, etalind, VDOP, N)
 
 C***  LASER SECURITY
 
