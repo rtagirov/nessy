@@ -98,10 +98,12 @@
 
       if (ind .eq. 1) print*, 'setxjl:', en(low), en(nup)
 
-!      stop
-
       CALL LIOP_SBE(EINST(NUP, LOW), WEIGHT(LOW), WEIGHT(NUP), LOW, NUP,
      $              XLAM, ENTOTL, EN(1 : N), RSTAR, opalind, etalind, VDOP, N)
+
+      if (ind .eq. 1) print*, 'setxjl:', en(low), en(nup)
+
+      stop
 
 C***  LASER SECURITY
 
