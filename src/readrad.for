@@ -25,8 +25,7 @@ C******************************************************************************
 
       PARAMETER ( ONE = 1.D+0, TWO = 2.D+0 )
       Real*8,Dimension(ND,NF)  :: WCHARM
-      DIMENSION XJCREA(ND,NF),XJC(ND)
-     $          ,EDDREA(3,ND,NF),EDDI(3,ND),DUMMY(ND)
+      DIMENSION XJCREA(ND,NF), XJC(ND), EDDREA(3,ND,NF), EDDI(3,ND), DUMMY(ND)
       Real*8  TOTIN,TOTOUT
       Real*8,Dimension(NF)::EMFLUX
       Real*8,Dimension(ND):: HTOT,GTOT,XTOT,ETOT

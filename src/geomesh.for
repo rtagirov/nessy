@@ -2,31 +2,26 @@
 
       CONTAINS
 
-      SUBROUTINE GEOMESH(RADIUS,ENTOT,RHO,T,FAL,AINCRIT,P,Z,RMAX,RSTAR,AMU,ATMEAN,ND,NDDIM,NP,NPDIM)
+      SUBROUTINE GEOMESH(RADIUS,ENTOT,T,P,Z,RMAX,RSTAR,AMU,ATMEAN,ND,NDDIM,NP,NPDIM)
 
       USE MOD_PGRID
       USE MOD_RGRIDM
 
-!     THIS SUBROUTINE GENERATES THE GEOMETRICAL POINT MESH IN R, P AND Z
-!     P and Z mesh is needed for the ray-by-ray solution of the radiative transfer equation
-!     in spherical symmetry
+!     THIS SUBROUTINE GENERATES THE GEOMETRICAL POINT MESH IN RADIUS, P AND Z
+!     P and Z mesh is needed for the ray-by-ray solution of the radiative transfer equation in spherical symmetry
 
       IMPLICIT REAL*8(A - H, O - Z)
 
       INTEGER, INTENT(OUT) ::    ND, NP
-      REAL*8,  INTENT(INOUT) ::  RADIUS,entot(:),rho(:),T(:), P,Z(NDDIM*NPDIM)
-      INTEGER, INTENT(IN) ::     NDDIM,NPDIM
-      REAL*8,  INTENT(IN) ::     RMAX,RSTAR,AMU,ATMEAN
+      REAL*8,  INTENT(INOUT) ::  RADIUS, entot(:), T(:), P, Z(NDDIM*NPDIM)
+      INTEGER, INTENT(IN) ::     NDDIM, NPDIM
+      REAL*8,  INTENT(IN) ::     RMAX, RSTAR, AMU, ATMEAN
 
-      LOGICAL, INTENT(IN) ::     FAL
-      CHARACTER*8, INTENT(IN) :: AINCRIT(:)
-
-      DIMENSION                  R(NDDIM), RADIUS(NDDIM), P(NPDIM)
+      DIMENSION                  RADIUS(NDDIM), P(NPDIM)
       
-      CALL RGRIDM(RADIUS,ENTOT,RHO,T,R, FAL,AINCRIT,RMAX,
-     $            RSTAR,AMU,ATMEAN,NDDIM,ND)
+      CALL RGRIDM(RADIUS, ENTOT, T, RMAX, RSTAR, AMU, ATMEAN, NDDIM, ND)
 
-      CALL PGRID (NPDIM,NP,ND,R,P)
+      CALL PGRID(NPDIM, NP, ND, RADIUS, P)
 
       do i=1,NDDIM*NPDIM
           z(i)=0.0D0

@@ -6,7 +6,7 @@ c     the module contains matrix operations necessary for broyden algebra
 
       SUBROUTINE VMF(V2, V1, A, N)
 
-C     MULTIPLICATION VECTOR = VECTOR * MATRIX (FULL)  --  V2 = V1 * A
+!     MULTIPLICATION VECTOR = VECTOR * MATRIX (FULL) - V2 = V1 * A
 
       implicit real*8(a - h, o - z)
 
@@ -39,7 +39,7 @@ C     MULTIPLICATION VECTOR = VECTOR * MATRIX (FULL)  --  V2 = V1 * A
       END subroutine
 
       SUBROUTINE VMV(VSUM, V1, V2, N)
-C     MULTIPLICATION RESULT = VECTOR * VEKTOR  --  SUM = V1 * V2^T
+!     MULTIPLICATION RESULT = VECTOR * VEKTOR  --  SUM = V1 * V2^T
 
       implicit real*8(a - h, o - z)
 
@@ -54,7 +54,7 @@ C     MULTIPLICATION RESULT = VECTOR * VEKTOR  --  SUM = V1 * V2^T
       end subroutine
 
       SUBROUTINE VMT(V2, A, V1, N)
-C     MULTIPLICATION VECTOR = MATRIX (FULL) * VEKTOR TRANSFORMIERT --  V2 = A * V1^T
+!     MULTIPLICATION VECTOR = MATRIX (FULL) * VEKTOR TRANSFORMIERT --  V2 = A * V1^T
 
       implicit real*8(a - h, o - z)
 
@@ -79,7 +79,7 @@ C     MULTIPLICATION VECTOR = MATRIX (FULL) * VEKTOR TRANSFORMIERT --  V2 = A * 
       END subroutine
 
       SUBROUTINE VMD(A, V1, V2, N)
-C     MULTIPLICATION MATRIX = VECTOR * VEKTOR, DYADIC PRODUCT -- A = V1^T * V2
+!     MULTIPLICATION MATRIX = VECTOR * VEKTOR, DYADIC PRODUCT -- A = V1^T * V2
 
       implicit real*8(a - h, o - z)
 
@@ -99,43 +99,86 @@ C     MULTIPLICATION MATRIX = VECTOR * VEKTOR, DYADIC PRODUCT -- A = V1^T * V2
 
       END subroutine
 
-      SUBROUTINE VDIFF(A1,VDI,N)
-C***  DIVISION MATRIX = MATRIX / FLOAT  --  A1 = A2 / VDIFF
-      implicit real*8(a-h,o-z)
+      SUBROUTINE VDIFF(A1, VDI, N)
+!     DIVISION MATRIX = MATRIX / FLOAT  --  A1 = A2 / VDIFF
 
-      DIMENSION A1(N,N)
+      implicit real*8(a - h, o - z)
+
+      DIMENSION A1(N, N)
+
       IF (VDI .EQ. .0) GOTO 3
-      DO 2 J=1,N
-      DO 1 I=1,N
-      A1(J,I)=A1(J,I)/VDI
-    1 CONTINUE
+
+      DO 2 J = 1, N
+
+         DO 1 I = 1, N
+
+         A1(J, I) = A1(J, I) / VDI
+
+    1    CONTINUE
+
     2 CONTINUE
+
     3 CONTINUE
+
       RETURN
+
       END subroutine
 
-      SUBROUTINE VADD (A,B,N)
-C***  VECTOR ADDITION  A = A + B
-      implicit real*8(a-h,o-z)
+      SUBROUTINE VADD (A, B, N)
+!     VECTOR ADDITION  A = A + B
 
-      DIMENSION A(N),B(N)
-      DO 1 I=1,N
-    1 A(I)=A(I)+B(I)
-      RETURN
+      implicit real*8(a - h, o - z)
+
+      DIMENSION A(N), B(N)
+
+      do 1 I = 1, N
+
+    1 A(I) = A(I) + B(I)
+
+      return
+
       end subroutine
 
-      SUBROUTINE VADDM (A1,A2,N)
-C***  ADDITION OF MATRIX A1=A1+A2
-      implicit real*8(a-h,o-z)
+      SUBROUTINE VADDM (A1, A2, N)
+!     ADDITION OF MATRIX A1 = A1 + A2
 
-      DIMENSION A1(N,N),A2(N,N)
-      DO 1 J=1,N
-      DO 2 I=1,N
-      A1(J,I)=A1(J,I)+A2(J,I)
-    2 CONTINUE
+      implicit real*8(a - h, o - z)
+
+      DIMENSION A1(N, N), A2(N, N)
+
+      DO 1 J = 1, N
+
+         DO 2 I = 1, N
+
+            A1(J, I) = A1(J, I) + A2(J, I)
+
+    2    CONTINUE
+
     1 CONTINUE
-      RETURN
-      END subroutine
+
+      return
+
+      end subroutine
+
+      SUBROUTINE ACOPY (A1, A2, N)
+
+      implicit real*8(a - h, o - z)
+
+      dimension A1(N, N), A2(N, N)
+
+      do J = 1, N
+
+         do I = 1, N
+
+            A1(J, I) = A2(J, I)
+
+         enddo
+
+      enddo
+
+      return
+
+      end subroutine
 
       subroutine inv_lapack(n, a)
 
@@ -144,7 +187,7 @@ C***  ADDITION OF MATRIX A1=A1+A2
       real*8, intent(inout), dimension(n, n) :: a
 
       real*8,  dimension(n) :: work ! work array for LAPACK
-      integer, dimension(n) :: ipiv   ! pivot indices
+      integer, dimension(n) :: ipiv ! pivot indices
       integer               :: info
 
 !     External procedures defined in LAPACK

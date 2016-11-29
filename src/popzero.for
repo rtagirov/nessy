@@ -2,12 +2,11 @@
 
       CONTAINS
 
-      !**********  MODULNAME: POPZERO   ******* 06/08/87  20.09.04.******   131 KARTEN
       SUBROUTINE POPZERO(T,RNE,POPNUM,DEPART,ENTOT,ITNE,N,ENLTE,
      $                   WEIGHT,NCHARG,EION,ELEVEL,EN,EINST,LEVEL,
      $                   XLAMBDA,FWEIGHT,XJC,NF,XJL,IFRRA,ITORA,ALPHA,
      $                   SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
-     $                   LASTIND,ND,LSRAT,CRATE,RRATE,RATCO,
+     $                   LASTIND,ND,LSRAT,CRATE,RRATE,
      $                   SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
      $                   KODAT,NFIRST,NLAST,WAVARR,SIGARR)
 
@@ -42,28 +41,32 @@
 
       USE COMMON_BLOCK
 
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT REAL*8(A - H, O - Z)
+
       integer,intent(in) :: JOBNUM
-      DIMENSION T(ND),ENTOT(ND),RNE(ND),POPNUM(ND,N),ITNE(ND)
-      DIMENSION DEPART(ND,N)
-      DIMENSION NCHARG(NDIM),EN(NDIM),ENLTE(NDIM)
+      DIMENSION T(ND),ENTOT(ND),RNE(ND),POPNUM(ND, N),ITNE(ND)
+      DIMENSION DEPART(ND, N)
+      DIMENSION NCHARG(N), EN(N), ENLTE(N)
       DIMENSION NOM(N)
-      DIMENSION KODAT(NATOM),NFIRST(NATOM),NLAST(NATOM)
+      DIMENSION KODAT(NATOM), NFIRST(NATOM), NLAST(NATOM)
   
       LOGICAL KONVER
       CHARACTER MODHOLD*104,MODHEAD*104,CNAME*10,CHAR*1,TEST*10,JOB*7
-      CHARACTER LEVEL(NDIM)*10
-      CHARACTER*4 KEYCOL(NDIM,NDIM)
+      CHARACTER LEVEL(N)*10
+      CHARACTER*4 KEYCOL(N, N)
       character*10 cread,help
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
+      DIMENSION WAVARR(N, NF),SIGARR(N, NF)
 
       real*8	POPHIIL, POPHML, POPHIL
 
-      real*8,dimension(*) :: ALTESUM,COCO,CRATE,FWEIGHT,RATCO
+      real*8,dimension(*) :: ALTESUM,COCO,CRATE,FWEIGHT
+
+      real*8, dimension(N, N) :: ratco
+
       real*8,dimension(*) :: RRATE,WEIGHT,XJC,XJL
-      real*8 SIGMAKI(NF,N), ELEVEL(NDIM), EION(NDIM), EINST(NDIM,NDIM)
+      real*8 SIGMAKI(NF,N), ELEVEL(N), EION(N), EINST(N, N)
       real*8 XLAMBDA(NF), ALPHA(*),SEXPO(*)
-      character*8 :: agaunt(NDIM)
+      character*8 :: agaunt(N)
       COMMON /GIIIERR/  NTUP,NTLOW,NFUP,NFLOW,NHELP
       COMMON / COMNEGI / NEGINTL
       real*8, allocatable::ABXYZ_new(:)
@@ -253,8 +256,7 @@
      $                    ABXYZ_new, NFIRST, NLAST, NATOM)
 
               CALL NLTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,
-     $                     EN,EINST,XLAMBDA,FWEIGHT,XJC,NF,ITNEL,L,LEVEL,
-     $                     XJL,ND,LASTIND,
+     $                     EN,EINST,XLAMBDA,FWEIGHT,XJC,NF,ITNEL,L,LEVEL,XJL,ND,LASTIND,
      $                     CRATE,RRATE,RATCO,SIGMAKI,ALTESUM,COCO,
      $                     KEYCOL,NOM,NATOM,ABXYZ_new,KODAT,NFIRST,NLAST,
      $                     POPHIIL, POPHML, POPHIL)

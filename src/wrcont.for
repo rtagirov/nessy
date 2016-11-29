@@ -2,12 +2,11 @@
 
       CONTAINS
 
-      SUBROUTINE WRCONT (job)
+      SUBROUTINE WRCONT(job)
 
       use MOD_AMBIPOLAR
       use MOD_CALCH
       use MOD_COOP_M
-      use MOD_CPPOPNUM
       use MOD_DATOM_M
       use MOD_DECON
       use MOD_DECSTAR_M
@@ -211,15 +210,15 @@ C     initialize frequency integrated quantities
 
 c***  the blanketing table is read by routine READMOD
 c***  if lblank.gt.0 then read a new table from the file LIBLANK
-      CALL REBLANK (LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
+      CALL REBLANK(LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
 
       if (lblank.lt.0) then
 c***     the new blanketing table needs to be written to the model file
          IFL=3
          open (IFL,file='MODFILE',STATUS='UNKNOWN')
-         CALL WRITMOD       (IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                    GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $                    ABXYZ,NATOM,MODHEAD,JOBNUM) 
+         CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
+     $                GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $                ABXYZ,NATOM,MODHEAD,JOBNUM) 
          CLOSE (ifl)
       endif
       IF (abs(LBLANK).EQ.2) 
@@ -234,9 +233,11 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
       FRQS: DO K = 1, NF
 
-        !*** now extract XJC and EDDI for the frequency K
+!       now extract XJC and EDDI for the frequency K
 
-        CALL EXTRXJC(XJCARR,XJC,EDDARR,EDDI,nd,nf,K)
+        CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
+
+!        do l = 1, ND; print*, 'wrcont check:', k, l, xjc(l); enddo
 
         CALL COOP_M(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $              OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
@@ -254,6 +255,8 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
      $              A,B,C,W,BX,WX,XJC,RADIUS,P,BCORE,DBDR,
      $              OPA,ETA,THOMSON,EDDI,ND,NP)
 
+!        do l = 1, ND; print*, 'wrcont check:', k, l, xjc(l); enddo
+
         !***  INTEGRATION OF THE TOTAL INCIDENT AND EMERGENT FLUX
         TOTIN=TOTIN+FLUXIN*FWEIGHT(K)
         TOTOUT=TOTOUT+EMFLUX(K)*FWEIGHT(K)
@@ -265,13 +268,13 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
         GTOT(:ND) = GTOT(:ND)+OPA(:ND)*HNU(:ND)*FWEIGHT(K)
         HTOT(:ND) = HTOT(:ND)+HNU(:ND)*FWEIGHT(K)
 
-        !***  XJC and EDDI are stored for later write to file RADIOC
+!       XJC and EDDI are stored for later write to file RADIOC
+        call storxjc(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
 
-        call storxjc (XJCARR,XJC,EDDARR,EDDI,nd,nf,K)
+!        do l = 1, ND; print*, 'wrcont check:', l, k, xjcarr(l, k); enddo
 
 !       PRINTOUT OF FREQUENCY DEPENDEND VARIABLES
-        IF (LPRIV.GT.0.AND.(K.LT.68 .OR. K.EQ.111))
-     $  CALL PRIV(K,XLAMBDA(K),LPRIV,ND,NP,RADIUS,Z,VJL,RSTAR)
+        IF (LPRIV.GT.0.AND.(K.LT.68 .OR. K.EQ.111)) CALL PRIV(K,XLAMBDA(K),LPRIV,ND,NP,RADIUS,Z,VJL,RSTAR)
 
         IF (LPHNU.GT.0) CALL PHNU(K,XLAMBDA(K),LPHNU,ND,RADIUS,HNU,RSTAR)
 
@@ -279,6 +282,8 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
         LASTK = K
 
       ENDDO FRQS
+
+      stop
 
       print *,'maxmin of dEDDI(1,:) = ', 
      &  maxval(abs(EDDI(1,1:ND)/EDDI_OLD(1,:))),
@@ -322,8 +327,9 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 !     store the new continuum radiation field
       IF (LASTK.EQ.NF) ETOT(1:ND)=ETOT(1:ND)/XTOT(1:ND)
 
-      call writradc(xjcarr,xjc,eddarr,eddi,emflux,totin,totout,
-     $              HTOT,GTOT,XTOT,ETOT,wcharm,nd,nf,MODHEAD,JOBNUM)
+      call writradc(xjcarr,xjc,eddarr,eddi,emflux,totin,totout,HTOT,GTOT,XTOT,ETOT,wcharm,nd,nf,MODHEAD,JOBNUM)
+
+      stop
 
 !     if a new LB table is read then store a new model file
       if (lblank.lt.0) then
@@ -365,12 +371,11 @@ C***  UPDATING THE MODEL HISTORY
      $   CALL PRIGH (LPRIH,ND,RADIUS,HTOT,GTOT,ETOT,TEFF,ENTOT,RNE,
      $               RSTAR,T,VELO,GRADI,ATMASS,ABXYZ,NATOM)
 
-
-
       !*** if POPNUM_CP is set, then check if writeout
-      if(DECSTAR_OPT%POPNUM_CP>0) then
-        if(mod(JOBNUM,DECSTAR_OPT%POPNUM_CP)==0) call cpPOPNUM(JOBNUM)
-      endif
+!      if(DECSTAR_OPT%POPNUM_CP>0) then
+!        if(mod(JOBNUM,DECSTAR_OPT%POPNUM_CP)==0) call cpPOPNUM(JOBNUM)
+!      endif
+
       !***  ROUTING OF SUBSEQUENT JOBS
       IF (LASTK .EQ. NF) THEN
          WRITE (6,*) ' ALL FREQUENCY POINTS COMPLETED'
@@ -386,11 +391,9 @@ C***  UPDATING THE MODEL HISTORY
          PRINT *,LASTK,' OF ',NF,' FREQUENCY POINTS COMPLETED'
          PRINT *,' NEW WRCONT-JOB TO BE ROUTED, JOB='//JOB
          ENDIF
-      ! CALL CLOSMS (3)
-      ! CALL CLOSMS (7)
-      ! CALL JSYMSET (2LG0,0)
-!      close (6)
-      ! STOP 'O.K.'
+
       RETURN
+
       END subroutine
+
       end module

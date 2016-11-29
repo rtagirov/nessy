@@ -8,7 +8,7 @@
      $                INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
      $                NFL,OPAC,SCNEW,DOPA,DETA,OPAL,SLNEW,DOPAL,DETAL,SIGMAKI,
      $                ETAC,NFEDGE,EXPFAC,NOTEMP,NODM,
-     $                WCHARM,EN,RSTAR,SCOLD,XJCAPP,VDOP,COCO,KEYCOL,
+     $                WCHARM,EN,RSTAR,SCOLD,VDOP,COCO,KEYCOL,
      $                POPHIIL,POPHML,POPHIL,LOE,ITNEL,LEVEL,JOBNUM,IRESTA)
 
       use MOD_DERIV
@@ -92,7 +92,7 @@ C       : : :
 
       REAL*8, DIMENSION(LASTIND), INTENT(OUT) :: XJLAPP
 
-      REAL*8, DIMENSION(N,  N),  INTENT(INOUT) :: CRATE, RRATE
+      REAL*8, DIMENSION(N,  N),        INTENT(INOUT) :: CRATE, RRATE
       REAL*8, DIMENSION(NRANK, NRANK), INTENT(INOUT) :: RATCO
 
       INTEGER, INTENT(IN) :: L
@@ -106,20 +106,12 @@ C       : : :
       REAL*8, DIMENSION(LASTIND) :: AccFact
       REAL*8, DIMENSION(LASTIND) :: SLNEW
 
-      LOGICAL NOTEMP, NODM, DEPTH_PR_COND,
-     $                      DEPTH_STAB_COND,
-     $                      LEVEL_COND,
-     $                      JOBNUM_PR_COND,
-     $                      JOBNUM_STAB_COND,
-     $                      CONCERV_COND,
-     $                      ITNEL_COND,
-     $                      PR_COND,
-     $                      STAB_COND,
-     $                      I_COND, NUP_COND, LOW_COND, INUP_COND, ILOW_COND, DM_NUP_COND, DM_LOW_COND
+      LOGICAL NOTEMP, NODM, DEPTH_PR_COND, JOBNUM_PR_COND, ITNEL_COND, PR_COND
 
       integer :: NFIRNA, NA, I, J, K, NPLUS1, NPLUS2, NUP, IND, LOW
       integer :: NLANA
       REAL*8  :: ENTOTL, RNEL, DLOWUP
+
       real*8, dimension(NF) :: SCNEW, XJCAPP
 
       REAL*8, DIMENSION(NRANK, NRANK), INTENT(INOUT) :: DM
@@ -157,21 +149,30 @@ C***  ONLY TRUE OPACITIES ARE ACCOUNTED FOR.
 C***  CALCULATE NEW SOURCE FUNCTION AND SCHARMER'S RADIATION FIELD
 C***  LOOP OVER ALL CONT. FRQUENCIES  ----------------------------------
 
-      DO K=1,NF
-C***  	PREVENT DIVIDE CHECK ERRORS
-      	IF (OPAC(K) .GT. .0d0) THEN
-      		! OPAC can not be < 0 because of laser security check in ccore
-         		SCNEW(K)=ETAC(K)/OPAC(K)
-         	ELSE
-         		SCNEW(K)=.0d0
-         	ENDIF
-         	!@todo: recalculate XJCAPP in a better way
+      DO K = 1, NF
 
-!        WCHARM(L, K) = 0.0D0
+!     PREVENT DIVIDE CHECK ERRORS
 
-      	XJCAPP(K) = XJC(L, K) + WCHARM(L, K) * (SCNEW(K) - SCOLD(K, L))
+         IF (OPAC(K) .GT. 0.0d0) THEN
+
+!       OPAC can not be < 0 because of laser security check in ccore
+
+            SCNEW(K) = ETAC(K) / OPAC(K)
+
+         ELSE
+
+            SCNEW(K) = 0.0d0
+
+         ENDIF
+
+         write(*, '(A,2x,2(i4,2x),4(e15.7,2x))'), 'coma xjc check:',
+     $        k, l, xjc(k, l), wcharm(l, k), scnew(k), scold(l, k)
+
+         XJCAPP(K) = XJC(L, K) + WCHARM(L, K) * (SCNEW(K) - SCOLD(K, L))
 
       ENDDO
+
+      stop
 
 C***  ENDLOOP  ---------------------------------------------------------
 
@@ -179,15 +180,9 @@ C***  ENDLOOP  ---------------------------------------------------------
 
       DEPTH_PR_COND = L .LE. 61 .AND. L .GE. 52
 
-      DEPTH_STAB_COND = L .GE. 52 .AND. L .LE. 75
-
       JOBNUM_PR_COND = .TRUE.
 
-      JOBNUM_STAB_COND = JOBNUM .GT. 75
-
       PR_COND = ITNEL_COND .AND. DEPTH_PR_COND .AND. JOBNUM_PR_COND
-
-      STAB_COND = DEPTH_STAB_COND .AND. JOBNUM_STAB_COND .AND. .FALSE.
 
 ! Rinat Tagirov: printing the rates
 !**********************************************************************************************************************
@@ -275,41 +270,32 @@ CMH - new: needed to calculate new collision cross sections for Hminus
 
 !      print*, 'after setxjl:', en(2), en(3); stop
 
-C**  RADIATIVE RATES ARE CALCULATED WITH THE MODIFIED RADIATION FIELD
-C***  NOTE THE TRICKY USE OF THE ONE-DIMENSIONAL ARRAYS XJCAPP AND XJLAPP
+!     RADIATIVE RATES ARE CALCULATED WITH THE MODIFIED RADIATION FIELD
+
+      do i = 1, n + 1; print*, 'coma en check:', i, en(i); enddo
 
       CALL RADNET(N, ENLTE, TL, WEIGHT, NCHARG ,EION, ELEVEL, EINST,
      $            SLNEW(1 : LASTIND), EN, NOM, RRATE, XLAMBDA, FWEIGHT,
-     $            XJCAPP, NF, ione, XJLAPP(1 : LASTIND), ione, SIGMAKI, LASTIND,
+     $            XJCAPP(1 : NF), NF, XJLAPP(1 : LASTIND), SIGMAKI, LASTIND,
      $            LEVEL, L, JOBNUM, ITNEL)
 
-!      IF (STAB_COND) THEN
-
-!        Decoupling hydrogen levels (from 2nd to 10th)
-!        from ground hydrogen level
-
-!         RRATE(3 : 11, 2) = 0.0D0
-!         RRATE(2, 3 : 11) = 0.0D0
-
-!         CRATE(3 : 11, 2) = 0.0D0
-!         CRATE(2, 3 : 11) = 0.0D0
-
-!        Decoupling hydrogen levels (from 2nd to 10th)
-!        from protons
-
-!         RRATE(3 : 11, 12) = 0.0D0
-!         RRATE(12, 3 : 11) = 0.0D0
-
-!         CRATE(3 : 11, 12) = 0.0D0
-!         CRATE(12, 3 : 11) = 0.0D0
-
-!      ENDIF
-
-C***  ADD RADIATIVE AND COLLISIONAL TERMS INTO RATE COEFFICIENT MATRIX RATCO
+!     ADD RADIATIVE AND COLLISIONAL TERMS INTO RATE COEFFICIENT MATRIX RATCO
 
       RATCO(1 : N, 1 : N) = 0.0D0
 
       RATCO(1 : N, 1 : N) = - RRATE(1 : N, 1 : N) - CRATE(1 : N, 1 : N)
+
+      do i = 1, n
+
+         do j = 1, n
+
+            write(*, '(A,2x,2(i4,2x),3(e15.7,2x))'), 'coma ratco check:', i, j, ratco(i, j), rrate(i, j), crate(i, j)
+
+         enddo
+
+      enddo
+
+      stop
 
 C***  DIAGONAL ELEMENTS: -SUM OF THE ROW (I.E. OVER COLUMN INDEX)
 
@@ -318,16 +304,6 @@ C***  DIAGONAL ELEMENTS: -SUM OF THE ROW (I.E. OVER COLUMN INDEX)
         RATCO(I, I) = -SUM(RATCO(I, 1 : N))
 
       END FORALL
-
-!      IF (STAB_COND) THEN
-
-!         Putting 10th hydrogen level to LTE
-
-!          RATCO(1 : N, 11) = 0.0D0
-
-!          RATCO(11, 11) = 1.0D0
-
-!      ENDIF
 
 C***  COLUMN NLAST(NA): NUMBER CONSERVATION FOR EACH ELEMENT (NA)
 C***  REMARK: TOTAL NUMBER CONSERVATION IS IMPLICITLY ENSURED
@@ -338,16 +314,6 @@ C***  REMARK: TOTAL NUMBER CONSERVATION IS IMPLICITLY ENSURED
          NLANA = NLAST(NA)
 
          RATCO(NFIRNA : NLANA, NLANA) = 1.0D0
-
-!         IF (STAB_COND .AND. NA .EQ. 1) THEN
-
-!             RATCO(NFIRNA : NLANA, NLANA) = 0.0D0
-
-!             RATCO(1 : 2, NLANA) = 1.0D0
-
-!             RATCO(12, NLANA) = 1.0D0
-
-!         ENDIF
 
       ENDDO
 
@@ -382,8 +348,6 @@ C***  FIRST TERMS : THE ORIGINAL MATRIX RATCO
 
       DO 10 I = 1, NPLUS1
 
-!      I_COND = I .EQ. 1 .OR. I .EQ. 3
-
 C***  CONSTRUCT DERIVATIVE VECTORS DOPA, DETA WITH RESPECT TO EN(I)
 
       CALL DCOOP(I,DOPA,DETA,XLAMBDA,NF,TL,RNEL,ENTOTL,EN,RSTAR,
@@ -399,15 +363,6 @@ C***  CONSTRUCT DERIVATIVE VECTORS DOPAL, DETAL (LINES) WITH RESPECT TO EN(I)
       DO 8 NUP = 2, N
 
       DO 7 LOW = 1, NUP - 1
-
-!      NUP_COND = NUP .EQ. 1 .OR. NUP .EQ. 3
-!      LOW_COND = LOW .EQ. 1 .OR. LOW .EQ. 3
-
-!      ILOW_COND = I .NE. LOW
-!      INUP_COND = I .NE. NUP
-
-!      DM_NUP_COND = I_COND .AND. NUP_COND .AND. INUP_COND
-!      DM_LOW_COND = I_COND .AND. LOW_COND .AND. ILOW_COND
 
 C***  COMPUTE ELEMENT (LOW,NUP) OF MATRIX DM (DERIVATIVE WITH RESPECT TO EN(I))
       CALL DERIV(DLOWUP,I,NUP,LOW,IND,
@@ -428,18 +383,6 @@ C***  NOTE THAT DUPLOW = - DLOWUP
     8 CONTINUE
 
    10 CONTINUE
-
-!      IF (STAB_COND) THEN
-
-!          DM(3 : 11, 2) = RATCO(3 : 11, 2)
-!          DM(2, 3 : 11) = RATCO(2, 3 : 11)
-
-!          DM(3 : 11, 12) = RATCO(3 : 11, 12)
-!          DM(12, 3 : 11) = RATCO(12, 3 : 11)
-
-!          DM(1 : NRANK, 11) = RATCO(1 : NRANK, 11)
-
-!      ENDIF
 
 C***  COLUMNS NLAST(NA)  (I.E. COLUMNS CONTAINING THE EQUATIONS OF NUMBER
 C***  CONSERVATION FOR ELEMENT NA)  ARE NOT CHANGED
@@ -468,8 +411,6 @@ C***          NLAST(NA)-TH ELEMENT = ABXYZ(NA)  (NUMBER CONSERVATION)
         V1(NLANA) = ABXYZ(NA)
 
       ENDDO
-
-!      IF (STAB_COND) V1(11) = ENLTE(11)
 
 C***  ADDITIONAL ELEMENT (N+2) FOR THE ENERGY EQUATION
       IF (.NOT. NOTEMP) THEN

@@ -3,17 +3,17 @@
       CONTAINS
 
       SUBROUTINE LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART_ZWAAN,POP1,
-     $   N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN,ENDELTA,EINST,LEVEL,
-     $   XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,XJCAPP,SCOLD,XJLAPP,
-     $   DM,DB,V1,V2,V4,V5,VOLD,GAMMAL,EPSILON,
-     $   TNEW,NOTEMP,NODM,IADR19,MAXADR,
-     $   DELTAC,GAMMAR,IPRICC,IPRILC,MODHEAD,JOBNUM,IFRRA,ITORA,
-     $   RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
-     $   VELO,GRADI,VDOP,PHI,PWEIGHT,SCOLIND,INDNUP,INDLOW,LASTIND,
-     $   OPAC,SCNEW,DOPA,DETA,OPAL,DOPAL,DETAL,SIGMAKI,
-     $   ND,LSRAT,CRATE,RRATE,RATCO,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
-     $   LINE,ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
-     $   NLAST,WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,JOBMAX)
+     $                  N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN,ENDELTA,EINST,LEVEL,
+     $                  XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,SCOLD,
+     $                  DM,DB,V1,V2,V4,V5,VOLD,GAMMAL,EPSILON,
+     $                  TNEW,NOTEMP,NODM,IADR19,MAXADR,
+     $                  DELTAC,GAMMAR,IPRICC,IPRILC,MODHEAD,JOBNUM,IFRRA,ITORA,
+     $                  RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
+     $                  VELO,GRADI,VDOP,PHI,PWEIGHT,SCOLIND,INDNUP,INDLOW,LASTIND,
+     $                  OPAC,SCNEW,DOPA,DETA,OPAL,DOPAL,DETAL,SIGMAKI,
+     $                  ND,LSRAT,CRATE,RRATE,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
+     $                  LINE,ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
+     $                  NLAST,WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,JOBMAX)
 
 !     see Koesterke et al 1992 A&A 255, 490
 
@@ -26,14 +26,13 @@
 !     EN(J) = NEW NLTE POP. NUMBERS  AT CURRENT DEPTH POINT
 !     ENLTE(J) = LTE POP. NUMBERS AT CURRENT DEPTH POINT
 !     ENDELTA(J) = DELTA OF NEW - CURRENT POP. NUMBERS
-!     DB(N,N) = BROYDEN MATRIX AT CURRENT DEPTH POINT
-!     DM(N,N) = ONLY NEEDED IF NO BROYDEN MATRIX FOUND AT START OF NEW MODEL
+!     DB(N, N) = BROYDEN MATRIX AT CURRENT DEPTH POINT
+!     DM(N, N) = ONLY NEEDED IF NO BROYDEN MATRIX FOUND AT START OF NEW MODEL
 !     IF THERE IS A DB MATRIX, DM IS USED AS HELP-MATRIX FOR ALGORITHM.
 !     VOLD(J) = VEKTOR OF K-1 ITERATION USED FOR K ITERATION
 !     V1(J) = B-VEKTOR COMPUTED IN COMA()
-!     V2-V5(J) = HELP-VEKTOR FOR BROYDEN ALGORITHMUS
+!     V2 - V5(J) = HELP-VEKTOR FOR BROYDEN ALGORITHMUS
 
-      use MOD_ACOPY
       USE MOD_BFCROSS
       USE MOD_DBCLOSE
       USE MOD_DBLOAD
@@ -86,7 +85,9 @@
       DIMENSION SCOLD(NF,ND)
       DIMENSION NFIRST(NATOM),NLAST(NATOM)
       REAL*8 SIGMAKI(NF), ALPHA(*), SEXPO(*)
-      REAL*8 RATCO(*)
+
+      real*8, allocatable, dimension(:, :) :: RATCO
+
       real*8 rnel, rnellte
 
       real*8, allocatable :: ABXYZ_new(:)
@@ -108,7 +109,7 @@
       character*10, dimension(*) :: MAINPRO,MAINLEV
       integer,      dimension(*) :: IWARN, KODAT
 
-      real*8,       dimension(*) :: FWEIGHT, WCHARM, XJCAPP, XJLAPP
+      real*8,       dimension(*) :: FWEIGHT, WCHARM
       real*8,       dimension(*) :: ALTESUM, COCO, DETA, DETAL, DOPA, DOPAL
       real*8,       dimension(*) :: ETA, ETAC, GRADI
       real*8,       dimension(*) :: OPA, OPAC, RADIUS
@@ -116,6 +117,8 @@
 
       REAL*8, DIMENSION(ND, LASTIND) :: XJL, JNEW
       REAL*8, DIMENSION(ND, NF) ::      XJC
+
+      REAL*8, DIMENSION(LASTIND) :: XJLAPP
 
       REAL*8, DIMENSION(:), ALLOCATABLE :: XJC_EDG
 
@@ -182,6 +185,10 @@ C***  ENERGY EQUATION INCREASES THE RANK OF THE SYSTEM
       IF (NOTEMP) NRANK = NPLUS1
 
       IF (.NOT. NOTEMP) NRANK = NPLUS2
+
+      if (allocated(ratco)) deallocate(ratco)
+
+      allocate(ratco(nrank, nrank))
 
       SLOLD(1 : ND, 1 : LASTIND) = 0.0D0
 
@@ -442,37 +449,53 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
      $          INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
      $          NFL,OPAC,SCNEW,DOPA,DETA,OPAL,SLNEW(L, 1 : LASTIND),
      $          DOPAL, DETAL, SIGMAKI,ETAC,NFEDGE,EXPFAC,NOTEMP,NODM,
-     $          WCHARM,EN,RSTAR,SCOLD,XJCAPP,VDOP,COCO,KEYCOL,
+     $          WCHARM,EN,RSTAR,SCOLD,VDOP,COCO,KEYCOL,
      $          POPHIIL,POPHML, POPHIL, LOO(L, 1 : LASTIND), ITNE(L),
      $          LEVEL, JOBNUM, IRESTA)
 
       JNEW(L, 1 : LASTIND) = XJLAPP(1 : LASTIND)
 
+!      do i = 1, nrank; print*, 'endelta really before:', i, endelta(i); enddo
+
       IF (NEWRAP) THEN
 
 !       ALGEBRA OF ONE NEWTON ITERATION STEP
-        CALL VMF(V2, EN, RATCO, NRANK)
+         CALL VMF(V2, EN, RATCO, NRANK)
 
-        CALL VSUB(V1, V2, NRANK) ! V1 = V1 - V2
+         CALL VSUB(V1, V2, NRANK) ! V1 = V1 - V2
 
         write(*, *) 'linpop flag 1'
 
-        CALL INV(NRANK, DM)
+         CALL INV(NRANK, DM)
 
-        CALL VMF(ENDELTA, V1, DM, NRANK) ! ENDELTA = DM * V1a
+         CALL VMF(ENDELTA, V1, DM, NRANK) ! ENDELTA = DM * V1a
 
       ELSE
 
-        !***  ALGEBRA OF ONE BROYDEN ITERATION STEP
-        !***  calculate the resulting vector V4 using the current populations EN
+!        ALGEBRA OF ONE BROYDEN ITERATION STEP
+!        calculate the resulting vector V4 using the current populations EN
 
-        CALL VMF(V4, EN, RATCO, NRANK)
+         do i = 1, nrank; print*, 'en check:', i, en(i); enddo
+
+         do i = 1, nrank
+
+            do j = 1, nrank
+
+               print*, 'ratco check:', i, j, ratco(i, j)
+
+            enddo
+
+         enddo
+
+         stop
+
+         CALL VMF(V4, EN, RATCO, NRANK)
 
         !*** calculate the error vector V1 = V1 - V4
 
-        CALL VSUB (V1, V4, NRANK)
+         CALL VSUB (V1, V4, NRANK)
 
-        IF (ITNE(L) .EQ. 1 .and. nofile(L)) THEN
+         IF (ITNE(L) .EQ. 1 .and. nofile(L)) THEN
 
 !           IF FORT.19 NOT FOUND AND THE FIRST ITERATION STEP, DB IS DM^T
             write(*, *) 'linpop flag 2'
@@ -480,57 +503,53 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
             CALL ACOPY(DB, DM, NRANK)
 
-        ELSE
+         ELSE
 
-C***  ALGEBRA FOR THE BROYDEN FORMULA
-c       delta_y = VOLD = VOLD-V1
+!       ALGEBRA FOR THE BROYDEN FORMULA
+!       delta_y = VOLD = VOLD - V1
             CALL VSUB(VOLD, V1, NRANK)
 
-c       V2 = delta_y * B
+!       V2 = delta_y * B
             CALL VMF(V2, VOLD, DB, NRANK)
 
-c       V3 = V2*ENDELTA; ENDELTA is the difference between pops = delta_x
-c       V3 the denominater (a number)
+!       V3 = V2 * ENDELTA; ENDELTA is the difference between pops = delta_x; V3 - the denominator (a number)
 
-         do i = 1, nrank; print*, 'endelta before:', i, endelta(i); enddo
+!            do i = 1, nrank; print*, 'endelta before:', i, endelta(i); enddo
 
             CALL VMV(V3, V2, ENDELTA, NRANK)
 
             V5(1 : NRANK) = ENDELTA(1 : NRANK)
 
-         do i = 1, nrank; print*, 'endelta after:', i, endelta(i); enddo; stop
+!            do i = 1, nrank; print*, 'endelta after:', i, endelta(i); enddo; stop
 
-c       ENDELTA = B*delta_x = DB*V5
+!           ENDELTA = B * delta_x = DB * V5
             CALL VMT(ENDELTA, DB, V5, NRANK)
 
-c       V5 = delta_x - delta_y*B = V5-V2
-            CALL VSUB(V5, V2, NRANK)   ! V5=V5-V2
+!           V5 = delta_x - delta_y * B = V5 - V2; V5 = V5 - V2
+            CALL VSUB(V5, V2, NRANK) 
 
-c       DM = B*delta_x * V5
-c       numerator (matrix) DM = dyadic product ENDELTA * V5
+!           DM = B * delta_x * V5; numerator (matrix) DM = dyadic product ENDELTA * V5
             CALL VMD(DM, ENDELTA, V5, NRANK)
 
-c       matrix DM (numerator) divided by V3
+!           matrix DM (numerator) divided by V3
             CALL VDIFF(DM, V3, NRANK)
 
-c       new Broyden matrix DB = DB+DM
+!           new Broyden matrix DB = DB + DM
             CALL VADDM(DB, DM, NRANK)
 
          ENDIF
 
          VOLD(1 : NRANK) = V1(1 : NRANK)
 
-C        calculate the new population-correction vector ENDELTA = V1*DB
+!        calculate the new population-correction vector ENDELTA = V1 * DB
          CALL VMF(ENDELTA, V1, DB, NRANK)
 
       ENDIF
 
-!     ALGEBRA COMMON TO BOTH APPROACHES
-!     UPDATE THE POPULATIONS EN = EN + ENDELTA
+!     ALGEBRA COMMON TO BOTH APPROACHES; UPDATE THE POPULATIONS EN = EN + ENDELTA
       CALL VADD(EN, ENDELTA, NRANK)
 
 !     CONVERGENCE CHECK FOR BROYDEN OR NEWTON ITERATION
-
       STRONG_CONV = .TRUE.
 
       DO J = 1, NPLUS1; STRONG_CONV = STRONG_CONV .AND. (ABS(ENDELTA(J) / EN(J)) .LT. EPSDN .OR. ABS(EN(J)) .LT. 1.0D-15); ENDDO

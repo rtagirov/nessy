@@ -2,19 +2,14 @@
 
       CONTAINS
 
-      SUBROUTINE RADNET(N,ENLTE,TL,WEIGHT,NCHARG,EION,ELEVEL,EINST,
-     $                  SL,EN,NOM,RRATE,XLAMBDA,FWEIGHT,
-     $                  XJC,NF,L,XJL,ND,SIGMAKI,LASTIND,
+      SUBROUTINE RADNET(N, ENLTE, TL, WEIGHT, NCHARG, EION, ELEVEL, EINST,
+     $                  SL, EN, NOM, RRATE, XLAMBDA, FWEIGHT,
+     $                  XJC, NF, XJL, SIGMAKI, LASTIND,
      $                  LEVEL, DP, JOBNUM, ITNEL)
 
-      !*****************************************************************
-      !***  RADIATIVE RATE COEFFICIENT MATRIX RRATE IS CALCULATED AT
-      !***  DEPTH POINT L FROM THE GIVEN RADIATION FIELD.
-      !***  NOTE THAT THIS SUBROUTINE CALCULATES NETTO RATE COEFFICIENTS
-      !***  FOR NON-RUDIMENTAL LINE TRANSITIONS
-      !*****************************************************************
-
-      !***  NOTE: ND = 1 and L = 1 ! See the call of radnet.for from coma.for
+!     RADIATIVE RATE COEFFICIENT MATRIX RRATE IS CALCULATED AT
+!     NOTE THAT THIS SUBROUTINE CALCULATES NETTO RATE COEFFICIENTS
+!     FOR NON-RUDIMENTAL LINE TRANSITIONS
 
       USE MOD_ISRCHFGT
       USE MOD_XRUDI
@@ -23,16 +18,15 @@
       USE FILE_OPERATIONS
       USE COMMON_BLOCK
 
-      IMPLICIT REAL * 8(A - H, O - Z)
+      IMPLICIT REAL*8(A - H, O - Z)
 
       PARAMETER (one = 1.0D0)
 
-      DIMENSION EINST(N,N)
-      DIMENSION XJC(ND,NF),XJL(ND,LASTIND)
-      DIMENSION NCHARG(N),ELEVEL(N)
-      DIMENSION EION(N),ENLTE(N),WEIGHT(N),EN(N)
+      DIMENSION EINST(N, N)
+      DIMENSION NCHARG(N), ELEVEL(N)
+      DIMENSION EION(N), ENLTE(N), WEIGHT(N), EN(N + 1)
       DIMENSION NOM(N)
-      DIMENSION SIGMAKI (NF,N)
+      DIMENSION SIGMAKI(NF, N)
       DIMENSION XLAMBDA(NF), FWEIGHT(NF)
 
       INTEGER, INTENT(IN) :: DP
@@ -43,13 +37,15 @@
 
       INTEGER, INTENT(IN) :: JOBNUM, ITNEL
 
-      REAL*8, DIMENSION(LASTIND), INTENT(IN) :: SL
+      REAL*8, DIMENSION(LASTIND), INTENT(IN) :: SL, XJL
+
+      REAL*8, DIMENSION(NF), INTENT(IN)      :: XJC
 
       CHARACTER*10, DIMENSION(N), INTENT(IN) :: LEVEL
 
       REAL*8 :: FREQ_FACT
 
-      REAL*8 :: XJCLK_LTE
+      REAL*8 :: XJCK_LTE
 
       LOGICAL :: ARR_LTE_COND, DEPTH_COND
 
@@ -67,8 +63,6 @@
       DEPTH_COND = (DP .LE. 91 .AND. DP .GE. 80) .OR. (DP .LE. 11)
 
       ARR_LTE_COND = ALLOCATED(ARR_LTE) .AND. ITNEL .EQ. 1
-
-      call assert(ND*L==1, 'ND and L must both be 1 '//int2str(ND)//int2str(L))
 
       ARR(DP, 1 : N, 1 : N) = 0.0D0
       RBR(DP, 1 : N, 1 : N) = 0.0D0
@@ -102,7 +96,7 @@
 
           IF (EINST(LOW, NUP) .NE. -2.0D0 .AND. SL(IND) .NE. 0.0D0) THEN
 
-             XJ = XJL(L, IND)
+             XJ = XJL(IND)
 
              JSRATIO = XJ / SL(IND)
 
@@ -123,7 +117,7 @@
 
           ELSEIF (EINST(LOW, NUP) .NE. -2.0D0 .AND. SL(IND) .EQ. 0.0D0) THEN
 
-             XJ = XJL(L, IND)
+             XJ = XJL(IND)
 
              EMINDU = EINST(NUP, LOW) * XJ / C2 / W3
 
@@ -135,7 +129,7 @@
 
           !*** TRANSITION IS RUDIMENTAL -- RADIATION FIELD FROM INTERPOLATION OF CONT.
 
-             CALL XRUDI(XJ, WAVENUM, XJC, XLAMBDA, ND, NF, L)
+             CALL XRUDI(XJ, WAVENUM, XJC, XLAMBDA, 1, NF, 1)
 
              EMINDU = EINST(NUP, LOW) * XJ / C2 / W3
 
@@ -155,7 +149,7 @@
 
           IF (EINST(LOW, NUP) .NE. -2.0D0) THEN
 
-             XJ = XJL(L, IND)
+             XJ = XJL(IND)
 
 	     IF (ARR_LTE_COND) XJ_LTE = XJL_LTE(DP, IND)
 
@@ -163,9 +157,9 @@
 
           !*** TRANSITION IS RUDIMENTAL -- RADIATION FIELD FROM INTERPOLATION OF CONT.
 
-             CALL XRUDI(XJ, WAVENUM, XJC, XLAMBDA, ND, NF, L)
+             CALL XRUDI(XJ, WAVENUM, XJC, XLAMBDA, 1, NF, 1)
 
-             IF (ARR_LTE_COND) CALL XRUDI(XJ_LTE, WAVENUM, XJC_LTE(DP, 1 : NF), XLAMBDA, ND, NF, L)
+             IF (ARR_LTE_COND) CALL XRUDI(XJ_LTE, WAVENUM, XJC_LTE(DP, 1 : NF), XLAMBDA, 1, NF, 1)
 
           ENDIF
 
@@ -208,41 +202,45 @@
 
 !           CALCULATION OF THE RADIATIVE BRACKET
 
-            WAVENUM = 1.0D8 / XLAMBDA(K)
-            W2 = WAVENUM * WAVENUM
-            W3 = W2 * WAVENUM
+               WAVENUM = 1.0D8 / XLAMBDA(K)
+               W2 = WAVENUM * WAVENUM
+               W3 = W2 * WAVENUM
 
-            XJCLK = XJC(L, K)
+               XJCK = XJC(K)
 
-            SIGMA = SIGMAKI(K, LOW)
+               SIGMA = SIGMAKI(K, LOW)
+
+               write(*, '(A,2x,2(i4,2x),2(e15.7,2x))'), 'radnet check:', k, low, xjc(k), sigmaki(k, low)
 
             !***  CALCULATE BOUND-FREE SOURCE FUNCTION FOR TRANSITION LOW-UP ONLY
-            EXFAC = EXP(-C1 * WAVENUM / TL)
-            G = EXFAC * ENLTE(LOW) / ENLTE(NUP)
-            SBF = C2 * W3 / (EN(LOW) / (EN(NUP) * G) - one)
-            REC = REC + SIGMA * W2 * EXFAC * (one - XJCLK / SBF) * FWEIGHT(K)
+               EXFAC = EXP(-C1 * WAVENUM / TL)
+               G = EXFAC * ENLTE(LOW) / ENLTE(NUP)
+               SBF = C2 * W3 / (EN(LOW) / (EN(NUP) * G) - one)
+               REC = REC + SIGMA * W2 * EXFAC * (one - XJCK / SBF) * FWEIGHT(K)
 
 !           CALCULATION OF THE ABSOLUTE RADIATIVE RATES (AS GIVEN BY RUTTEN "Radiative Transfer In Stellar Atmospheres")
 
-            FREQ_FACT = (SIGMA / WAVENUM) * FWEIGHT(K)
+               FREQ_FACT = (SIGMA / WAVENUM) * FWEIGHT(K)
 
 !           BOUND - FREE:
-            ARR(DP, LOW, NUP) = ARR(DP, LOW, NUP) + FREQ_FACT * XJCLK ! FWEIGHT is the frequency interval (according to the trapezoidal integration rule)
+               ARR(DP, LOW, NUP) = ARR(DP, LOW, NUP) + FREQ_FACT * XJCK ! FWEIGHT is the frequency interval (according to the trapezoidal integration rule)
 
-!            IF (ARR_LTE_COND) XJCLK_LTE = XJC_LTE(DP, K)
-            IF (ARR_LTE_COND) XJCLK_LTE = PLANCK_FUNC(WAVENUM * light_speed, TL)
+!            IF (ARR_LTE_COND) XJCK_LTE = XJC_LTE(DP, K)
+               IF (ARR_LTE_COND) XJCK_LTE = PLANCK_FUNC(WAVENUM * light_speed, TL)
 
-            IF (ARR_LTE_COND) ARR_LTE(DP, LOW, NUP) = ARR_LTE(DP, LOW, NUP) + FREQ_FACT * XJCLK_LTE
+               IF (ARR_LTE_COND) ARR_LTE(DP, LOW, NUP) = ARR_LTE(DP, LOW, NUP) + FREQ_FACT * XJCK_LTE
 
 !           FREE - BOUND:
-            ARR(DP, NUP, LOW) = ARR(DP, NUP, LOW) + FREQ_FACT * 
-     $                          (PLANCK_FUNC(WAVENUM * light_speed, TL) * (1.0D0 - EXFAC) + XJCLK * EXFAC)
+               ARR(DP, NUP, LOW) = ARR(DP, NUP, LOW) + FREQ_FACT * 
+     $                             (PLANCK_FUNC(WAVENUM * light_speed, TL) * (1.0D0 - EXFAC) + XJCK * EXFAC)
 
-            IF (ARR_LTE_COND) ARR_LTE(DP, NUP, LOW) = ARR_LTE(DP, NUP, LOW) + FREQ_FACT * 
-     $                                                (PLANCK_FUNC(WAVENUM * light_speed, TL) *
-     $                                                (1.0D0 - EXFAC) + XJCLK_LTE * EXFAC)
+               IF (ARR_LTE_COND) ARR_LTE(DP, NUP, LOW) = ARR_LTE(DP, NUP, LOW) + FREQ_FACT * 
+     $                                                   (PLANCK_FUNC(WAVENUM * light_speed, TL) *
+     $                                                   (1.0D0 - EXFAC) + XJCK_LTE * EXFAC)
 
           ENDDO L2
+
+          stop
 
 !         FINISHING THE CALCULATION OF THE NET RADIATIVE BRACKET
           RRATE(LOW, NUP) = 0.0D0

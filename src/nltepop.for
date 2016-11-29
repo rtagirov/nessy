@@ -23,8 +23,8 @@ C******************************************************************************
 
       implicit real*8(a-h,o-z)
 
-      DIMENSION EINST(N,N),CRATE(N,N),RRATE(N,N)
-      DIMENSION RATCO(N,N)
+      DIMENSION EINST(N, N),CRATE(N, N),RRATE(N, N)
+      DIMENSION RATCO(N, N)
       DIMENSION ENLTE(N),EN(N),NCHARG(N),WEIGHT(N)
       DIMENSION EION(N),ELEVEL(N)
       DIMENSION NOM(N)
