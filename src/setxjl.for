@@ -96,14 +96,14 @@
 
       XLAM = 1.0D8 / (ELEVEL(NUP) - ELEVEL(LOW))
 
-      if (ind .eq. 1) print*, 'setxjl:', en(low), en(nup)
+!      if (ind .eq. 1) print*, 'before liop_sbe:', en(low), en(nup)
 
       CALL LIOP_SBE(EINST(NUP, LOW), WEIGHT(LOW), WEIGHT(NUP), LOW, NUP,
      $              XLAM, ENTOTL, EN(1 : N), RSTAR, opalind, etalind, VDOP, N)
 
-      if (ind .eq. 1) print*, 'setxjl:', en(low), en(nup)
+!      if (ind .eq. 1) print*, 'after liop_sbe:', en(low), en(nup)
 
-      stop
+!      stop
 
 C***  LASER SECURITY
 

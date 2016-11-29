@@ -9,8 +9,7 @@
      $   TNEW,NOTEMP,NODM,IADR19,MAXADR,
      $   DELTAC,GAMMAR,IPRICC,IPRILC,MODHEAD,JOBNUM,IFRRA,ITORA,
      $   RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
-     $   VELO,GRADI,VDOP,PHI,PWEIGHT,
-     $   SCOLIND,SCNEIND,OPACIND,INDNUP,INDLOW,LASTIND,
+     $   VELO,GRADI,VDOP,PHI,PWEIGHT,SCOLIND,INDNUP,INDLOW,LASTIND,
      $   OPAC,SCNEW,DOPA,DETA,OPAL,DOPAL,DETAL,SIGMAKI,
      $   ND,LSRAT,CRATE,RRATE,RATCO,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
      $   LINE,ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
@@ -43,18 +42,9 @@
       use MOD_ERF_INF
       USE MOD_ERROR
       use MOD_FLGRID
-      USE MOD_INV
       use MOD_ISRCHFGT
       use MOD_LTEPOP
       use MOD_PRIRAT
-      use MOD_VADD
-      use MOD_VADDM
-      use MOD_VDIFF
-      use MOD_VMD
-      use MOD_VMF
-      use MOD_VMT
-      use MOD_VMV
-      use MOD_VSUB
       USE MOD_XRUDI
       use MOD_CCORE
       use MOD_COMA
@@ -64,6 +54,8 @@
       USE FILE_OPERATIONS
       USE COMMON_BLOCK
       USE LINPOP_AUX
+
+      use matoper
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -109,16 +101,18 @@
 
       REAL*8 :: POPHIIL, POPHML, POPHIL
 
-      real*8 PHI(*),PWEIGHT(*), WEIGHT(*)
+      real*8  PHI(*), PWEIGHT(*), WEIGHT(*)
       logical LINE(*), LBKG
-      integer XLBKG1, XLBKG2
-      character*10,dimension(*) :: MAINPRO,MAINLEV
-      real*8,dimension(*) :: FWEIGHT, WCHARM, XJCAPP, XJLAPP
-      integer, dimension(*) :: IWARN, KODAT
-      real*8, dimension(*) :: ALTESUM, COCO, DETA, DETAL, DOPA, DOPAL
-      real*8, dimension(*) :: ETA, ETAC, GRADI
-      real*8, dimension(*) :: OPA, OPAC, OPACIND, RADIUS, SCNEIND
-      real*8, dimension(*) :: SCNEW, THOMSON, VELO
+      integer XLBKG1,  XLBKG2
+
+      character*10, dimension(*) :: MAINPRO,MAINLEV
+      integer,      dimension(*) :: IWARN, KODAT
+
+      real*8,       dimension(*) :: FWEIGHT, WCHARM, XJCAPP, XJLAPP
+      real*8,       dimension(*) :: ALTESUM, COCO, DETA, DETAL, DOPA, DOPAL
+      real*8,       dimension(*) :: ETA, ETAC, GRADI
+      real*8,       dimension(*) :: OPA, OPAC, RADIUS
+      real*8,       dimension(*) :: SCNEW, THOMSON, VELO
 
       REAL*8, DIMENSION(ND, LASTIND) :: XJL, JNEW
       REAL*8, DIMENSION(ND, NF) ::      XJC
@@ -441,22 +435,13 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
 !     LOO is declared in common_block.for along with its description
 
-!      do iii = 1, LASTIND
-
-!         print*, 'before:', iii, LOO(L, iii)
-
-!      enddo
-
-!      stop
-
       CALL COMA(CRATE,RRATE,RATCO,DM,N,NRANK,V1,ABXYZ_new,
      $          ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,EION,WEIGHT,ALTESUM,
      $          XLAMBDA,FWEIGHT,XJC,NF, L, XJL(L, 1 : LASTIND), ND, XJLAPP,
      $          SLOLD(L, 1 : LASTIND), LASTIND, INDLOW,
      $          INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
      $          NFL,OPAC,SCNEW,DOPA,DETA,OPAL,SLNEW(L, 1 : LASTIND),
-     $          DOPAL, DETAL, SIGMAKI,
-     $          ETAC,NFEDGE,EXPFAC,SCOLIND,SCNEIND,OPACIND,NOTEMP,NODM,
+     $          DOPAL, DETAL, SIGMAKI,ETAC,NFEDGE,EXPFAC,NOTEMP,NODM,
      $          WCHARM,EN,RSTAR,SCOLD,XJCAPP,VDOP,COCO,KEYCOL,
      $          POPHIIL,POPHML, POPHIL, LOO(L, 1 : LASTIND), ITNE(L),
      $          LEVEL, JOBNUM, IRESTA)
@@ -466,7 +451,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
       IF (NEWRAP) THEN
 
 !       ALGEBRA OF ONE NEWTON ITERATION STEP
-        CALL VMF(V2, EN, RATCO, NRANK, NRANK)
+        CALL VMF(V2, EN, RATCO, NRANK)
 
         CALL VSUB(V1, V2, NRANK) ! V1 = V1 - V2
 
@@ -474,22 +459,20 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
         CALL INV(NRANK, DM)
 
-        CALL VMF(ENDELTA, V1, DM, NRANK, NRANK) ! ENDELTA = DM * V1
+        CALL VMF(ENDELTA, V1, DM, NRANK) ! ENDELTA = DM * V1a
 
       ELSE
 
         !***  ALGEBRA OF ONE BROYDEN ITERATION STEP
         !***  calculate the resulting vector V4 using the current populations EN
 
-        CALL VMF(V4, EN, RATCO, NRANK, NRANK)
+        CALL VMF(V4, EN, RATCO, NRANK)
 
         !*** calculate the error vector V1 = V1 - V4
 
-        CALL VSUB (V1,V4,NRANK)
+        CALL VSUB (V1, V4, NRANK)
 
-        IF (ITNE(L) .EQ. 1) THEN
-
-           IF (NOFILE(L)) THEN
+        IF (ITNE(L) .EQ. 1 .and. nofile(L)) THEN
 
 !           IF FORT.19 NOT FOUND AND THE FIRST ITERATION STEP, DB IS DM^T
             write(*, *) 'linpop flag 2'
@@ -497,45 +480,48 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
             CALL ACOPY(DB, DM, NRANK)
 
-           ENDIF
-
         ELSE
 
 C***  ALGEBRA FOR THE BROYDEN FORMULA
 c       delta_y = VOLD = VOLD-V1
-            CALL VSUB(VOLD,V1,NRANK)
+            CALL VSUB(VOLD, V1, NRANK)
 
 c       V2 = delta_y * B
-            CALL VMF(V2,VOLD,DB,NRANK,NRANK)
+            CALL VMF(V2, VOLD, DB, NRANK)
 
 c       V3 = V2*ENDELTA; ENDELTA is the difference between pops = delta_x
 c       V3 the denominater (a number)
-            CALL VMV(V3,V2,ENDELTA,NRANK,NRANK)
 
-            V5(:NRANK)=ENDELTA(:NRANK)
+         do i = 1, nrank; print*, 'endelta before:', i, endelta(i); enddo
+
+            CALL VMV(V3, V2, ENDELTA, NRANK)
+
+            V5(1 : NRANK) = ENDELTA(1 : NRANK)
+
+         do i = 1, nrank; print*, 'endelta after:', i, endelta(i); enddo; stop
 
 c       ENDELTA = B*delta_x = DB*V5
-            CALL VMT(ENDELTA,DB,V5,NRANK,NRANK)
+            CALL VMT(ENDELTA, DB, V5, NRANK)
 
 c       V5 = delta_x - delta_y*B = V5-V2
-            CALL VSUB (V5,V2,NRANK)   ! V5=V5-V2
+            CALL VSUB(V5, V2, NRANK)   ! V5=V5-V2
 
 c       DM = B*delta_x * V5
 c       numerator (matrix) DM = dyadic product ENDELTA * V5
-            CALL VMD (DM,ENDELTA,V5,NRANK,NRANK)
+            CALL VMD(DM, ENDELTA, V5, NRANK)
 
 c       matrix DM (numerator) divided by V3
-            CALL VDIFF (DM,V3,NRANK,NRANK)
+            CALL VDIFF(DM, V3, NRANK)
 
 c       new Broyden matrix DB = DB+DM
-            CALL VADDM (DB,DM,NRANK,NRANK)
+            CALL VADDM(DB, DM, NRANK)
 
          ENDIF
 
-         VOLD(:NRANK) = V1(:NRANK)
+         VOLD(1 : NRANK) = V1(1 : NRANK)
 
-C      calculate the new population-correction vector ENDELTA = V1*DB
-         CALL VMF(ENDELTA, V1, DB, NRANK, NRANK)
+C        calculate the new population-correction vector ENDELTA = V1*DB
+         CALL VMF(ENDELTA, V1, DB, NRANK)
 
       ENDIF
 

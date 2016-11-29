@@ -6,7 +6,6 @@ FIOSS_SRCS= \
 	params_array.for\
 	constants.for\
 	acopy.for \
-	vdiff.for \
 	nan.for \
 	hminus_commons.for\
 	synthp_cont.for\
@@ -22,7 +21,6 @@ FIOSS_SRCS= \
 	inibl0.for\
 	mdmv.for\
 	mvmd.for\
-	vadd.for\
 	moment0.for\
 	hydtab.for\
 	moment1.for\
@@ -50,7 +48,7 @@ FIOSS_SRCS= \
 	gauntff.for\
 	intplcs.for\
 	intrfc_m.for\
-	inv.for\
+	matoper.for\
 	linsca.for\
 	lpplot.for\
 	obsint10.for\
@@ -92,7 +90,6 @@ chemeq.for \
 params_array.for \
 constants.for \
 acopy.for \
-vdiff.for \
 nan.for \
 hminus_commons.for \
 cpPopnum.for \
@@ -105,7 +102,6 @@ regula.for\
 invtri.for\
 error.for\
 gmalu.for\
-vadd.for\
 momadd.for\
 msub.for\
 mvmd.for\
@@ -181,7 +177,6 @@ gradiff.for\
 greym.for\
 initvel.for\
 intpl.for\
-inv.for\
 isamax.for\
 isrchfgt.for\
 isrchfle.for\
@@ -255,12 +250,7 @@ tcolor.for\
 tradfun.for\
 tictoc.for\
 traplo.for\
-vaddm.for\
-vmd.for\
-vmf.for\
-vmt.for\
-vmv.for\
-vsub.for\
+matoper.for\
 wmom0_f.for\
 wrcont.for\
 writmod.for\
@@ -272,7 +262,7 @@ wrstart.for\
 wrvel.for\
 stateq.for\
 zcalc.for\
-hyd_col_rate.for\
+hydcolrate.for\
 phys.for\
 math.for\
 fileoper.for\

@@ -7,7 +7,7 @@
      $                XLAMBDA,FWEIGHT,XJC,NF,L,XJL,ND,XJLAPP,SLOLD,LASTIND,INDLOW,
      $                INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
      $                NFL,OPAC,SCNEW,DOPA,DETA,OPAL,SLNEW,DOPAL,DETAL,SIGMAKI,
-     $                ETAC,NFEDGE,EXPFAC,SCOLIND,SCNEIND,OPACIND,NOTEMP,NODM,
+     $                ETAC,NFEDGE,EXPFAC,NOTEMP,NODM,
      $                WCHARM,EN,RSTAR,SCOLD,XJCAPP,VDOP,COCO,KEYCOL,
      $                POPHIIL,POPHML,POPHIL,LOE,ITNEL,LEVEL,JOBNUM,IRESTA)
 
@@ -75,18 +75,17 @@ C       : : :
 
       real*8, dimension(lastind) :: opal
 
-      integer,dimension(*)::NFEDGE
-      real*8,dimension(*):: PHI, SCOLIND
-      real*8,dimension(*):: ELEVEL,EION,WEIGHT
-      real*8,dimension(*):: XLAMBDA,PWEIGHT,DETAL
-      real*8,dimension(*):: EXPFAC,DOPAL,FWEIGHT
-      real*8,dimension(*):: SCNEIND,OPACIND
-      real*8,dimension(NF,N):: SIGMAKI
-      real*8, dimension(NF)    ::  ETAC,DETA
-      real*8, dimension(NF)    ::  OPAC,DOPA
-      real*8, allocatable ::  ABXYZ(:)
-      real*8, dimension(ND,NF) ::  XJC, WCHARM
-      real*8, dimension(NF,ND) ::  SCOLD
+      integer, dimension(*)      :: NFEDGE
+      real*8,  dimension(*)      :: PHI
+      real*8,  dimension(*)      :: ELEVEL,EION,WEIGHT
+      real*8,  dimension(*)      :: XLAMBDA,PWEIGHT,DETAL
+      real*8,  dimension(*)      :: EXPFAC,DOPAL,FWEIGHT
+      real*8,  dimension(NF, N)  :: SIGMAKI
+      real*8,  dimension(NF)     :: ETAC,DETA
+      real*8,  dimension(NF)     :: OPAC,DOPA
+      real*8,  allocatable       :: ABXYZ(:)
+      real*8,  dimension(ND, NF) :: XJC, WCHARM
+      real*8,  dimension(NF, ND) :: SCOLD
 
       real*8, dimension(N) :: ENLTE
       real*8, dimension(N + 1) :: EN
@@ -264,6 +263,8 @@ CMH - new: needed to calculate new collision cross sections for Hminus
 
 !     CALCULATE LINE RADIATION FIELD WITH APPROXIMATE LAMBDA OPERATOR TERMS
 
+!      print*, 'before setxjl:', en(2), en(3)
+
       CALL SETXJL(LASTIND, INDLOW, INDNUP, SLNEW(1 : LASTIND),
      $            SLOLD(1 : LASTIND), OPAL, XJLAPP(1 : LASTIND),
      $            NF, XLAMBDA, SCNEW, OPAC,
@@ -271,6 +272,8 @@ CMH - new: needed to calculate new collision cross sections for Hminus
      $            ND, XJL(1 : LASTIND), ENTOTL, RSTAR, VDOP, DELTAX, XMAX, L,
      $            LOE(1 : LASTIND), AccFact(1 : LASTIND),
      $            NODM, LEVEL, NFIRST, NLAST, NATOM, ENLTE, ITNEL)
+
+!      print*, 'after setxjl:', en(2), en(3); stop
 
 C**  RADIATIVE RATES ARE CALCULATED WITH THE MODIFIED RADIATION FIELD
 C***  NOTE THE TRICKY USE OF THE ONE-DIMENSIONAL ARRAYS XJCAPP AND XJLAPP
@@ -407,13 +410,13 @@ C***  CONSTRUCT DERIVATIVE VECTORS DOPAL, DETAL (LINES) WITH RESPECT TO EN(I)
 !      DM_LOW_COND = I_COND .AND. LOW_COND .AND. ILOW_COND
 
 C***  COMPUTE ELEMENT (LOW,NUP) OF MATRIX DM (DERIVATIVE WITH RESPECT TO EN(I))
-      CALL  DERIV(DLOWUP,I,NUP,LOW,IND,
-     $            NPLUS1,EN,CRATE,RRATE,EXPFAC,NFEDGE,
-     $            WCHARM,ND,L,TL,ENLTE,PHI,PWEIGHT,NFL,DELTAX,XMAX,
-     $            DETAL,DOPAL,SLNEW(1 : LASTIND),OPAL,XJLAPP,XJCAPP,
-     $            FWEIGHT,DOPA,DETA,OPAC,SCNEW,XLAMBDA,NF,SCNEIND,OPACIND,
-     $            N,NCHARG,WEIGHT,ELEVEL,NOM,EINST,SIGMAKI,LASTIND,
-     $            XJL(1 : LASTIND), AccFact(1 : LASTIND), SLOLD(1 : LASTIND))
+      CALL DERIV(DLOWUP,I,NUP,LOW,IND,
+     $           NPLUS1,EN,CRATE,RRATE,EXPFAC,NFEDGE,
+     $           WCHARM,ND,L,TL,ENLTE,PHI,PWEIGHT,NFL,DELTAX,XMAX,
+     $           DETAL,DOPAL,SLNEW(1 : LASTIND),OPAL,XJLAPP,XJCAPP,
+     $           FWEIGHT,DOPA,DETA,OPAC,SCNEW,XLAMBDA,NF,
+     $           N,NCHARG,WEIGHT,ELEVEL,NOM,EINST,SIGMAKI,LASTIND,
+     $           XJL(1 : LASTIND), AccFact(1 : LASTIND), SLOLD(1 : LASTIND))
 
       DM(I, NUP) = DM(I, NUP) + DLOWUP
 

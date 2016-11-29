@@ -22,7 +22,6 @@
 !     I.Computational method for equivalent-two-level-atom source functions" (MKH)
 
       use MOD_MDV
-      use MOD_VADD
       use MOD_MOMADD
       use MOD_COFREQ
       use MOD_CMFSET
@@ -30,7 +29,10 @@
       use MOD_INVTRI
       use MOD_GMALU
       USE MOD_CALCLAMBDAS
+
       USE FILE_OPERATIONS
+
+      use matoper
 
       IMPLICIT REAL*8(A - H, O - Z)
 

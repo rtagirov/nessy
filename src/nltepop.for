@@ -18,7 +18,8 @@ C******************************************************************************
 
       use MOD_COLLI
       use MOD_RADIO
-      use MOD_INV
+
+      use matoper
 
       implicit real*8(a-h,o-z)
 

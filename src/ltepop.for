@@ -1,29 +1,28 @@
       module MOD_LTEPOP
+
       contains
-C**********  MODULNAME: LTEPOP    ******* 06/08/87  20.47.20.******    46 KARTEN
-      SUBROUTINE LTEPOP (N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,
-     $                  ABXYZ,NFIRST,NLAST,NATOM)
-C***********************************************************************
-C***  POPULATION NUMBERS IN THERMODYNAMIC EQUILIBRIUM FOR ALL ELEMENTS
-C***  CALLED BY GREYM,POPZERO
-C***********************************************************************
+
+      SUBROUTINE LTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,ABXYZ,NFIRST,NLAST,NATOM)
+C     ******************************************************************
+C     POPULATION NUMBERS IN THERMODYNAMIC EQUILIBRIUM FOR ALL ELEMENTS
+C     CALLED BY GREYM,POPZERO
+C     ******************************************************************
+
       use mod_error
-      IMPLICIT REAL*8(A-H,O-Z) 
-      DIMENSION ENLTE(N), WEIGHT(N),NCHARG(N),EION(N),ELEVEL(N),NOM(N)
-      DIMENSION NFIRST(NATOM),NLAST(NATOM)
-      real*8, allocatable::ABXYZ(:)
+
+      IMPLICIT REAL*8(A - H, O - Z) 
+
+      DIMENSION ENLTE(N), WEIGHT(N), NCHARG(N), EION(N), ELEVEL(N), NOM(N)
+      DIMENSION NFIRST(NATOM), NLAST(NATOM)
+
+      real*8, allocatable :: ABXYZ(:)
+
 C***  C1 = H * C / K    ( CM * KELVIN )
       DATA C1/1.4388d0/
 C***  C2 = FACTOR IN SAHA EQ.   ( C.F. MIHALAS P.113 )
       DATA C2/2.07d-16/
       T32=TL*SQRT(TL)
 C***  LOOP FOR EACH ELEMENT  -------------------------------------------
-     
- !     do i=1, 30
- !     print*, i, ABXYZ(i)
- !     enddo
-   
-!      print*, 'ups...'
 
       DO 9 NA=1,NATOM
       NFIRNA=NFIRST(NA)
