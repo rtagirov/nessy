@@ -29,7 +29,6 @@
       use MOD_INVTRI
       use MOD_GMALU
       USE MOD_CALCLAMBDAS
-
       USE FILE_OPERATIONS
 
       use matoper
@@ -178,46 +177,29 @@ C***  OUTER BOUNDARY CONDITIONS
             ENDIF
      
 C***  FREQUENCY DERIVATIVE OF IMINUS
-      IF (K .GT. 1) DXI=XILASTK-XIMINUS
-      XILASTK=XIMINUS
+      IF (K .GT. 1) DXI = XILASTK - XIMINUS
+
+      XILASTK = XIMINUS
      
       IF (K .EQ. 1) GOTO 2
 
-      CALL CMFSET(PHI(K),Z(1,JP),
-     $            ND,LMAX,TAL,TBL,TCL,UB,VA,VB,GA,H,S,ZERO,OPAL,ZERO,
-     $            ETAL,PP,BCORE,DBDR,XIMINUS,DXI)
-
-      CALL CMFSET(PHI(K),Z(1,JP),
-     $            ND,LMAX,TA,TB,TC,UB,VA,VB,GA,H,S,OPA,OPAL,ETA,
+      CALL CMFSET(PHI(K),Z(1,JP),ND,LMAX,TAL,TBL,TCL,UB,VA,VB,GA,H,S,ZERO,OPAL,ZERO,
      $            ETAL,PP,BCORE,DBDR,XIMINUS,DXI)
 
       INV_T_DIAG = INVTRIDIAG(TAL, TBL, TCL)
 
-!      do iii = 1, LMAX
+      call assert(.not. any(isnan(inv_t_diag)),     'etlray: inv_t_diag is NaN')
+      call assert(.not. any(inv_t_diag .lt. 0.0d0), 'etlray: inv_t_diag is negative')
 
-!         write(*, '(A,4(5x,I4),5x,e15.7)'), 'etlray:', NL, JP, K, iii, inv_t_diag(iii)
-!         write(*, '(A,3(5x,I4),5x,e15.7,5x,i4,5x,e15.7)'), 'etlray:', NL, JP, K, pweight(k), iii, w0(iii)
-
-!      enddo
-
-!      IF (NL .EQ. 1) THEN
-!      IF ((K .EQ. 31) .AND. ((JP .EQ. 1) .OR. (JP .EQ. 54))) THEN
-
-!         CALL OPEN_TO_APPEND(14, 'line_feautrier_matrix.out')
-
-!         DO L = 1, LMAX
-
-!            WRITE(14, 10) NL, JP, K, L, TAL(L), TBL(L), TCL(L), INV_T_DIAG(L)
-
-!         ENDDO
-
-!      ENDIF
+      CALL CMFSET(PHI(K),Z(1,JP),ND,LMAX,TA,TB,TC,UB,VA,VB,GA,H,S,OPA,OPAL,ETA,
+     $            ETAL,PP,BCORE,DBDR,XIMINUS,DXI)
 
       CALL VMALV (VA,VB,V,QQ,LMAX)
       CALL VADD (QQ,S,LMAX) ! QQ = QQ + S
       CALL MDV (UB,U,LMAX)
       CALL VADD (U,QQ,LMAX) ! U = U + QQ
       CALL INVTRI (TA,TB,TC,U,LMAX)
+
 C***  NOW U IS THE FIELD AT THE NEW INDEX K
       CALL MDV (H,V,LZ)
       CALL GMALU (GA,U,S,LMAX)
@@ -226,16 +208,6 @@ C***  NOW U IS THE FIELD AT THE NEW INDEX K
 C***  ADDING THE NEW U(L) TO THE MEAN INTENSITY XJMEAN
 C***  AND TO THE 0. AND 2. MOMENTS XJ AND XK
     2 DO 8 L = 1, LMAX
-
-      IF (INV_T_DIAG(L) .NE. INV_T_DIAG(L))
-     $ WRITE(*, '(A,1x,I3,1x,I3,1x,I3,1x,E23.15)')
-     $ 'ETLRAY: INV_TRI_DIAG IS NaN',
-     $ K, JP, L, INV_T_DIAG(L)
-
-      IF (INV_T_DIAG(L) .LT. 0.0D0)
-     $ WRITE(*, '(A,1x,I3,1x,I3,1x,I3,1x,E23.15)')
-     $ 'ETLRAY: INV_TRI_DIAG IS NEGATIVE',
-     $ K, JP, L, INV_T_DIAG(L)
 
       LO(L) = LO(L) + INV_T_DIAG(L) * W0(L) * PWEIGHT(K)
 

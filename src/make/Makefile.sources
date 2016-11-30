@@ -5,7 +5,6 @@ FIOSS_SRCS= \
         abund.for\
 	params_array.for\
 	constants.for\
-	nan.for \
 	hminus_commons.for\
 	synthp_cont.for\
 	bnue.for\
@@ -88,7 +87,6 @@ abund.for\
 chemeq.for \
 params_array.for \
 constants.for \
-nan.for \
 hminus_commons.for \
 utils.for\
 ambipolar.for\
@@ -124,7 +122,7 @@ lipo.for\
 bfcross.for\
 bnue.for\
 calch.for\
-calcLambdaS.for\
+lodiag.for\
 ccore.for\
 change.for\
 cmfset.for\

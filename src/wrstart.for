@@ -31,75 +31,57 @@
 
       use vardatom
 
-C***********************************************************************
-C***  THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
-C***  CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
-C***  IT MAKES USE OF THE ATOMIC DATA (FILE DATOM)
-C***  AND THE FREQUENCY GRID (FILE FGRID)
-C***  PRESENT VERSION: MODEL ATMOSPHERE OF HELIUM (CODE NR. "1") WITH
-C***                                       HYDROGEN         "2"
-C***  FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS:
-C***                          MODIFY SUBROUTINES  "DATOM", "DECSTAR"
-C***  INSERT CORRESPONDING ATOMIC DATA INTO SUBR. "COLLI", "PHOTOCS"
-CMH	ATMEAN READ FROM CARDS BY DECSTAR
-C***********************************************************************
+!     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
+!     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
+!     IT MAKES USE OF THE ATOMIC DATA (FILE DATOM)
+!     AND THE FREQUENCY GRID (FILE FGRID)
+!     PRESENT VERSION: MODEL ATMOSPHERE OF HELIUM (CODE NR. "1") WITH
+!                                          HYDROGEN         "2"
+!     FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS:
+!     MODIFY SUBROUTINES  "DATOM", "DECSTAR"
+!     INSERT CORRESPONDING ATOMIC DATA INTO SUBR. "COLLI", "PHOTOCS"
 
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT REAL*8(A - H, O - Z)
 
-      COMMON // RADIUS(NDDIM),ENTOT(NDDIM),T(NDDIM)
+      COMMON // RADIUS(:),ENTOT(NDDIM),T(NDDIM)
      $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
      $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
      $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
      $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-!     $ ,WEIGHT(NDIM),ELEVEL(NDIM),EION(NDIM)
-!     $ ,EINST(NDIM,NDIM),ALPHA(NDIM),SEXPO(NDIM)
      $ ,ENLTE(NDIM)
-!     $ ,COCO(NDIM,NDIM,4),ALTESUM(4,NDIM)
      $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-!     $ ,ATMASS(MAXATOM),STAGE(MAXATOM),AGAUNT(NDIM)
      $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
      $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
-!     $ ,KODAT(MAXATOM),NFIRST(MAXATOM),NLAST(MAXATOM)
      $ ,IADR(MAXADR)
-!     $ ,INDNUP(MAXIND),INDLOW(MAXIND)
-     $ ,MODHIST(MAXHIST)
-!     $ ,NCHARG(NDIM),MAINQN(NDIM),NOM(NDIM)
- 
       
-      INTEGER :: IPDIM,NBDIM
-      parameter (IPDIM=25,NBDIM=99)
-!      character*8 :: agaunt
-      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
-     $                                ABSEVT(IPDIM,NBDIM)
+      INTEGER :: IPDIM, NBDIM
+      parameter(IPDIM = 25, NBDIM = 99)
+
+      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM, NBDIM), ABSEVT(IPDIM, NBDIM)
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
-      COMMON /LIBLFAC/ SCAFAC(NDDIM,NFDIM),ABSFAC(NDDIM,NFDIM)
-      COMMON /VELPAR/ VFINAL,VMIN,BETA,VPAR1,VPAR2,RCON,HSCALE
-      COMMON /COMTEFF/ TEFF,TMIN,TMODIFY,SPHERIC
-      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2	
-CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
-      INTEGER XLBKG1,XLBKG2
+      COMMON /LIBLFAC/ SCAFAC(NDDIM, NFDIM), ABSFAC(NDDIM, NFDIM)
+      COMMON /VELPAR/  VFINAL, VMIN, BETA, VPAR1, VPAR2, RCON, HSCALE
+      COMMON /COMTEFF/ TEFF, TMIN, TMODIFY, SPHERIC
+      COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
+
+!     LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
+!     XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
+
+      INTEGER XLBKG1, XLBKG2
       LOGICAL LBKG
       LOGICAL TTABLE, TPLOT, SPHERIC
 
       CHARACTER MODHEAD*104
 
-!      CHARACTER*10 ELEMENT(MAXATOM)
-!      CHARACTER*4 KEYCOL(NDIM,NDIM)
-!      CHARACTER*2 SYMBOL(MAXATOM)
-
       CHARACTER   NAME*10, fstring*24
       integer timer
-      real*8 ATMEAN,AMU
-      real*8 ATMEANt
+
+      real*8 ATMEAN
+
       integer NA
       REAL*8 CSARR(5000,4)
 
       real*8, allocatable, dimension(:, :) :: WCHARM
-
-!      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM),xneclc(nddim)
-
-      DIMENSION xneclc(nddim)
 
       REAL*8, DIMENSION(:), ALLOCATABLE :: ELEC_CONC, HEAVY_ELEM_CONC
 
@@ -109,9 +91,9 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       REAL*8 :: H
 
-      DATA AMU/1.660531D-24/
-      real*8,dimension(NDDIM) :: R
-      call FDATE (fstring)
+      real*8, dimension(NDDIM) :: R
+
+      call FDATE(fstring)
       call TIC(timer)
 
 !     READ ATOMIC DATA FROM FILE DATOM
@@ -124,8 +106,6 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 !     DECODING INPUT DATA
       CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,RMAX,TTABLE,LBKG,XLBKG1,XLBKG2,
      $               TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN)
-
-      DO NA = 1, NATOM; ATMEANt = ATMEANt + ABXYZ(NA) * ATMASS(NA); ENDDO
 
       !***  if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
@@ -145,8 +125,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 !      print*, 'wrstart, after fgrid:', NF; stop
 
-      !*** 2.1) Create the Geometrical Mesh (sperical)
-      CALL GEOMESH(RADIUS,ENTOT,T,P,Z,RMAX,RSTAR,AMU,ATMEAN,ND,NDDIM,NP,NPDIM)
+      CALL GEOMESH(RADIUS, ENTOT, T, P, Z, RSTAR, ND, NP)
 
       CALL mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, ND)
 
@@ -269,26 +248,28 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
 !=================================================================
  
-C***  MODEL-FILE: MASS STORAGE FILE IN NAME-INDEX MODE
-c      CALL OPENMS(3,IADR,MAXADR,1,IERR)
-      TOTOUT=0.D0
-      TOTIN =0.D0
-      POP1(:,:)=0d0
-      POP2(:,:)=0d0
-      POP3(:,:)=0d0
-      HTOT(:ND)=0d0
-      GTOT(:ND)=0d0
-      XTOT(:ND)=0d0
-      ETOT(:ND)=0d0
-      EMFLUX(:NF)=0d0
+!     MODFILE: MASS STORAGE FILE IN NAME-INDEX MODE
+      TOTOUT =       0.0d0
+      TOTIN =        0.0d0
+
+      POP1(:, :) =   0.0d0
+      POP2(:, :) =   0.0d0
+      POP3(:, :) =   0.0d0
+
+      HTOT(: ND) =   0.0d0
+      GTOT(: ND) =   0.0d0
+      XTOT(: ND) =   0.0d0
+      ETOT(: ND) =   0.0d0
+
+      EMFLUX(: NF) = 0.0d0
 
       if (allocated(wcharm)) deallocate(wcharm)
 
-      allocate(wcharm())
+      allocate(wcharm(ND, NF))
 
-      WCHARM(:, :) = 0d0
+      WCHARM(1 : ND, 1 : NF) = 0.0d0
 
-      IFL = 3; open(IFL, file='MODFILE', STATUS='UNKNOWN')
+      IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'UNKNOWN')
 
       JOBNUM = 0
 
@@ -298,32 +279,29 @@ c      CALL OPENMS(3,IADR,MAXADR,1,IERR)
 
       CLOSE(ifl)
 
-      ifl = 3; open(ifl, file='POPNUM', status='unknown')
+      ifl = 3; open(ifl, file = 'POPNUM', status = 'unknown')
 
-      XNECLC(:ND)=RNE(:ND)*ENTOT(:ND)
-!***  hier entot mit uebergeben und rne*entot ausrechnen, in popnum schreiben
+      call writpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
-      call writpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
+      close(ifl)
 
-      close (ifl)
+!     START APPROXIMATION FOR THE RADIATION FIELD
+!     JSTART writes the files RADIOC and RADIOL
 
-C***  START APPROXIMATION FOR THE RADIATION FIELD
-c     JSTART writes the files RADIOC and RADIOL
-      EDDI(:,1:ND)=0d0
+      EDDI(:, 1 : ND) = 0.0d0
    
       CALL JSTART(NF,XLAMBDA,AKEY,ND,R,T,XJC,XJL,
      $            HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $            NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,
      $            MODHEAD,JOBNUM,TEFF)
          
+      write(*,  *) 'WRSTART - ', fstring, ' run time: ', TOC(timer)
 
-      open (78,file='MODHIST',status='unknown')
+      open(78, file = 'MODHIST', status='unknown')
    
-      print*, fstring
-      print*, TOC(timer)
-      write (78,*) 'WRSTART - ', fstring,'   run time: ',TOC(timer)
+      write(78, *) 'WRSTART - ', fstring, ' run time: ', TOC(timer)
    
-      close (78)
+      close(78)
 
       RETURN
  

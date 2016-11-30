@@ -2,45 +2,55 @@
 
       CONTAINS
 
-      SUBROUTINE RGRIDM(RADIUS, ENTOT, T, RMAX, RSTAR, AMU, ATMEAN, ND)
+      SUBROUTINE RGRIDM(radius, entot, T, rstar, ND)
 
       USE MOD_ERROR
       USE COMMON_BLOCK
 
-      IMPLICIT REAL*8(A - H, O - Z)
+      use file_operations
 
-      integer,     intent(out) :: ND
+      real*8,  intent(in)  :: rstar
 
-      real*8,      intent(in)  :: RMAX, RSTAR, AMU, ATMEAN
+      integer, intent(out) :: ND
 
-      real*8, allocatable, dimension(:), intent(out) :: T, ENTOT, RADIUS
+      real*8, allocatable, dimension(:), intent(out) :: T, entot, radius
 
-      DIMENSION T(NDDIM),ENTOT(NDDIM),RADIUS(NDDIM),height(nddim),VDTAB(NDDIM)
+      real*8 :: vt, elect, v1, v2, v4
 
-!     ENTOT: HEAVY PARTICLE DENSITY
-!     XNETAB(L): ELECTRON DENSITY IN ELECTRON/CM^3
-!     RSUN = 6.960E^10 CM
-!     RADIUS = HEIGHT IN UNITS OF SOLAR RADII
+!     T:      Temperature in K
+!     elect:  ELECTRON DENSITY IN ELECTRON / cm^3
+!     entot:  HEAVY PARTICLE DENSITY
+!     vt:     Turbulent velocity in km / s
+!     radius: HEIGHT IN UNITS OF SOLAR RADII
 
-      ND = 1
+      ND = num_of_lines('FAL_VD'); DPN = ND
 
-      VDTAB(1:NDDIM) = 0
+      if (allocated(T))      deallocate(T)
+      if (allocated(entot))  deallocate(entot)
+      if (allocated(radius)) deallocate(radius)
+      if (allocated(height)) deallocate(height)
 
-      OPEN(9, FILE = 'FAL_VD', STATUS = 'OLD')
+      allocate(T(ND))
+      allocate(entot(ND))
+      allocate(radius(ND))
+      allocate(height(ND))
 
-  400 READ(9, *, end = 55) height(ND), T(ND), XNETAB(ND), ENTOT(ND), VDTAB(ND)
+      open(9, file = 'FAL_VD')
 
-              RADIUS(ND) = 1.D0 + height(ND) * 1.D5 / RSTAR  ! HEIGTH in km, RSTAR in cm
+      do i = 1, ND
 
-          ND = ND+1
-          GOTO 400
+         read(9, *) v1, v2, elect, v4, vt
 
-   55     CLOSE (9)
-          ND=ND-1
-          CONTINUE
+         height(i) = v1
+         T(i) =      v2
+         entot(i) =  v4
 
-      DPN = ND
+         radius(i) = 1.0d0 + height(i) * 1.0d5 / rstar ! height in km, rstar and radius in cm
 
-      END subroutine
+      enddo
+
+      close(9)
+
+      end subroutine
 
       end module
