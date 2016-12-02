@@ -12,9 +12,9 @@
 
       real*8, dimension(ND, NF) :: wcharm
 
-      dimension xjcARR(nd, nf), xjc(nd), eddARR(3, nd, nf), eddi(3, nd)
+      real*8 :: xjcARR(nd, nf), xjc(nd), eddARR(3, nd, nf), eddi(3, nd)
 
-      real*8 emflux(*), HTOT(*), GTOT(*), XTOT(*), ETOT(*)
+      real*8 :: emflux(NF), HTOT(ND), GTOT(ND), XTOT(ND), ETOT(ND)
 
       CHARACTER CNAME*10, MODHEAD*104
 
@@ -23,21 +23,22 @@
 !     (DEPTH VEKTOR AT EACH FREQUENCY POINT)
 !     CALLED BY COMO
 
-      IFL = 2
-      open(IFL, file='RADIOC', STATUS='UNKNOWN')
+      IFL = 2; open(IFL, file = 'RADIOC', STATUS = 'UNKNOWN')
 
-      write (ifl, '(A)')   'MODHEAD'
-      write (ifl, '(A104)') MODHEAD
+      write(ifl, '(A)')   'MODHEAD'
+      write(ifl, '(A104)') MODHEAD
 
-      CALL WRITMSI1(IFL,JOBNUM,'JOBNUM',-1,IERR)
-      CALL WRITMSI1(IFL,NF,'NF',-1,IERR)
-      CALL WRITMS1 (IFL,TOTIN,'TOTIN',-1,IERR)
-      CALL WRITMS1 (IFL,TOTOUT,'TOTOUT',-1,IERR)
-      CALL WRITMS (IFL,EMFLUX,NF,'EMFLUX',-1,IERR)
-      CALL WRITMS (IFL,HTOT,ND,'HTOT',-1,IERR)
-      CALL WRITMS (IFL,GTOT,ND,'GTOT',-1,IERR)
-      CALL WRITMS (IFL,XTOT,ND,'XTOT',-1,IERR)
-      CALL WRITMS (IFL,ETOT,ND,'ETOT',-1,IERR)
+      CALL WRITMSI1(IFL, JOBNUM, 'JOBNUM', -1, IERR)
+      CALL WRITMSI1(IFL, NF,     'NF',     -1, IERR)
+
+      CALL WRITMS1(IFL, TOTIN,  'TOTIN',  -1, IERR)
+      CALL WRITMS1(IFL, TOTOUT, 'TOTOUT', -1, IERR)
+
+      CALL WRITMS(IFL, EMFLUX, NF, 'EMFLUX', -1, IERR)
+      CALL WRITMS(IFL, HTOT,   ND, 'HTOT',   -1, IERR)
+      CALL WRITMS(IFL, GTOT,   ND, 'GTOT',   -1, IERR)
+      CALL WRITMS(IFL, XTOT,   ND, 'XTOT',   -1, IERR)
+      CALL WRITMS(IFL, ETOT,   ND, 'ETOT',   -1, IERR)
 
       DO 6 K = 1, NF
 

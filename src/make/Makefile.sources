@@ -5,7 +5,7 @@ FIOSS_SRCS= \
         abund.for\
 	params_array.for\
 	constants.for\
-	hminus_commons.for\
+	varhminus.for\
 	synthp_cont.for\
 	bnue.for\
 	opint.for\
@@ -87,7 +87,7 @@ abund.for\
 chemeq.for \
 params_array.for \
 constants.for \
-hminus_commons.for \
+varhminus.for \
 utils.for\
 ambipolar.for\
 formats.for\
@@ -214,7 +214,6 @@ prih.for\
 prihist.for\
 priint.for\
 priintl.for\
-prilc.for\
 primint.for\
 primod.for\
 priopa.for\

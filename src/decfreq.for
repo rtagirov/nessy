@@ -1,6 +1,7 @@
       module MOD_DECFREQ
+
       contains
-C**********  MODULNAME: DECFREQ   ******* 24/03/87  20.49.53.******    52 KARTEN
+
       SUBROUTINE DECFREQ (XLAMBDA,NF,NFDIM,TREF)
 C*******************************************************************************
 C***  DECODE THE FREQUENCY GRID (WAVELENGTHS IN A) FROM TAPE6 = FGRID

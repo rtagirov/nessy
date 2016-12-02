@@ -34,8 +34,8 @@
       USE CONSTANTS
       USE COMMON_BLOCK
       USE FILE_OPERATIONS
-
-      use VARDATOM
+      USE VARDATOM
+      USE VARHMINUS
  
 C***  THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
 C***  CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
@@ -59,46 +59,24 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 !     THIS PROGRAM IS TO SOLVE THE CONTINUOUS RADIATION TRANSFER
 !     WITH GIVEN POPULATION NUMBERS
-      COMMON // RADIUS(NDDIM),ENTOT(NDDIM),T(NDDIM)
-     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
-     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
-     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM),AINCRIT(NDDIM)
-     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-     $ ,ENLTE(NDIM)
-     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
-     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
-c***  up to here the common is identical to that of steal
-c      COMMON // WEIGHT(NDIM),ELEVEL(NDIM),EION(NDIM)
-c     $ ,MAINQN(NDIM),EINST(NDIM,NDIM),ALPHA(NDIM),SEXPO(NDIM)
-c     $ ,IGAUNT(NDIM),ALTESUM(4,NDIM),NOM(NDIM)
-c     $ ,COCO(NDIM,NDIM,4)
-c     $ ,ABXYZ(MAXATOM),KODAT(MAXATOM),ATMASS(MAXATOM),STAGE(MAXATOM)
-c     $ ,NFIRST(MAXATOM),NLAST(MAXATOM)
-c     $ ,OPA(NDDIM),ETA(NDDIM),THOMSON(NDDIM),IWARN(NDDIM)
-c     $ ,VELO(NDDIM),GRADI(NDDIM)
-c     $ ,RADIUS(NDDIM),ENTOT(NDDIM),T(NDDIM),RNE(NDDIM),XJC(NDDIM)
-c     $ ,EDDI(3,NDDIM),IADR7(NDDIM)
-     $ ,ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
-C***  ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
+
+!      COMMON // RADIUS(NDDIM),ENTOT(NDDIM),T(NDDIM)
+!     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
+!     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
+!     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
+!     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
+!     $ ,ENLTE(NDIM)
+!     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
+!     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
+!     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
+
+        COMMON // ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
      $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
      $ ,BX(NPDIM,NPDIM,NDDIM),WX(NPDIM,NDDIM)
-c     $ ,P(NPDIM),A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
-c     $ ,BX(NPDIM,NPDIM,NDDIM),WX(NPDIM,NDDIM)
-c     $ ,XLAMBDA(NFDIM),EMFLUX(NFDIM),FWEIGHT(NFDIM),KEY(NFDIM)
-c     $ ,U(NDDIM,NPDIM),Z(NDDIM,NPDIM),VL(NPDIM),HNU(NDDIM),HTOT(NDDIM)
-c     $ ,POPNUM(NDDIM,NDIM),VJL(NPDIM,NDDIM),GTOT(NDDIM),XTOT(NDDIM)
      $ ,U(NDDIM,NPDIM),VL(NPDIM),HNU(NDDIM),VJL(NPDIM,NDDIM)
-c*** the integers in the main common are identical to that in steal
-!     $ ,KODAT(MAXATOM),NFIRST(MAXATOM),NLAST(MAXATOM)
-!     $ ,NCHARG(NDIM),MAINQN(NDIM),NOM(NDIM)
      $ ,ITNE(NDDIM),NFEDGE(NDIM)
-     $ ,IWARN(NDDIM),LEVELPL(NDIM),MODHIST(MAXHIST)
-c***  in steal the COMIND common is larger
-!      COMMON /COMIND/  INDNUP(MAXIND),INDLOW(MAXIND)
+     $ ,IWARN(NDDIM),LEVELPL(NDIM)
 
-c     $ ,INDNUP(MAXIND),INDLOW(MAXIND),      ETOT(NDDIM)
-c     $ ,MODHIST(MAXHIST),IADR3(MAXADR),NCHARG(NDIM)
       parameter (IPDIM = 25, NBDIM = 99)
       COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
      $                                ABSEVT(IPDIM,NBDIM)
@@ -110,22 +88,14 @@ c     $ ,MODHIST(MAXHIST),IADR3(MAXADR),NCHARG(NDIM)
       INTEGER XLBKG1,XLBKG2 
       CHARACTER MODHEAD*104,CARD*80, LCARD*100
       CHARACTER*10 MAINPRO(NDDIM),MAINLEV(NDDIM)
-!      CHARACTER LEVEL(NDIM)*10
-!      CHARACTER*10 ELEMENT(MAXATOM)
-!      CHARACTER*4 KEYCOL(NDIM,NDIM)
-!      CHARACTER*2 SYMBOL(MAXATOM)
 
       CHARACTER*7 JOB
-
-!      character*8 :: agaunt
 
       LOGICAL NOTEMP
 
       integer :: timer
 
-      REAL*8, DIMENSION(NDDIM, NFDIM) :: WCHARM
-
-      LOGICAL LDUMMY1, LDUMMY2, LDUMMY3
+      LOGICAL LDUMMY1, LDUMMY3
 
       REAL*8, ALLOCATABLE, DIMENSION(:, :) :: EDDI_OLD
 
@@ -162,20 +132,18 @@ C***  READING OF THE MODEL FILE ----------------------------------------
 
       close(IFL)
 
-!      print*, 'wrcont after readmod: NFDIM = ', NF, NFDIM; stop
-
       IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
 
       IFL = 3
 
       open(IFL, file = 'POPNUM', STATUS = 'OLD')
 
-      call readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
+      call readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
       close(ifl)
 
 c     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage) 
-      CALL READRAD(NF,ND,POP1 ,XJCARR,XJC,XJL,
+      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             NCHARG,EDDARR,EDDI,NOM,WCHARM,
      $             N,lastind,EINST,MODHEAD,JOBNUM)
@@ -183,12 +151,13 @@ c     read the radiation field from files RADIOC and RADIOL (pop1 is used as dum
       JOBNUM = JOBNUM + 1
 
 C     initialize frequency integrated quantities
-      TOTIN=.0
-      TOTOUT=.0
-      GTOT(1:ND)=0.
-      ETOT(1:ND)=0.
-      XTOT(1:ND)=0.
-      HTOT(1:ND)=0.
+      TOTIN =        0.0d0
+      TOTOUT =       0.0d0
+
+      GTOT(1 : ND) = 0.0d0
+      ETOT(1 : ND) = 0.0d0
+      XTOT(1 : ND) = 0.0d0
+      HTOT(1 : ND) = 0.0d0
 
 c***  the blanketing table is read by routine READMOD
 c***  if lblank.gt.0 then read a new table from the file LIBLANK
@@ -196,30 +165,33 @@ c***  if lblank.gt.0 then read a new table from the file LIBLANK
 
       if (lblank.lt.0) then
 c***     the new blanketing table needs to be written to the model file
-         IFL=3
-         open (IFL,file='MODFILE',STATUS='UNKNOWN')
+         IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'UNKNOWN')
+
          CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
      $                GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
      $                ABXYZ,NATOM,MODHEAD,JOBNUM) 
-         CLOSE (ifl)
+
+         CLOSE(ifl)
+
       endif
-      IF (abs(LBLANK).EQ.2) 
-     $  CALL PRIBLA (LBLANK,ENTOT,ND,XLAMBDA,NF,JOBNUM,MODHEAD,
-     $                   SCAFAC,ABSFAC)
+
+      IF (abs(LBLANK).EQ.2) CALL PRIBLA(LBLANK,ENTOT,ND,XLAMBDA,NF,JOBNUM,MODHEAD,SCAFAC,ABSFAC)
+
       call TIC(timer)
 
 C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
-      ALLOCATE(EDDI_OLD(3, ND));
-      EDDI_OLD = EDDI(1 : 3, 1 : ND)
+      ALLOCATE(EDDI_OLD(3, ND)); EDDI_OLD = EDDI(1 : 3, 1 : ND)
+
+!      do i = 1, ND; print*, 'check etot wrcont: ', i, EDDI(1, i), XJC(i); enddo; stop
 
       FRQS: DO K = 1, NF
 
 !       now extract XJC and EDDI for the frequency K
-
         CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
 
-!        do l = 1, ND; print*, 'wrcont check:', k, l, xjc(l); enddo
+!        do l = 1, ND; write(*, '(A,2x,2(i4,2x),2(e15.7,2x))'), 
+!     $  'wrcont check: ', k, l, xjc(l), xjcarr(l, k); enddo
 
         CALL COOP_M(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $              OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
@@ -245,10 +217,43 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
         CALL CALCH(ND,NP,NPDIM,OPA,Z,P,U,VL,VJL,RADIUS,HNU,FLUXIN,EMFLUX(K))
 
-        XTOT(:ND) = XTOT(:ND)+XJC(:ND)*FWEIGHT(K)
-        ETOT(:ND) = ETOT(:ND)+EDDI(1,:ND)*XJC(:ND)*FWEIGHT(K)
-        GTOT(:ND) = GTOT(:ND)+OPA(:ND)*HNU(:ND)*FWEIGHT(K)
-        HTOT(:ND) = HTOT(:ND)+HNU(:ND)*FWEIGHT(K)
+!        print*, 'fweight check', k, fweight(k)
+
+        XTOT(1 : ND) = XTOT(1 : ND) + XJC(1 : ND) * FWEIGHT(K)
+
+        if (any(isnan(etot))) then
+
+            do i = 1, ND
+
+               write(*, '(i4,2x,e15.7,2x,i4,3(2x,e15.7))') 
+     $         k, fweight(k), i, etot(i), eddi(1, i), xjc(i)
+
+            enddo
+
+            stop 'nan before'
+
+        endif
+
+        ETOT(1 : ND) = ETOT(1 : ND) + EDDI(1, 1 : ND) * XJC(1 : ND) * FWEIGHT(K)
+
+        if (any(isnan(etot))) then
+
+            do i = 1, ND
+
+               write(*, '(i4,2x,e15.7,2x,i4,3(2x,e15.7))') 
+     $         k, fweight(k), i, etot(i), eddi(1, i), xjc(i)
+
+            enddo
+
+            stop 'nan after'
+
+        endif
+
+!        if (any(isnan(etot))) stop 'nan 2'
+
+        GTOT(1 : ND) = GTOT(1 : ND) + OPA(1 : ND) * HNU(1 : ND) * FWEIGHT(K)
+
+        HTOT(1 : ND) = HTOT(1 : ND) + HNU(1 : ND) * FWEIGHT(K)
 
 !       XJC and EDDI are stored for later write to file RADIOC
         call storxjc(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
@@ -265,17 +270,21 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
       ENDDO FRQS
 
-      stop
+      stop 'stop after frqs cycle'
 
-      print *,'maxmin of dEDDI(1,:) = ', 
-     &  maxval(abs(EDDI(1,1:ND)/EDDI_OLD(1,:))),
-     &  minval(abs(EDDI(1,1:ND)/EDDI_OLD(1,:)))
-      print *,'maxmin of dEDDI(2,:) = ', 
-     &  maxval(abs(EDDI(2,1:ND)/EDDI_OLD(2,:))),
-     &  minval(abs(EDDI(2,1:ND)/EDDI_OLD(2,:)))
-      print *,'maxmin of dEDDI(3,:) = ', 
-     &  maxval(abs(EDDI(3,1:ND)/EDDI_OLD(3,:))),
-     &  minval(abs(EDDI(3,1:ND)/EDDI_OLD(3,:)))
+!      do i = 1, ND; print*, 'check etot wrcont: ', i, ETOT(i); enddo; stop
+
+      print*, 'maxmin of dEDDI(1, :) = ', 
+     & maxval(abs(EDDI(1, 1 : ND) / EDDI_OLD(1, :))),
+     & minval(abs(EDDI(1, 1 : ND) / EDDI_OLD(1, :)))
+
+      print*, 'maxmin of dEDDI(2, :) = ', 
+     & maxval(abs(EDDI(2, 1 : ND) / EDDI_OLD(2, :))),
+     & minval(abs(EDDI(2, 1 : ND) / EDDI_OLD(2, :)))
+
+      print*, 'maxmin of dEDDI(3, :) = ', 
+     & maxval(abs(EDDI(3, 1 : ND) / EDDI_OLD(3, :))),
+     & minval(abs(EDDI(3, 1 : ND) / EDDI_OLD(3, :)))
 
 !=============================================================================
 !Rinat Tagirov

@@ -1,10 +1,13 @@
-C**********  MODULNAME: XRUDI     ******* 24/03/87  22.16.54.******    32 KARTEN
       MODULE MOD_XRUDI
+
       contains
+
       SUBROUTINE XRUDI (XJ,WAVENUM,XJC,XLAMBDA,ND,NF,L)
+
       use MOD_BNUE
       use MOD_TRADFUN
       use MOD_ERROR
+
 C***  INTERPOLATION OF THE CONTINUUM RADIATION FIELD AT WAVENUM
 C***  LINEAR INTERPOLATION OF THE RADIATION TEMPERATURE
 
@@ -39,12 +42,12 @@ C***  LINEAR INTERPOLATION OF THE RADIATION TEMPERATURE
       TRADA=TRADFUN(XLAMBDA(NA),XJC(L,NA))
       TRADB=TRADFUN(XLAMBDA(NB),XJC(L,NB))
       TRAD=P*TRADB+(1.-P)*TRADA
-!       if(TRAD==0) then
-!         print '("xrudi: TRADAB = ",f0.4,X,f0.4)',TRADA,TRADB
-!         print '("xrudi: NA,NB =  ",i0,x,i0)',NA,NB
-!         print '("xrudi: XJC(L) = ",5(e10.3,X))',XJC(L,NA),XJC(L,NB)
-!         print '("xrudi: TRAD =   ",f0.2)', TRAD
-!       endif
+
+
+
+
+
+
       XJ=BNUE(WLENG,TRAD)
 
       RETURN

@@ -1,7 +1,7 @@
       module MOD_PRIDAT
       contains
       SUBROUTINE PRIDAT(N,LEVEL,NCHARG, WEIGHT,ELEVEL,EION,EINST,
-     $                  KODAT,AKEY,NF,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $                  KODAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $                  NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
 C***  MAXATOM
 C*******************************************************************************
@@ -14,7 +14,7 @@ C*******************************************************************************
       integer,intent(in) :: NATOM
       DIMENSION NCHARG (N), WEIGHT(N),ELEVEL(N)
 	real*4 wei
-      DIMENSION EION(N),AKEY(NF)
+      DIMENSION EION(N)
       DIMENSION EINST(N,N)
       DIMENSION ALPHA(N),SEXPO(N)
       character*8 :: agaunt(N)

@@ -2,7 +2,7 @@
 
       CONTAINS
 
-      SUBROUTINE runSUB(CMD,JOB, timer, IDUMMY, reset)
+      SUBROUTINE runSUB(CMD,JOB, timer, reset)
       use MOD_WRSTART
       use MOD_STEAL
       use MOD_WRCONT
@@ -10,7 +10,7 @@
       use MOD_ETL
       character*(*) :: CMD
       character*7 :: JOB
-      integer :: idummy, timer
+      integer :: timer
       logical,optional:: reset
       print *,'HMINUS: Call '//CMD
       selectcase(CMD)
@@ -23,7 +23,7 @@
         print *,'HMINUS: Unknwon CMD:"'//CMD//'"'
         STOP 'HMINUS: Unknwon CMD'
       endselect
-      call finish(CMD,timer,IDUMMY,reset)
+      call finish(CMD,timer,reset)
       END SUBROUTINE
       
 
@@ -37,7 +37,7 @@
 
       IMPLICIT NONE
 
-      integer ipdim,    nbdim,  idummy,   itemp
+      integer ipdim,    nbdim, itemp
       integer itsw
       integer lblaon,   inew,   ipmax,   nbmax
       integer timer,timer2
@@ -64,26 +64,26 @@
       ALMIN=0.    !***  default values for lineblanketing
       ALMAX=0.
       LBLAON=0
-      IDUMMY=-1.  !***  TEST FOR TOO LARGE USE OF BLANK COMMON
+
       call TIC(timer)
       call TIC()
       rewind(99); write(99,'(A7)'),'wrstart'; JOB='WRSTART'
       PRINT *,' WIND STARTED: JOB=',JOB,'  tstart= ',0
       call tic(timer2)
-      call runSUB('WRSTART',JOB, timer2, IDUMMY)    !***************** WRSTART ********************
-      CALL runSUB('STEAL',JOB, timer2, IDUMMY)   !***************** STEAL **********************
-      CALL runSUB('WRCONT',JOB, timer2, IDUMMY)  !********************* wrcont *****************
+      call runSUB('WRSTART',JOB, timer2)
+      CALL runSUB('STEAL',JOB, timer2)
+      CALL runSUB('WRCONT',JOB, timer2)
       itemp=itemp+1
       if (itemp.ge.2) itsw=1
 
 
    10 continue
       IF (JOB.EQ.'newline') INEW=1
-      if (itsw.eq.1) itsw=0  !& CALL  TEMPCOR
+      if (itsw.eq.1) itsw=0
       print *,'HMINUS: CYCLE STARTED'
       call tic(timer2)
-      call runSUB('COMO', JOB, timer2, IDUMMY)
-      call runSUB('ETL',  JOB, timer2, IDUMMY)
+      call runSUB('COMO', JOB, timer2)
+      call runSUB('ETL',  JOB, timer2)
       print *,'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
       IF (INEW.EQ.1) THEN
         print *,'HMINUS: TIME FOR CYCLE INCLUDING LINE BACKGROUND '//
@@ -91,12 +91,12 @@
         INEW=0
         ENDIF
       selectcase(JOB)
-        case('wrcont','extrap') ; call runSUB('wrcont',JOB,timer2,IDUMMY)
+        case('wrcont','extrap') ; call runSUB('wrcont',JOB,timer2)
         case('repeat')          ; goto 10;
       endselect
       PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=',JOB
       REWIND 99; WRITE (99,'(A4)') 'exit'
-      call BLANK_CHECK(IDUMMY)
+
       print *,'HMINUS: Elapsed time for total job: '//writeTOC(timer)
 
       CALL SYSTEM("echo '\n'END OF LTE RUN - $(date)'\n'")
@@ -104,7 +104,7 @@
       END SUBROUTINE
 
 
-      SUBROUTINE FINISH(PROG,timer,IDUMMY,reset)
+      SUBROUTINE FINISH(PROG,timer,reset)
       USE MOD_TICTOC
       USE UTILS
       IMPLICIT NONE
@@ -113,7 +113,6 @@
       integer   :: timer
       logical,optional :: reset
       integer,save :: counter = 1
-      integer :: IDUMMY
       P2=PROG
       print *,'HMINUS-Finish: '//trim(P2)
      &  //'('//trim(adjustl(int2str(counter)))//')'
@@ -121,13 +120,9 @@
      &  //', total: '//trim(adjustl(writeTOC()))
       if(present(reset).and.reset) call tic(timer)
       counter=counter+1
-      call BLANK_CHECK(IDUMMY)
+
       END SUBROUTINE
-      !*** Check if the last common was changed.
-      SUBROUTINE BLANK_CHECK(IDUMMY)
-      IF(IDUMMY/=-1.)
-     &   PRINT '("HMINUS: possible overflow of blank common ",i0)',IDUMMY
-      END SUBROUTINE
+
       END MODULE
       
 
@@ -139,7 +134,7 @@
       use MOD_COMO
       use MOD_ETL
       use MOD_TICTOC
-      use UTILS,only: cp
+      use UTILS, only: cp
       use MOD_HMINUS
       use PARAMS_ARRAY
 
@@ -148,38 +143,20 @@
 
       IMPLICIT NONE
 
-      integer ipdim,    nbdim,  idummy,   itemp
-      integer iadr9,    itsw
-      integer lblaon,   inew,   modhist,  iadr,   ipmax,   nbmax
+      integer ipdim,  nbdim, itemp
+      integer itsw
+      integer lblaon, inew, ipmax, nbmax
       integer timer,timer2
       integer nbinw
       real*8  almin, almax
-      real*8  dumm1, dumm2, dumm3, dumm4, dumm5, dumm6, dumm7, dumm8
-      real*8  dumm9, dumm10, dumm11, dumm12, dumm21
       real*8  scaevt, absevt, scafac, absfac, scagri
 
-c                     1350           40500              30
-      COMMON // DUMM1(NDIM,15),DUMM2(NDIM,NDIM,5),DUMM3(MAXATOM,6)
-c                   644            25392                  16200
-     $      ,DUMM4(NDIMP2,7),DUMM5(NDIMP2,NDIMP2,3),DUMM6(NDIM,NDIM,2)
-c                  64000                60000
-     $      ,DUMM7(NDDIM,NFDIM,4),DUMM8(NDDIM,MAXIND)
-c                   22000           158              1200
-     $      ,DUMM9(NFDIM,11),DUMM10(NFLDIM,2),DUMM11(NDDIM,15)
-c                   36000
-     $      ,DUMM12(NDDIM,NDIM,7)
-c                    3000          3000          3000
-     $      ,MODHIST(MAXHIST),IADR(MAXADR),IADR9(MAXADR)
-c                   36000
-     $      ,IDUMMY
-c                              9750
-      COMMON /COMIND/  DUMM21(MAXIND,13)
-      parameter (IPDIM=25,NBDIM=99)
-      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
-     $                                ABSEVT(IPDIM,NBDIM)
+      parameter(IPDIM = 25, NBDIM = 99)
+      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM, NBDIM), ABSEVT(IPDIM,NBDIM)
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
 
-      COMMON /LIBLFAC/ SCAFAC(NDDIM,NFDIM),ABSFAC(NDDIM,NFDIM)
+      COMMON /LIBLFAC/ SCAFAC(NDDIM, NFDIM),ABSFAC(NDDIM, NFDIM)
+
       character*7 :: JOB
 
       logical :: first=.true.
@@ -204,7 +181,6 @@ c                              9750
       ALMIN=0.    !***  default values for lineblanketing
       ALMAX=0.
       LBLAON=0
-      IDUMMY=-1.  !***  TEST FOR TOO LARGE USE OF BLANK COMMON
 
       call TIC(timer)
       call TIC()
@@ -225,15 +201,6 @@ c                              9750
 
              CALL HMINUS_LTE(); STOP
 
-!             CALL SYSTEM("echo -e '\n'--------------------------------------------------------- LTE RUN
-!     $ -----------------------------------------------------------------'\n'")
-
-!             LTE_RUN = .TRUE.
-
-!             REWIND(99); WRITE(99, '(A7)'), 'wrstart'
-
-!             GOTO 100
-
       CASE DEFAULT
 
           PRINT *,' OPTION NOT KNOWN; JOB=',JOB
@@ -252,70 +219,58 @@ c                              9750
       CALL RM_FILE('BROYDEN', '-vf')
       CALL RM_FILE('NEWBROYDEN', '-vf')
 
-      CALL WRSTART  !***************** WRSTART ********************
-      call finish('WRSTART',timer2,IDUMMY,.true.)
-!      call cp('RADIOC','RADIOC.wrstart')
-!      call cp('RADIOL','RADIOL.wrstart')
-!      call cp('RADIOCL','RADIOCL.wrstart')
-!      call cp('POPNUM','POPNUM.wrstart')
-      CALL STEAL (JOB)   !***************** STEAL **********************
-      call finish('STEAL',timer2,IDUMMY)
-!      call cp('RADIOC','RADIOC.steal')
-!      call cp('RADIOL','RADIOL.steal')
-!      call cp('RADIOCL','RADIOCL.steal')
-!      call cp('POPNUM','POPNUM.steal')
+      CALL WRSTART
+      call finish('WRSTART',timer2,.true.)
+
+      CALL STEAL(JOB)
+      call finish('STEAL',timer2)
 
       IF (JOB.NE.'wrcont') THEN
         PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=',JOB
         REWIND 99
         WRITE (99,'(A4)') 'exit'
-        call BLANK_CHECK(IDUMMY)
+
         print *,' Elapsed time for total wind-job:',toc(timer),' sec'
         STOP 'EXIT'
       ENDIF
 
     1 continue
       call tic(timer2)
-      CALL WRCONT (JOB)  !********************* wrcont *****************
+      CALL WRCONT(JOB)
       itemp=itemp+1
       if (itemp.ge.2) itsw=1
-      call finish('WRCONT',timer2,IDUMMY)
+      call finish('WRCONT',timer2)
 
       IF (JOB.NE.'repeat'.AND.JOB.NE.'newline') THEN
          PRINT *,' NO NEW JOB TO BE ROUTED; JOB=',JOB
          REWIND 99
          WRITE (99,'(A4)') 'exit'
-         IF (IDUMMY.ne.-1.) then
-            PRINT *, ' possible overflow of blank common'
-            print *,      IDUMMY
-            ENDIF
-            print *,'HMINUS: Elapsed time for total wind-job:',
-     &              toc(timer),' sec'
+         print *,'HMINUS: Elapsed time for total wind-job:', toc(timer), ' sec'
          STOP 'EXIT'
       ENDIF
 
    10 continue
       IF (JOB.EQ.'newline') INEW=1
-      if (itsw.eq.1) itsw=0  !& CALL  TEMPCOR
+      if (itsw.eq.1) itsw=0
       print *,'HMINUS: CYCLE STARTED'
       call tic(timer2)
 
-      CALL COMO        !**************COMO****************************
-      call finish('COMO',timer2,IDUMMY)
-      CALL ETL (JOB)   !**************ETL ****************************
-!      if(first) call cp('RADIOC','RADIOC.etl')
-!      if(first) call cp('RADIOL','RADIOL.etl')
-!      if(first) call cp('RADIOCL','RADIOCL.etl')
-!      if(first) call cp('POPNUM','POPNUM.etl')
+      CALL COMO
+      call finish('COMO',timer2)
+      CALL ETL(JOB)
 
-      call finish('ETL',timer2,IDUMMY)
-      CALL STEAL (JOB) !*************STEAL****************************
-!      if(first) call cp('RADIOC','RADIOC.steal.2')
-!      if(first) call cp('RADIOL','RADIOL.steal.2')
-!      if(first) call cp('RADIOCL','RADIOCL.steal.2')
-!      if(first) call cp('POPNUM','POPNUM.steal.2')
+
+
+
+
+      call finish('ETL',timer2)
+      CALL STEAL (JOB)
+
+
+
+
       first=.false.
-      call finish('STEAL',timer2,IDUMMY)
+      call finish('STEAL',timer2)
       print *,'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
       IF (INEW.EQ.1) THEN
         print *,'HMINUS: TIME FOR CYCLE INCLUDING LINE BACKGROUND '//
@@ -328,12 +283,11 @@ c                              9750
       endselect
       
       call WRCONT(JOB)
-      call finish('WRCONT',timer2,IDUMMY)
+      call finish('WRCONT',timer2)
 
       PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=',JOB
       REWIND 99
       WRITE (99,'(A4)') 'exit'
-      call BLANK_CHECK(IDUMMY)
       print *,'HMINUS: Elapsed time for total job: '//writeTOC(timer)
 
       CALL SYSTEM("echo '\n'END OF THE RUN - $(date)'\n'")

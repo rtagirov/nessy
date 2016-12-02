@@ -25,11 +25,10 @@
       use MOD_ERROR
       use MOD_chemeq      
       use ABUNDANCES
-
       USE COMMON_BLOCK
       USE FILE_OPERATIONS
-
-      use vardatom
+      USE VARDATOM
+      USE VARHMINUS
 
 !     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
 !     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
@@ -43,16 +42,15 @@
 
       IMPLICIT REAL*8(A - H, O - Z)
 
-      COMMON // RADIUS(:),ENTOT(NDDIM),T(NDDIM)
-     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
-     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
-     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
-     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-     $ ,ENLTE(NDIM)
-     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
-     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
-     $ ,IADR(MAXADR)
+!      COMMON // RADIUS(NDDIM),ENTOT(NDDIM),T(NDDIM)
+!     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
+!     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
+!     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
+!     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
+!     $ ,ENLTE(NDIM)
+!     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
+!     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
+!     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
       
       INTEGER :: IPDIM, NBDIM
       parameter(IPDIM = 25, NBDIM = 99)
@@ -81,8 +79,6 @@
       integer NA
       REAL*8 CSARR(5000,4)
 
-      real*8, allocatable, dimension(:, :) :: WCHARM
-
       REAL*8, DIMENSION(:), ALLOCATABLE :: ELEC_CONC, HEAVY_ELEM_CONC
 
       REAL*8, DIMENSION(:), ALLOCATABLE :: VELO_NE, VELO_E
@@ -90,8 +86,6 @@
       CHARACTER(:), ALLOCATABLE :: AMF
 
       REAL*8 :: H
-
-      real*8, dimension(NDDIM) :: R
 
       call FDATE(fstring)
       call TIC(timer)
@@ -107,25 +101,46 @@
       CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,RMAX,TTABLE,LBKG,XLBKG1,XLBKG2,
      $               TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN)
 
-      !***  if PRINT DATOM option in CARDS is set, printout the atomic data
+!     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
      $CALL PRIDAT(N,LEVEL,NCHARG, WEIGHT,ELEVEL,EION,EINST,
-     $            KODAT,AKEY,NF,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $            KODAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $            NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
+
       !***  PRINTOUT OF THE CHEMICAL COMPOSITION
       CALL PRICOMP(N,EINST,NCHARG,NOM,NATOM,ABXYZ,ATMASS,
      $             STAGE,NFIRST,NLAST,ELEMENT,SYMBOL,LASTIND,
      $             INDLOW,INDNUP)
-      !*** 2) Generate Mesh
-      !***  GENERATION OF THE CONTINUOUS FREQUENCY GRID
 
-!      print*, 'wrstart, before fgrid:', NF
+!     GENERATION OF THE CONTINUOUS FREQUENCY GRID
+
+      print*, 'before'
 
       CALL FGRID(NFDIM,NF,XLAMBDA,FWEIGHT,AKEY,NOM,SYMBOL,NATOM,N,NCHARG,ELEVEL,EION,EINST)
 
-!      print*, 'wrstart, after fgrid:', NF; stop
+      print*, 'after'
 
       CALL GEOMESH(RADIUS, ENTOT, T, P, Z, RSTAR, ND, NP)
+
+      allocate(XJC(ND))
+      allocate(XJCARR(ND, NF))
+      allocate(XJL(ND, LASTIND))
+      allocate(EDDI(3, ND))
+      allocate(EDDARR(3, ND, NF))
+      allocate(TAUROSS(ND))
+      allocate(RNE(ND))
+      allocate(VELO(ND))
+      allocate(GRADI(ND))
+      allocate(EMFLUX(NF))
+      allocate(ENLTE(N))
+      allocate(POPNUM(ND, N))
+      allocate(HTOT(ND))
+      allocate(GTOT(ND))
+      allocate(XTOT(ND))
+      allocate(ETOT(ND))
+      allocate(POP1(ND, N))
+      allocate(POP2(ND, N))
+      allocate(POP3(ND, N))
 
       CALL mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, ND)
 
@@ -200,13 +215,9 @@
 C***  STAPEL: NUMBER OF FREE ELECTRONS PER ATOM
 C***  S T A R T   A P P R O X I M A T I O N
 
-      STAPEL = 0.
+      STAPEL = 0.0d0
 
-      DO NA = 1, NATOM
-
-         STAPEL = STAPEL + ABXYZ(NA) * (STAGE(NA) - 1.)
-
-      ENDDO
+      DO NA = 1, NATOM; STAPEL = STAPEL + ABXYZ(NA) * (STAGE(NA) - 1.); ENDDO
 
       RNE(1 : ND) = STAPEL
 
@@ -214,8 +225,7 @@ C***  Read Line-blanketing table
       IF (LBLANK.NE.0) LBLANK=-2
       CALL REBLANK (LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
       IF (ABS(LBLANK).EQ.2) 
-     $CALL PRIBLA (LBLANK,ENTOT,ND,XLAMBDA,NF,JOBNUM,MODHEAD,
-     $	                 SCAFAC,ABSFAC)
+     $CALL PRIBLA (LBLANK,ENTOT,ND,XLAMBDA,NF,JOBNUM,MODHEAD,SCAFAC,ABSFAC)
  
 C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
@@ -256,12 +266,12 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
       POP2(:, :) =   0.0d0
       POP3(:, :) =   0.0d0
 
-      HTOT(: ND) =   0.0d0
-      GTOT(: ND) =   0.0d0
-      XTOT(: ND) =   0.0d0
-      ETOT(: ND) =   0.0d0
+      HTOT(1 : ND) =   0.0d0
+      GTOT(1 : ND) =   0.0d0
+      XTOT(1 : ND) =   0.0d0
+      ETOT(1 : ND) =   0.0d0
 
-      EMFLUX(: NF) = 0.0d0
+      EMFLUX(1 : NF) = 0.0d0
 
       if (allocated(wcharm)) deallocate(wcharm)
 
@@ -288,16 +298,16 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 !     START APPROXIMATION FOR THE RADIATION FIELD
 !     JSTART writes the files RADIOC and RADIOL
 
-      EDDI(:, 1 : ND) = 0.0d0
-   
-      CALL JSTART(NF,XLAMBDA,AKEY,ND,R,T,XJC,XJL,
+      EDDI(1 : 3, 1 : ND) = 0.0d0
+
+      CALL JSTART(NF,XLAMBDA(1 : NF),ND,T,XJC,XJL,
      $            HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $            NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,
      $            MODHEAD,JOBNUM,TEFF)
-         
+
       write(*,  *) 'WRSTART - ', fstring, ' run time: ', TOC(timer)
 
-      open(78, file = 'MODHIST', status='unknown')
+      open(78, file = 'MODHIST', status = 'unknown')
    
       write(78, *) 'WRSTART - ', fstring, ' run time: ', TOC(timer)
    

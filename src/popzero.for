@@ -78,22 +78,22 @@
       NFUP=0
       NFLOW=0
       NEGINTL=0
-      ! CALL JSYMGET (2LG7,JOB)
+
       rewind 99; read (99,'(A7)',err=666) JOB
       print '(A,A)',' file 99 job=',job
 
       JOB_COND = JOB .EQ. 'wrstart'! .OR. JOB .EQ. 'lte'
 
-!      IF ((JOB .EQ. 'wrstart') .AND. OLDSTART) THEN
+
       IF (JOB_COND .AND. OLDSTART) THEN
 !***  START WITH POPNUMBERS WHICH ARE READ FROM AN APPLICABLE OLD MODEL FILE
-!         IERR=0
-!         CALL OPENMS(9,IADR9,MAXADR,1,IERR)
+
+
         print *,' population numbers copied from an existing model'
         ifl=9
         open (ifl,file='OLDMODEL',status='old',err=777)
         CNAME='MODHEAD'
-        ! CALL READMSC(IFL,MODHOLD,104,CNAME,IERR)
+
         READ (ifl,'(A10)') cread
         do while (cread(1:1).eq.' ')
           help=cread(2:10)
@@ -102,7 +102,7 @@
         ERR_CREAD: if (cread.ne.cname) then
           write (6,*) 'READMSC: KEYWORD MISMATCH'
           write (6,*) cread,char
-          ! pause
+
           stop
         endif ERR_CREAD
         READ (ifl,'(A104)') modhold

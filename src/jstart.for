@@ -1,6 +1,6 @@
       module MOD_JSTART
       contains
-      SUBROUTINE JSTART (NF,XLAMBDA,AKEY,ND,R,T,XJC,XJL,
+      SUBROUTINE JSTART (NF,XLAMBDA,ND,T,XJC,XJL,
      $                   HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $                   NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,  ! renamed WRCHARM to WCHARM 
      $                   MODHEAD,JOBNUM,TEFF)
@@ -22,20 +22,18 @@ C******************************************************************************
       real*8,PARAMETER ::  ONE = 1.D+0, TWO = 2.D+0 
 
 C***  TRANSFER OF THE LTE-OPTION FROM SUBR. DECSTAR
-      COMMON /COMLTE/ LTE
       real*8,  intent(inout),dimension(ND)  :: XJC,XJL ! Continuum and Line Radiation Field
       integer, intent(in   ) :: NF, ND, N
       integer, intent(in   ) :: NCHARG(N), NOM(N),JOBNUM
       real*8,  intent(in   ) :: TOTIN, TOTOUT
       real*8,  intent(in   ) :: ELEVEL(N),EINST(N,N),EDDI(3,ND)
-      real*8,  intent(in   ),dimension(ND)   :: R,T
-      real*8,  intent(in   ),dimension(NF)   :: XLAMBDA,AKEY
+      real*8,  intent(in   ),dimension(ND)   :: T
+      real*8,  intent(in   ),dimension(NF)   :: XLAMBDA
       real*8,  intent(in   ),dimension(ND,NF):: WCHARM
       real*8,  intent(in   ),dimension(:)    :: HTOT, GTOT,XTOT, ETOT,EMFLUX
       character,intent(in  ) :: MODHEAD*104
-      real*8  ::SQRT,XLAM, BTEFF, TEFF, W, ARG
+      real*8  ::SQRT,XLAM, BTEFF, TEFF, W
       integer :: IFL,IERR, K, L, J, I,IND
-      LOGICAL LTE
       CHARACTER CNAME*10
 ! micha: Added dimensions to be able to use modules
 C***  CONTINUUM RADIATION FIELD XJC  *****************************************
@@ -59,24 +57,16 @@ c      CALL WRITMSC(IFL,MODHEAD,104,CNAME,-1,IERR)
       DO 6 K=1,NF
       XLAM=XLAMBDA(K)
      
-C***  BRANCH FOR LTE
-      IF (LTE) THEN
-        DO 2 L=1,ND
-    2    XJC(L)=BNUE(XLAM,T(L))
-      ELSE
-C***   BRANCH FOR GEOMETRICAL DILUTION OF BLACKBODY FIELD
+C***   GEOMETRICAL DILUTION OF BLACKBODY FIELD
         BTEFF=BNUE(XLAM,TEFF)
         DO L=1,ND
           IF (T(L) .LT. TEFF) THEN
             W=0.5
-            ARG=1.-1./R(L)/R(L)
-            IF (ARG .GT. .0) W=0.5*(1.-SQRT(ARG))
             XJC(L)=BTEFF*W
           ELSE
             XJC(L)=BNUE(XLAM,T(L))
           ENDIF
         ENDDO
-      ENDIF
      
       WRITE(CNAME,FMT_KEY) 'XJC ',K
       CALL WRITMS (IFL,XJC,ND,CNAME,-1,IERR)
@@ -106,27 +96,19 @@ C***  ( DEPTH VEKTOR FOR EACH LINE TRANSITION LABELLED WITH IND )
       IND=IND+1
       IF (EINST(I,J) .EQ. - TWO) GOTO 99
       XLAM=1.d8*ONE/(ELEVEL(J)-ELEVEL(I))
-C***  THIS VERSION: SAME APPROXIMATION AS FOR CONTINUUM
-C***  BRANCH FOR LTE
 
-      IF (LTE) THEN
-        DO L=1,ND
-          XJL(L)=BNUE(XLAM,T(L))
-        enddo
-      ELSE
-C***  BRANCH FOR GEOMETRICAL DILUTION OF BLACKBODY FIELD
+C***  THIS VERSION: SAME APPROXIMATION AS FOR CONTINUUM
+C***  GEOMETRICAL DILUTION OF BLACKBODY FIELD
         BTEFF=BNUE(XLAM,TEFF)
         DO L=1,ND
           IF (T(L) .LT. TEFF) THEN
             W=0.5_8
-            ARG=ONE-ONE/R(L)/R(L)
-            IF (ARG .GT. .0) W=0.5_8*(ONE-SQRT(ARG))
             XJL(L)=BTEFF*W
           ELSE
             XJL(L)=BNUE(XLAM,T(L))
           ENDIF
         ENDDO
-      ENDIF
+
       WRITE(CNAME,FMT_KEY) 'XJL ',IND
       CALL WRITMS (IFL,XJL,ND,CNAME,-1,IERR)
    99 CONTINUE

@@ -80,7 +80,7 @@
       COMMON // R(NDDIM),ENTOT(NDDIM),T(NDDIM)
      $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
      $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
-     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM),AINCRIT(NDDIM)
+     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
      $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
 !     $ ,WEIGHT(NDIM),ELEVEL(NDIM),EION(NDIM)
 !     $ ,ELEVEL(NDIM),EION(NDIM)
@@ -111,7 +111,7 @@
 !     $ ,NCHARG(NDIM),MAINQN(NDIM),NOM(NDIM),ITNE(NDDIM),NFEDGE(NDIM)
 !     $ ,MAINQN(NDIM),NOM(NDIM)
      $ ,ITNE(NDDIM),NFEDGE(NDIM)
-     $ ,IWARN(NDDIM),LEVELPL(NDIM),MODHIST(MAXHIST)
+     $ ,IWARN(NDDIM),LEVELPL(NDIM)
     !***  in steal the COMIND common is larger
 !      COMMON /COMIND/  INDNUP(MAXIND),INDLOW(MAXIND)
       COMMON /COMIND/ IRIND(NDADDIM), IBACK(NDADDIM, NPDIM)
@@ -254,37 +254,17 @@
         ENDDO
         close (IFL)
       ENDIF
-      !***  READING OF THE MODEL FILE
-      !-cray      CALL       FORMOSA (ND,R,NP,P,Z,ENTOT,RNE,T,VELO,NF,XLAMBDA,GRADI,
-      !        $                    IADR,MAXADR,EMFLUX,AKEY,POPNUM,RSTAR,
-      !        $                    VDOP,JOBNUM,N,NDDIM,NPDIM,NFDIM,MODHEAD)
-      !      call savpop (ND,R,NP,P,Z,ENTOT,RNE,T,VELO,NF,XLAMBDA,GRADI,
-      !     $             xtot,htot,gtot,etot,EMFLUX,AKEY,ABXYZ,NATOM,
-      !     $             POPNUM,RSTAR,VDOP,JOBNUM,N,NDDIM,NPDIM,NFDIM,MODHEAD)
 
-      ! it is not clear if zclac is really needed here...
-      call zcalc (R,P,Z,ND,NP)     ! calculate the Z grid
-      ! clfact=1.
-      !-clu new formulation
-      !$$$      do l=1,nd
-      !$$$        Cfac(l)=(CLFACT-1.)*(VELO(L)/VELO(1))**4.+1.
-      !$$$      enddo
-      !$$$
-      !$$$c***  modify the density to simulate clumping
-      !$$$      call denmodi (entot,cfac,nd)
-      !$$$
-      !$$$c***  modify the z-mesh to simulate clumping
-      !$$$      call zmodi (z,p,radius,cfac,nd,np)
-      !      PRINT *,' CLUMPING FACTOR: ',clfact,' set'
+      call zcalc(R, P, Z, ND, NP) ! calculate the Z grid
 
       !***  PRINTOUT OF THE ATOMIC DATA
       AKEY(1:NF)=8H             
-      ! print *,' abxy',natom,(abxyz(i),atmass(i),i=1,natom)
-      ! DATOM
+
+
       idat=1
       IF (IDAT.EQ.1)
      $  call PRIDAT(N,LEVEL,NCHARG, WEIGHT,ELEVEL,EION,EINST,
-     $              KODAT,AKEY,NF,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $              KODAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $              NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
 
       !***  ADDITIONAL CALCULATION FOR SUBROUTINE PRIPRO
