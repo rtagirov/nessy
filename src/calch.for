@@ -1,8 +1,11 @@
       module MOD_CALCH
+
       contains
-      SUBROUTINE CALCH (ND,NP,NPDIM,OPA,Z,P,U,VL,VJL,RADIUS,HNU,
-     &                                                  FLUXIN,EMFLUX)
-      use MOD_MOMENT1
+
+      SUBROUTINE CALCH(ND,NP,NPDIM,OPA,Z,P,U,VL,VJL,RADIUS,HNU,FLUXIN,EMFLUX)
+
+      use MOMENTS
+
       IMPLICIT REAL*8(A-H,O-Z)
 
 C***

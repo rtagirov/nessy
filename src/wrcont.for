@@ -205,9 +205,22 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
      $                                OPA,ETA,THOMSON,IWARN,MAINPRO,
      $                                MAINLEV,JOBNUM,MODHEAD)
 
-        CALL ELIMIN(XLAMBDA(K),EMFLUX(K),FLUXIN,U,Z,
-     $              A,B,C,W,BX,WX,XJC,RADIUS,P,BCORE,DBDR,
-     $              OPA,ETA,THOMSON,EDDI,ND,NP)
+        if (any(isnan(eddi(1, :)))) then
+
+            do i = 1, ND
+
+               write(*, '(i4,2x,e15.7,2x,i4,3(2x,e15.7))') 
+     $         k, fweight(k), i, etot(i), eddi(1, i), xjc(i)
+
+            enddo
+
+            stop 'eddi nan before elimin'
+
+        endif
+
+        CALL ELIMIN(XLAMBDA(K), EMFLUX(K), FLUXIN, U, Z,
+     $              A, B, C, W, BX, WX, XJC, RADIUS, P, BCORE, DBDR,
+     $              OPA, ETA, THOMSON, EDDI, ND, NP)
 
 !        do l = 1, ND; print*, 'wrcont check:', k, l, xjc(l); enddo
 
@@ -221,7 +234,7 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
         XTOT(1 : ND) = XTOT(1 : ND) + XJC(1 : ND) * FWEIGHT(K)
 
-        if (any(isnan(etot))) then
+        if (any(isnan(eddi(1, :)))) then
 
             do i = 1, ND
 
@@ -230,7 +243,7 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
             enddo
 
-            stop 'nan before'
+            stop 'eddi nan before'
 
         endif
 

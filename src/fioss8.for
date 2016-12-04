@@ -31,12 +31,10 @@
       use CONSTANTS,only:CLIGHT_SI
       use PARAMS_ARRAY
       use ABUNDANCES
-
       USE COMMON_BLOCK
       USE FILE_OPERATIONS
       USE FIOSS_AUX
-
-      use VARDATOM
+      USE VARDATOM
 
 ! 8tung!!!
 !             intrfc passes new a AGAUNT !!

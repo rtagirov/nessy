@@ -12,16 +12,13 @@
 !     ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY
 
       use MOD_SETUP
-      use MOD_MOMENT0
-      use MOD_MOMENT1
-      use MOD_MOMENT2
       use MOD_MDMV
       use MOD_MSUB
       use MOD_MDV
       use MOD_MVV
       use MOD_MVMD
-
-      use matoper
+      use MOMENTS
+      use MATOPER
 
       IMPLICIT NONE
 
@@ -78,11 +75,13 @@ C***  RECENT WX IS THE FEAUTRIER-INTENSITY U AT THE INNER BOUNDARY
     2 CALL MOMENT0 (ND,RADIUS,ND,JMAX,Z,WX(1,ND),XJC(ND),.FALSE.)
       CALL MOMENT1 (RADIUS(ND),JMAX,P,WX(1,ND),H)
       HPLUS=BCORE/two + DBDR/three/OPA(ND)
-      CALL MOMENT2 (RADIUS(ND),JMAX,P,WX(1,ND),XK)
+      CALL MOMENT2(RADIUS(ND), JMAX, P(1 : JMAX), WX(1, ND), XK)
+
 C***  EDDI(1,L) IS THE EDDINGTON FACTOR  F = K / J
 C***  EDDI(2,L) IS THE SPHERICITY FACTOR Q
 C***  EDDI(3,L) IS THE EDDINGTON FACTOR H / J  (ONLY AT THE BOUNDARIES)
 C***  EDDI(3,ND-1) IS THE OUTWARD FLUX HPLUS AT THE INNER BOUNDARY
+
       EDDI(1,ND)=XK/XJC(ND)
       EDDI(2,ND)=one
       RRQ=one
@@ -98,20 +97,30 @@ C***  L = ND-1 ... 1
       DO 4 JMAX=NC2,NP
       L=NP+1-JMAX
       RL=RADIUS(L)
-c      LL=JMAX*(JMAX+1)
-c      CALL READMS (7,B ,LL,L,IERR)
-C***  DECOMPRESSING THE MATRIX BX AND VECTOR WX  OUT OF B (AND C)
-c      DO 8  J=1,JMAX
-c      JC=1+(J-1)*JMAX
-c    8 CALL EQUAL (BX(1,J),B(JC)  ,JMAX)
-c      CALL EQUAL (WX,B (JMAX*JMAX+1)  ,JMAX)
+
+
+
+
+
+
+
       CALL MVV (W,BX(1,1,L),A,JMAX,JMAX-1,NP)
       CALL VADD (WX(1,L),W,JMAX)
 C***  WX(J) IS THE FEAUTRIER-INTENSITY U AT RADIUS R(L)
       U(L,:JMAX)=WX(:JMAX,L)
       CALL MOMENT0 (ND,RADIUS,L,JMAX,Z,WX(1,L),XJC(L),.FALSE.)
-      CALL MOMENT2 (RL,JMAX,P,WX(1,L),XK)
-      EDDI(1,L)=XK/XJC(L)
+      CALL MOMENT2(RL, JMAX, P(1 : JMAX), WX(1, L), XK)
+!      CALL MOMENT2(RL, JMAX, P(1 : JMAX), U(L, 1 : JMAX), XK)
+      EDDI(1, L) = XK / XJC(L)
+
+      if (isnan(eddi(1, L))) then
+
+         print*, l, eddi(1, l), xk, xjc(l)
+
+         stop 'elimin eddi(1, l) is nan'
+
+      endif
+
 C***  THIS IS AN INGENIOUS (;) RECURSION FORMULA FOR THE SPHERICITY FACTOR !
       RLP=RADIUS(L+1)
       FLP=FL

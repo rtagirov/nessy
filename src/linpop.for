@@ -84,7 +84,7 @@
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND),SCOLIND(LASTIND)
       DIMENSION SCOLD(NF,ND)
       DIMENSION NFIRST(NATOM),NLAST(NATOM)
-      REAL*8 SIGMAKI(NF), ALPHA(*), SEXPO(*)
+      REAL*8 SIGMAKI(NF), ALPHA(N), SEXPO(N)
 
       real*8, allocatable, dimension(:, :) :: RATCO
 
@@ -107,13 +107,21 @@
       integer XLBKG1,  XLBKG2
 
       character*10, dimension(*) :: MAINPRO,MAINLEV
-      integer,      dimension(*) :: IWARN, KODAT
+      integer,      dimension(*) :: IWARN
 
-      real*8,       dimension(*) :: FWEIGHT, WCHARM
-      real*8,       dimension(*) :: ALTESUM, COCO, DETA, DETAL, DOPA, DOPAL
+      integer,      dimension(NATOM) :: KODAT
+
+      real*8,       dimension(ND, NF) :: WCHARM
+      real*8,       dimension(NF) ::     FWEIGHT
+
+      real*8,       dimension(*) :: DETA, DETAL, DOPA, DOPAL
       real*8,       dimension(*) :: ETA, ETAC, GRADI
-      real*8,       dimension(*) :: OPA, OPAC, RADIUS
-      real*8,       dimension(*) :: SCNEW, THOMSON, VELO
+      real*8,       dimension(*) :: OPA, OPAC
+      real*8,       dimension(*) :: SCNEW, THOMSON
+
+      real*8,       dimension(N, N, 4) :: COCO
+      real*8,       dimension(4, N) ::    ALTESUM
+      real*8,       dimension(ND) ::      RADIUS, VELO
 
       REAL*8, DIMENSION(ND, LASTIND) :: XJL, JNEW
       REAL*8, DIMENSION(ND, NF) ::      XJC

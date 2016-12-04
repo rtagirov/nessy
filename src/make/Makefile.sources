@@ -19,10 +19,8 @@ FIOSS_SRCS= \
 	inibl0.for\
 	mdmv.for\
 	mvmd.for\
-	moment0.for\
+	moments.for\
 	hydtab.for\
-	moment1.for\
-	moment2.for\
 	tictoc.for\
 	setup.for\
 	rdopac.for\
@@ -107,9 +105,7 @@ writms.for\
 mdv.for\
 deriv.for\
 rdopac.for\
-moment0.for\
-moment1.for\
-moment2.for\
+moments.for\
 setup.for\
 hminusff.for\
 hminus.for\
