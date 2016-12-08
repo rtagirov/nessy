@@ -379,8 +379,8 @@ c
             XOPA = opaTOT(KOPA,IRIND(ND))
             PLUSI=BCORE+DBDR*ZRAY(ND)/XOPA
             EMINT(K)=PLUSI
-            !-vs9:  use kopa
-            ! DINT(K,L)=EMINT(K)
+
+
             DINT(Kopa,L)=EMINT(K)
 40        enddo
         ELSE
@@ -392,24 +392,24 @@ c
           DO 93 I=1,N
             DO 83 K=1,NFOBR
               IF (TAU(K,N) .GT. 1.E-10) THEN
-                ! EMINT(K)=EMINT(K)*EXPTSC+SDOT(N,SFINE,1,WTAU,1)
+
                 EMINT(K)=EMINT(K)+SFINE(K,I)*WTAU(K,I)
-                ! write(9996,*) i, k, emint(k)
+
               ENDIF
  83         ENDDO
  93       ENDDO
-          ! pr
-          ! print '(i5,5e15.4)',L,(emint(k),k=1,nfobr)
+
+
 
           !*** the formal integration is finished
           !*** now store the intensity in the array DINT
-          !*** DINT is the co-moving frame intensity and has
-          !*** the same dimensions as the
-          !-vs9            DO 84 K=1,NFOBR
-          ! DINT(K,L)=EMINT(K)
-          ! XO=XOBS0+K*DXOBS
-          ! XI=XO+Xcmf(l)
-          !-vs9:         use kopa...
+          !*** DINT is the co-moving frame intensity
+
+
+
+
+
+
           DO KOPA=1,NVOPA
             XI=vopa0+(kopa-1)*dvopa
             XO=XI-Xcmf(L)
@@ -419,17 +419,17 @@ c
             DINT(Kopa,L)=EMINT(K)
           ENDDO
         ENDIF
-        !*** test
-        ! k=70
-        ! print *,' k= ',k,' L= ',l,' l1= ',l1,' n=',n
-        ! print *,' i,sfine(k,i),wtau(k,i),dtau(k,i),tau,opafine(k,i)'
-        ! do i=1,n
-        !   write(9996,*) k, i,sfine(k,i),wtau(k,i),dtau(k,i),tau(k,i),opafine(k,i)
-        !   write(9996,*) k, i,tau(k,i)
-        !   print *, k, i,sfine(k,i),wtau(k,i),dtau(k,i),tau(k,i),opafine(k,i)
-        !   pause
-        ! enddo
-        ! print *,emint(k)
+
+
+
+
+
+
+
+
+
+
+
       ENDDO LOOP_L
       !***  END OF LOOP OVER GRID POINTS
       !*** sum over the depthpoints and when > 1 print out
