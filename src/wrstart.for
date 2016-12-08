@@ -88,7 +88,7 @@
      $             NLAST,WAVARR,SIGARR,NFDIM)
 
 !     DECODING INPUT DATA
-      CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,RMAX,TTABLE,LBKG,XLBKG1,XLBKG2,
+      CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
      $               TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
@@ -168,7 +168,7 @@
 !     The height grid in the VEL_FIELD_FILE has to be the same as in the atmosphere model file FAL_VD.
 !     The TABLE string in CARDS file was used before to
 !     control the calculation/read-out option but is obsolete now (it is still in the CARDS file though).
-!     The logical variable VEL_FIELD_FROM_FILE is declared in COMMON_BLOCK.FOR and set in HMINUS.FOR.
+!     The logical variable VEL_FIELD_FROM_FILE is declared in comblock.for and set in hminus.for.
 !     The units of velocity in the VEL_FIELD_FILE are km/s, height is in km.
 !     The first column is height, the second is velocity.
 
@@ -269,8 +269,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       JOBNUM = 0
 
-      CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,
+      CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
      $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM)
 

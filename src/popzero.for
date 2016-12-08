@@ -6,8 +6,7 @@
      $                   WEIGHT,NCHARG,EION,ELEVEL,EN,EINST,LEVEL,
      $                   XLAMBDA,FWEIGHT,XJC,NF,XJL,IFRRA,ITORA,ALPHA,
      $                   SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
-     $                   LASTIND,ND,LSRAT,CRATE,RRATE,
-     $                   SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
+     $                   LASTIND,ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
      $                   KODAT,NFIRST,NLAST,WAVARR,SIGARR)
 
       !*******************************************************************************
@@ -37,13 +36,13 @@
       use MOD_LTEPOP
       use MOD_PRIRAT
       use ABUNDANCES
-!      use MOD_RGRIDM
 
       USE COMMON_BLOCK
 
       IMPLICIT REAL*8(A - H, O - Z)
 
       integer,intent(in) :: JOBNUM
+
       DIMENSION T(ND),ENTOT(ND),RNE(ND),POPNUM(ND, N),ITNE(ND)
       DIMENSION DEPART(ND, N)
       DIMENSION NCHARG(N), EN(N), ENLTE(N)
@@ -59,11 +58,11 @@
 
       real*8	POPHIIL, POPHML, POPHIL
 
-      real*8,dimension(*) :: ALTESUM,COCO,CRATE,FWEIGHT
+      real*8,dimension(*) :: ALTESUM, COCO, FWEIGHT
 
-      real*8, dimension(N, N) :: ratco
+      real*8, dimension(N, N) :: CRATE, RRATE, ratco
 
-      real*8,dimension(*) :: RRATE,WEIGHT,XJC,XJL
+      real*8,dimension(*) :: WEIGHT,XJC,XJL
       real*8 SIGMAKI(NF,N), ELEVEL(N), EION(N), EINST(N, N)
       real*8 XLAMBDA(NF), ALPHA(*),SEXPO(*)
       character*8 :: agaunt(N)
@@ -82,12 +81,10 @@
       rewind 99; read (99,'(A7)',err=666) JOB
       print '(A,A)',' file 99 job=',job
 
-      JOB_COND = JOB .EQ. 'wrstart'! .OR. JOB .EQ. 'lte'
-
+      JOB_COND = JOB .EQ. 'wrstart'
 
       IF (JOB_COND .AND. OLDSTART) THEN
 !***  START WITH POPNUMBERS WHICH ARE READ FROM AN APPLICABLE OLD MODEL FILE
-
 
         print *,' population numbers copied from an existing model'
         ifl=9
@@ -192,9 +189,9 @@
         if (allocated(ABXYZ_new)) deallocate(ABXYZ_new)    
 
         ENDDO
-!         CALL CLOSMS (9)
+
          close (ifl)
-!      ELSEIF (JOB .EQ. 'wrstart') THEN
+
       ELSEIF (JOB_COND) THEN
 
         !***  START WITH CALCULATION OF THE NLTE POPNUMBERS
@@ -213,8 +210,6 @@
         !*** LOOP OVER ALL DEPTH POINTS --------------------------------------
         DO 1 L = 1, ND
 
-!          PRINT*, 'POPZERO: RNE(L) = ', L, RNE(L)
-
           TL = T(L)
 
           ENTOTL = ENTOT(L)
@@ -226,7 +221,6 @@
           ABXYZ_new(1 : NATOM) = ABXYZn(1 : NATOM, L)
 
           IF (LTE_RUN .OR. CONST_ELEC) THEN ! LTE RUN OR PRE-SET ELECTRON CONCENTRATION
-!          IF (LTE_RUN) THEN
 
               ENE = RNEL * ENTOTL
 
@@ -261,9 +255,7 @@
      $                     KEYCOL,NOM,NATOM,ABXYZ_new,KODAT,NFIRST,NLAST,
      $                     POPHIIL, POPHML, POPHIL)
 
-          !*** CHANGES BY MARGIT HABERREITER
-              EN(1 : ND) = ENLTE(1 : ND)
-          !*** END MARGIT
+              EN(1 : N) = ENLTE(1 : N)
 
               RNEOLD = RNEL
 
@@ -303,9 +295,9 @@
         !***  CHANGES BY MARGIT HABERREITER
         print *,' Gamma=0 branch !!!!!'
         !***  LOOP OVER ALL DEPTH POINTS  --------------------------------------
-!           print *, 'uups'
+
           MAIN_LOOP: DO L=1,ND
-          ! PRINT *, 'WITHIN DEPTH LOOP POPZERO L=',L
+
           TL=T(L)
           ENTOTL=ENTOT(L)
           RNEL=RNE(L)

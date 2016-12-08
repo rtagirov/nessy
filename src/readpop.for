@@ -2,7 +2,7 @@
 
       contains
 
-      subroutine readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
+      subroutine readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
       USE MOD_READMS
       USE MOD_READMSI
@@ -10,9 +10,9 @@
 
       IMPLICIT REAL*8(A-H,O-Z)
 
-      real*8 T(ND), RNE(ND), POPNUM(ND*N),POP1(ND*N), POP2(ND*N), POP3(ND*N)
+      real*8    T(ND), RNE(ND), POPNUM(ND*N), POP1(ND*N), POP2(ND*N), POP3(ND*N)
       CHARACTER CNAME*7, CREAD*7, MODHEAD*104, MODREAD*104
-      INTEGER JOBREAD, NSAVE, NDREAD
+      INTEGER   JOBREAD, NSAVE, NDREAD
 
       CNAME='MODHEAD'
 
@@ -48,36 +48,29 @@
 	   write (6,*) 'READPOP dimension of ND larger than NDREAD'
 	   pause
 	   stop
-	endif
+      endif
+
       CNAME='T'
       CALL READMS (IFL,T,ND,CNAME,IERR)
+
       CNAME='RNE'
       CALL READMS (IFL,RNE,ND,CNAME,IERR)
-c	PRINT *,'3. IN READPOP BEFORE XNECLC: N=',N, 'ifl=',ifl
-c	PAUSE
-c	CNAME='XNECLC'
-c	PRINT *,'3. IN READPOP AFTER XNECLC: N=',N, 'ifl=',ifl
-c	PAUSE
-c      CALL READMS (IFL,XNECLC,ND,CNAME,IERR)
-c	print *,'N=',N, 'ifl=',ifl
+
  
       CNAME='POPNUM'
-c	print *,'popnum N=',N, 'ifl=',ifl
-c	pause
-      CALL READMS (IFL,POPNUM,ND*N,CNAME,IERR)
+      CALL READMS(IFL, POPNUM, ND*N, CNAME, IERR)
+
       CNAME='POP1'
-c	print *,'POPNUM N=',N, 'ifl=',ifl
-c	pause
-      CALL READMS (IFL,POP1,ND*N,CNAME,IERR)
+      CALL READMS(IFL, POP1,   ND*N, CNAME, IERR)
+
       CNAME='POP2'
-c      print *,'POP2 N=',N, 'ifl=',ifl
-c	pause
-	CALL READMS (IFL,POP2,ND*N,CNAME,IERR)
+      CALL READMS(IFL, POP2,   ND*N, CNAME, IERR)
+
       CNAME='POP3'
-c      print *,'POP3 N=',N, 'ifl=',ifl
-c	pause
-	CALL READMS (IFL,POP3,ND*N,CNAME,IERR)
+      CALL READMS(IFL, POP3,   ND*N, CNAME, IERR)
 
       return
-	end subroutine
+
+      end subroutine
+
       end module

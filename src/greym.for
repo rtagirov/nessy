@@ -300,19 +300,19 @@ C***  MODIFIED START APPROXIMATION FOR TEMPERATURE .LT. 10000K:
 C***  SAHA EQUATION FOR HEI/HEII - IONIZED HYDROGEN 
 C***************************************************************************** 
         n13 = 0
-c   13  if (rnel.lt.0.d0) rnel=abs(rnel)/1.9
+
    13   if (rnel.lt.0.d0) rnel=abs(rnel)/1.3
-C  13   if (rnel.lt.0.d0) rnel=abs(rnel)/3
+
         n13 = n13+1
-c       if (l.gt.30) 
-c       print *,n13,'loop 13: ','depth point',l
-c       print *,n13,'rnel:', rnel
-c       print *,n13,'RNEDIF/RNEL',RNEDIF/RNEL
-c       IF (ITER .EQ. 1 .AND. TP1 .LT. 1.E4) THEN 
-c         T32=TP1*SQRT(TP1) 
-c         RNEL=ABH/2.+SQRT(ABH*ABH/4.+2.*EXP(-285645./TP1)*T32/2.07E-16 
-c     $   *ABHE/ENTOT(L+1)) 
-c       ENDIF 
+
+
+
+
+
+
+
+
+
 C*****************************************************************************
         ENE=RNEL*ENTOT(L+1) 
         CALL  LTEPOP (N,ENLTE,TP1,ENE,WEIGHT,NCHARG,EION,
@@ -384,15 +384,15 @@ c***  MARGIT HABERREITER: NO T-MODIFICATION IN CASE OF TTABLE
         if (allocated(ABXYZ_new)) deallocate(ABXYZ_new)
 
    10 CONTINUE 
-C***************************************************************************** 
-CC***  GIVE WORKSPACE FREE
-c      IF (.NOT. TTABLE .AND. SPHERIC) THEN 
-c      IDO=3 
-c      CALL IVPRK (IDO,NEQ,DTDR,RL,RL1,TOL,PARAM,TL) 
-c      ENDIF 
-C***************************************************************************** 
+
+
+
+
+
+
+
 C***  CALCULATE RADIUS R23 WHERE TAUROSS=2/3 
-C***************************************************************************** 
+
       TAU23=0.666666666666 
       IF (TAUROSS(ND) .LT. TAU23) THEN 
          R23=1. 

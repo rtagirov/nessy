@@ -39,6 +39,7 @@
       USE FILE_OPERATIONS
       USE VARDATOM
       USE VARHMINUS
+      USE VARSTEAL
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -61,29 +62,17 @@
 !     Mihalas, Kunasz & Hummer, 1975, 202: 465 - 489
 !     "Solution of the comoving-frame equation of transfer in spherically symmetric flows.
 !     I.Computational method for equivalent-two-level-atom source functions"
- 
-        COMMON // EN(NDIMP2),V1(NDIMP2),V2(NDIMP2)
-     $ ,V4(NDIMP2),V5(NDIMP2),ENDELTA(NDIMP2),SCOLD(NFDIM,NDDIM)
-     $ ,VOLD(NDIMP2),DB(NDIMP2,NDIMP2)
-     $ ,DM(NDIMP2,NDIMP2),CRATE(NDIM,NDIM),RRATE(NDIM,NDIM)
-     $ ,ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
-     $ ,TNEW(NDDIM),OPAC(NFDIM),SCNEW(NFDIM),DOPA(NFDIM)
-     $ ,DETA(NFDIM),ETAC(NFDIM),EXPFAC(NFDIM),SIGMAKI(NFDIM,NDIM)
-     $ ,PHI(NFLDIM),PWEIGHT(NFLDIM),DEPART(NDDIM,NDIM)
-     $ ,OPAL(NDDIM),ETAL(NDDIM),ASF(NDDIM),BSF(NDDIM),PP(NDDIM)
+
+      COMMON // ASF(NDDIM),BSF(NDDIM),PP(NDDIM)
      $ ,XJLMEAN(NDDIM),HBLUWI(NDDIM)
      $ ,TA(NDDIM),TB(NDDIM),TC(NDDIM),UB(NDDIM),GA(NDDIM),H(NDDIM)
-     $ ,QQ(NDDIM),S(NDDIM),V(NDDIM),VA(NDDIM),VB(NDDIM)
-     $ ,Uray(NDDIM)
+     $ ,QQ(NDDIM),S(NDDIM),V(NDDIM),VA(NDDIM),VB(NDDIM),Uray(NDDIM)
      $ ,AF(NFLDIM,NFLDIM),BF(NFLDIM,NFLDIM)
      $ ,XJ(NFLDIM,NDDIM),XH(NFLDIM,NDDIM),XK(NFLDIM,NDDIM)
      $ ,XN(NFLDIM,NDDIM),W0(NDDIM),W1(NDDIM),W2(NDDIM),W3(NDDIM)
      $ ,BMHO(NFLDIM),BMNO(NFLDIM),BMHI(NFLDIM),BMNI(NFLDIM)
-     $ ,ITNE(NDDIM),NFEDGE(NDIM)
-     $ ,IWARN(NDDIM),LEVELPL(NDIM)
 
       COMMON /COMELI/ XJCIND(NDDIM)
-
 C***  ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
      $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM),BX(NPDIM,NPDIM,NDDIM)
      $ ,WX(NPDIM,NDDIM)
@@ -112,6 +101,8 @@ C***  ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
       integer,external :: time
       logical :: ierr9
 
+      real*8, allocatable, dimension(:) :: opal, etal
+
       print*, 'entering etl.. ' // writeTOC()
       call tic(timer)
 
@@ -138,6 +129,9 @@ C***  READING OF THE MODEL FILE
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
       close(IFL)
+
+      if (allocated(opal)) deallocate(opal); allocate(opal(ND))
+      if (allocated(etal)) deallocate(etal); allocate(etal(ND))
 
       print *,'ETL: ND = ',ND,' NP = ',NP
       call assert(ND*NP>1,'ND*NP <= 1')
@@ -308,24 +302,21 @@ C***  BACKGROUND CONTINUUM RADIATION FIELD
 
       else
 
-c234567890 234567890 234567890 234567890 234567890 234567890 234567890 2
 C***     DATA FOR THAT LINE NOT PRESENT - CALCULATE IT NEW ...
 
       CALL ELIMIN(XLAM,DUMMY1,DUMMY0,U,Z,A,B,C,W,BX,WX,XJCIND,RADIUS,P,
      $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
 c***     ... and write it for use in the next iteration
-      CALL WRITMS (ifl,U,ND*NP,NAMEU,-1,IERR)
-      CALL WRITMS (ifl,XJCIND,ND,NAMEJ,-1,IERR)
+      CALL WRITMS(ifl,U,ND*NP,NAMEU,-1,IERR)
+      CALL WRITMS(ifl,XJCIND,ND,NAMEJ,-1,IERR)
 
       NEWBGC = NEWBGC + 1
 
       ENDIF
  
-      !***  ADD THE THOMSON EMISSIVITY, USING THE CONTINUUM RADIATION FIELD :
-      !DO 9 L=1,ND
+      !ADD THE THOMSON EMISSIVITY, USING THE CONTINUUM RADIATION FIELD :
       ETA(:ND)=ETA(:ND)+OPA(:ND)*THOMSON(:ND)*XJCIND(:ND)
-      !9 CONTINUE
 
       CALL LIOP_RTE(EINST(NUP,LOW),WEIGHT(LOW),WEIGHT(NUP),LOW,NUP,
      $              ND,XLAM,ENTOT,POPNUM,RSTAR,OPAL,ETAL,VDOP, N)
@@ -334,29 +325,7 @@ C***  FORMAL SOLUTION OF RAD.TRANSFER IN THE COMOVING FRAME
 C***  IN ORDER TO OBTAIN THE 0. TO 3. MOMENTS OF THE RADIATION FIELD
 C***  AND HENCE THE EDDINGTON FACTORS
 
-!      OpticalDepthLine(1) = 0.0D0
-!      OpticalDepthLineCont(1) = 0.0D0
-
-!      DO L = 2, ND
-
-!         OpticalDepthLine(L) = OpticalDepthLine(L - 1) + 
-!     $ ((OPAL(L) + OPAL(L - 1)) / 2.) * 
-!     $ ((HEIGHT(L - 1) - HEIGHT(L)) / 
-!     $ SolarRadiusKM)
-
-!         OpticalDepthLineCont(L) = OpticalDepthLineCont(L - 1) +
-!     $ ((OPA(L) + OPAL(L) + OPA(L - 1) + OPAL(L - 1)) / 2.0D0) *
-!     $ ((HEIGHT(L - 1) - HEIGHT(L)) / 
-!     $ SolarRadiusKM)
-
-!      ENDDO
-
-!      OpticalDepthLine(1) = OpticalDepthLine(2)
-!      OpticalDepthLineCont(1) = OpticalDepthLineCont(2)
-
       LO(1 : ND) = 0.0D0
-
-!      AW(1 : NP, 1 : ND) = 0.0D0
 
 C***  LOOP FOR RAY-BY-RAY COMPUTATION
 
@@ -373,17 +342,7 @@ C***  LOOP FOR RAY-BY-RAY COMPUTATION
      $            PHI,PWEIGHT,NFL,DELTAX,XJ,XH,XK,XN,W0,W1,W2,W3,
      $            NL, XLAM, LO)
 
-!      AW(JP, 1 : LMAX) = W0(1 : LMAX)
-
    13 CONTINUE
-
-!      do iii = 1, ND
-
-!         print*, 'etl 0:', NL, iii, LO(iii)
-
-!      enddo
-
-!      stop
 
       LSOPAP = 1
 
@@ -402,12 +361,12 @@ C***  UPDATING THE LINE RADIATION FIELD IN THE MODEL FILE AND IN THE CURRENT XJL
 !     We found an abnormal behavior of the local operator element
 !     at the boundary points: LO(ND - 1) > LO(ND) and LO(1) > LO(2).
 !     It might have something to do with the boundary conditions in the
-!     Feautrier system for the solution of the radiative transfer equation (see CMFSET.FOR).
+!     Feautrier system for the solution of the radiative transfer equation (see CMFSET).
 !     See Mihalas, Kunasz & Hummer, 1975, 202: 465 - 489
 !     "Solution of the comoving-frame equation of transfer in spherically symmetric flows.
 !     I.Computational method for equivalent-two-level-atom source functions" for boundary conditions formulation.
 !     It follows from the paper that the boundary conditions are of the first order only.
-!     It is consistent with the comments in CMFSET.FOR (see the core rays for the boundary
+!     It is consistent with the comments in CMFSET (see the core rays for the boundary
 !     condition at the innermost point of the atmosphere model)
 !     This might be the cause of such behavior.
 !     In the paper it says that refining the atmosphere model
@@ -432,24 +391,9 @@ C***  UPDATING THE LINE RADIATION FIELD IN THE MODEL FILE AND IN THE CURRENT XJL
     7 CONTINUE
 !     END OF LOOP FOR EACH LINE
 
-!      do iii = 1, LASTIND
-
-!         print*, 'etl:', iii, LOO(L, iii)
-
-!      enddo
-
-!      stop
-
       DEALLOCATE(LO)
 
-!      DEALLOCATE(AW)
-
-!      DEALLOCATE(OpticalDepthLine)
-!      DEALLOCATE(OpticalDepthLineCont)
-
       CLOSE(ifl)
-
-!      CLOSE(14)
 
 c***  store the line radiation field in file RADIOL
       call writradl(XJL,XJLMEAN,EINST,NCHARG,NOM,ND,N,LASTIND,MODHEAD,JOBNUM)

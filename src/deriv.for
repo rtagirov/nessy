@@ -21,8 +21,8 @@ C*******************************************************************************
 
       REAL*8, INTENT(IN), DIMENSION(N, N) :: CRATE ! Collision Rate
 
-      REAL*8, dimension(N)      :: ENLTE ! population number in LTE
-      REAL*8, dimension(N + 1)  :: EN    ! population number in NLTE
+      REAL*8, dimension(N)      :: ENLTE  ! population number in LTE
+      REAL*8, dimension(NPLUS1) :: EN     ! population number in NLTE
       REAL*8, dimension(ND, NF) :: WCHARM
 
       DIMENSION NCHARG(N),RRATE(N,N)

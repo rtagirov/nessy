@@ -3,15 +3,13 @@
       CONTAINS
 
       SUBROUTINE LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART_ZWAAN,POP1,
-     $                  N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN,ENDELTA,EINST,LEVEL,
-     $                  XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,SCOLD,
-     $                  DM,DB,V1,V2,V4,V5,VOLD,GAMMAL,EPSILON,
-     $                  TNEW,NOTEMP,NODM,IADR19,
-     $                  DELTAC,GAMMAR,IPRICC,IPRILC,MODHEAD,JOBNUM,IFRRA,ITORA,
+     $                  N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN,EINST,LEVEL,
+     $                  XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,EPSILON,NODM,IADR19,
+     $                  DELTAC,MODHEAD,JOBNUM,IFRRA,ITORA,
      $                  RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
-     $                  VELO,GRADI,VDOP,PHI,PWEIGHT,SCOLIND,INDNUP,INDLOW,LASTIND,
-     $                  OPAC,SCNEW,DOPA,DETA,OPAL,DOPAL,DETAL,SIGMAKI,
-     $                  ND,LSRAT,CRATE,RRATE,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
+     $                  VELO,GRADI,VDOP,PHI,PWEIGHT,INDNUP,INDLOW,LASTIND,
+     $                  OPAC,DOPA,DETA,SIGMAKI,
+     $                  ND,LSRAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
      $                  LINE,ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
      $                  NLAST,WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,JOBMAX)
 
@@ -54,10 +52,10 @@
 
       integer, intent(in) :: lastind, N
 
-      real*8, dimension(lastind), intent(out) :: opal
+      real*8, dimension(lastind) :: opal
 
-      real*8, intent(out), dimension(N + 1)        :: V1, V2, ENDELTA, V4, V5, VOLD
-      real*8, intent(out), dimension(N + 1, N + 1) :: DB, DM
+      real*8, dimension(N + 1)        :: V1, V2, ENDELTA, V4, V5, VOLD
+      real*8, dimension(N + 1, N + 1) :: DB, DM
 
       real*8, intent(in),  dimension(N, N) :: einst
       real*8, intent(in),  dimension(N)    :: ELEVEL, EION
@@ -66,17 +64,17 @@
 
       integer, intent(out), dimension(N) :: NFEDGE
 
-      real*8, intent(out), dimension(N, N) :: CRATE, RRATE
+      real*8, dimension(N, N) :: CRATE, RRATE
 
       real*8, dimension(N + 1) :: en
 
       character*8, intent(in), dimension(N) :: agaunt
 
-      DIMENSION T(ND),RNE(ND),ENTOT(ND),ITNE(ND),TNEW(ND)
+      DIMENSION T(ND),RNE(ND),ENTOT(ND),ITNE(ND)
       DIMENSION XLAMBDA(NF),EXPFAC(NF)
 
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND),SCOLIND(LASTIND)
-      DIMENSION SCOLD(NF,ND)
+      DIMENSION SCOLD(NF, ND)
       DIMENSION NFIRST(NATOM),NLAST(NATOM)
       REAL*8 SIGMAKI(NF), ALPHA(N), SEXPO(N)
 
@@ -86,7 +84,7 @@
 
       real*8, allocatable :: ABXYZ_new(:)
 
-      LOGICAL NOTEMP, NODM, NEWRAP, STRONG_CONV, WEAK_CONV
+      LOGICAL NODM, NEWRAP, STRONG_CONV, WEAK_CONV
 
       COMMON / COMNEGI / NEGINTL
       CHARACTER modhead*104
@@ -108,10 +106,13 @@
       real*8,       dimension(ND, NF) :: WCHARM
       real*8,       dimension(NF) ::     FWEIGHT
 
-      real*8,       dimension(*) :: DETA, DETAL, DOPA, DOPAL
+      real*8,       dimension(*) :: DETA, DOPA
+
+      real*8,       dimension(LASTIND) :: DETAL, DOPAL
+
       real*8,       dimension(*) :: ETA, ETAC, GRADI
       real*8,       dimension(*) :: OPA, OPAC
-      real*8,       dimension(*) :: SCNEW, THOMSON
+      real*8,       dimension(*) :: THOMSON
 
       real*8,       dimension(N, N, 4) :: COCO
       real*8,       dimension(4, N) ::    ALTESUM
@@ -126,7 +127,7 @@
 
       REAL*8, DIMENSION(N) ::     ENLTE
       REAL*8, DIMENSION(ND, N) :: POPNUM, POPNUM_LTE, POP1
-      REAL*8, DIMENSION(ND, N) :: DEPART_ZWAAN, DEPART_MENZEL
+      REAL*8, DIMENSION(ND, N) :: DEPART_ZWAAN
 
       REAL*8, DIMENSION(ND, LASTIND) :: SLOLD, SLNEW
 
@@ -160,7 +161,6 @@ C***  C1 = H * C / K (CM * KELVIN)
       PRINT_LTE_ARR = .FALSE.
 
       DEPART_ZWAAN(1 : ND, 1 : N) = 0.0D0
-      DEPART_MENZEL(1 : ND, 1 : N) = 0.0D0
 
       JNEW(1 : ND, 1 : LASTIND) = 0.0D0
 
@@ -179,16 +179,10 @@ C***  C1 = H * C / K (CM * KELVIN)
       ONE(1 : ND) =   1.0D0
 
 C***  ENERGY EQUATION INCREASES THE RANK OF THE SYSTEM
-      NPLUS1 = N + 1
-      NPLUS2 = N + 2
 
-      IF (NOTEMP) NRANK = NPLUS1
+      NRANK = N + 1
 
-      IF (.NOT. NOTEMP) NRANK = NPLUS2
-
-      if (allocated(ratco)) deallocate(ratco)
-
-      allocate(ratco(nrank, nrank))
+      if (allocated(ratco)) deallocate(ratco); allocate(ratco(nrank, nrank))
 
       SLOLD(1 : ND, 1 : LASTIND) = 0.0D0
 
@@ -218,8 +212,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
 !              CALCULATE THE OPACITY OPAL FOR A GIVEN LINE AND DEPTH POINT
                CALL LIOP_SBE(EINST(NUP, LOW), WEIGHT(LOW), WEIGHT(NUP), LOW, NUP,
-     $                       XLAM, ENTOT(L), POP1(L, 1 : N), RSTAR, opalind,
-     $                       etalind, VDOP, N)
+     $                       XLAM, ENTOT(L), POP1(L, 1 : N), RSTAR, opalind, etalind, VDOP, N)
 
                IF (opalind .LE. 0.0D0) THEN
 
@@ -243,8 +236,8 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
       CALL BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
      $             XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR)
 
-!     DETERMINE THE WEIGHT FUNCTION WCHARM FOR THE CONTINUUM, AND SCOLD AT ALL DEPTH POINTS
-      CALL CCORE(WCHARM,NF,DELTAC,IPRICC,MODHEAD,JOBNUM,
+!     DETERMINE SCOLD AT ALL DEPTH POINTS
+      CALL CCORE(NF,DELTAC,MODHEAD,JOBNUM,
      $           SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
      $           OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $           N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
@@ -392,8 +385,6 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
       TL = T(L)
 
-      IF (.NOT. NOTEMP) EN(NPLUS2) = TL
-
 !     IN CASE OF NON - ZERO LINE CORES CALCULATE BACKGROUND CONTINUUM SOURCE FUNCTION BY INTERPOLATION
       DO 11 IND = 1, LASTIND
 
@@ -411,21 +402,9 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 !     LOAD BROYDEN-MATRIX OF CURRENT DEPTH POINT
       IF (.NOT. NOFILE(L)) CALL DBLOAD(DB, L, NRANK)
 
-      !***  BEGINNING OF THE BROYDEN ITERATION LOOP
-      ITNE(L)=0
-   10 ITNE(L)=ITNE(L)+1
-      !***  UPDATE OF THE TEMPERATURE TL
-      IF (ITNE(L) .GT. 1 .AND. .NOT. NOTEMP) TL=EN(NPLUS2)
-
-      !***  PRE-CALCULATE EXPONENTIAL FACTORS FOR THE TEMPERATURE OF THE
-      !***  CURRENT DEPTH POINT
-      !***  THIS MUST BE REPEATED, WHEN THE TEMPERATURE HAS BEEN UPDATED
-      IF (ITNE(L) .EQ. 1 .OR. .NOT. NOTEMP) THEN
-      DO 25 K=1,NF
-        WAVENUM=1.E8/XLAMBDA(K)
-        EXPFAC(K)=EXP(-C1*WAVENUM/TL)
-   25 CONTINUE
-      ENDIF
+      !BEGINNING OF THE BROYDEN ITERATION LOOP
+      ITNE(L) = 0
+   10 ITNE(L) = ITNE(L) + 1
 
       !***  CALCULATE LTE POP. NUMBERS
       ENE = EN(NPLUS1) * ENTOT(L)
@@ -447,15 +426,13 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
      $          XLAMBDA,FWEIGHT,XJC,NF, L, XJL(L, 1 : LASTIND), ND, XJLAPP,
      $          SLOLD(L, 1 : LASTIND), LASTIND, INDLOW,
      $          INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
-     $          NFL,OPAC,SCNEW,DOPA,DETA,OPAL,SLNEW(L, 1 : LASTIND),
-     $          DOPAL, DETAL, SIGMAKI,ETAC,NFEDGE,EXPFAC,NOTEMP,NODM,
+     $          NFL,OPAC,DOPA,DETA,OPAL,SLNEW(L, 1 : LASTIND),
+     $          DOPAL, DETAL, SIGMAKI,ETAC,NFEDGE,EXPFAC,NODM,
      $          WCHARM,EN,RSTAR,SCOLD,VDOP,COCO,KEYCOL,
      $          POPHIIL,POPHML, POPHIL, LOO(L, 1 : LASTIND), ITNE(L),
      $          LEVEL, JOBNUM, IRESTA)
 
       JNEW(L, 1 : LASTIND) = XJLAPP(1 : LASTIND)
-
-!      do i = 1, nrank; print*, 'endelta really before:', i, endelta(i); enddo
 
       IF (NEWRAP) THEN
 
@@ -472,20 +449,6 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
 !        ALGEBRA OF ONE BROYDEN ITERATION STEP
 !        calculate the resulting vector V4 using the current populations EN
-
-!         do i = 1, nrank; print*, 'en check:', i, en(i); enddo
-
-!         do i = 1, nrank
-
-!            do j = 1, nrank
-
-!               print*, 'ratco check:', i, j, ratco(i, j)
-
-!            enddo
-
-!         enddo
-
-!         stop
 
          CALL VMF(V4, EN, RATCO, NRANK)
 
@@ -510,8 +473,6 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
             CALL VMF(V2, VOLD, DB, NRANK)
 
 !       V3 = V2 * ENDELTA; ENDELTA is the difference between pops = delta_x; V3 - the denominator (a number)
-
-!            do i = 1, nrank; print*, 'endelta before:', i, endelta(i); enddo
 
             CALL VMV(V3, V2, ENDELTA, NRANK)
 
@@ -634,14 +595,10 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
       POPNUM_LTE(L, 1 : N) =   ENLTE(1 : N)
       DEPART_ZWAAN(L, 1 : N) = EN(1 : N) / ENLTE(1 : N)
 
-!      DEPART_MENZEL(L, 2 : NLAST(1) - 1) = DEPART_ZWAAN(L, 2 : NLAST(1) - 1) / DEPART_ZWAAN(L, NLAST(1))
-
 C***  UPDATING THE ELECTRON DENSITY
       RNE(L) = EN(NPLUS1)
 
 C***  UPDATING THE ELECTRON TEMPERATURE
-
-      IF (.NOT. NOTEMP) THEN; TNEW(L) = EN(NPLUS2); ELSE; TNEW(L) = T(L); ENDIF
 
       ElecConc(L) =    SUM(NCHARG(1 : N) * EN(1 : N))
       ElecConcLTE(L) = SUM(NCHARG(1 : N) * ENLTE(1 : N))

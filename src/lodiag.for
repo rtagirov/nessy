@@ -1,11 +1,11 @@
       MODULE MOD_CALCLAMBDAS
 
-      PUBLIC
-
       CONTAINS
+
       !*** micha: Caclulate the accelerated Lambda Iterator.
       !PURE FUNCTION CALCLAMBDAS(OPA,ETA,THOMSON,R,EDDI,ND)
-      PURE FUNCTION CALCLAMBDAS(OPA, R, EDDI, ND)
+
+      FUNCTION CALCLAMBDAS(OPA, R, EDDI, ND)
       ! called by como.for
       ! calculate the LambdaStar operator
       IMPLICIT NONE
@@ -68,7 +68,7 @@
       END FUNCTION
 
 
-      PURE FUNCTION INVTRIDIAG(A, B, C)
+      FUNCTION INVTRIDIAG(A, B, C)
 
       !***  ==== DIAGONAL ELEMENTS OF THE INVERSE OF A TRIDIAGONAL MATRIX ====
       !*  W(LMAX)=RL*RL*(ETA(LMAX)+two*QL*X*HPLUS/DX)
@@ -119,7 +119,7 @@
 !        Feautrier matrix are infinite which in turn means that we're in the optically
 !        thin case => no need for acceleration.
 
-         IF (INVTRIDIAG(L) .NE. INVTRIDIAG(L)) INVTRIDIAG(L) = 0.0D0
+         if (isnan(INVTRIDIAG(L))) INVTRIDIAG(L) = 0.0D0
 
       ENDDO
 

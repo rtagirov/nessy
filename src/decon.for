@@ -1,7 +1,7 @@
       module MOD_DECON
       contains
       SUBROUTINE DECON(LSOPA,LSINT,IFLUX,JOBMAX,
-     $                 LPRIH,LPHNU,LPRIV,TEFF,NOTEMP,LBLANK)
+     $                 LPRIH,LPHNU,LPRIV,TEFF,LBLANK)
 C***********************************************************************
 C***  DECODING INPUT OPTIONS, CALLED FROM WRCONT *******************************
 C***********************************************************************

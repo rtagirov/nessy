@@ -1,6 +1,7 @@
       module MOD_PRITAU
+
       contains
-C**********  MODULNAME: PRITAU    ******* 06/08/87  20.14.53.******   135 KARTEN
+
       SUBROUTINE PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
      $                  POPNUM,N,EN,LEVEL,NCHARG,WEIGHT,ELEVEL,
      $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,

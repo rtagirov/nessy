@@ -29,49 +29,44 @@
       USE COMMON_BLOCK
       USE VARDATOM
       USE VARHMINUS
+      USE VARSTEAL
 
       IMPLICIT NONE
 
       integer, parameter:: IPDIM = 25, NBDIM=99
       
-      integer IFL, IPMAX, ITNE, IWARN
+      integer IFL, IPMAX
       integer JOBNUM
       integer K, KEYCON
-      integer LASTIND,LASTK,LBLANK,LBLAON,LEVELPL,LSINT,LSOPA
+      integer LASTIND,LASTK,LBLANK,LBLAON,LSINT,LSOPA
 
       integer MAXVAL,MINVAL
       integer N,NATOM,NBINW,NBMAX,NCON,ND
 
-      integer NF,NFCDIM,NFEDGE,NP
+      integer NF,NFCDIM,NP
       real*8 A, ABSEVT, ABSFAC, ALMAX, ALMIN
       real*8 B
       real*8 C, CARD, CRATE, DM
-      real*8 ETA, HNU
-      real*8 OPA
-      real*8 RATCO,RRATE,RSTAR
+      real*8 HNU
+      real*8 RSTAR
       real*8 SCAEVT,SCAFAC,SCAGRI
-      real*8 SIGMAKI
-      real*8 TAUTHOM,TEFF,THOMSON,TOTIN
-      real*8 TOTOUT,U,V1,V2,VDOP,VJL,VL,EN
+      real*8 TEFF,TOTIN
+      real*8 TOTOUT,U,VDOP,VJL,VL
       real*8 W
       real*8,allocatable:: DUMMY1(:)
       character*8,allocatable :: CDUMMY1(:)
       integer tdiff,tstart,tend
       integer,external :: time
 
+      integer :: iii
+
 !     CONTINUOUS RADIATION TRANSFER (MOMENT EQUATIONS) WITH GIVEN EDDI-FACTORS
 !     FORMAL SOLUTION FROM GIVEN POP NUMBERS
 
       PARAMETER (NFCDIM = 40)
  
-      COMMON // EN(NDIMP2),V1(NDIMP2),V2(NDIMP2),RATCO(NDIMP2,NDIMP2)
-     $ ,DM(NDIMP2,NDIMP2),CRATE(NDIM,NDIM),RRATE(NDIM,NDIM)
-     $ ,ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
-     $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
+      COMMON // A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
      $ ,U(NDDIM,NPDIM),VL(NPDIM),HNU(NDDIM),VJL(NPDIM,NDDIM)
-     $ ,SIGMAKI(NFDIM,NDIM)
-     $ ,ITNE(NDDIM),NFEDGE(NDIM)
-     $ ,IWARN(NDDIM),LEVELPL(NDIM)
      $ ,KONOPT(NDIM),KEYCON(NFDIM)
 
       COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
@@ -113,7 +108,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       IFL = 3; open(IFL, file = 'POPNUM', STATUS = 'OLD')
 
-      call readpop (ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
+      call readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
       close(ifl)
 
@@ -177,13 +172,11 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
          IF (LSOPA .GT. 0) THEN
 
-             CALL PRIOPA(XLAMBDA(K),K,ND,LSOPA,RADIUS,
-     $                   OPA,ETA,THOMSON,IWARN,MAINPRO,
-     $                   MAINLEV,JOBNUM,MODHEAD)
+             CALL PRIOPA(XLAMBDA(K),K,ND,LSOPA,RADIUS,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,JOBNUM,MODHEAD)
 
          ENDIF
 
-         IF (KEYCON(K).EQ.4HETLA ) GOTO 6
+         IF (KEYCON(K) .EQ. 4HETLA) GOTO 6
  
 !        now extract XJC and EDDI for the frequency K
          call extrxjc(XJCARR,XJC,EDDARR,EDDI,nd,nf,K)
@@ -194,12 +187,18 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
    6     CONTINUE
 
+         do iii = 1, ND
+
+            print*, 'como print ', k, iii, opa(iii), eddi(2, iii)
+
+         enddo
+
          WCHARM(1 : ND, K) = CALCLAMBDAS(OPA, RADIUS, EDDI, ND)
 
 C***     UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
 c***     XJC and EDDI are stored for later write to file RADIOC
 
-         call storxjc(XJCARR,XJC,EDDARR,EDDI,nd,nf,K)
+         call storxjc(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
           
 !         IF (LTE_RUN) XJC_LTE(1 : ND, K) = XJCARR(1 : ND, K)
 !
@@ -211,13 +210,20 @@ c***     XJC and EDDI are stored for later write to file RADIOC
 
       !Sanity Check ----------------------------------------------------
       IF(maxval(WCHARM) >= 1d0-1d-20) THEN
-        print '("como: WARN:max(WCHARM)=",e10.4,", RESET")',maxval(WCHARM)
-        where(WCHARM >= 1d0-1d20 ) WCHARM = 1d0-1d20
+
+         print '("como: WARN:max(WCHARM)=",e10.4,", RESET")',maxval(WCHARM)
+         where(WCHARM >= 1d0-1d20 ) WCHARM = 1d0-1d20
+
       ENDIF
+
       IF(minval(WCHARM) < 1d-35) THEN
-        print '("como: WARN:min(WCHARM)=",e10.4,", RESET")',minval(WCHARM)
-        where(WCHARM <  1d-35 ) WCHARM = 1d-35
+
+         print '("como: WARN:min(WCHARM)=",e10.4,", RESET")',minval(WCHARM)
+         where(WCHARM <  1d-35 ) WCHARM = 1d-35
+
       ENDIF
+
+      stop 'como stop'
      
 C***  ENDLOOP  ---------------------------------------------------------
  

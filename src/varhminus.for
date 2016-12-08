@@ -2,6 +2,8 @@
 
       use params_array
 
+!     variables shared between wrstart, steal, wrcont, como and etl
+
       real*8, dimension(NFDIM) :: XLAMBDA, AKEY, FWEIGHT
       
       real*8, allocatable, dimension(:) :: radius

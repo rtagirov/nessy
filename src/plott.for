@@ -1,10 +1,11 @@
       module MOD_PLOTT
+
       contains
-C**********  MODULNAME: PLOTT     ******* 27/05/87  10.03.14.******    55 KARTEN
+
       SUBROUTINE PLOTT (ND,R,T,MODHEAD,JOBNUM)
-C******************************************************************************
+
 C***  DIRECT TRANSFER OF THE TEMPERATURE STRATIFICATION T(R) VERSUS LOG(R/R*-1)
-C******************************************************************************
+
       use MOD_ISRCHFLT
       use MOD_ISRCHFLE
       use MOD_PLOTANF

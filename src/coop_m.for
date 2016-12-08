@@ -1,13 +1,16 @@
       module MOD_COOP_M
+
       integer :: NDPMIN_WARN=0 !* set to true if an NDPMIN sanity check fails
+
       contains
+
       SUBROUTINE COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $                  OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $                  N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $                  ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,
      $                  LBKG,XLBKG1,XLBKG2,NF)
       use MOD_BNUE
-!***********************************************************************
+
 !***  NON-LTE CONTINUOUS OPACITY AT GIVEN FREQUENCY POINT K (XLAM)
 !***  OPACITY AT DEPTH POINT L: OPAL
 !***  SUMMATION OVER ALL DEPTH POINTS LEADS TO THE OPACITY AT GIVEN
@@ -61,8 +64,9 @@
       
       !global in
       
-      REAL*8 ::SIGMAKI(NF,N), EINST(N,N)
-      REAL*8 ::POPNUM(ND,N)
+      REAL*8 :: SIGMAKI(NF, N), EINST(N, N)
+      REAL*8 :: POPNUM(ND, N)
+
       REAL*8,dimension(N):: WEIGHT,ELEVEL,EION,ALPHA,SEXPO
       REAL*8,dimension(ND):: T, RNE, ENTOT
       REAL*8,dimension(N,NF) ::SIGARR,WAVARR
@@ -145,7 +149,6 @@
 
       CALL RDOPAC(XLAM,LINOP,NDPMIN,XLBKG1,XLBKG2)
 
-
 !**********************************************************************
 !***  LOOP OVER ALL DEPTH POINTS
       DO L=1,ND
@@ -189,10 +192,11 @@
 !***      RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON
           
           WE=C3*RNE(L)*ENTOT(L)/T32
+
           !  EDGE-W = E_ion = \chi_ion (1/cm) -- Saha Boltzmann Equation
           ! (EDGE-W)*C1 = h*frequency/k_bolz  (K)
           ! TL = Temperature at Depth point L
-          !
+
           G=WEIGHT(I)/WEIGHT(J)*WE*EXP(C1*(EDGE-W)/TL)
           EMINDU=G*POPNUM(L,J)*SIGMA
           SUM=POPNUM(L,I)*SIGMA-EMINDU
@@ -212,7 +216,7 @@
 !***  PRECALCULATE FREE-FREE GAUNT FACTORS FOR THE DIFFERENT ION CHARGES
       DO IG = 0,6
         IF (IG.GT.0) THEN
-          CALL GAUNTFF (GIIIX(IG),IG,XLAM      ,TL)
+          CALL GAUNTFF (GIIIX(IG),IG,XLAM,TL)
         ELSE
           GIIIX(IG)=0d0
         ENDIF
@@ -254,7 +258,7 @@
          call hminusff (sighmff,xlam,TL)
          sighmff=sighmff*ak_bol*Tl
 !MH   NEW ENTRY FOR SUM
-!        SUM= SUM+RNE(L)*ENTOT(L)*POPNUM(L,I)*SIGhmff
+
          SUM= RNE(L)*ENTOT(L)*POPNUM(L,I)*SIGhmff 
 !**************************************************
           EMINDU=SUM*EXPFAC
@@ -304,7 +308,7 @@
             print *, 'coop_m: NDPMIN wrong! ', NDPMIN, T(NDPMIN)
             pause
           endif
-          !CALL RDOPAC(XLAM,L,LINOP,NDPMIN)
+
           !MH**  OUTWARD OF TEMPERATURE MINIMUM EMISSION AND ABSORPTION SET TO ZERO
           if (l .le. NDPMIN) then
             !alemis =0.
@@ -318,15 +322,7 @@
           endif
           OPAL=OPAL+alcross
           ETAL=ETAL+alemis
-! test
-!          if (xlam .le. 3200) then 
-!          opal=opal*10.
-!          etal=etal*10.
-!          endif        
-! test
 
-
-        !*************************************************************************
         ENDIF
         !***  THOMSON = RELATIVE FRACTION FROM THE TOTAL OPACITY
         THOMSON(L)=SUM/OPAL
@@ -335,5 +331,7 @@
       ENDDO
 
       RETURN
+
       END subroutine
+
       end module

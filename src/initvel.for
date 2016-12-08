@@ -1,10 +1,12 @@
       module MOD_INITVEL
+
       contains
-      SUBROUTINE INITVEL (RMAX,TEFF,GLOG,RSTAR,XMASS)
+
+      SUBROUTINE INITVEL(RMAX, TEFF, GLOG, RSTAR, XMASS)
       
-C*******************************************************************************
+
 C***  INITIALIZATION OF THE VELOCITY-FIELD PARAMETERS
-C*******************************************************************************
+
       use MOD_REGULA
       use MOD_DELTAGR
       IMPLICIT REAL*8(A-H,O-Z)

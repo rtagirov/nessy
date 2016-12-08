@@ -25,7 +25,7 @@ C***********************************************************************
 	real*8,dimension(NF),intent(in)::EXPFAC,XLAMBDA
 	real*8,dimension(NF),intent(out)::DOPA,DETA
 	real*8,dimension(N,N),intent(in)::EINST
-	real*8,dimension(N + 1),intent(in)::EN
+	real*8,dimension(N),intent(in)::EN
 	real*8,dimension(ND,NF),intent(in)::WCHARM
 	real*8,dimension(NF,N),intent(in)::SIGMAKI
 	!output: DETA, DOPA	

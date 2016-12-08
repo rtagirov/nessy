@@ -1,20 +1,18 @@
       module MOD_PRIPOP
+
       contains
-C**********  MODULNAME: PRIPOP    ******* 21/09/87  18.25.38.******    78 KARTEN
-      SUBROUTINE PRIPOP (LSPOP,WEIGHT,NCHARG,NOM,TNEW,NOTEMP,
-     $             ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
-C***********************************************************************
+
+      SUBROUTINE PRIPOP(LSPOP,WEIGHT,NCHARG,NOM,
+     $                  ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
+
 C***  OUTPUT OF RELATIVE POPULATION NUMBERS AND DEPARTURE COEFFICIENTS
 c***  CALLED BY STEAL
-C***********************************************************************
-
      
       IMPLICIT REAL*8(A-H,O-Z)
       integer,intent(in) :: JOBNUM
       DIMENSION POPNUM(ND,N),DEPART(ND,N)
-      DIMENSION RNE(ND),ITNE(ND),TNEW(ND)
+      DIMENSION RNE(ND),ITNE(ND)
       DIMENSION WEIGHT(N),NCHARG(N),NOM(N)
-      LOGICAL NOTEMP
       CHARACTER LEVEL(N)*10
       CHARACTER MODHEAD*104
       CHARACTER PRILINE*130,NUMBER*16
@@ -68,25 +66,8 @@ C***  ENDLOOP  ---------------------------------------------------------
       GOTO 4
     7 CONTINUE
      
-C***  PRINTOUT OF THE TEMPERATURE STRATIFICATION
-c      IF (.NOT. NOTEMP) THEN
-c      PRINT 10
-c   10 FORMAT (///,40X,'TEMPERATURE STRATIFICATION',/,40X,26('='),
-c     $   //,40X,'DEPTH INDEX      T (KELVIN)',/)
-c      DO 12 L=1,ND
-c      IF(((L-1)/LSPOP)*LSPOP.NE.(L-1) .AND. L.NE.ND) GOTO 12
-c      PRINT 13,L,TNEW(L)
-c   13 FORMAT (40X,I10,F15.0)
-c   12 CONTINUE
-c      ENDIF
-C***********************************************************************
-C***  MARGIT HABERREITER
-CMH   RELATIVE POPULATION NUMBERS AND DEPARTURE COEFFICIENTS WRITTEN TO FILE
-C***********************************************************************     
-!	OPEN (UNIT=1, FILE="popul.out",FORM="FORMATTED") 
-C	write (1,*) POPNUM,DEPART
-!	write (1,*) DEPART
-!	close (unit=1)      
-	RETURN
+      RETURN
+
       END subroutine
+
       end module

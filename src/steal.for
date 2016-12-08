@@ -6,7 +6,6 @@
 
 !     STATISTICAL EQUATIONS WITH APPROXIMATE LAMBDA-OPERATORS
 
-      use MOD_CHANGE
       use MOD_DATOM_M
       use MOD_DECSTE
       use MOD_LINPOP
@@ -36,6 +35,7 @@
       USE COMMON_BLOCK
       USE VARDATOM
       USE VARHMINUS
+      USE VARSTEAL
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -43,17 +43,6 @@ CMH  CHANGES BY MARGIT HABERREITER
 CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
  
-      COMMON // EN(NDIMP2),V1(NDIMP2),V2(NDIMP2)
-     $ ,V4(NDIMP2),V5(NDIMP2),ENDELTA(NDIMP2),SCOLD(NFDIM,NDDIM)
-     $ ,VOLD(NDIMP2),DB(NDIMP2,NDIMP2)
-     $ ,DM(NDIMP2,NDIMP2),CRATE(NDIM,NDIM),RRATE(NDIM,NDIM)
-     $ ,ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
-     $ ,TNEW(NDDIM),OPAC(NFDIM),SCNEW(NFDIM),DOPA(NFDIM)
-     $ ,DETA(NFDIM),ETAC(NFDIM),EXPFAC(NFDIM),SIGMAKI(NFDIM,NDIM)
-     $ ,PHI(NFLDIM),PWEIGHT(NFLDIM),DEPART(NDDIM,NDIM)
-     $ ,ITNE(NDDIM),NFEDGE(NDIM)
-     $ ,IWARN(NDDIM),LEVELPL(NDIM)
-
       parameter(IPDIM = 25, NBDIM = 99)
 
       COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), ABSEVT(IPDIM,NBDIM)
@@ -61,16 +50,14 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       COMMON /LIBLFAC/ SCAFAC(NDDIM,NFDIM),ABSFAC(NDDIM,NFDIM)
       COMMON /VELPAR/  VFINAL,VMIN,BETA,VPAR1,VPAR2,RCON,HSCALE
 
-      COMMON /COMIND/ DETAL(MAXIND), OPAL(MAXIND), DOPAL(MAXIND), SCOLIND(MAXIND)
-
-      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2
+      COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
 
       integer   NGAMR(10),NGAML(10)
       real*8    AGAMR(10),AGAML(10)
 
-      integer   XLBKG1,XLBKG2
+      integer   XLBKG1, XLBKG2
 
-      logical   LINE(MAXIND),NOTEMP,TPLOT,NODM,LBKG
+      logical   LINE(MAXIND),TPLOT,NODM,LBKG
 
       character MODHEAD*104,MODHOLD*104, CARD*80, LCARD*120
 
@@ -100,27 +87,48 @@ C***  READING THE ATOMIC DATA FROM FILE DATOM
      $               ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $               NLAST,WAVARR,SIGARR,NFDIM)
 
+      if (allocated(levelpl)) deallocate(levelpl); allocate(levelpl(N))
+      if (allocated(nfedge))  deallocate(nfedge);  allocate(nfedge(N))
+
+      if (allocated(en))      deallocate(en);      allocate(en(N + 1))
+
 C***  DECODING INPUT DATA ******************************************
-      CALL DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,
-     $     IFRRA,ITORA,IPRICC,IPRILC,LSEXPO,
+      CALL DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,IFRRA,ITORA,LSEXPO,
      $     IFLUX,IDAT,LEVELPL,N,IPLOTF,NEWWRC,
-     $     NGAMR,NGAML,AGAMR,AGAML,DELTAC,LINE,MAXIND,NOTEMP,TPLOT,
+     $     NGAMR,NGAML,AGAMR,AGAML,DELTAC,LINE,MAXIND,TPLOT,
      $     Y0,TEFFE,GRAD,ALDMDT,VINF,BET,PROLIB,LBLANK)
 
 C***  READING OF THE MODEL FILE ----------------------------------------
       IFL = 3; open(IFL, file='MODFILE', STATUS='OLD')
 
-      CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,
+      CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
      $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
       close(IFL)
 
+      if (allocated(opa))     deallocate(opa);     allocate(opa(ND))
+      if (allocated(eta))     deallocate(eta);     allocate(eta(ND))
+
+      if (allocated(thomson)) deallocate(thomson); allocate(thomson(ND))
+      if (allocated(tauthom)) deallocate(tauthom); allocate(tauthom(ND))
+      if (allocated(itne))    deallocate(itne);    allocate(itne(ND))
+      if (allocated(iwarn))   deallocate(iwarn);   allocate(iwarn(ND))
+
+      if (allocated(opac))    deallocate(opac);    allocate(opac(NF))
+      if (allocated(etac))    deallocate(etac);    allocate(etac(NF))
+      if (allocated(dopa))    deallocate(dopa);    allocate(dopa(NF))
+      if (allocated(deta))    deallocate(deta);    allocate(deta(NF))
+      if (allocated(expfac))  deallocate(expfac);  allocate(expfac(NF))
+
+      if (allocated(sigmaki)) deallocate(sigmaki); allocate(sigmaki(NF, N))
+
+      if (allocated(depart))  deallocate(depart);  allocate(depart(ND, N))
+
       IFL = 3; open(IFL, file='POPNUM', STATUS='OLD')
 
 c***  pop1 is dummy read because it will be overwritten below
-      call readpop(ifl,T,popnum,pop2,pop3,pop1,rne,n,nd,modhead,jobnum)
+      call readpop(ifl, T, popnum, pop2, pop3, pop1, rne, n, nd, modhead, jobnum)
 
       close(IFL)
 
@@ -134,18 +142,20 @@ c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dum
 c***  advance job-number counter
       JOBNUM = JOBNUM + 1
 
-      CALL change (popnum,pop1,nd*n)
+      CALL change(popnum, pop1, nd*n)
 
       CALL REBLANK (LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
-      if (lblank.lt.0) then
+
+      if (lblank .lt. 0) then
 c***     the new blanketing table needs to be written to the model file
-         IFL=3
-         open (IFL,file='MODFILE',STATUS='UNKNOWN')
-         CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                GRADI,RSTAR,VDOP,NF,
+         IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'UNKNOWN')
+
+         CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
      $                XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $                ABXYZ,NATOM,MODHEAD,JOBNUM)
-         CLOSE (ifl)
+
+         CLOSE(ifl)
+
       endif
 
       DO 1 MG=1,10
@@ -153,33 +163,21 @@ c***     the new blanketing table needs to be written to the model file
       IF (NGAML(MG).LE.JOBNUM) GAMMAL=AGAML(MG)
     1 CONTINUE
 
-C***  IN CASE OF JOBNUM=1 (STARTJOB), GAMMA'S ARE SET ZERO
-      IF (JOBNUM .LE. 1) THEN
-
-         GAMMAR = 0.0D0
-         GAMMAL = 0.0D0
-         NOTEMP = .TRUE.
-
-      ENDIF
+      GAMMAR = 0.0D0
+      GAMMAL = 0.0D0
  
-      IF (GAMMAR .EQ. 0. .AND. GAMMAL .EQ. 0. .AND. NOTEMP) THEN
+      IF (JOBNUM .LE. 1) THEN
 
 !     CALCULATION OF POPNUMBERS WITH THE USUAL (LINEAR) RATE EQUATION.
 !     THIS IS ECONOMIC AND PROVIDES THE ORIGINAL RATES FOR A POSSIBLE
 !     PRINTOUT BY SUBR. PRIRAT
       
          CALL POPZERO(T,RNE,POPNUM,DEPART,ENTOT,ITNE,N,ENLTE,
-     $                WEIGHT,NCHARG,EION,ELEVEL,EN,EINST,LEVEL,
+     $                WEIGHT,NCHARG,EION,ELEVEL,EN(1 : N),EINST,LEVEL,
      $                XLAMBDA,FWEIGHT,XJCARR,NF,XJL,IFRRA,ITORA,ALPHA,
      $                SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
-     $                LASTIND,ND,LSRAT,CRATE,RRATE,
-     $                SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
+     $                LASTIND,ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
      $                KODAT,NFIRST,NLAST,WAVARR,SIGARR)
-
-!     PROVIDING THE TEMPERATURE STRATIFICATION T(R) FOR A POSSIBLE OUTPUT BY
-!     SUBR.S PRITAU, PLOTT
-
-         TNEW(1 : ND) = T(1 : ND)
 
       ELSE
 
@@ -188,29 +186,25 @@ C***  IN CASE OF JOBNUM=1 (STARTJOB), GAMMA'S ARE SET ZERO
 !     CALCULATION OF NEW POPULATION NUMBERS, EL. DENSITY AND DEPARTURE COEFF.
 
          CALL LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART,POP1,
-     $               N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN,ENDELTA,EINST,LEVEL,
-     $               XLAMBDA,FWEIGHT(1 : NF),XJCARR,NF,XJL,WCHARM,SCOLD,
-     $               DM,DB,V1,V2,V4,V5,VOLD,GAMMAL,EPSILON,
-     $               TNEW,NOTEMP,NODM,IADR19,
-     $               DELTAC,GAMMAR,IPRICC,IPRILC,MODHEAD,JOBNUM,IFRRA,ITORA,
+     $               N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN(1 : N + 1),EINST,LEVEL,
+     $               XLAMBDA,FWEIGHT(1 : NF),XJCARR,NF,XJL,WCHARM,
+     $               EPSILON,NODM,IADR19,DELTAC,MODHEAD,JOBNUM,IFRRA,ITORA,
      $               RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
-     $               VELO,GRADI,VDOP,PHI,PWEIGHT,SCOLIND,INDNUP,INDLOW,LASTIND,
-     $               OPAC,SCNEW,DOPA,DETA,OPAL,DOPAL,DETAL,SIGMAKI,
-     $               ND,LSRAT,CRATE,RRATE,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
+     $               VELO,GRADI,VDOP,PHI,PWEIGHT,INDNUP,INDLOW,LASTIND,
+     $               OPAC,DOPA,DETA,SIGMAKI,ND,LSRAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
      $               LINE,ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
      $               NLAST,WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,JOBMAX)
 
       ENDIF
  
 C***  REDUCED CORRECTIONS, IF OPTION IS SET
-      IF (REDUCE .NE. 1.0D0 .AND. JOBNUM .GT. 1) CALL REDCOR (POPNUM,POP1,ND,N,RNE,NCHARG,REDUCE)
+      IF (REDUCE .NE. 1.0D0 .AND. JOBNUM .GT. 1) CALL REDCOR(POPNUM,POP1,ND,N,RNE,NCHARG,REDUCE)
  
-      IF (LSPOP.GT.0) CALL PRIPOP (LSPOP,WEIGHT,NCHARG,NOM,TNEW,NOTEMP,
-     $             ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
+      IF (LSPOP.GT.0) CALL PRIPOP(LSPOP,WEIGHT,NCHARG,NOM,ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
  
       IF (JOBNUM .GT. 1) CALL PRICORR(POPNUM,POP1,LEVEL,N,ND,MODHEAD,LSPOP,CORMAX,
      $                                NCHARG,RNE,JOBNUM,REDUCE,GAMMAL,GAMMAR,
-     $                                T,TNEW,NOTEMP,DELTAC,ELEMENT,NATOM,NFIRST,NLAST)
+     $                                T,DELTAC,ELEMENT,NATOM,NFIRST,NLAST)
 
       IF (LSEXPO .GT. 0.AND.JOBNUM.GT.3) CALL PRIEXPO(POPNUM,POP1,POP2,LEVEL,N,ND,MODHEAD,JOBNUM,LSEXPO)
  
@@ -241,7 +235,7 @@ C***  FIND LASTWRC = JOBNUMBER OF LAST WRCONT JOB
 	goto 8
  11   continue
 C***  UPDATING THE MODEL HISTORY
-      CALL STHIST(LCARD,GAMMAL,GAMMAR,NOTEMP,DELTAC,MODHEAD,JOBNUM,CORMAX,REDUCE,MODHOLD,time()-tstart)
+      CALL STHIST(LCARD,GAMMAL,GAMMAR,DELTAC,MODHEAD,JOBNUM,CORMAX,REDUCE,MODHOLD,time()-tstart)
       write (79,'(A120)') LCARD
       close (79)
 
@@ -267,18 +261,16 @@ C***  UPDATING THE MODEL HISTORY
             LSPOP=1
             LPRIH=1
 
-            CALL PRIPOP(LSPOP,WEIGHT,NCHARG,NOM,TNEW,NOTEMP,
-     $                  ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
+            CALL PRIPOP(LSPOP,WEIGHT,NCHARG,NOM,ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
 
             print*, 'steal: ', NF; stop
 
-            CALL PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,TNEW,
+            CALL PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
      $                  POPNUM,N,EN,LEVEL,NCHARG,WEIGHT,ELEVEL,
      $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
      $                  FWEIGHT,TAUTHOM,TAUROSS,WAVARR,SIGARR,NF)
 
-            CALL PRIH(LPRIH,ND,RADIUS,HTOT,TEFFE,
-     $                TNEW,TAUROSS,JOBNUM,MODHEAD)
+            CALL PRIH(LPRIH,ND,RADIUS,HTOT,TEFFE,T,TAUROSS,JOBNUM,MODHEAD)
             GOTO 20
             ELSE
             IF (LSEXPO .NE. 1)
@@ -366,7 +358,7 @@ C***  DIRECT TRANSFER OF POPNUMBER PLOT (IF REQUESTED)
      $      CALL PLOTPOP (LEVELPL,N,ND,LEVEL,ENTOT,POPNUM,MODHEAD,
      $          JOBNUM )
 C***  DIRECT TRANSFER OF TEMPERATURE STRATIFICATION PLOT (IF REQUESTED)
-      IF (TPLOT) CALL PLOTT (ND,RADIUS,TNEW,MODHEAD,JOBNUM)
+      IF (TPLOT) CALL PLOTT (ND,RADIUS,T,MODHEAD,JOBNUM)
  
 C***  PROGRAM STOP
    30 CONTINUE
@@ -384,5 +376,21 @@ C***  PROGRAM STOP
       stop 'error ft7'
 
       END SUBROUTINE
+
+      SUBROUTINE CHANGE(array1, array2, N)
+C***  THIS SUBROUTINE copies an array
+
+      IMPLICIT REAL*8(A - H, O - Z)
+
+      DIMENSION array1(N), array2(N)
+      DO 1 I = 1, N
+
+         array2(i) = array1(i)
+
+    1 CONTINUE
+
+      RETURN
+
+      END subroutine
 
       END MODULE

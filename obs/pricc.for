@@ -1,10 +1,9 @@
       module MOD_PRICC
       contains
-C**********  MODULNAME: PRICC     ******* 24/03/87  21.25.55.******    22 KARTEN
+
       SUBROUTINE PRICC (ND,NF,WCHARM,DELTAC,MODHEAD,JOBNUM)
 C***  PRINTOUT OF SCHARMER CONTINUUM CORES (WEIGHT FUNCTION)
 
-!      implicit real*8(a-h,o-z)
 	IMPLICIT NONE
 	CHARACTER,intent(in) :: MODHEAD*104
 	INTEGER,intent(in)   :: JOBNUM, NF, ND

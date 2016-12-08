@@ -22,7 +22,7 @@
 
       integer, intent(in) :: lastind, N
 
-      DIMENSION EINST(N, N), ELEVEL(N), EN(N + 1), WEIGHT(N)
+      DIMENSION EINST(N, N), ELEVEL(N), EN(N), WEIGHT(N)
 
       DIMENSION XLAMBDA(NF),SCNEW(NF),OPAC(NF)
       DIMENSION PHI(NFL),PWEIGHT(NFL)
@@ -111,7 +111,7 @@ C***  LASER SECURITY
 
          IF (PRINT_COND) WRITE(*, 10000), LAMBDA_ITER, L, ITNEL, IND,
      $                                    LEVEL(LOW), LEVEL(NUP),
-     $                                    UpperLevelDep, LowerLevelDep,
+     $                                    en(low), en(up),
      $                                    '<---------------- OPAL  IS NEGATIVE'
 
          CYCLE

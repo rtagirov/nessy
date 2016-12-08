@@ -23,8 +23,7 @@ C******************************************************************************
 
       implicit real*8(a-h,o-z)
 
-      DIMENSION EINST(N, N),CRATE(N, N),RRATE(N, N)
-      DIMENSION RATCO(N, N)
+      DIMENSION EINST(N, N),CRATE(N, N),RRATE(N, N), RATCO(N, N)
       DIMENSION ENLTE(N),EN(N),NCHARG(N),WEIGHT(N)
       DIMENSION EION(N),ELEVEL(N)
       DIMENSION NOM(N)
@@ -57,8 +56,6 @@ C***  LOOP FOR EACH ELEMENT  -------------------------------------------
       NDELTA = NLANA - NFIRNA
       NDELP1 = NDELTA + 1
 
-!      print*, 'nltepop: ', N, NDELP1; stop
-
 C***  ADDING RADIATIVE AND COLLISIONAL RATES INTO RATCO (=RATE COEFFICIENTS)
       DO 4 I=NFIRNA,NLANA
       ISHIFT=I-NFIRNA+1
@@ -80,19 +77,6 @@ C***  LAST COLUMN : NUMBER CONSERVATION
       do I = 1, NDELP1; RATCO(I, NDELP1) = 1.0d0; enddo
 
 C***  INVERSION OF RATE COEFFICIENT MATRIX RATCO
-
-!      do fi = nfirna, nlana
-
-!         do si = nfirna, nlana
-
-!            write(*, '(A,3(2x,i4),3(2x,e15.7))'), 'ratco: ', NA, fi, si, ratco(fi, si),
-!     $                                             crate(fi, si), rrate(fi, si)
-
-!         enddo
-
-!      enddo
-
-!      write(*, *) 'nltepop flag!!!'
 
       CALL INV(NDELP1, RATCO(1 : ndelp1, 1 : ndelp1))
 	

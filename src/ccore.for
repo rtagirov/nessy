@@ -1,42 +1,26 @@
       module MOD_CCORE
+
       contains
-C**********  MODULNAME: CCORE     ******* 06/08/87  20.27.56.******    87 KARTEN
-      SUBROUTINE CCORE(WCHARM,NF,DELTAC,IPRICC,MODHEAD,JOBNUM,
+
+      SUBROUTINE CCORE(NF,DELTAC,MODHEAD,JOBNUM,
      $                 SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
      $                 OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $                 N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
      $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,NFDIM)
-C*******************************************************************************
-C***  DETERMINE THE FREQUENCY WEIGHTS WCHARM REPRESENTING THE APPROXIMATE
-C***  LAMBDA-OPERATORS AT EACH CONTINUUM FREQUENCY POINT
-C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
-C***  INITIALISED/CHANGED: WCHARM, SCOLD
-C***	14.03.2006: removed calculation of WCHARM (micha)
-C*******************************************************************************
-!--- HMINUS --------
-!1	 STEAL			     128, 217
-!2     | LINPOP 			     212
-!:	 : :					:
-!3     | | CCORE 		      	93
-!5     | | | | PHOTOCS_M 	     186
-!7     | | | | | | intpl 	      28
-!5     | | | | GAUNTFF 		     218
-!5     | | | | hminusff            253
-!5     | | | | LINSCA 		     281
-!5     | | | | RDOPAC 		     308
-!4     | | | PRICC 		     127
-      use MOD_COOP_M
-      use MOD_PRICC
-	implicit NONE
-	! GLOBAL Variables intent(out)
-	integer,intent(in) :: JOBNUM
-      integer :: NFDIM, N
-	integer :: NOM(N),  IPRICC
-	integer :: ND, NF	! Number of depth- & frequency-points
-	
-	integer :: XLBKG1,XLBKG2
 
-	real*8,dimension(ND,NF):: WCHARM!the Lambda Operator
+C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
+
+      use MOD_COOP_M
+      implicit none
+
+      ! GLOBAL Variables intent(out)
+      integer,intent(in) :: JOBNUM
+      integer :: NFDIM, N
+      integer :: NOM(N)
+      integer :: ND, NF	! Number of depth- & frequency-points
+	
+      integer :: XLBKG1, XLBKG2
+
 	! gobal variables, intent(inout)  (inout because of subprocedures)
 	real*8,dimension(ND) :: OPA,ETA,THOMSON
 	real*8,dimension(ND) :: RADIUS  ! = [1+delta, ... ,1] given in relative solar units
@@ -88,10 +72,8 @@ C***  LASER SECURITY - if medium acts as a laser reset it
 	  ENDDO
       ENDDO
       
-C***  ENDLOOP  *********************************************************
-      IF (IPRICC .EQ. 1)  ! IPRICC == "PRINT CCORE" in Cards
-     $	CALL PRICC (ND,NF,WCHARM,DELTAC,MODHEAD,JOBNUM)
-	
       RETURN
+
       END subroutine
+
       end module

@@ -84,6 +84,7 @@ chemeq.for \
 params_array.for \
 constants.for \
 varhminus.for \
+varsteal.for \
 utils.for\
 ambipolar.for\
 formats.for\
@@ -118,8 +119,6 @@ bnue.for\
 calch.for\
 lodiag.for\
 ccore.for\
-change.for\
-cmfset.for\
 cofreq.for\
 colli.for\
 coma.for\
@@ -190,7 +189,6 @@ pref_syn.for\
 preline.for\
 prepr_f.for\
 pribla.for\
-pricc.for\
 pricolr.for\
 pricomp.for\
 pricorr.for\

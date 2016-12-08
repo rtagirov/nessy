@@ -1,17 +1,17 @@
-!**********  MODULNAME: COOPFRQ   ******* 22/09/87  16.33.15.******    87 KARTEN
       module MOD_COOPFRQ
+
       contains
-!***********************************************************************
+
 !***  NON-LTE CONTINUOUS OPACITY AT CURRENT DEPTH FOR ALL FREQUENCIES
 !***  NOTE: ONLY TRUE OPACITY, WITHOUT THOMSON SCATTERING TERM.
-!***********************************************************************
+
       SUBROUTINE COOPFRQ (NF,OPAC,ETAC,XLAMBDA,EXPFAC,SIGMAKI,N,NCHARG,
      $                   WEIGHT,ELEVEL,EION,NFEDGE,EN,NOM,RSTAR,ENTOTL,
      $                   RNEL,TL)
       use MOD_GAUNTFF
       implicit real*8(a-h,o-z)
 
-      DIMENSION NCHARG(N),WEIGHT(N),ELEVEL(N),EION(N),NFEDGE(N),EN(N + 1)
+      DIMENSION NCHARG(N),WEIGHT(N),ELEVEL(N),EION(N),NFEDGE(N),EN(N)
       DIMENSION NOM(N)
       DIMENSION OPAC(NF),ETAC(NF),XLAMBDA(NF),EXPFAC(NF)
       DIMENSION SIGMAKI(NF,N)
