@@ -1,9 +1,10 @@
       module MOD_PRIDAT
+
       contains
+
       SUBROUTINE PRIDAT(N,LEVEL,NCHARG, WEIGHT,ELEVEL,EION,EINST,
      $                  KODAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $                  NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
-C***  MAXATOM
 C*******************************************************************************
 C***  PRINTOUT OF THE ATOMIC DATA DECODED *************************************
 C***  ADDITIONAL PRINTOUT OF RELATIVE ABUNDANCES (READ FROM INPUT CARDS)
@@ -12,7 +13,7 @@ C*******************************************************************************
       use MOD_OMEG
       IMPLICIT REAL*8(A-H,O-Z)
       integer,intent(in) :: NATOM
-      DIMENSION NCHARG (N), WEIGHT(N),ELEVEL(N)
+      DIMENSION NCHARG(N), WEIGHT(N),ELEVEL(N)
 	real*4 wei
       DIMENSION EION(N)
       DIMENSION EINST(N,N)
@@ -41,8 +42,8 @@ C***  CALCULATION OF THE MEAN ATOMIC WEIGHT "ATMEAN"
 
       IND=0
       PRINT 9
-    9 FORMAT(1H1,//,20X,'A T O M I C   D A T A   U S E D :',
-     $  /,20X,33('='))
+!    9 FORMAT(1H1,//,20X,'A T O M I C   D A T A   U S E D :',/,20X,33('='))
+    9 FORMAT(/,20X,'A T O M I C   D A T A   U S E D :',/,20X,33('='))
      
 C***  ELEMENTS ---------------------------------------------------------
       DO 29 NA=1,NATOM
@@ -105,7 +106,7 @@ C***  LANG P.204
          ENE=1.
          CALL OMEG (N,TL,NCHARG,ELEVEL,EINST, OMEGA, I, J,
      $              EION,COCO,KEYCOL,WEIGHT,ALTESUM,NATOM,NOM,KODAT)
-C***  MAXATOM
+
          UPSI(IT) = OMEGA/8.63D-6*WEIGHT(I)*SQRT(TL)
       ENDDO
 c      IF (KEYCOL(I,J).EQ.'    ' .OR. KEYCOL(I,J).EQ.'NONE' .OR.

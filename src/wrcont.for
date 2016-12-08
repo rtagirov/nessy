@@ -48,27 +48,16 @@ C***  MODIFY SUBROUTINES  "DATOM", "DECSTAR"
 C***  INSERT CORRESPONDING ATOMIC DATA INTO SUBR. "COLLI", "PHOTOCS"
       IMPLICIT REAL*8(A - H, O - Z)
  
-      real*8, ALLOCATABLE :: DUMMY2(:,:)
+      real*8, ALLOCATABLE :: DUMMY2(:, :)
 
 C***  CHANGES BY MARGIT HABERREITER, 20 MAY, 2002
 C***  LEVLOW NEEDS TO BE DEFINED, AS IT IS USED AS A KEYWORD TO SELECT THE 
 C***  ELEMENT AND LEVEL TO READ THE CONTINUUM OPACITIES FROM AN INPUT TABLE
-CMH   DIMENSION WAVARR(NDIM,97),SIGARR(NDIM,97),WLTH(NDIM,97)
 CMH   LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 !     THIS PROGRAM IS TO SOLVE THE CONTINUOUS RADIATION TRANSFER
 !     WITH GIVEN POPULATION NUMBERS
-
-!      COMMON // RADIUS(NDDIM),ENTOT(NDDIM),T(NDDIM)
-!     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
-!     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
-!     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
-!     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-!     $ ,ENLTE(NDIM)
-!     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-!     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
-!     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
 
         COMMON // ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
      $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
@@ -126,11 +115,13 @@ C***  READING OF THE MODEL FILE ----------------------------------------
       open(IFL, file = 'MODFILE', STATUS = 'OLD')
 
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $             ABXYZ,NATOM,MODHEAD,JOBNUM,
-     $             NDDIM,NPDIM,NFDIM,LBLANK)
+     $             GRADI,RSTAR,VDOP,NF,
+     $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
+     $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
       close(IFL)
+
+      if (allocated(dummy2)) deallocate(dummy2); allocate(dummy2(NF, N))
 
       IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
 
@@ -168,7 +159,8 @@ c***     the new blanketing table needs to be written to the model file
          IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'UNKNOWN')
 
          CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $                GRADI,RSTAR,VDOP,NF,
+     $                XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $                ABXYZ,NATOM,MODHEAD,JOBNUM) 
 
          CLOSE(ifl)
@@ -222,15 +214,11 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
      $              A, B, C, W, BX, WX, XJC, RADIUS, P, BCORE, DBDR,
      $              OPA, ETA, THOMSON, EDDI, ND, NP)
 
-!        do l = 1, ND; print*, 'wrcont check:', k, l, xjc(l); enddo
-
         !***  INTEGRATION OF THE TOTAL INCIDENT AND EMERGENT FLUX
         TOTIN=TOTIN+FLUXIN*FWEIGHT(K)
         TOTOUT=TOTOUT+EMFLUX(K)*FWEIGHT(K)
 
         CALL CALCH(ND,NP,NPDIM,OPA,Z,P,U,VL,VJL,RADIUS,HNU,FLUXIN,EMFLUX(K))
-
-!        print*, 'fweight check', k, fweight(k)
 
         XTOT(1 : ND) = XTOT(1 : ND) + XJC(1 : ND) * FWEIGHT(K)
 
@@ -262,16 +250,12 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
         endif
 
-!        if (any(isnan(etot))) stop 'nan 2'
-
         GTOT(1 : ND) = GTOT(1 : ND) + OPA(1 : ND) * HNU(1 : ND) * FWEIGHT(K)
 
         HTOT(1 : ND) = HTOT(1 : ND) + HNU(1 : ND) * FWEIGHT(K)
 
 !       XJC and EDDI are stored for later write to file RADIOC
         call storxjc(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
-
-!        do l = 1, ND; print*, 'wrcont check:', l, k, xjcarr(l, k); enddo
 
 !       PRINTOUT OF FREQUENCY DEPENDEND VARIABLES
         IF (LPRIV.GT.0.AND.(K.LT.68 .OR. K.EQ.111)) CALL PRIV(K,XLAMBDA(K),LPRIV,ND,NP,RADIUS,Z,VJL,RSTAR)
@@ -282,10 +266,6 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
         LASTK = K
 
       ENDDO FRQS
-
-      stop 'stop after frqs cycle'
-
-!      do i = 1, ND; print*, 'check etot wrcont: ', i, ETOT(i); enddo; stop
 
       print*, 'maxmin of dEDDI(1, :) = ', 
      & maxval(abs(EDDI(1, 1 : ND) / EDDI_OLD(1, :))),
@@ -326,14 +306,12 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
 !=============================================================================================================================
 
-      call AMBIPOLAR(ND,N,T,ENTOT,RNE,LEVEL,RADIUS,POPNUM, RSTAR,timer)
+      call AMBIPOLAR(ND, N, T, ENTOT, RNE, LEVEL, RADIUS, POPNUM, RSTAR, timer)
 
 !     store the new continuum radiation field
       IF (LASTK.EQ.NF) ETOT(1:ND)=ETOT(1:ND)/XTOT(1:ND)
 
       call writradc(xjcarr,xjc,eddarr,eddi,emflux,totin,totout,HTOT,GTOT,XTOT,ETOT,wcharm,nd,nf,MODHEAD,JOBNUM)
-
-      stop
 
 !     if a new LB table is read then store a new model file
       if (lblank.lt.0) then
@@ -343,8 +321,9 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
          open(IFL, file = 'MODFILE', STATUS='UNKNOWN')
 
          CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $             ABXYZ,NATOM,MODHEAD,JOBNUM)
+     $                GRADI,RSTAR,VDOP,NF,
+     $                XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
+     $                ABXYZ,NATOM,MODHEAD,JOBNUM)
 
          close(ifl)
 

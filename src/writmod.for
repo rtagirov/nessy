@@ -27,25 +27,24 @@
       write(ifl, '(A7)')   cname
       write(ifl, '(A104)') MODHEAD 
 
-      CALL WRITMSI1(IFL,JOBNUM,       'JOBNUM', -1,IERR)
-      CALL WRITMS1 (IFL,TEFF,         'TEFF',   -1,IERR)
-      CALL WRITMS1 (IFL,RSTAR,        'RSTAR',  -1,IERR)
-      CALL WRITMSI1(IFL,N,            'N',      -1,IERR)
-      CALL WRITMS  (IFL,ABXYZ,  NATOM,'ABXYZ',  -1,IERR)
-      CALL WRITMSI1(IFL,ND,           'ND',     -1,IERR)
-      CALL WRITMS  (IFL,RADIUS, ND,   'R',      -1,IERR)
-      CALL WRITMS  (IFL,ENTOT,  ND,   'ENTOT',  -1,IERR)
-      CALL WRITMS  (IFL,VELO,   ND,   'VELO',   -1,IERR)
-      CALL WRITMS  (IFL,GRADI,  ND,   'GRADI',  -1,IERR)
-      CALL WRITMS1 (IFL,VDOP,         'VDOP',   -1,IERR)
-      CALL WRITMSI1(IFL,NF,           'NF',     -1,IERR)
-      CALL WRITMS  (IFL,XLAMBDA,NF,   'XLAMBDA',-1,IERR)
-      CALL WRITMS  (IFL,FWEIGHT,NF,   'FWEIGHT',-1,IERR)
-      CALL WRITMS  (IFL,AKEY,   NF,   'KEY',    -1,IERR)
-
-      CALL WRITMSI1(IFL,NP,       'NP', -1,IERR)
-      CALL WRITMS  (IFL,P, NP,    'P',  -1,IERR)
-      CALL WRITMS  (IFL,Z, ND*NP, 'Z',  -1,IERR)
+      CALL WRITMSI1(IFL, JOBNUM,         'JOBNUM',  -1, IERR)
+      CALL WRITMS1 (IFL, TEFF,           'TEFF',    -1, IERR)
+      CALL WRITMS1 (IFL, RSTAR,          'RSTAR',   -1, IERR)
+      CALL WRITMSI1(IFL, N,              'N',       -1, IERR)
+      CALL WRITMS  (IFL, ABXYZ,   NATOM, 'ABXYZ',   -1, IERR)
+      CALL WRITMSI1(IFL, ND,             'ND',      -1, IERR)
+      CALL WRITMS  (IFL, RADIUS,  ND,    'R',       -1, IERR)
+      CALL WRITMS  (IFL, ENTOT,   ND,    'ENTOT',   -1, IERR)
+      CALL WRITMS  (IFL, VELO,    ND,    'VELO',    -1, IERR)
+      CALL WRITMS  (IFL, GRADI,   ND,    'GRADI',   -1, IERR)
+      CALL WRITMS1 (IFL, VDOP,           'VDOP',    -1, IERR)
+      CALL WRITMSI1(IFL, NF,             'NF',      -1, IERR)
+      CALL WRITMS  (IFL, XLAMBDA, NF,    'XLAMBDA', -1, IERR)
+      CALL WRITMS  (IFL, FWEIGHT, NF,    'FWEIGHT', -1, IERR)
+      CALL WRITMS  (IFL, AKEY,    NF,    'KEY',     -1, IERR)
+      CALL WRITMSI1(IFL, NP,             'NP',      -1, IERR)
+      CALL WRITMS  (IFL, P,       NP,    'P',       -1, IERR)
+      CALL WRITMS  (IFL, Z,       ND*NP, 'Z',       -1, IERR)
  
 C***  LINE BLANKETING TABLE 
       IF (LBLAON.GE.1) THEN

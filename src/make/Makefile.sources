@@ -56,7 +56,6 @@ FIOSS_SRCS= \
 	pridat.for\
 	pripop.for\
 	pripro.for\
-	rdcsarr.for\
 	readmod.for\
 	readms.for\
 	readmsi.for\
@@ -73,7 +72,6 @@ FIOSS_SRCS= \
         hyd_ion_step.for\
         comblock.for\
         fileoper.for\
-        fioss_aux.for\
         vardatom.for\
 	fioss8.for
 
@@ -135,10 +133,7 @@ cstabread.for\
 cubic.for\
 cwgauss9.for\
 datom_m.for\
-dbclose.for\
-dbload.for\
-dbopen.for\
-dbsave.for\
+broyden.for\
 dcoop.for\
 decetl.for\
 decf_syn.for\
@@ -174,7 +169,6 @@ isrchfle.for\
 isrchflt.for\
 jstart.for\
 linpop.for\
-auxlinpop.for\
 linsca.for\
 lpplot.for\
 ltepop.for\
@@ -183,7 +177,6 @@ nltepop.for\
 odeint.for\
 omeg.for\
 opaross_m.for\
-pgrid.for\
 phnu.for\
 photocs_m.for\
 plottab.for\
@@ -219,7 +212,6 @@ prirat.for\
 pritau.for\
 priv.for\
 radnet.for\
-rdcsarr.for\
 readmod.for\
 readms.for\
 readmsc.for\
@@ -228,7 +220,6 @@ readpop.for\
 readrad.for\
 reblank.for\
 redcor.for\
-rgridm.for\
 rkck.for\
 rkqs.for\
 sdot.for\

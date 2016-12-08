@@ -7,8 +7,6 @@
      $                   INDNUP,INDLOW,LASTIND,NATOM,
      $                   ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $                   NLAST,WAVARR,SIGARR, NFDIM)
-C2     DATOM_M
-C3     | RDCSARR
 
 C***  Changes by Margit Haberreiter, May 20, 2002
 C*** CALLED BY COMO, ETL, STEAL, WRCONT, WRSTART, FIOSS8
@@ -58,12 +56,10 @@ C***                         NICKEL    (Ni)           28
 C**********************************************************
 C***                         COPPER    (CU)           29
 C***                         ZINK      (ZN)           30
-C**********************************************************
+C*********************************************************************************
 C*** changed by Margit Haberreiter, May 2002
-!    changed by Rinat Tagirov, November 2016
-!    Getting rid of NDIM, MAXATOM and MAXIND
-C*******************************************************************************
-      use MOD_RDCSARR
+!    changed by Rinat Tagirov, November 2016 (got rid of NDIM, MAXATOM and MAXIND)
+C*********************************************************************************
       use MOD_ERROR
 
       use file_operations
@@ -111,22 +107,6 @@ C*******************************************************************************
       CHARACTER*10 LEVUP, LEVLOW, LINECA, lread
       CHARACTER*4  CEY
       CHARACTER*3  KRUDI
-
-      !dimensions
-!      DIMENSION NCHARG(NDIM), WEIGHT(NDIM), ELEVEL(NDIM)
-!      DIMENSION EION(NDIM),MAINQN(NDIM),EINST(NDIM,NDIM)
-
-!      DIMENSION ALPHA(NDIM),SEXPO(NDIM),AGAUNT(NDIM)
-!      DIMENSION NOM(NDIM)
-!      DIMENSION COCO(NDIM,NDIM,4)
-!      DIMENSION ALTESUM(4,NDIM)
-!      DIMENSION KODAT(MAXATOM),ATMASS(MAXATOM),STAGE(MAXATOM)
-!      DIMENSION NFIRST(MAXATOM),NLAST(MAXATOM)
-!      DIMENSION INDNUP(MAXIND),INDLOW(MAXIND)
-!      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
-!      DIMENSION LEVEL(NDIM)
-!      DIMENSION SYMBOL(MAXATOM), ELEMENT(MAXATOM)
-!      DIMENSION KEYCOL(NDIM, NDIM)
 
       CHARACTER*(*),parameter ::
      $FORMAT_LEVEL='(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)',
@@ -234,6 +214,8 @@ C*******************************************************************************
 
       sexpo(:) =   0.0D0
       weight(:) =  0.0D0
+
+      agaunt(:) = '        '
 
       !--------------------- Initialisation Rinat Tagirov ----------------
 
@@ -373,22 +355,12 @@ CMH  MODEL ATOM OF "NICKEL" DECODED
       GOTO 1
      
 C***  LEVELS -----------------------------------------------------------
-   10 N=N+1
-!      if (n.gt.ndim) then
-!         print *,N,NDIM
-!         pause' N gt ndim'
-!         stop
-!         endif
+   10 N = N + 1
       IF (LEVSEQ.NE.0) THEN
           print *, 'DATOM: LEVEL CARD OUT OF SEQUENCE'
           STOP 'ERROR'
           ENDIF
-!      IF(N.GT.NDIM) THEN
-!          print *, 'DATOM : DIMENSION OVERFLOW'
-!          STOP 'ERROR'
-!          ENDIF
       IF (NATOM .NE. 0) NOM(N)=NATOM
-c      DECODE(80,11,KARTE)   LEVEL(N),NCHARG(N),NW,ELEVEL(N),E,MAINQN(N)
 
       nchg = 0
       nw= 0
@@ -400,19 +372,12 @@ c      DECODE(80,11,KARTE)   LEVEL(N),NCHARG(N),NW,ELEVEL(N),E,MAINQN(N)
       NCHARG(N)=nchg
       ELEVEL(N)=elev
       MAINQN(N)=mqn
-CMH   IF HMINUS READ THEN SET IELHM = 1
-c     PRINT *,'DATOM_M: SET IELHM =1 '
-C     IF (LREAD .EQ. 'H MINUS..1') THEN 
-C       IELHM=1.
-C     PRINT *, 'DATOM_M ',IELHM
-C     PAUSE
-C     ENDIF
       WEIGHT(N)=FLOAT(NW)
       IF (ELEVEL(N).EQ..0 .AND. MAINQN(N).LE.1) EION(N)=E
-C      PRINT *,'1. DATOM_M: ',EION(N)!, 1.8/EION(N)
+
       IF (ELEVEL(N).NE..0 .AND. MAINQN(N).LE.1 .AND. (E.NE.0.))
      $   EION(N)=E-ELEVEL(N) 
-CMHpr      PRINT *,'2. DATOM_M: ',E,EION(N)!, 1.8/EION(N)
+
       GOTO 1
      
 C***  LINE TRANSITIONS  ------------------------------------------------
@@ -647,11 +612,6 @@ C***  GENERATE VECTORS INDNUP, INDLOW: LEVEL INCICES OF THE LINES
       INDLOW(IND)=LOW
    95 CONTINUE
       LASTIND=IND
-C***  ERROR STOP
-!      IF (LASTIND .GT. MAXIND) THEN
-!         print *, 'LASTIND .GT. MAXIND'
-!      STOP 'ERROR'
-!      ENDIF
      
 C***  ASSIGNMENT OF IONIZATION ENERGIES (INPUT VALUES OF GROUND STATE)
 C***  TO ALL LEVELS OF THE CORRESPONDING ELEMENT
@@ -679,28 +639,81 @@ C***  IF AGAUNT(LOW) EQ 'TABLE' READ CROSS SECTION FROM TABLE
 
          IF (AGAUNT(J) .EQ. 'TABLE') THEN
 
-          ! read in WAVARR and SIGARR from the File LEVEL(J)
              call RDCSARR(LEVEL,J,WAVARR,SIGARR,levnum,NFDIM)
 
         ENDIF
 
       ENDDO
-C********************************************************************
-
-c      do i = 1, ndim
-
-c         print*, 'LEVELS CHECK', i, LEVEL(i)
-
-c      enddo
-
-c      do i = 1, NATOM
-
-c         print*, 'ELEMENTS CHECK', i, KODAT(i), SYMBOL(i), ELEMENT(i)
-
-c      enddo
-
-c      STOP
 
       RETURN
+
       END subroutine
+
+      SUBROUTINE RDCSARR(LEVEL, J, WAVARR, SIGARR, N, NFDIM)
+
+      IMPLICIT REAL*8(A - H, O - Z)
+
+      DIMENSION WAVARR(N, NFDIM), SIGARR(N, NFDIM)
+
+CMH   READS WAVENUMBER AND CROSS SECTIONS FOR EACH EXPLICIT LEVEL INTO AN ARRAY
+CMH   N :     NUMBER OF LEVELS
+CMH   NFDIM:  MAX NUMBER OF FREQUENCIES
+CMH   WAVARR: WAVENUMBERS FOR EACH LEVEL
+CMH   SIGARR: CROSS SECTIONS FOR EACH LEVEL
+
+      integer, intent(in) :: J, N, NFDIM
+      CHARACTER*10, intent(in) :: LEVEL(N)
+
+      real*8, intent(out) :: WAVARR, SIGARR
+
+      INTEGER IOSTATUS
+      CHARACTER*10, FILENAME
+      real*8 WLTH, SIGMA
+
+      k = 1
+
+      SIGARR(J, :) = 0.
+      WAVARR(J, :) = 0.
+
+      FILENAME = LEVEL(J)
+
+      open(unit = 1, file=FILENAME, STATUS='OLD', IOSTAT=IOSTATUS, err=888, action='read')
+
+      do while (IOSTATUS .eq. 0)
+
+         read(unit = 1, fmt=*, IOSTAT=IOSTATUS), WLTH, SIGMA
+
+         if (wlth .eq. 0.0) then
+
+             print *,'RDCSARR: PROBLEM CROSS SECTION INPUT!'
+
+             stop
+
+         endif
+
+         wavarr(J, K) = 1.0D8 / wlth
+         sigarr(J, K) = sigma
+
+         k = k + 1
+
+      enddo
+
+888   continue
+
+      if (k .eq. 1) then
+
+        print *,'RDCSARR: PROBLEM with ',FILENAME
+
+        stop
+
+      endif
+
+      close(unit = 1)
+
+    1 continue
+
+      return
+
+      END subroutine
+
       end module

@@ -137,7 +137,6 @@
       use UTILS, only: cp
       use MOD_HMINUS
       use PARAMS_ARRAY
-
       USE COMMON_BLOCK
       USE FILE_OPERATIONS
 

@@ -43,16 +43,6 @@ CMH  CHANGES BY MARGIT HABERREITER
 CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
  
-!      COMMON // RADIUS(NDDIM),ENTOT(NDDIM),T(NDDIM)
-!     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
-!     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
-!     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
-!     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-!     $ ,ENLTE(NDIM)
-!     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-!     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
-!     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
-!*****************************************************************************************
       COMMON // EN(NDIMP2),V1(NDIMP2),V2(NDIMP2)
      $ ,V4(NDIMP2),V5(NDIMP2),ENDELTA(NDIMP2),SCOLD(NFDIM,NDDIM)
      $ ,VOLD(NDIMP2),DB(NDIMP2,NDIMP2)
@@ -113,7 +103,7 @@ C***  READING THE ATOMIC DATA FROM FILE DATOM
 C***  DECODING INPUT DATA ******************************************
       CALL DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,
      $     IFRRA,ITORA,IPRICC,IPRILC,LSEXPO,
-     $     IFLUX,IDAT,LEVELPL,NDIM,IPLOTF,NEWWRC,
+     $     IFLUX,IDAT,LEVELPL,N,IPLOTF,NEWWRC,
      $     NGAMR,NGAML,AGAMR,AGAML,DELTAC,LINE,MAXIND,NOTEMP,TPLOT,
      $     Y0,TEFFE,GRAD,ALDMDT,VINF,BET,PROLIB,LBLANK)
 
@@ -121,9 +111,9 @@ C***  READING OF THE MODEL FILE ----------------------------------------
       IFL = 3; open(IFL, file='MODFILE', STATUS='OLD')
 
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $             ABXYZ,NATOM,MODHEAD,JOBNUM,
-     $             NDDIM,NPDIM,NFDIM,LBLANK)
+     $             GRADI,RSTAR,VDOP,NF,
+     $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
+     $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
       close(IFL)
 
@@ -152,7 +142,8 @@ c***     the new blanketing table needs to be written to the model file
          IFL=3
          open (IFL,file='MODFILE',STATUS='UNKNOWN')
          CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $                GRADI,RSTAR,VDOP,NF,
+     $                XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $                ABXYZ,NATOM,MODHEAD,JOBNUM)
          CLOSE (ifl)
       endif
@@ -233,7 +224,8 @@ c***  if a new LB table is read then store a new model file
       IFL=3
       open (IFL,file='MODFILE',STATUS='UNKNOWN')
       CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $             GRADI,RSTAR,VDOP,NF,
+     $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM)
       CLOSE (ifl)
       endif

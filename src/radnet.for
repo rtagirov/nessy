@@ -210,7 +210,7 @@
 
                SIGMA = SIGMAKI(K, LOW)
 
-               write(*, '(A,2x,2(i4,2x),2(e15.7,2x))'), 'radnet check:', k, low, xjc(k), sigmaki(k, low)
+!               write(*, '(A,2x,2(i4,2x),2(e15.7,2x))'), 'radnet check:', k, low, xjc(k), sigmaki(k, low)
 
             !***  CALCULATE BOUND-FREE SOURCE FUNCTION FOR TRANSITION LOW-UP ONLY
                EXFAC = EXP(-C1 * WAVENUM / TL)
@@ -239,8 +239,6 @@
      $                                                   (1.0D0 - EXFAC) + XJCK_LTE * EXFAC)
 
           ENDDO L2
-
-          stop
 
 !         FINISHING THE CALCULATION OF THE NET RADIATIVE BRACKET
           RRATE(LOW, NUP) = 0.0D0

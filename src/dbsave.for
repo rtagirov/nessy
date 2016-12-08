@@ -2,27 +2,6 @@
 
       CONTAINS
 
-      SUBROUTINE DBSAVE(A1, L, NDIM)
-!     SAVE ARRAY IN A1 FORT.19
 
-      USE MOD_ERROR
-      USE MOD_FORMATS
-
-      IMPLICIT REAL*8(A - H, O - Z)
-
-      DIMENSION A1(NDIM, NDIM)
-
-      CHARACTER NAME*8
-
-      WRITE(NAME, FMT_KEY) 'BROY', L
-
-      WRITE(18, '(A8)') name
-      WRITE(18, *)      A1
-
-      IF (ANY(ISNAN(A1))) CALL ERROR('DBSAVE: NaNs ENCOUNTERED IN BROYDEN')
-
-      RETURN
-
-      END SUBROUTINE
 
       END MODULE

@@ -1,7 +1,8 @@
       module MOD_SEQUIN
+
       contains
-C**********  MODULNAME: SEQUIN    ******* 24/03/87  22.08.25.******    70 KARTEN
-      SUBROUTINE SEQUIN (NDIM,N,X,K,XNEW)
+
+      SUBROUTINE SEQUIN(NDIM, N, X, K, XNEW)
 C***  X(K) MUST BE A STRICKTLY MONOTONIC SEQUENCE
 C***   THIS SUBROUTINE INSERTS THE POINT XNEW AT SUITABLE POSITION K
 C***  NO INSERTION IN CASE OF EXACT COINCIDENCE (K:= NEGATIVE INDEX )
@@ -44,7 +45,7 @@ C***  CASES OF EXACT COINCIDENCE
       IF (XNEW.LT.H) X(NH)=XNEW
       RETURN
      
-      ENTRY SEQUINE  (NDIM,N,X,K,XNEW)
+      ENTRY SEQUINE(NDIM, N, X, K, XNEW)
 C***  ENTRY POINT IF THE INSERTION INDEX K IS GIVEN *********************
       IF (K.EQ.N+1) GOTO 8
       ! CALL ASSERT(K .gt. 0 .and. K .le. N,'ENTRY SEQUINE: WRONG INDEX GIVEN')
@@ -64,7 +65,7 @@ C***  INSERTION OF XNEW AT INDEX NB
       I=N+K-J
     5 X(I+1)=X(I)
     8 X(K)=XNEW
-      N=N+1
+      N = N + 1
       RETURN
      
 C***  XNEW LIES OUTSIDE X(1) ... X(N)
@@ -78,6 +79,9 @@ C***  XNEW LIES OUTSIDE X(1) ... X(N)
     6 N=N+1
       K=N
       X(N)=XNEW
+
       RETURN
+
       END subroutine
+
       end module

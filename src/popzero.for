@@ -37,7 +37,7 @@
       use MOD_LTEPOP
       use MOD_PRIRAT
       use ABUNDANCES
-      use MOD_RGRIDM
+!      use MOD_RGRIDM
 
       USE COMMON_BLOCK
 

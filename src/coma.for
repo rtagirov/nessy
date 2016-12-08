@@ -165,14 +165,12 @@ C***  LOOP OVER ALL CONT. FRQUENCIES  ----------------------------------
 
          ENDIF
 
-         write(*, '(A,2x,2(i4,2x),4(e15.7,2x))'), 'coma xjc check:',
-     $        k, l, xjc(k, l), wcharm(l, k), scnew(k), scold(l, k)
+!         write(*, '(A,2x,2(i4,2x),4(e15.7,2x))'), 'coma xjc check:',
+!     $        k, l, xjc(k, l), wcharm(l, k), scnew(k), scold(l, k)
 
          XJCAPP(K) = XJC(L, K) + WCHARM(L, K) * (SCNEW(K) - SCOLD(K, L))
 
       ENDDO
-
-      stop
 
 C***  ENDLOOP  ---------------------------------------------------------
 
@@ -258,8 +256,6 @@ CMH - new: needed to calculate new collision cross sections for Hminus
 
 !     CALCULATE LINE RADIATION FIELD WITH APPROXIMATE LAMBDA OPERATOR TERMS
 
-!      print*, 'before setxjl:', en(2), en(3)
-
       CALL SETXJL(LASTIND, INDLOW, INDNUP, SLNEW(1 : LASTIND),
      $            SLOLD(1 : LASTIND), OPAL, XJLAPP(1 : LASTIND),
      $            NF, XLAMBDA, SCNEW, OPAC,
@@ -268,11 +264,7 @@ CMH - new: needed to calculate new collision cross sections for Hminus
      $            LOE(1 : LASTIND), AccFact(1 : LASTIND),
      $            NODM, LEVEL, NFIRST, NLAST, NATOM, ENLTE, ITNEL)
 
-!      print*, 'after setxjl:', en(2), en(3); stop
-
 !     RADIATIVE RATES ARE CALCULATED WITH THE MODIFIED RADIATION FIELD
-
-      do i = 1, n + 1; print*, 'coma en check:', i, en(i); enddo
 
       CALL RADNET(N, ENLTE, TL, WEIGHT, NCHARG ,EION, ELEVEL, EINST,
      $            SLNEW(1 : LASTIND), EN, NOM, RRATE, XLAMBDA, FWEIGHT,
@@ -284,18 +276,6 @@ CMH - new: needed to calculate new collision cross sections for Hminus
       RATCO(1 : N, 1 : N) = 0.0D0
 
       RATCO(1 : N, 1 : N) = - RRATE(1 : N, 1 : N) - CRATE(1 : N, 1 : N)
-
-      do i = 1, n
-
-         do j = 1, n
-
-            write(*, '(A,2x,2(i4,2x),3(e15.7,2x))'), 'coma ratco check:', i, j, ratco(i, j), rrate(i, j), crate(i, j)
-
-         enddo
-
-      enddo
-
-      stop
 
 C***  DIAGONAL ELEMENTS: -SUM OF THE ROW (I.E. OVER COLUMN INDEX)
 

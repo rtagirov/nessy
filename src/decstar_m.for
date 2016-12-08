@@ -379,11 +379,13 @@ C***  INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
 !        Without this correction the radial scale in the velocity law becomes 
 !        inconsistent with RMAX and the velocity boundary values calculated in the code
 !        no longer match those indicated in the CARDS file.
-!        See RGRIDM.FOR, INITVEL.FOR, WRVEL.FOR and GEOMESH.FOR for details.
+!        See INITVEL.FOR, WRVEL.FOR and GEOMESH.FOR for details.
 !*************************************************************************************
          HEIGHT_DIM = NUM_OF_LINES(ATM_MOD_FILE)
 
-         IF (.NOT. ALLOCATED(HEIGHT)) ALLOCATE(HEIGHT(HEIGHT_DIM))
+         IF (ALLOCATED(HEIGHT)) deallocate(HEIGHT)
+
+         allocate(height(height_dim))
 
          HEIGHT = READ_ATM_MOD(ATM_MOD_FILE, '1')
 

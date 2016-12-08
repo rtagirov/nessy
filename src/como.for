@@ -28,6 +28,7 @@
       USE MOD_BFCROSS
       USE COMMON_BLOCK
       USE VARDATOM
+      USE VARHMINUS
 
       IMPLICIT NONE
 
@@ -42,19 +43,17 @@
       integer N,NATOM,NBINW,NBMAX,NCON,ND
 
       integer NF,NFCDIM,NFEDGE,NP
-      real*8 A,ABSEVT,ABSFAC, AKEY,ALMAX,ALMIN
+      real*8 A, ABSEVT, ABSFAC, ALMAX, ALMIN
       real*8 B
       real*8 C, CARD, CRATE, DM
-      real*8 EDDARR, EDDI, EMFLUX, EN, ENLTE, ENTOT
-      real*8 ETA, ETOT, FWEIGHT, GRADI, GTOT, HNU, HTOT
-      real*8 OPA,P, POP1,POP2,POP3,POPNUM
-      real*8 RADIUS,RATCO,RNE,RRATE,RSTAR
+      real*8 ETA, HNU
+      real*8 OPA
+      real*8 RATCO,RRATE,RSTAR
       real*8 SCAEVT,SCAFAC,SCAGRI
       real*8 SIGMAKI
-      real*8 T,TAUROSS,TAUTHOM,TEFF,THOMSON,TOTIN
-      real*8 TOTOUT,U,V1,V2,VDOP, VELO,VJL,VL
+      real*8 TAUTHOM,TEFF,THOMSON,TOTIN
+      real*8 TOTOUT,U,V1,V2,VDOP,VJL,VL,EN
       real*8 W
-      real*8 XJC, XJCARR, XJL, XLAMBDA, XTOT, Z
       real*8,allocatable:: DUMMY1(:)
       character*8,allocatable :: CDUMMY1(:)
       integer tdiff,tstart,tend
@@ -65,17 +64,7 @@
 
       PARAMETER (NFCDIM = 40)
  
-      COMMON // RADIUS(NDDIM),ENTOT(NDDIM),T(NDDIM)
-     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
-     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
-     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
-     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-     $ ,ENLTE(NDIM)
-     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
-     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
-!*****************************************************************************************
-     $ ,EN(NDIMP2),V1(NDIMP2),V2(NDIMP2),RATCO(NDIMP2,NDIMP2)
+      COMMON // EN(NDIMP2),V1(NDIMP2),V2(NDIMP2),RATCO(NDIMP2,NDIMP2)
      $ ,DM(NDIMP2,NDIMP2),CRATE(NDIM,NDIM),RRATE(NDIM,NDIM)
      $ ,ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
      $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
@@ -101,8 +90,6 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       INTEGER XLBKG1,XLBKG2
       LOGICAL LBKG
 
-      real*8, allocatable, dimension(:, :) :: WCHARM
-
       print*, 'entering como...'
 
       tstart = time()
@@ -118,9 +105,9 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       CALL DECOMO(LSOPA, LSINT, KONOPT, NCON, LBLANK)
 
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
-     $             ABXYZ,NATOM,MODHEAD,JOBNUM,
-     $             NDDIM,NPDIM,NFDIM,LBLANK)
+     $             GRADI,RSTAR,VDOP,NF,
+     $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
+     $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
       close(IFL)
 
@@ -152,7 +139,8 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
          IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'UNKNOWN')
 
          CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                GRADI,RSTAR,VDOP,NF,XLAMBDA,FWEIGHT,AKEY,
+     $                GRADI,RSTAR,VDOP,NF,
+     $                XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $                ABXYZ,NATOM,MODHEAD,JOBNUM)
 
          close(ifl)

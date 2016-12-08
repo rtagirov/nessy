@@ -81,25 +81,16 @@ C***  WEIGHTS ARE ACCORDING TO TRAPEZOIDAL RULE IN Z*Z*DZ, Z=SQRT(R*R-P*P)
 
       DIMENSION P(JMAX), U(JMAX)
 
-      if (isnan(R)) stop 'R is nan'
-      if (any(isnan(U))) stop 'U is nan'
-      if (any(isnan(P))) stop 'P is nan'
+      RR = R * R
 
-      RR=R*R
 C***  FIRST STEP, IMPLYING P(1)=0
       Z=R
       ZQ=RR
       PJ=P(2)
-      ZNQ=RR-PJ*PJ
+      ZNQ = (R - PJ) * (R + PJ)
       ZNEXT=SQRT(ZNQ)
       W=Z*(3*ZQ-ZNQ)-ZNEXT*(ZQ+ZNQ)
       XK=W*U(1)
-
-      if (isnan(xk)) then
-
-         print*, 'nan 1', w, u(1); stop
-
-      endif
 
 C***  MIDDLE STEPS
       DO J = 3, JMAX
@@ -109,42 +100,17 @@ C***  MIDDLE STEPS
          Z = ZNEXT
          ZQ = ZNQ
          PJ = P(J)
-!         ZNQ = RR - PJ * PJ
          ZNQ = (R - PJ) * (R + PJ)
          ZNEXT = SQRT(ZNQ)
          W = Z * (ZLQ - ZNQ) + ZLAST * (ZLQ + ZQ) - ZNEXT * (ZQ + ZNQ)
-      if (isnan(xk)) then
-
-         print*, 'nan 2'; stop
-
-      endif
          XK = XK + W * U(J - 1)
 
-      if (isnan(w)) then
-
-!         print*, 'nan 3', rr, pj*pj, znq; stop
-         print*, 'nan 3'; stop
-
-      endif
       enddo
 
 C***  LAST STEP, IMPLYING P(JMAX)=R
       W=Z*ZQ
-      if (isnan(xk)) then
-
-         print*, 'nan 4'; stop
-
-      endif
       XK=XK+W*U(JMAX)
       XK=XK/R/RR/12.
-
-      if (isnan(xk)) then
-
-         print*, 'nan 5', w, U(jmax), r; stop
-
-      endif
-
-!      if (isnan(xk)) stop 'moment2 xk is nan'
 
       RETURN
 

@@ -4,7 +4,7 @@ C**********  MODULNAME: CCORE     ******* 06/08/87  20.27.56.******    87 KARTEN
       SUBROUTINE CCORE(WCHARM,NF,DELTAC,IPRICC,MODHEAD,JOBNUM,
      $                 SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
      $                 OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $                 NDIM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
+     $                 N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
      $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,NFDIM)
 C*******************************************************************************
 C***  DETERMINE THE FREQUENCY WEIGHTS WCHARM REPRESENTING THE APPROXIMATE
@@ -30,7 +30,7 @@ C*******************************************************************************
 	implicit NONE
 	! GLOBAL Variables intent(out)
 	integer,intent(in) :: JOBNUM
-      integer :: NFDIM, NDIM,N
+      integer :: NFDIM, N
 	integer :: NOM(N),  IPRICC
 	integer :: ND, NF	! Number of depth- & frequency-points
 	
@@ -45,7 +45,7 @@ C*******************************************************************************
 	real*8,dimension(NF,ND) :: SCOLD
 	!global variables, intent(in)
 	character::MODHEAD*104
-	real*8,dimension(NDIM,NFDIM) :: WAVARR,SIGARR
+	real*8,dimension(N,NF) :: WAVARR,SIGARR
 	real*8,dimension(NF)    :: XLAMBDA	     ! Array of Wavelength
 	logical :: LBKG	
 	real*8 :: DELTAC, RSTAR

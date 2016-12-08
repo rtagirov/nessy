@@ -4,7 +4,7 @@
 
       SUBROUTINE DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,
      $                  IFRRA,ITORA,IPRICC,IPRILC,LSEXPO,
-     $                  IFLUX,IDAT,LEVELPL,NDIM,IPLOTF,NEWWRC,
+     $                  IFLUX,IDAT,LEVELPL,N,IPLOTF,NEWWRC,
      $                  NGAMR,NGAML,AGAMR,AGAML,DELTAC,LINE,MAXIND,
      $                  NOTEMP,TPLOT,Y0,TEFFE,GRAD,ALDMDT,VINF,BET,PROLIB,LBLANK)
 
@@ -15,7 +15,7 @@
       IMPLICIT REAL*8(A - H, O - Z)
 
       CHARACTER KARTE*80
-      DIMENSION LEVELPL(NDIM)
+      DIMENSION LEVELPL(N)
       INTEGER   NGAMR(10),NGAML(10)
       DIMENSION AGAMR(10),AGAML(10)
       LOGICAL   LINE (MAXIND),PROLIB,NOTEMP,TPLOT
@@ -198,7 +198,7 @@ C                         ======
             ENDIF
       IF (KARTE(:8) .EQ. 'PLOT POP') THEN
 C                         ========
-            IF (NPLOT+1 .EQ. NDIM ) GOTO 8
+            IF (NPLOT+1 .EQ. N) GOTO 8
             DECODE (30,5,KARTE) L1,L2,L3
     5 FORMAT (9X,3(I2,1X))
             IF (L1 .LE. 0) GOTO 8
