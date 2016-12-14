@@ -199,6 +199,9 @@
 
           G=WEIGHT(I)/WEIGHT(J)*WE*EXP(C1*(EDGE-W)/TL)
           EMINDU=G*POPNUM(L,J)*SIGMA
+
+!          if (L .eq. 64 .and. I .eq. 2) print*, 'coop_m 1: ', popnum(64, i)
+
           SUM=POPNUM(L,I)*SIGMA-EMINDU
           OPAL=OPAL+SUM
           ETAL=ETAL+EMINDU
@@ -231,6 +234,9 @@
 !MH   COOP_M HYDROGEN FF OPACITY
          if (level(i).eq.'H I......1') l_h0 = i
          SIGMAFF=PRESIG*GFF(NCHARG(I))
+
+!         if (L .eq. 64 .and. I .eq. 2) print*, 'coop_m 1: ', popnum(64, i)
+
          SUM=RNE(L)*ENTOT(L)*POPNUM(L,I)*SIGMAFF
          EMINDU=SUM*EXPFAC
          SUM=SUM-EMINDU
@@ -282,8 +288,11 @@
 !     WRITE (990,*) L,'RNE(L)*SIGMAE = ',RNE(L)*SIGMAE
 !     add line-blanketing enhancement
       IF (XLAM.GT.227.83d0 .AND. XLAM.LE.3100d0 ) THEN
+
          ELDEN=RNE(L)*ENTOT(L)
-         CALL LINSCA (XLAM,ELDEN,SCAFAC,ABSFAC)
+
+         CALL LINSCA(XLAM, ELDEN, SCAFAC, ABSFAC)
+
         !***  MULTIPLY THE TRUE ABSORPTION TO ACCOUNT FOR LINE ABSORPTION
          OPAL=OPAL*ABSFAC
         !***  MULTIPLY SUM TO ACOUNT FOR LINE-SCATTERING

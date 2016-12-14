@@ -112,6 +112,16 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       close(ifl)
 
+!      print*, 'como shape print: ', shape(popnum), sum(popnum(64, :)) + rne(64)
+
+!      do iii = 1, 12
+
+!         print*, 'como popnum print: ', iii, popnum(64, iii)
+
+!      enddo
+
+!      stop
+
       if (allocated(wcharm)) deallocate(wcharm)
 
       allocate(WCHARM(ND, NF))
@@ -145,8 +155,24 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       IF (abs(LBLANK) .EQ. 2) CALL PRIBLA(LBLANK,ENTOT,ND,XLAMBDA,NF,JOBNUM,MODHEAD,SCAFAC,ABSFAC)
  
 !     PRECALCULATION OF THE BOUND-FREE CROSS SECTIONS SIGMAKI
-      CALL BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR)
- 
+      CALL BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
+     $             XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,
+     $             WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
+
+!      do k = 1, NF
+
+!         do iii = 1, N
+
+!            write(*, '(A,1x,i4,1x,e15.7,1x,i4,1x,e15.7)'), 'como sigmaki: ', k, xlambda(k), iii, sigmaki(k, iii)
+
+!         enddo
+
+!      enddo
+
+!      print*, maxval(sigmaki), minval(sigmaki)
+
+!      stop 'como stop after bfcross'
+
 !     ETLA TREATMENT OF CONTINUA (OPTIONALLY)
       IF (NCON .EQ. 0) GOTO 4
  
@@ -187,12 +213,6 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
    6     CONTINUE
 
-         do iii = 1, ND
-
-            print*, 'como print ', k, iii, opa(iii), eddi(2, iii)
-
-         enddo
-
          WCHARM(1 : ND, K) = CALCLAMBDAS(OPA, RADIUS, EDDI, ND)
 
 C***     UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
@@ -212,18 +232,30 @@ c***     XJC and EDDI are stored for later write to file RADIOC
       IF(maxval(WCHARM) >= 1d0-1d-20) THEN
 
          print '("como: WARN:max(WCHARM)=",e10.4,", RESET")',maxval(WCHARM)
-         where(WCHARM >= 1d0-1d20 ) WCHARM = 1d0-1d20
+         print*, 'location: ', maxloc(wcharm)
+!         where(WCHARM >= 1d0-1d20 ) WCHARM = 1d0-1d20
 
       ENDIF
 
       IF(minval(WCHARM) < 1d-35) THEN
 
          print '("como: WARN:min(WCHARM)=",e10.4,", RESET")',minval(WCHARM)
-         where(WCHARM <  1d-35 ) WCHARM = 1d-35
+         print*, 'location: ', minloc(wcharm)
+!         where(WCHARM <  1d-35 ) WCHARM = 1d-35
 
       ENDIF
 
-      stop 'como stop'
+!      do k = 1, NF
+
+!         do iii = 1, ND
+
+!            write(*, '(A,1x,i4,1x,e15.7,1x,i4,1x,e15.7)'), 'como wcharm: ', k, xlambda(k), iii, wcharm(iii, k)
+
+!         enddo
+
+!      enddo
+
+!      stop 'como stop'
      
 C***  ENDLOOP  ---------------------------------------------------------
  

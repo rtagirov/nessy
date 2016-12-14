@@ -86,6 +86,8 @@
 
       LOGICAL NODM, NEWRAP, STRONG_CONV, WEAK_CONV
 
+      real*8 :: part1, part2, epsdn
+
       COMMON / COMNEGI / NEGINTL
       CHARACTER modhead*104
       CHARACTER LEVEL(N)*10
@@ -96,7 +98,7 @@
 
       real*8  PHI(*), PWEIGHT(*), WEIGHT(*)
       logical LINE(*), LBKG
-      integer XLBKG1,  XLBKG2
+      integer XLBKG1,  XLBKG2, iii
 
       character*10, dimension(*) :: MAINPRO,MAINLEV
       integer,      dimension(*) :: IWARN
@@ -178,9 +180,9 @@ C***  C1 = H * C / K (CM * KELVIN)
       Z(1 : ND) = 0.0D0
       ONE(1 : ND) =   1.0D0
 
-C***  ENERGY EQUATION INCREASES THE RANK OF THE SYSTEM
-
       NRANK = N + 1
+
+      NPLUS1 = N + 1
 
       if (allocated(ratco)) deallocate(ratco); allocate(ratco(nrank, nrank))
 
@@ -234,7 +236,8 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 !     SIGMAKI(K,LOW) IN CM**2
 
       CALL BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
-     $             XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR)
+     $             XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,
+     $             WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
 
 !     DETERMINE SCOLD AT ALL DEPTH POINTS
       CALL CCORE(NF,DELTAC,MODHEAD,JOBNUM,
@@ -406,6 +409,20 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
       ITNE(L) = 0
    10 ITNE(L) = ITNE(L) + 1
 
+!     PRE-CALCULATE EXPONENTIAL FACTORS FOR THE TEMPERATURE OF THE CURRENT DEPTH POINT
+!     THIS MUST BE REPEATED, WHEN THE TEMPERATURE HAS BEEN UPDATED
+      IF (ITNE(L) .EQ. 1) THEN
+
+      DO 25 K = 1, NF
+
+      WAVENUM = 1.E8 / XLAMBDA(K)
+
+      EXPFAC(K) = EXP(-C1 * WAVENUM / TL)
+
+   25 CONTINUE
+
+      ENDIF
+
       !***  CALCULATE LTE POP. NUMBERS
       ENE = EN(NPLUS1) * ENTOT(L)
 
@@ -511,6 +528,33 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
       STRONG_CONV = .TRUE.
 
       DO J = 1, NPLUS1; STRONG_CONV = STRONG_CONV .AND. (ABS(ENDELTA(J) / EN(J)) .LT. EPSDN .OR. ABS(EN(J)) .LT. 1.0D-15); ENDDO
+
+!      print*, 'flag4'
+
+!      iii = 1
+
+!      do while (iii .le. NPLUS1)
+
+!         print*, 'flag5'
+
+!         part1 = ABS(ENDELTA(iii) / EN(iii))
+
+!         print*, 'flag6'
+
+!         part2 = ABS(EN(iii))
+
+!         print*, 'flag7'
+
+!         print*, iii, ABS(ENDELTA(iii) / EN(iii)), epsdn, ABS(EN(iii))
+
+!         print*, 'flag8'
+
+!         iii = iii + 1
+
+!      enddo
+
+!      print*, 'flag9'
+!      print*, 'strong_conv = ', strong_conv; stop 'linpop stop'
 
       IF (.NOT. STRONG_CONV .AND. ITNE(L) .LT. ITMAX) THEN
 

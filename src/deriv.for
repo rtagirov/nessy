@@ -70,6 +70,8 @@ C***  DERIVATIVE WITH RESPECT TO ELECTRON DENSITY
 
       ENDIF
 
+      if (isnan(dlowup)) stop 'deriv bf elec is NaN'
+
 C***  RATE INTEGRAL (DERIVATIVE OF NET RADIATIVE BRACKET)
 
       SUM = 0.0D0
@@ -122,6 +124,14 @@ C***  MAKE USE OF SIGMAKI, THE TABULATED PHOTOCROSSECTIONS IN CM**2
 
       DLOWUP = DLOWUP + SUM * PI8 * EN(NUP) * ENLTE(LOW) / ENLTE(NUP)
 
+      if (isnan(dlowup)) then 
+
+         print*, 'deriv bf dlowup is NaN'
+
+         stop
+
+      endif
+
       RETURN
 
 C***  M - J IS BOUND-BOUND TRANSITION   ****************************************
@@ -140,6 +150,8 @@ C***  DERIVATIVE WITH RESPECT TO ELECTRON DENSITY
           RETURN
 
       ENDIF
+
+      if (isnan(dlowup)) stop 'deriv bb elec dlowup is NaN'
 
 !     DERIVATIVES WITH RESPECT TO POPNUMBER EN(I)
 
@@ -182,6 +194,8 @@ C***  DERIVATIVE WITH RESPECT TO ELECTRON DENSITY
       ENDIF
 
       DLOWUP = EN(NUP) * DLOWUP_RB
+
+      if (isnan(dlowup)) stop 'deriv bb dlowup is NaN'
 
       RETURN
 

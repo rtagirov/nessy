@@ -2,11 +2,11 @@
 
       contains
 
-      SUBROUTINE cstabread(SIGMA,WAVENUM,LOW,WAVARR,SIGARR,N,NF) 
-C*********************************************************
+      SUBROUTINE cstabread(SIGMA, WAVENUM, LOW, WAVARR, SIGARR, N, NF)
+
 C     CALLED BY PHOTOCS_M
 C     written by Margit Haberreiter to read cross section tables
-C********************************************************************* 
+
       USE MOD_INTPL
       USE UTILS
 

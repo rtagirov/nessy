@@ -193,7 +193,7 @@ C*******************************************************************************
       KEYCOL(:, :)  = '    '
       EINST (:, :)  = -one
 
-      !--------------------- Initialisation Rinat Tagirov ----------------
+      !--------------------- Initialization Rinat Tagirov ----------------
 
       nfirst(:) = 0
       nlast(:) =  0
@@ -471,7 +471,6 @@ C***  FIND UPPER INDEX
       LOWP=LOW+1
       DO 32   J=LOWP,N
       NUP=J
-c     $,'ncharg(low)',NCHARG(low),'ncharg(up)',ncharg(nup)
 
       IF (NCHARG(LOW)+1 .EQ. NCHARG(NUP)) GOTO 33
    32 CONTINUE
@@ -546,7 +545,7 @@ C***  ALL ELEMENTS ARE CHECKED ONE BY ONE FOR EXISTENCE OF ANY LEVEL
    54 CONTINUE
 C***  LEVELS ARE CHECKED FOR CORRECT ELEMENT MEMBERSHIP
       DO 55 J=1,N
-CMH      IF (LEVEL(J)(:2) .NE. SYMBOL(NOM(J))) THEN
+
       IF (LEVEL(J)(:1) .NE. SYMBOL(NOM(J))(:1)) THEN
          print *,  'WRONG ELEMENT MEMBERSHIP OF LEVELS'
          STOP 'ERROR'
@@ -558,11 +557,11 @@ C***  TRANSITIONS ARE CHECKED FOR COMPLETENESS
       IF (NOM(I) .NE. NOM(J)) GOTO 7
       IF (NCHARG(I) .NE. NCHARG(J)) GOTO 8
       IF (I.LE.J) GOTO 7
-      IF (EINST(I,J) .LT. .0  ) THEN
-c            print *,  'LINE TRANSITION MISSING'
 
-c            STOP 'ERROR'
-            ENDIF
+
+
+
+
       GOTO 7
     8 IF (I.GE.J) GOTO 7
 C***  CHARGES MUST DIFFER BY 1

@@ -33,7 +33,7 @@ greym.for:            $(addprefix $(OUT), lipo.o opaross_m.o ltepop.o rkqs.o dtd
 hminus.for:           $(addprefix $(OUT), wrstart.o steal.o wrcont.o como.o etl.o etlhist.o etlray.o tictoc.o utils.o params_array.o fileoper.o tictoc.o utils.o wrstart.o steal.o wrcont.o como.o etl.o etlhist.o etlray.o tictoc.o utils.o hminusff.o hminus.o params_array.o comblock.o fileoper.o )
 hydcolrate.for:       $(addprefix $(OUT), math.o phys.o math.o )
 inibl0.for:           $(addprefix $(OUT), synsubm.o synthp_cont.o utils.o decf_syn.o constants.o balini.o hydtab.o chemeq.o hminusff.o linop_ms.o synsubm.o decf_syn.o utils.o synthp_cont.o constants.o chemeq.o bnue.o gff_temp.o hyd_ion_step.o error.o utils.o synthp_cont.o constants.o hydtab.o synsubm.o )
-initvel.for:          $(addprefix $(OUT), regula.o deltagr.o )
+initvel.for:          $(addprefix $(OUT), regula.o )
 intplcs.for:          $(addprefix $(OUT), intplcs.o intpl.o )
 intrfc_m.for:         $(addprefix $(OUT), inibl0.o synsubm.o stateq.o utils.o opint.o synthp_cont.o synthp_cont.o synsubm.o inibl0.o synthp_cont.o opint.o )
 isrchfgt.for:         $(addprefix $(OUT), error.o )

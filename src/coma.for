@@ -311,6 +311,16 @@ C***  FIRST TERMS : THE ORIGINAL MATRIX RATCO
 
       DM(1 : NRANK, 1 : NRANK) = RATCO(1 : NRANK, 1 : NRANK)
 
+      if (any(isnan(ratco))) stop 'coma: ratco NaN'
+
+!      do k = 1, NF
+
+!         print*, 'coma expfac: ', k, expfac(k)
+
+!      enddo
+
+!      stop
+
       DO 10 I = 1, NPLUS1
 
 C***  CONSTRUCT DERIVATIVE VECTORS DOPA, DETA WITH RESPECT TO EN(I)
@@ -376,6 +386,8 @@ C***          NLAST(NA)-TH ELEMENT = ABXYZ(NA)  (NUMBER CONSERVATION)
         V1(NLANA) = ABXYZ(NA)
 
       ENDDO
+
+      if (any(isnan(dm))) stop 'como: dm NaN'
 
       RETURN
 
