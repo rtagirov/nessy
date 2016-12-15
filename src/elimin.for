@@ -54,9 +54,6 @@ C***  GAUSS-ELIMINATION
             CALL VADD (W,WX(1,L),JMAX)
         endif
 
-!        CALL INV (JMAX,NP,B)
-!        write(*, *) 'elimin flag'
-
         CALL INV(JMAX, B(1 : jmax, 1 : jmax))
         CALL MVV (WX(1,L),B,W,JMAX,JMAX,NP)
 

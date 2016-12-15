@@ -5,12 +5,12 @@
 # Need two arguments, the old directory and a suffix for the new directory
 #
 # New directory will be at BASEDIR/OLDDIR.SUFFIX
-#
 
-source ~/sim-rinat/scripts/fioss.settings
+[[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
 
-[[ $COSI_BIN ]] || echo "Variable COSI_BIN must be declared!" || exit
-source $COSI_BIN/helper_scripts
+source $scr/fioss.settings
+source $scr/helper_scripts
+
 OLD=$1
 START=2
 FORCE=0

@@ -157,7 +157,6 @@
       USE FIOSS_AUX
       USE VARDATOM
 
-! 8tung!!!
 !             intrfc passes new a AGAUNT !!
 !*******************************************************************************
 !***  Formal Integral in the Observers frame for Sperically Symmetric geometry
@@ -189,52 +188,70 @@
       PARAMETER (GAUKONST = 1.649538d-12)
       PARAMETER (NDDOUB   = 2*NDDIM)
       PARAMETER (NDADDIM  = 2*NDDIM+12)
-      ! PARAMETER ( NPDIM = 84 )
-      !PARAMETER ( NFODIM = 999 )
+
       !*** in principle NFODIM should be equal to NFMAX in OPINT.FOR
       !        however since the routine XY likes to cut the number of
       !        points in order to be able to add other lines, it is a
       !        good idea to make NFODIM quite a bit larger
 
-      COMMON // R(NDDIM),ENTOT(NDDIM),T(NDDIM)
-     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
-     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
-     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
-     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-!     $ ,WEIGHT(NDIM),ELEVEL(NDIM),EION(NDIM)
-!     $ ,ELEVEL(NDIM),EION(NDIM)
-!     $ ,EINST(NDIM,NDIM),ALPHA(NDIM),SEXPO(NDIM)
-     $ ,ENLTE(NDIM)
-!     $ ,COCO(NDIM,NDIM,4),ALTESUM(4,NDIM)
-     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-!     $ ,ATMASS(MAXATOM),STAGE(MAXATOM),AGAUNT(NDIM)
-     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
-     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
-    !***  up to here the common is identical to that of steal
-     $ ,ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
-    !***  ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
-     $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
-     $ ,BX(NPDIM,NPDIM,NDDIM),WX(NPDIM,NDDIM)
-     $ ,U(NDDIM,NPDIM),VL(NPDIM),HNU(NDDIM),VJL(NPDIM,NDDIM)
-    !***  special arrys for fioss
-     $ ,DELW(NDDIM),ADELW(NDDIM),RDU(NDDIM),XLGR(NDDIM),VDU(NDDIM)
-!      $ ,PROFILE(NFODIM),PROFN(NFODIM),DLAM(NFODIM),EMINT(NFODIM)
-     $ ,ZRAY(NDADDIM),XCMF(NDADDIM),RRAY(NDADDIM),WLK(NDDIM,NPDIM)
-     $ ,APOP(NDDIM,2)
-    ! arrays with dim NVDIM
+!      COMMON // R(NDDIM),ENTOT(NDDIM),T(NDDIM)
+!     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
+!     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
+!     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
+!     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
+!     $ ,ENLTE(NDIM)
+!     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
+!     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
+!     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
+!     $ ,ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
+!     $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
+!     $ ,BX(NPDIM,NPDIM,NDDIM),WX(NPDIM,NDDIM)
+!     $ ,U(NDDIM,NPDIM)
 
-    !-sabolt
-     $ ,Tion_pot(nddim,3),dil(nddim)
-    !*** the integers in the main common are identical to that in steal
-!     $ ,KODAT(MAXATOM),NFIRST(MAXATOM),NLAST(MAXATOM)
-!     $ ,NCHARG(NDIM),MAINQN(NDIM),NOM(NDIM),ITNE(NDDIM),NFEDGE(NDIM)
-!     $ ,MAINQN(NDIM),NOM(NDIM)
-     $ ,ITNE(NDDIM),NFEDGE(NDIM)
-     $ ,IWARN(NDDIM),LEVELPL(NDIM)
+!     $ VDU(NDDIM)
+!     $ ,ZRAY(NDADDIM),XCMF(NDADDIM),RRAY(NDADDIM),WLK(NDDIM,NPDIM)
+!     $ ,Tion_pot(nddim,3),dil(nddim)
+
+!     $ ,ITNE(NDDIM),NFEDGE(NDIM)
+!     $ ,IWARN(NDDIM),LEVELPL(NDIM)
+
+      real*8, allocatable, dimension(:) ::       R
+      real*8, allocatable, dimension(:) ::       entot, enlte
+      real*8, allocatable, dimension(:) ::       T
+      real*8, allocatable, dimension(:) ::       XJC
+      real*8, allocatable, dimension(:) ::       TAUROSS
+      real*8, allocatable, dimension(:) ::       RNE
+      real*8, allocatable, dimension(:) ::       VELO, GRADI
+      real*8, allocatable, dimension(:) ::       HTOT, GTOT, XTOT, ETOT
+
+      real*8, allocatable, dimension(:) ::       VDU
+
+      real*8, allocatable, dimension(:) ::       eta, opa, thomson, tauthom
+
+      real*8, allocatable, dimension(:) ::       A, C, W
+
+      real*8, allocatable, dimension(:) ::       XLAMBDA, FWEIGHT, EMFLUX, AKEY
+
+      real*8, allocatable, dimension(:) ::       P, ZRAY
+
+      integer, allocatable, dimension(:) ::      levelpl, nfedge, itne, iwarn
+
+      real*8, allocatable, dimension(:, :) ::    B, WLK
+
+      real*8, allocatable, dimension(:, :) ::    Z
+
+      real*8, allocatable, dimension(:, :) ::    POPNUM, POP1, POP2, POP3
+
+      real*8, allocatable, dimension(:, :) ::    XJCARR
+      real*8, allocatable, dimension(:, :) ::    XJL
+
+      real*8, allocatable, dimension(:, :) ::    EDDI, WX, U
+
+      real*8, allocatable, dimension(:, :, :) :: EDDARR, BX
+
     !***  in steal the COMIND common is larger
-!      COMMON /COMIND/  INDNUP(MAXIND),INDLOW(MAXIND)
       COMMON /COMIND/ IRIND(NDADDIM), IBACK(NDADDIM, NPDIM)
-!      character*8 :: agaunt
+
       PARAMETER ( NBLEND = 6 )
       !***  ARRAYS FOR TREATMENT OF LINE OVERLAPS (MAX. DIMENSION: NBLEND)
       COMMON / COMOLAP / INDLAP(NBLEND),XLAMLAP(NBLEND),DELXLAP(NBLEND)
@@ -289,16 +306,13 @@
        
       real*8 dummy0
       integer ndummy0
-      ! NFOBS sized arrays
+
       real*8,allocatable:: PROFILE(:),PROFN(:),DLAM(:),EMINT(:)
 
-      !integer,allocatable :: ndummy1(:),ndummy2(:,:),ndummy3(:,:,:)
-      ! micha: added for modules: those variables where not defined!
-      real*8,allocatable :: XEDDI(:)
       logical :: CORE,FILE_EXIST
       real*8,allocatable,dimension(:,:) :: XJK,CWK,DINT,XJ
       real*8,allocatable,dimension(:) :: XNU
-      !*******************************************************************
+
       !MH   VARIABILITY OF VELOCITY ACTIV/NONACTIVE
       !MH var = true then variation of Doppler velocity considered
       ! VAR = .TRUE.
@@ -315,42 +329,37 @@
 !***  XN = RESOLUTION ELEMENTS WITHIN (MINIMUM) TURBULENCE VELOCITY
 !     so far, in all tests there was no significant improvement by 
 !     using more than 3 points per V-DOP
-      XN=2.
+      XN = 2.
 
+      XMAX = 3.
 
-! ATTENTION
-!      XN=10.
-      !TAUMAX=7.
-      XMAX=3.
       CALL TIC()
-      !***  Changes by Margit Haberreiter ******************************
-      call       DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $                   EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $                   INDNUP,INDLOW,LASTIND,NATOM,
-     $                   ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $                   NLAST,WAVARR,SIGARR,NFDIM)
-      !*****************************************************************
 
-      !***  READING OF THE MODEL FILE ----------------------------------
-      IFL=3
-      open (IFL,file='MODFILE',STATUS='OLD')
+      call DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+     $             EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $             INDNUP,INDLOW,LASTIND,NATOM,
+     $             ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+     $             NLAST,WAVARR,SIGARR,NFDIM)
+
+!     READING OF THE MODEL FILE ----------------------------------
+      IFL = 3; open(IFL, file = 'MODFILE', STATUS='OLD')
       rewind IFL
       lblank=0
       CALL READMOD(IFL,N,ND,TEFF,R,NP,P,Z,ENTOT,VELO,
      $             GRADI,RSTAR,VDOP,NF,
      $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
-      close (IFL)
+      close(IFL)
+
+      allocate(R(ND))
+      allocate(entot(ND))
 
 
-!     now ND, NF are known, lets allocate!
-      allocate(XEDDI(ND))
-      IFL=3
-      open (IFL,file='POPNUM',STATUS='OLD')
+      IFL = 3; open(IFL, file = 'POPNUM', STATUS='OLD')
       !***MH readpop also reads number of depth points, temperature, rne
-      call readpop (ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,
-     $                    jobnum)
+      call readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
       close (ifl)
+
       !***  read the radiation field from files RADIOC and RADIOL
       !*    (pop1 is used as dummy storage)
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
@@ -483,31 +492,28 @@
       allocate(PROFN(NFOBS))
       allocate(DLAM(NFOBS))
       allocate(EMINT(NFOBS))
-      if (FIN) exit MAIN_LOOP  !that is GOTO END
-!-sabolt
+      if (FIN) exit MAIN_LOOP ! that is GOTO END
+
 !***  Calculate the ionisation temperatures
-      print *,' Tion-sel ',itionsel
-      call SABOLT (ENTOT,RNE,POPNUM,T,ND,
-     $ N,NCHARG,WEIGHT,ELEVEL,EION,
-     $ KODAT,NOM,MAXATOM,
-     $ XTOT,HTOT,GTOT,R,
-     $ MODHEAD,JOBNUM,
-     $ Npot,Tion_pot,dil,teff,iTionsel)
-      !*********************************************************************
-      !***  store the Turbulence Doppler velocity
-      !     minimum 1 km/s
-      !**** changes by Margit Haberreiter
-      !     if (vdop.lt.2.) vdop=2.
-      !     vdopp=vdop+10.
-      !****
-      !      if (vdop.lt.1.) vdop=1.
+      print *,' Tion-sel ', itionsel
+      call SABOLT(ENTOT,RNE,POPNUM,T,ND,N,NCHARG,WEIGHT,ELEVEL,EION,
+     $            KODAT,NOM,MAXATOM,XTOT,HTOT,GTOT,R,MODHEAD,JOBNUM,
+     $            Npot,Tion_pot,dil,teff,iTionsel)
+
+
+
+
+
+
+
+
       vdopp=vdop
       print *
       print *,' Macro turbulence used to calculate the profile:'
       !***  VDOP IS USED AS REFERENCE TO CALCULATE FREQUENCY GRID
       !***  VDOPP IS PHYSICAL VELOCITY 
-      !MH   vdop=vdopp+2.
-      !MH   vdop=vdopp+1.
+
+
       vdop=vdopp
       print *,'                   V-turb = ',vdopp,' km/s'
       ! VDOP is used to calculate the integration X-grid
@@ -515,7 +521,7 @@
 
       !***  ADDING VERTICAL VELOCITY TO VELO(L)
       amaxvdu=0.
-      XLGR(1:ND) = LOG10(ENTOT(1:ND))
+
       !**********************************************************
       !***  CHANGES by Margit Haberreiter 22.8.03:
       !***  replace expansion velocity by tabulated
@@ -524,7 +530,7 @@
       !***  Reference: Asplund et al. 2000, A&A 359, 729
       IF(VAR) THEN
         VERTVELO(1:ND)=VERTVELO(1:ND)+(VELOVAR(1:ND)/1000.)
-        !PRINT *,'FIOSS8: VERTVELO(L)', VERTVELO(L)
+
         PRINT *,'FIOSS8: VELOVAR(:)',VELOVAR(1:ND),VERTVELO(1:ND)
         VELO(1:ND)= VERTVELO(1:ND)
       ENDIF
@@ -547,14 +553,14 @@
       !*** V-sini is in km/s
       VSIDU=VSINI/VDOP
       IF (VSINI.NE.0.) THEN
-!         IF (.NOT.COROT) THEN
-!            VROT2=VSIDU*VSIDU*(1.-1./R(1)/R(1))/VDU(1)/VDU(1)
-!            VRAT=SQRT(1.-VROT2)
-!*** I don not remember anymore why I did the following!
-!     maybe to get back the specified max velocity???
-!            DO 18 L=1,ND
-! 18         VDU(L)=VDU(L)*VRAT
-!         ENDIF
+
+
+
+
+
+
+
+
          NPHI=NPHIP
          LPEND=NPHI
          IF (LPSTI.NE.0) LPSTA=LPSTI
@@ -581,8 +587,6 @@
      $                      NF,EMFLUX,XLAMBDA,FNUEC)
 
       IF (LINE .EQ. 0) cycle MAIN_LOOP       ! go back to DECF_SYN
-!     print *, 'fioss8: line= ',line
-!     pause
 !***  replace the wavelength XLAM by the reference RWLAE
 !MH*  XLAM: WAVELENGTH IN VACUUM
       IF (RWLAE.GT.0.) THEN
@@ -666,22 +670,22 @@
       enddo
 
 !***  Compute Integration Weights for thermal Gauss Profile
-!***  into cwk
       dstep=abs(dvopa*vdop*1.e5)
       print *, ' vdop ',vdop,' dstep ',dstep
+
       if (maxiter.gt.1) then
-         print *,' call cwgauss'
+
          CALL CWGAUSS9(CWK,XNU,ND,NVOPA,T,xjc,dstep)
-         print *,' end cwgauss'
+
       endif
+
       if(any(isnan(XJC))) stop 'fioss: NAN XJC'
       if(any(isnan(CWK))) stop 'fioss: NAN XJC'
       if(any(isnan(XNU))) stop 'fioss: NAN XJC'
       if(any(isnan(T))) stop 'fioss: NAN XJC'
-!*** store quantities for Ivan's routines
-      print *, 'before quant'
-      call quant (nd,n,t,rne,entot,popnum,vdop,vdopp
-     $             ,nvopa,rwlae,Npot,Tion_pot,dil,teff,xjc)
+
+!     store quantities for Ivan's routines
+      call quant(nd,n,t,rne,entot,popnum,vdop,vdopp,nvopa,rwlae,Npot,Tion_pot,dil,teff,xjc)
 
       !*** call ivan's routines
       rewind 555
@@ -695,21 +699,15 @@
       rewind 55
       rewind 56
 
-      print *,' call of intrfc_m'
-      ! call intrfc(ndim,n,ncharg,weight,elevel,eion,
-    
-    !  stop
       call intrfc_m(n,ncharg,weight,elevel,eion,
-     *                  einst,alpha,sexpo,agaunt,
-     *                  maxatom,natom,
-     *                  symbol,nfirst,nlast,
-     *          WAVARR,SIGARR,NDIM,NFDIM)
-   
-       
+     *              einst,alpha,sexpo,agaunt,
+     *              maxatom,natom,
+     *              symbol,nfirst,nlast,
+     *              WAVARR,SIGARR,NDIM,NFDIM)
+
       PRINT *,'FIOSS8: Time elapsed after INTRFC_M: ',TOC()
- 
-     
-      !$$$c*** calculate opacities
+
+      !$$$c calculate opacities
       !*****************************************************************
       !***  MARGIT HABERREITER
       !***  FROM SYNOPA OPAC IS CALLED THE LAST TIME IN FIOSS8 RUN
@@ -730,10 +728,10 @@
           inquire(file=flnam,exist=FILE_EXIST)
           if(FILE_EXIST) then             !**   if file exist read,
             CARDS.ABEMLIN=CARD_PARAMS.ABEMLIN_READ
-            ! print *,'fioss8: ABEMLIN auto mode set to read'
+
           else                            !** else write
             CARDS.ABEMLIN=CARD_PARAMS.ABEMLIN_WRITE
-            ! print *,'fioss8: ABEMLIN auto mode set to write'
+
           endif
       endif
       !*** 3) open the file
@@ -744,9 +742,9 @@
         case(CARD_PARAMS.ABEMLIN_WRITE) !** write values to file
           open(201,file=flnam,status='REPLACE',action='write')
       end select
-      !*** end ABEMLIN write/read
-      ! OPEN (UNIT=150, FILE="freq.out",FORM="FORMATTED")
-      !OPEN (UNIT=200, FILE="emlabl.out",FORM="FORMATTED")
+
+
+
 
       !*****************************************************************
 
@@ -763,20 +761,20 @@
         flnam=adjustl(trim(flnam)//'tau')
         open  (unit=9998,name=flnam)
       endif
-      ! MH   Wavelength range considered
 
-      ! dlam = 2.*xlam*fmax*1.5/clight/nvopa
+
+
 
       DO L=1,ND
-        ! print *,'fioss8, within depth point loop',nd
-        !ws May 24,96: 
-        ! reverse of the arrays is no longer correct
-        ! do k=1,nvopa
-        !   scraop(k)=opatot(k,l)*rstar
-        ! enddo
-        ! do k=1,nvopa
-        !   opatot(k,l)=scraop(nvopa-k+1)
-        ! enddo
+
+
+
+
+
+
+
+
+
         opamax=0.
 
         !MH   WAVELENGTH FOR EACH POINT FROM 1 TO NVOPA
@@ -811,7 +809,6 @@
       ENDDO
 
 !***  Compute Integration Weights for Moment0
-!-old      CALL WMOM0(ND,NP,R,Z,WLK,XJMEAN,MODE)
       CALL WMOM0_F (ND,NP,R,p,WLK)
 
       !***  For the first loop, the line dependent radiation field
@@ -866,33 +863,22 @@
 
             IRAY=ND*(JP-1)+1
             IF (NPHI.GT.1) PHI=PI*(LPHI-1)/(NPHI-1)
-            ! print *,' cophi: ',LPHI,cos(phi)
-            IF (COROT) THEN
-              PRINT *, ' CONSTANT VELOCITY FIELD'
-              RDU(1:ND)=VSIDU*COS(PHI)
-            ELSE
-              RDU(1:ND)=VSIDU/R(1:ND)*COS(PHI)
-            ENDIF
 
-!             CALL PRAYFIO (Z(IRAY,1),P,ND,NDDIM,NP,JP,LTOT,W,CORE,VDU,R,
-!       $                   IRIND,RRAY,ZRAY,XCMF,PJPJ,RDU)
             CALL extUray (Z,w,nd,np,jp)
+
             CALL PREPR_F (w,P,ND,NDDIM,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
      $                   IRIND,IBACK,RRAY,ZRAY,XCMF,NDADDIM,PJPJ)
+
             CALL OBSINT10(LTOT,CORE,BCORE,DBDR,PJPJ
-     $                  ,IRIND,RRAY,ZRAY,XCMF
-     $                  ,ND,NP,JP,NVOPA,VOPA0,DVOPA
-     $                  ,EMINT,XOBS0,DXOBS,NFOBS,XN
-     $                  ,ENTOT,RNE,SIGMAE,RSTAR,NDDIM
-     $                  ,XJK,CWK,XJ,DINT,XNU,NDDOUB,  RWLAE,DLAM)
+     $                   ,IRIND,RRAY,ZRAY,XCMF
+     $                   ,ND,NP,JP,NVOPA,VOPA0,DVOPA
+     $                   ,EMINT,XOBS0,DXOBS,NFOBS,XN
+     $                   ,ENTOT,RNE,SIGMAE,RSTAR,NDDIM
+     $                   ,XJK,CWK,XJ,DINT,XNU,NDDOUB,RWLAE,DLAM)
 
             !***  Compute the Line Intensity Field (Moment 0)
             !* add into array XJK
-
-            !CALL COMPXJ (ND,NP,JP,NFOBS,DINT,XJK,WLK,IBACK,NDDIM,NFODIM)
-            !vs9 CALL COMPXJ (ND,NP,JP,NFOBS,DINT,XJK,WLK,IBACK,NDDIM,NVDIM)
-            if (m.lt.maxiter) CALL COMPXJ9
-     $               (ND,NP,JP,NVopa,DINT,XJK,WLK,IBACK,NDDIM)
+            if (m.lt.maxiter) CALL COMPXJ9(ND,NP,JP,NVopa,DINT,XJK,WLK,IBACK,NDDIM)
 
             !***  Compute the Profile by adding the new Intensities per JP
             !     add into array PROFILE

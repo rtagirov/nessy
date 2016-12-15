@@ -1,9 +1,10 @@
 #!/bin/bash
-#****************************************************************
 
-source ~/sim-rinat/scripts/fioss.settings
-source ~/sim-rinat/sync_pool/aux_func.sh
-source $COSI_BIN/helper_scripts
+[[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
+
+source $scr/fioss.settings
+source $scr/aux_func.sh
+source $scr/helper_scripts
 
 if [ -z "$1" ] || [ -z "$2" ]; then abort "One or more arguments are missing."; fi
 
@@ -90,20 +91,20 @@ if [ -d ${ORIG_COSI}/src/ ]; then cmd "cp -r ${ORIG_COSI}/src/  ./"; fi
 
 #Added by Alexander Shapiro
 #######################################
-$CP ~/sim-rinat/data/Mollist/c2.asc ./ 
-$CP ~/sim-rinat/data/Mollist/ch.asc ./
-$CP ~/sim-rinat/data/Mollist/cn.asc ./
-$CP ~/sim-rinat/data/Mollist/co.asc ./
-$CP ~/sim-rinat/data/Mollist/h2.asc ./
-$CP ~/sim-rinat/data/Mollist/nh.asc ./
-$CP ~/sim-rinat/data/Mollist/oh.asc ./
-$CP ~/sim-rinat/data/Mollist/o2.asc ./
-$CP ~/sim-rinat/data/Mollist/O2_H   ./
+$CP $mol/c2.asc ./
+$CP $mol/ch.asc ./
+$CP $mol/cn.asc ./
+$CP $mol/co.asc ./
+$CP $mol/h2.asc ./
+$CP $mol/nh.asc ./
+$CP $mol/oh.asc ./
+$CP $mol/o2.asc ./
+$CP $mol/O2_H   ./
 #######################################
 
 # Added by Rinat Tagirov
 ###########################################################################
-$CP ~/sim-rinat/data/fudge_As.txt ./
+$CP $dat/fudge_As.txt ./
 
 if [ $ODF_IT -eq 0 ]; then
 	
@@ -132,7 +133,7 @@ $CP ${ORIG_COSI}/MolConc.txt     ./
 #############################################
 $CP ${CROSS_SECTION_FILES}/*---* ./
 $CP $INPUT_STARK_BROAD/*         ./
-$CP ${VELO_FILE}                 ./VELO			
+$CP ${VELO_FILE}                 ./VELO
 $CP $INPUT_SUN_FILE              ./input_sun
 #############################################
 

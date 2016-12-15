@@ -1,10 +1,9 @@
 #!/bin/bash
-#****************************************************************
 
-source ~/sim-rinat/sync_pool/aux_func.sh
+[[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
 
-[[ $COSI_BIN ]] || (echo "Variable COSI_BIN must be declared!" && exit)
-source $COSI_BIN/helper_scripts
+source $scr/aux_func.sh
+source $scr/helper_scripts
 
 ### Display usage info if called with --help
 if [[ "$@" =~ "--help" ]]; then
