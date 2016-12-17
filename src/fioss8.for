@@ -2,6 +2,36 @@
 
       CONTAINS
 
+      function read_param(par_name) result(par)
+
+      character (len = 2), intent(in) :: par_name
+
+      integer, intent(out) :: par
+
+      character (len = 2) :: ftc
+
+      integer :: fu
+
+      fu = 13745
+     
+      open(unit = fu, file = 'MODFILE', action = 'read')
+
+      ftc = '  '
+
+      do while (ftc .ne. par_name)
+
+         read(fu, '(A2)') ftc
+
+      enddo
+
+      read(fu, *) par
+
+      close(fu)
+
+      return
+
+      end function param
+
       SUBROUTINE READ_NLTETRAPOP(TI, TPL, TPU, TDL, TDU)
 
       USE COMMON_BLOCK
@@ -232,7 +262,9 @@
 
       real*8, allocatable, dimension(:) ::       XLAMBDA, FWEIGHT, EMFLUX, AKEY
 
-      real*8, allocatable, dimension(:) ::       P, ZRAY
+      real*8, allocatable, dimension(:) ::       P, ZRAY, RRAY
+
+      real*8, allocatable, dimension(:) ::       XCMF
 
       integer, allocatable, dimension(:) ::      levelpl, nfedge, itne, iwarn
 
@@ -341,18 +373,32 @@
      $             ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $             NLAST,WAVARR,SIGARR,NFDIM)
 
-!     READING OF THE MODEL FILE ----------------------------------
-      IFL = 3; open(IFL, file = 'MODFILE', STATUS='OLD')
-      rewind IFL
+!     READING OF THE MODEL FILE ------------------------------------
+
+      ND = read_param('ND')
+      NP = read_param('NP')
+      NF = read_param('NF')
+
+      print*, 'fioss here: ', ND, NP, NF
+
+      stop
+
+      IFL = 3; open(IFL, file = 'MODFILE', STATUS='OLD'); rewind IFL
+
       lblank=0
-      CALL READMOD(IFL,N,ND,TEFF,R,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,
+
+      CALL READMOD(IFL,N,ND,TEFF,R,NP,P,Z,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
      $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
       close(IFL)
 
-      allocate(R(ND))
-      allocate(entot(ND))
+      allocate(entot(ND), enlte(ND))
+      allocate(T(ND), RNE(ND))
+      allocate(XJC(ND), XJCARR(ND, NF))
+      allocate(R(ND), TAUROSS(ND))
+      allocate(VELO(ND), GRADI(ND))
+
+      allocate(HTOT(ND), GTOT(ND), XTOT(ND), ETOT(ND))
 
 
       IFL = 3; open(IFL, file = 'POPNUM', STATUS='OLD')
