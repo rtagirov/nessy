@@ -37,11 +37,11 @@
 
       real*8,parameter :: ONE = 1.D+0, TWO = 2.D0, THREE = 3.D0
      
-      do L = 1, ND
+!      do L = 1, ND
 
-         print*, 'elimin XJC here:', L, XJC(L)
+!         print*, 'elimin XJC here:', L, XJC(L)
 
-      enddo
+!      enddo
 
 !      stop
 
@@ -69,7 +69,7 @@ C***  GAUSS-ELIMINATION
         CALL INV(JMAX, B(1 : jmax, 1 : jmax))
         CALL MVV (WX(1,L),B,W,JMAX,JMAX,NP)
 
-        print*, 'elimin XJC here 2:', l, XJC(l)
+!        print*, 'elimin XJC here 2:', l, XJC(l)
 
         IF (L.EQ.ND) GOTO 2
         CALL MVMD (BX(1,1,L),B,C,JMAX,JMAX-1,NP)
