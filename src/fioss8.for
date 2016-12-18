@@ -425,7 +425,7 @@
 
       enddo
 
-      stop
+!      stop
 
       !***  READING VERTICAL VELOCITY ASPLUND 2000, A&A 359, 729
       if (ADDVELO) then
@@ -668,7 +668,9 @@
      $            WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
      $            LBKG,XLBKG1,XLBKG2,NF)
       !***  CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
+
       CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,A,B,C,W,BX,WX,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+
       print *,' Continuum Flux interpolated from the model: ',FNUEC
       print *,'      "      "  from ELIMIN ',FNUCONT,
      $        ' at l=',XLAM

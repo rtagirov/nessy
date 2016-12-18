@@ -38,10 +38,18 @@
 
       !local variables
       real*8 ::           CORFAC, FL, FLP, H, HPLUS, RL, RLP, RRQ, XK
-      integer::           J, JC, JMAX, L, NC2
+      integer::           J, JC, JMAX, L, NC2, i
 
       real*8,parameter :: ONE = 1.D+0, TWO = 2.D0, THREE = 3.D0
      
+      do L = 1, ND
+
+         print*, 'elimin XJC here:', L, XJC(L)
+
+      enddo
+
+!      stop
+
 C***  GAUSS-ELIMINATION
       DO L = 1, ND
 
@@ -57,6 +65,8 @@ C***  GAUSS-ELIMINATION
         CALL INV(JMAX, B(1 : jmax, 1 : jmax))
         CALL MVV (WX(1,L),B,W,JMAX,JMAX,NP)
 
+        print*, 'elimin XJC here 2:', l, XJC(l)
+
         IF (L.EQ.ND) GOTO 2
         CALL MVMD (BX(1,1,L),B,C,JMAX,JMAX-1,NP)
         !***  COMPRESSING THE MATRIX BX  AND VECTOR WX  INTO THE RANGE OF B AND C
@@ -69,8 +79,15 @@ C***  GAUSS-ELIMINATION
      
 C***  BACK SUBSTITUTION
 C***  RECENT WX IS THE FEAUTRIER-INTENSITY U AT THE INNER BOUNDARY
-    2 CALL MOMENT0 (ND,RADIUS,ND,JMAX,Z,WX(1,ND),XJC(ND),.FALSE.)
-      CALL MOMENT1 (RADIUS(ND),JMAX,P,WX(1,ND),H)
+    2 CALL MOMENT0(ND,RADIUS,ND,JMAX,Z,WX(1,ND),XJC(ND),.FALSE.)
+
+      do L = 1, ND
+
+         print*, 'elimin XJC here 3:', l, XJC(l)
+
+      enddo
+
+      CALL MOMENT1(RADIUS(ND),JMAX,P,WX(1,ND),H)
       HPLUS=BCORE/two + DBDR/three/OPA(ND)
       CALL MOMENT2(RADIUS(ND), JMAX, P(1 : JMAX), WX(1, ND), XK)
 
@@ -110,13 +127,13 @@ C***  WX(J) IS THE FEAUTRIER-INTENSITY U AT RADIUS R(L)
 !      CALL MOMENT2(RL, JMAX, P(1 : JMAX), U(L, 1 : JMAX), XK)
       EDDI(1, L) = XK / XJC(L)
 
-      if (isnan(eddi(1, L))) then
+!      if (isnan(eddi(1, L))) then
 
-         print*, l, eddi(1, l), xk, xjc(l)
+      write(*, '(I4,3(2x,e15.7))') l, eddi(1, l), xk, xjc(l)
 
-         stop 'elimin eddi(1, l) is nan'
+!         stop 'elimin eddi(1, l) is nan'
 
-      endif
+!      endif
 
 C***  THIS IS AN INGENIOUS (;) RECURSION FORMULA FOR THE SPHERICITY FACTOR !
       RLP=RADIUS(L+1)

@@ -3,6 +3,7 @@
       contains
 
       SUBROUTINE MOMENT0(ND, R, L, JMAX, Z, XJ, XJMEAN, MODE)
+
 C***  INTEGRATION OF THE ZERO-MOMENT OF THE RADIATION FIELD (MEAN INTENSITY)
 C***   IF ( MODE = .TRUE.    ) THE INTEGRATION WEIGHTS ARE GENERATED (VECTOR XJ)
 C***   ELSE : XJ IS CONSIDERED AS ANGLE-DEPENDENT INTENSITY AND THE
@@ -10,28 +11,43 @@ C***          INTEGRATION IS PERFORMED ( RESULT XJMEAN)
 C***  RADIUS-MESH R, ACTUAL INDEX L, AND Z-MESH Z(L,J) ARE GIVEN
 C***  WEIGHTS ARE ACCORDING TO TRAPEZOIDAL RULE IN Z=SQRT(R*R-P*P)
 CMH	INTEGRATION WEIGHTS XJ = DZ/2/R IN "\MU" UNITS
-CMH	
-      implicit real*8(a-h,o-z)
-      DIMENSION R(ND),Z(ND,JMAX),XJ(JMAX)
-      LOGICAL,intent(in):: MODE
-      RL2=2d0*R(L)
+
+      implicit real*8(a - h, o - z)
+
+      DIMENSION R(ND), Z(ND, JMAX), XJ(JMAX)
+
+      LOGICAL, intent(in) :: MODE
+
+      RL2 = 2d0 * R(L)
+
 C***  FIRST STEP
-      ZJ=Z(L,1)
-      ZNEXT=Z(L,2)
+      ZJ = Z(L, 1)
+      ZNEXT = Z(L, 2)
+
       IF (MODE) THEN
-      	XJ(1)=(ZJ-ZNEXT)/RL2
+
+         XJ(1) = (ZJ - ZNEXT) / RL2
+
       ELSE
-      	XJMEAN=(ZJ-ZNEXT)*XJ(1)
+
+         XJMEAN = (ZJ - ZNEXT) * XJ(1)
+
+         print*, 'moment0:', xjmean
+
       ENDIF
+
 C***  MIDDLE STEPS
-      DO J=3,JMAX
-		ZLAST=ZJ
-		ZJ=ZNEXT
+      DO J = 3, JMAX
+         ZLAST=ZJ
+         ZJ=ZNEXT
 		ZNEXT=Z(L,J)
 		IF ( MODE ) THEN
 			XJ(J-1)=(ZLAST-ZNEXT)/RL2
 		ELSE
 			XJMEAN=XJMEAN+XJ(J-1)*(ZLAST-ZNEXT)
+
+                    print*, 'moment0:', xjmean
+
 		ENDIF
 	ENDDO
 C***  LAST STEP, IMPLYING Z(L,JMAX)=.0
