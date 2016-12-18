@@ -51,10 +51,12 @@ C***  GAUSS-ELIMINATION
         CALL SETUP(L,A,B,C,W,JMAX,ND,NP,OPA,ETA,THOMSON,Z,RADIUS,BCORE,DBDR)
 
         if (L .NE. 1) then
-            CALL MDMV (A,BX(1,1,L),JMAX,NP)
-            CALL MSUB (B,BX(1,1,L),JMAX,NP)
-            CALL MDV (A,WX(1,L),JMAX)
-            CALL VADD (W,WX(1,L),JMAX)
+
+            CALL MDMV(A, BX(1, 1, L), JMAX, NP)
+            CALL MSUB(B, BX(1, 1, L), JMAX, NP)
+            CALL MDV (A, WX(1, L),    JMAX)
+            CALL VADD(W, WX(1, L),    JMAX)
+
         endif
 
         CALL INV(JMAX, B(1 : jmax, 1 : jmax))
