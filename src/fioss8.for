@@ -224,27 +224,6 @@
       !        points in order to be able to add other lines, it is a
       !        good idea to make NFODIM quite a bit larger
 
-!      COMMON // R(NDDIM),ENTOT(NDDIM),T(NDDIM)
-!     $ ,XJC(NDDIM),XJCARR(NDDIM,NFDIM),XJL(NDDIM,MAXIND)
-!     $ ,EDDI(3,NDDIM),EDDARR(3,NDDIM,NFDIM),TAUROSS(NDDIM)
-!     $ ,RNE(NDDIM),VELO(NDDIM),GRADI(NDDIM)
-!     $ ,XLAMBDA(NFDIM),FWEIGHT(NFDIM),EMFLUX(NFDIM),AKEY(NFDIM)
-!     $ ,ENLTE(NDIM)
-!     $ ,P(NPDIM),Z(NDDIM,NPDIM),POPNUM(NDDIM,NDIM)
-!     $ ,HTOT(NDDIM),GTOT(NDDIM),XTOT(NDDIM),ETOT(NDDIM)
-!     $ ,POP1(NDDIM,NDIM),POP2(NDDIM,NDIM),POP3(NDDIM,NDIM)
-!     $ ,ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
-!     $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
-!     $ ,BX(NPDIM,NPDIM,NDDIM),WX(NPDIM,NDDIM)
-!     $ ,U(NDDIM,NPDIM)
-
-!     $ VDU(NDDIM)
-!     $ ,ZRAY(NDADDIM),XCMF(NDADDIM),RRAY(NDADDIM),WLK(NDDIM,NPDIM)
-!     $ ,Tion_pot(nddim,3),dil(nddim)
-
-!     $ ,ITNE(NDDIM),NFEDGE(NDIM)
-!     $ ,IWARN(NDDIM),LEVELPL(NDIM)
-
       real*8, allocatable, dimension(:) ::       R
       real*8, allocatable, dimension(:) ::       entot, enlte
       real*8, allocatable, dimension(:) ::       T
@@ -379,9 +358,45 @@
       NP = read_param('NP')
       NF = read_param('NF')
 
+      ndaddim = 2 * ND + 12
+
       print*, 'fioss here: ', ND, NP, NF
 
       stop
+
+      allocate(entot(ND), enlte(N))
+      allocate(T(ND), RNE(ND))
+      allocate(XJC(ND), XJCARR(ND, NF), XJL(ND, LASTIND))
+      allocate(R(ND), TAUROSS(ND))
+      allocate(VELO(ND), GRADI(ND))
+
+      allocate(HTOT(ND), GTOT(ND), XTOT(ND), ETOT(ND))
+
+      allocate(eddi(3, ND), eddarr(3, ND, NF))
+
+      allocate(xlambda(NF), fweight(NF), emflux(NF), akey(NF))
+
+      allocate(P(NP), Z(ND, NP))
+
+      allocate(popnum(ND, N), pop1(ND, N), pop2(ND, N), pop3(ND, N))
+
+      allocate(eta(ND), opa(ND))
+
+      allocate(thomson(ND), tauthom(ND))
+
+      allocate(A(NP), B(NP, NP), C(NP), W(NP))
+
+      allocate(BX(NP, NP, ND), WX(NP, ND), U(ND, NP), WLK(ND, NP))
+
+      allocate(VDU(ND))
+
+      allocate(ZRAY(ndaddim), xcmf(ndaddim), rray(ndaddim))
+
+      allocate(Tion_pot(ND, 3), dil(ND))
+
+      allocate(ITNE(ND), IWARN(ND))
+
+      allocate(NFEDGE(N), LEVELPL(N))
 
       IFL = 3; open(IFL, file = 'MODFILE', STATUS='OLD'); rewind IFL
 
@@ -390,16 +405,8 @@
       CALL READMOD(IFL,N,ND,TEFF,R,NP,P,Z,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
      $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
+
       close(IFL)
-
-      allocate(entot(ND), enlte(ND))
-      allocate(T(ND), RNE(ND))
-      allocate(XJC(ND), XJCARR(ND, NF))
-      allocate(R(ND), TAUROSS(ND))
-      allocate(VELO(ND), GRADI(ND))
-
-      allocate(HTOT(ND), GTOT(ND), XTOT(ND), ETOT(ND))
-
 
       IFL = 3; open(IFL, file = 'POPNUM', STATUS='OLD')
       !***MH readpop also reads number of depth points, temperature, rne
