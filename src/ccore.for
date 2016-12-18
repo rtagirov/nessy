@@ -58,8 +58,8 @@ C***  LOOP OVER ALL CONTINUUM FREQUENCIES  *************************************
      $               OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $	             N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $	             DUMMY1,DUMMY1,CDUMMY1,K,
-     $               SIGMAKI(1 : N, 1 : NF),WAVARR(1 : N, 1 : NF),
-     $               SIGARR,LBKG,XLBKG1,XLBKG2,NF)
+     $               SIGMAKI,WAVARR(1 : N, 1 : NF),
+     $               SIGARR(1 : N, 1 : NF),LBKG,XLBKG1,XLBKG2,NF)
 
 C***  SOURCE FUNCTION WITH OLD POP.NUMBERS (WITHOUT THOMSON OPACITY)
 	  DO L=1,ND

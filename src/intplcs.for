@@ -39,7 +39,7 @@ C     WVNMBR IN CM-1
 
 		SIGINT=0.
 
-		do  k=1, NFDIM-1
+		do  k=1, NF-1
 			if ((wavarr(low,k) .ge. WVNMBR) .AND. 
      $			(wavarr(low,k+1) .le. WVNMBR)) then
 	                        WAV1 = wavarr(low, k+1)
