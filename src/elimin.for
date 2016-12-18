@@ -85,11 +85,11 @@ C***  BACK SUBSTITUTION
 C***  RECENT WX IS THE FEAUTRIER-INTENSITY U AT THE INNER BOUNDARY
     2 CALL MOMENT0(ND,RADIUS,ND,JMAX,Z,WX(1,ND),XJC(ND),.FALSE.)
 
-      do L = 1, ND
+!      do L = 1, ND
 
-         print*, 'elimin XJC here 3:', l, XJC(l)
+!         print*, 'elimin XJC here 3:', l, XJC(l)
 
-      enddo
+!      enddo
 
       CALL MOMENT1(RADIUS(ND),JMAX,P,WX(1,ND),H)
       HPLUS=BCORE/two + DBDR/three/OPA(ND)
