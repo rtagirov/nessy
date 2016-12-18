@@ -12,11 +12,6 @@
 !     ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY
 
       use MOD_SETUP
-      use MOD_MDMV
-      use MOD_MSUB
-      use MOD_MDV
-      use MOD_MVV
-      use MOD_MVMD
       use MOMENTS
       use MATOPER
 

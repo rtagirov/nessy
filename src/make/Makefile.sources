@@ -12,13 +12,8 @@ FIOSS_SRCS= \
 	balini.for\
         utils.for\
 	formats.for\
-	mvv.for\
 	interpolation.for\
-	mdv.for\
-	msub.for\
 	inibl0.for\
-	mdmv.for\
-	mvmd.for\
 	moments.for\
 	hydtab.for\
 	tictoc.for\
@@ -95,13 +90,8 @@ invtri.for\
 error.for\
 gmalu.for\
 momadd.for\
-msub.for\
-mvmd.for\
-mdmv.for\
-mvv.for\
 writmsi.for\
 writms.for\
-mdv.for\
 deriv.for\
 rdopac.for\
 moments.for\
