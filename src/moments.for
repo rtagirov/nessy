@@ -32,7 +32,7 @@ C***  FIRST STEP
 
          XJMEAN = (ZJ - ZNEXT) * XJ(1)
 
-         print*, 'moment0, check 1:', xjmean
+         print*, 'moment0, check 1:', zj, znext, xj(1), xjmean
 
       ENDIF
 
