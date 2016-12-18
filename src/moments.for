@@ -32,30 +32,43 @@ C***  FIRST STEP
 
          XJMEAN = (ZJ - ZNEXT) * XJ(1)
 
-         print*, 'moment0:', xjmean
+         print*, 'moment0, check 1:', xjmean
 
       ENDIF
 
 C***  MIDDLE STEPS
       DO J = 3, JMAX
-         ZLAST=ZJ
-         ZJ=ZNEXT
-		ZNEXT=Z(L,J)
-		IF ( MODE ) THEN
-			XJ(J-1)=(ZLAST-ZNEXT)/RL2
-		ELSE
-			XJMEAN=XJMEAN+XJ(J-1)*(ZLAST-ZNEXT)
 
-                    print*, 'moment0:', xjmean
+         ZLAST = ZJ
+         ZJ = ZNEXT
+         ZNEXT = Z(L, J)
 
-		ENDIF
-	ENDDO
+         IF (MODE) THEN
+
+            XJ(J-1)=(ZLAST-ZNEXT)/RL2
+
+         ELSE
+
+            XJMEAN=XJMEAN+XJ(J-1)*(ZLAST-ZNEXT)
+
+            print*, 'moment0, check 2:', xjmean
+
+         ENDIF
+
+      ENDDO
+
 C***  LAST STEP, IMPLYING Z(L,JMAX)=.0
       IF (MODE) THEN
-      	XJ(JMAX)=ZJ/RL2
+
+      	XJ(JMAX) = ZJ / RL2
+
       ELSE
+
       	XJMEAN=XJMEAN+XJ(JMAX)*ZJ
       	XJMEAN=XJMEAN/RL2
+
+        print*, 'moment0, check 3:', xjmean
+
       ENDIF
 
       end subroutine
