@@ -32,7 +32,7 @@ C***  FIRST STEP
 
          XJMEAN = (ZJ - ZNEXT) * XJ(1)
 
-         print*, 'moment0, check 1:', zj, znext, xj(1), xjmean
+!         print*, 'moment0, check 1:', zj, znext, xj(1), xjmean
 
       ENDIF
 
@@ -51,7 +51,7 @@ C***  MIDDLE STEPS
 
             XJMEAN=XJMEAN+XJ(J-1)*(ZLAST-ZNEXT)
 
-            print*, 'moment0, check 2:', xjmean
+!            print*, 'moment0, check 2:', xjmean
 
          ENDIF
 
@@ -67,7 +67,7 @@ C***  LAST STEP, IMPLYING Z(L,JMAX)=.0
       	XJMEAN=XJMEAN+XJ(JMAX)*ZJ
       	XJMEAN=XJMEAN/RL2
 
-        print*, 'moment0, check 3:', xjmean
+!        print*, 'moment0, check 3:', xjmean
 
       ENDIF
 

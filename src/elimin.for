@@ -50,12 +50,19 @@ C***  GAUSS-ELIMINATION
 
         CALL SETUP(L,A,B,C,W,JMAX,ND,NP,OPA,ETA,THOMSON,Z,RADIUS,BCORE,DBDR)
 
+        print*, 'elimin WX, check 0:', WX(1, L)
+
         if (L .NE. 1) then
 
             CALL MDMV(A, BX(1, 1, L), JMAX, NP)
             CALL MSUB(B, BX(1, 1, L), JMAX, NP)
+
+            print*, 'elimin WX, check 1:', WX(1, L)
+
             CALL MDV (A, WX(1, L),    JMAX)
             CALL VADD(W, WX(1, L),    JMAX)
+
+            print*, 'elimin WX, check 2:', WX(1, L)
 
         endif
 
