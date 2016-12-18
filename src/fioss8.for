@@ -412,12 +412,21 @@
       call readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
       close (ifl)
 
-      !***  read the radiation field from files RADIOC and RADIOL
-      !*    (pop1 is used as dummy storage)
+!     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
+
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,lastind,
      $             EINST,MODHEAD,JOBNUM)
+
+      do i = 1, ND
+
+         print*, 'fioss XJC here:', i, XJC(i)
+
+      enddo
+
+      stop
+
       !***  READING VERTICAL VELOCITY ASPLUND 2000, A&A 359, 729
       if (ADDVELO) then
         open (IFL,file='VELO',STATUS='OLD')
