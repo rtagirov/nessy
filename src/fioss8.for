@@ -6,7 +6,7 @@
 
       character (len = 2), intent(in) :: par_name
 
-      integer, intent(out) :: par
+      integer :: par
 
       character (len = 2) :: ftc
 
@@ -30,7 +30,7 @@
 
       return
 
-      end function param
+      end function read_param
 
       SUBROUTINE READ_NLTETRAPOP(TI, TPL, TPU, TDL, TDU)
 
@@ -217,7 +217,6 @@
       !***  Constant for thermal Gauss-Profile (= m(e)/(4k)) (cgs?)
       PARAMETER (GAUKONST = 1.649538d-12)
       PARAMETER (NDDOUB   = 2*NDDIM)
-      PARAMETER (NDADDIM  = 2*NDDIM+12)
 
       !*** in principle NFODIM should be equal to NFMAX in OPINT.FOR
       !        however since the routine XY likes to cut the number of
@@ -235,7 +234,7 @@
 
       real*8, allocatable, dimension(:) ::       VDU
 
-      real*8, allocatable, dimension(:) ::       eta, opa, thomson, tauthom
+      real*8, allocatable, dimension(:) ::       eta, opa, thomson, tauthom, dil
 
       real*8, allocatable, dimension(:) ::       A, C, W
 
@@ -245,7 +244,11 @@
 
       real*8, allocatable, dimension(:) ::       XCMF
 
-      integer, allocatable, dimension(:) ::      levelpl, nfedge, itne, iwarn
+      integer, allocatable, dimension(:) ::      levelpl, nfedge, itne, iwarn, irind
+
+      integer, allocatable, dimension(:, :) ::   iback
+
+      CHARACTER*10, allocatable, dimension(:) :: MAINPRO, MAINLEV
 
       real*8, allocatable, dimension(:, :) ::    B, WLK
 
@@ -253,17 +256,17 @@
 
       real*8, allocatable, dimension(:, :) ::    POPNUM, POP1, POP2, POP3
 
+      real*8, allocatable, dimension(:, :) ::    Tion_pot
+
       real*8, allocatable, dimension(:, :) ::    XJCARR
       real*8, allocatable, dimension(:, :) ::    XJL
+      real*8, allocatable, dimension(:, :) ::    WCHARM
 
       real*8, allocatable, dimension(:, :) ::    EDDI, WX, U
 
       real*8, allocatable, dimension(:, :, :) :: EDDARR, BX
 
-    !***  in steal the COMIND common is larger
-      COMMON /COMIND/ IRIND(NDADDIM), IBACK(NDADDIM, NPDIM)
-
-      PARAMETER ( NBLEND = 6 )
+      PARAMETER (NBLEND = 6)
       !***  ARRAYS FOR TREATMENT OF LINE OVERLAPS (MAX. DIMENSION: NBLEND)
       COMMON / COMOLAP / INDLAP(NBLEND),XLAMLAP(NBLEND),DELXLAP(NBLEND)
       !***  CHANGES MARGIT HABERREITER
@@ -278,7 +281,6 @@
       LOGICAL LBKG,LOPA
       !***  END OF CHANGES MARGIT HABERREITER
       CHARACTER KARTE*80,MODHEAD*104,PHEAD*28
-      CHARACTER*10 MAINPRO(NDDIM),MAINLEV(NDDIM)
 
       CHARACTER flnam*70
 
@@ -298,7 +300,6 @@
 
       REAL*8 :: XLMIN, XLMAX
 
-      REAL*8,dimension(NDDIM,NFDIM)::WCHARM
       !***  CLIGHT = SPEED OF LIGHT IN KM/SECOND
       real*8,parameter :: CLIGHT =CLIGHT_SI/1d3
       DATA PI / 3.141592654 /
@@ -366,7 +367,7 @@
 
       allocate(entot(ND), enlte(N))
       allocate(T(ND), RNE(ND))
-      allocate(XJC(ND), XJCARR(ND, NF), XJL(ND, LASTIND))
+      allocate(XJC(ND), XJCARR(ND, NF), WCHARM(ND, NF), XJL(ND, LASTIND))
       allocate(R(ND), TAUROSS(ND))
       allocate(VELO(ND), GRADI(ND))
 
@@ -392,11 +393,15 @@
 
       allocate(ZRAY(ndaddim), xcmf(ndaddim), rray(ndaddim))
 
+      allocate(IRIND(NDADDIM), IBACK(NDADDIM, NP))
+
       allocate(Tion_pot(ND, 3), dil(ND))
 
       allocate(ITNE(ND), IWARN(ND))
 
       allocate(NFEDGE(N), LEVELPL(N))
+
+      allocate(mainpro(ND), mainlev(ND))
 
       IFL = 3; open(IFL, file = 'MODFILE', STATUS='OLD'); rewind IFL
 

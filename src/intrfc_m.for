@@ -1,17 +1,19 @@
       module MOD_INTRFC_M
+
       contains
-C      subroutine intrfc_m(ndim,n,ncharg,weight,elevel,eion,
+
       subroutine intrfc_m(n,ncharg,weight,elevel,eion,
      *                  einst,alpha,sexpo,agaunt,
      *                  maxatom,natom,
      *                  symbol,nfirs0,nlast0,
      *          WAVARR,SIGARR,NDIM,NFDIM)
-C***  CALLED BY FIOSS8
+
 c  now includes fix of quantum number of HeI lines
-c
+
       use MOD_INIBL0
       use MOD_SYNSUBM
       use MOD_STATEQ
+
       implicit none
       integer,intent(in   ) ::n,ncharg,maxatom,natom,
      *                  nfirs0,nlast0,NDIM,NFDIM
