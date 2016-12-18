@@ -3,7 +3,7 @@
       real*8, allocatable ::wav_oi(:), opac_oi(:), opac_f(:,:)
       contains
 
-       SUBROUTINE inibl0(WAVARR,SIGARR,NDIM,NFDIM)
+       SUBROUTINE inibl0(WAVARR, SIGARR, N, NF)
        use MOD_SYNSUBM
        use SYNTHP_CONT,only: FREQC,ABSOC,NFCONT
        use UTILS,only:assert
@@ -17,7 +17,7 @@ C
 C     AUXILIARY INITIALIZATION PROCEDURE
 C
       implicit none
-      integer,intent(in) :: NDIM,   NFDIM
+      integer,intent(in) :: N,      NF
       real*8, intent(in) :: WAVARR, SIGARR
 
       integer :: IFHE2,IHE1,IHE144,IHE2UV,IHE2RE,IHE2VI,IHE2L,ILWHE2
@@ -34,7 +34,7 @@ C
       logical lwph
       real*8,dimension(MFREQ) :: ABSO,EMIS !,SCAT(2)
 
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
+      DIMENSION WAVARR(N, NF),SIGARR(N, NF)
       COMMON/LIMPAR/ALAM0,ALAM1,FRMIN,FRLAST,FRLI0,FRLIM
       COMMON/BLAPAR/RELOP,SPACE,CUTOF0,CUTOFS,TSTD,DSTD
       COMMON/DETLIN/ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2RE
@@ -236,7 +236,7 @@ c
       IF(IMODE.LT.2) THEN
 cmh      CALL CROSET
 C***  CHANGES BY MARGIT HABERREITER ***
-         CALL CROSET(WAVARR,SIGARR,NDIM,NFDIM)
+         CALL CROSET(WAVARR,SIGARR, N, NF)
          print*, 'CROSET'
  
           call readmollines
@@ -251,7 +251,7 @@ C***  CHANGES BY MARGIT HABERREITER ***
          DO ID=1,ND
 
        
-            CALL OPAC(ID,0,ABSO,EMIS,WAVARR,SIGARR,NDIM,NFDIM)
+            CALL OPAC(ID,0,ABSO,EMIS,WAVARR,SIGARR,N,NF)
 
         
 
@@ -290,7 +290,7 @@ C ********************************************************************
 C
 
 
-      SUBROUTINE OPAC(ID,MODE,ABSO,EMIS,WAVARR,SIGARR,NDIM,NFDIM)
+      SUBROUTINE OPAC(ID, MODE, ABSO, EMIS, WAVARR, SIGARR, N, NF)
 C     ========================================
 C
 C     Absorption, emission, and scattering coefficients
@@ -353,9 +353,9 @@ C
       INCLUDE '../inc/SYNTHP.FOR'
       INCLUDE '../inc/LINDAT.FOR'
       
-      integer,intent(in) :: id,NFDIM,NDIM
+      integer,intent(in) :: id, NF, N
       integer,intent(in) :: MODE
-      real*8, intent(in)   ,dimension(NDIM,NFDIM)  :: WAVARR,SIGARR
+      real*8, intent(in)   ,dimension(N, NF)  :: WAVARR,SIGARR
       real*8, intent(inout),dimension(MFREQ) :: ABSO,EMIS
 
       !*** DEBUG
@@ -483,7 +483,7 @@ C     **** calculated only in the first and the last frequency *****
                     dw=1.
                 endif
                 if(dw.gt.0.) then
-                   sg=sigk(fr,ii,1,WAVARR,SIGARR,NDIM,NFDIM)*dw
+                   sg=sigk(fr, ii, 1, WAVARR, SIGARR, N, NF)*dw
                 endif
               Else
                 SG=CROSS(II,IJ)

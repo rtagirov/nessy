@@ -360,44 +360,41 @@ C
    50 CONTINUE
       RETURN
       END SUBROUTINE
-C
-C ********************************************************************
-C ********************************************************************
-C
-cmh      SUBROUTINE CROSET
-      SUBROUTINE CROSET(WAVARR,SIGARR,NDIM,NFDIM)
+
+      SUBROUTINE CROSET(WAVARR, SIGARR, N, NF)
+
       use SYNTHP_CONT,only:FREQC,NFCONT
-C     called by INIBL0(WAVARR,SIGARR)
+
 C     driver for evaluating photoinization cross-sections
-C
-c      INCLUDE 'PARAMS.FOR'
-c      INCLUDE 'SYNTHP.FOR'
+
       use SYNTHP_CONT
-      implicit real*8(a-h,o-z)
-      integer,intent(in   ) :: NDIM,NFDIM
-      real*8, intent(in   ) :: WAVARR,SIGARR
+
+      implicit real*8(a - h, o - z)
+
+      integer,intent(in) :: N, NF
+      real*8, intent(in) :: WAVARR,SIGARR
       
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
-      common/phopar/cross(mcross,mfcont)
-      COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,
-     $ IOPFE1
-C
-!      print*, 'HM test', IOPHMI
-!      stop
 
-      CROSS(:,:)=0.
+      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
+
+      common/phopar/cross(mcross,mfcont)
+      COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,IOPFE1
+
+      CROSS(:, :) = 0.
+
       DO 20 IT=1,NLEVE0
          DO 20 IJ=1,NFCONT()
 	         FR=FREQC(IJ)
-c	CROSS(IT,IJ)=SIGK(FR,IT,0)
+
 C***  CHANGED BY MARGIT HABERREITER *****************************
-cmh	CROSS(IT,IJ)=SIGK(FR,IT,0,WAVARR,SIGARR)
 CMH	mode changed >0
-	CROSS(IT,IJ)=SIGK(FR,IT,0,WAVARR,SIGARR,NDIM,NFDIM)
+
+         CROSS(IT,IJ)=SIGK(FR, IT, 0, WAVARR, SIGARR, N, NF)
+
 C****************************************************************
-c***	PRINT *,'CROSET AFTER SIGK',IT,IJ,CROSS(IT,IJ)
+
    20 CONTINUE
 C
 C   PARAMETERS FOR CALCULATING ADDITIONAL OPACITIES
@@ -4687,13 +4684,9 @@ c      INCLUDE 'IMPLIC.FOR'
      *       C1*EXP(A6+XX*(A7+XX*A8)))/C3
       RETURN
       END FUNCTION
-C
-C ********************************************************************
-C ********************************************************************
-C CHANGED BY MARGIT HABERREITER
-cmh      FUNCTION SIGK(FR,ITR,MODE)
-      FUNCTION SIGK(FR,ITR,MODE,WAVARR,SIGARR,NDIM,NFDIM)
-C     ==========================
+
+      FUNCTION SIGK(FR, ITR, MODE, WAVARR, SIGARR, N, NF)
+
 C     CALLED BY CROSET (AND OTHERS?)
 C     driver for evaluating the photoionization cross-sections
 C
@@ -4703,28 +4696,26 @@ C            MODE-  =0 - cross-section equal to zero longward of edge
 C                   >0 - cross-section non-zero (extrapolated) longward
 C                        of edge
 C
-c      INCLUDE 'PARAMS.FOR'
       use MOD_INTPLCS
       use constants,only: CLIGHT_CGS,CLIGHT_SI
-      implicit real*8(a-h,o-z)
-      integer,intent(in   ) :: ITR,MODE,NDIM,NFDIM
-      real*8, intent(in   ) :: FR,WAVARR,SIGARR
+
+      implicit real*8(a - h, o - z)
+      integer,intent(in) :: ITR, MODE, N, NF
+      real*8, intent(in) :: FR, WAVARR, SIGARR
       INCLUDE '../inc/PARAMS.FOR'
+
       real*8,parameter :: SIH0=2.815D29
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
+      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
       logical,save :: first=.true.
-C	REAL*8 LIONVAC,LVAC
-C      PARAMETER (CL    = 2.997925D10)
+
 CMH  INPUT FOR HMINUS BF CALCULATION TAKEN FORM THE PHOTOCS_M - ROUTINE
 CMH  H- FROM JOHN A&A193,189 (1988)
-      real*8, parameter :: CN(6) =  (/
-     &   152.519d0,49.534d0,-118.858d0,92.536d0,-34.194d0,4.982d0 /)
-C
-      PEACH(X,S,A,B)  =A*X**S*(B+X*(1.-B))*1.E-18
-      HENRY(X,S,A,B,C)=A*X**S*(C+X*(B-2.*C+X*(1.+C-B)))*1.E-18
-C
-      SIGK=0.
-     
+      real*8, parameter :: CN(6) = (/152.519d0,49.534d0,-118.858d0,92.536d0,-34.194d0,4.982d0/)
+
+      PEACH(X,S,A,B)   = A*X**S*(B+X*(1.-B))*1.E-18
+      HENRY(X,S,A,B,C) = A*X**S*(C+X*(B-2.*C+X*(1.+C-B)))*1.E-18
+
+      SIGK = 0.
 
       IF(IBF(ITR).EQ.0) RETURN
 CMH     Energy of Groundstate != 0, now taken into acount in DATOM
@@ -4829,15 +4820,12 @@ C
        ELSE IF(IB.EQ.9) THEN
 C*****CHANGES BY MARGIT HABERREITER
 CMH   INTERPOLATE CROSS SECTIONS WITH INTPLCS
-	    CALL intplcs(SIGK,FR,WAVARR,SIGARR,ITR,NDIM,NFDIM)
-c	    CALL intplcs(SIGK,FR,FR0,ITR)
-C         SIGK=TOPBAS(FR,FR0,TYPLEV(II))
-C	PRINT *,'SIGK AFTER INTPLCS: SIGK=', SIGK
+	    CALL intplcs(SIGK, FR, WAVARR, SIGARR, ITR, N, NF)
       END IF
       RETURN
-C
-C     special expression for H-
-C
+
+
+
 C  40	   XLAM: WAVELENGHT IN MYCRONS
 CMH   CL: SPEED OF LIGHT
    40	XLAM=1.d4*CLIGHT_CGS/FR
@@ -4849,7 +4837,7 @@ CMH   CL: SPEED OF LIGHT
 	EION = 6090.50000000000
       EDGE=EION
 	SIGMATH = 1.e-18
-c	   X=EDGE/WAVENUM
+
 
       X3=XLAM*XLAM*XLAM
 CMH	avoid wavenumber - edge .lt. 0

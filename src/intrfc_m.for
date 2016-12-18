@@ -2,57 +2,60 @@
 
       contains
 
-      subroutine intrfc_m(n,ncharg,weight,elevel,eion,
-     *                  einst,alpha,sexpo,agaunt,
-     *                  maxatom,natom,
-     *                  symbol,nfirs0,nlast0,
-     *          WAVARR,SIGARR,NDIM,NFDIM)
+      subroutine intrfc_m(ncharg,weight,elevel,eion,
+     *                    einst,alpha,sexpo,agaunt,natom,
+     *                    symbol,nfirs0,nlast0,
+     *                    WAVARR,SIGARR,N,NF)
 
-c  now includes fix of quantum number of HeI lines
+!     now includes fix of quantum number of HeI lines
 
       use MOD_INIBL0
       use MOD_SYNSUBM
       use MOD_STATEQ
 
       implicit none
-      integer,intent(in   ) ::n,ncharg,maxatom,natom,
-     *                  nfirs0,nlast0,NDIM,NFDIM
-      real*8, intent(in   ) ::weight,elevel,eion,
-     *                  einst,alpha,sexpo,
-     *                  WAVARR,SIGARR
-      character*8,intent(in) :: agaunt(NDIM)
-      character*2,intent(in) :: SYMBOL(MAXATOM)
+
+      integer,intent(in) :: n,ncharg,natom,
+     *                      nfirs0,nlast0,NF
+
+      real*8, intent(in) :: weight,elevel,eion,
+     *                      einst,alpha,sexpo,
+     *                      WAVARR,SIGARR
+
+      character*8, intent(in) :: agaunt(N)
+      character*2, intent(in) :: SYMBOL(NATOM)
+
       integer :: INCODE,ICHEMC,IOPADD,IRSCT,ION,NA,IAT,I,II,IA
       integer :: IOPHMI,IOPH2P,IOPHE1,IOPHE2,IOPFE1,IOPHLI
       integer :: JJ,ID,INMOD,INTRPL,ICHANG,NCH
       real*8  :: SIG
+
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/MODELP.FOR'
-      DIMENSION NCHARG (NDIM), WEIGHT(NDIM),ELEVEL(NDIM)
-      DIMENSION EION(NDIM),EINST(NDIM,NDIM)
-c     DIMENSION ALPHA(NDIM),SEXPO(NDIM)
-      DIMENSION ALPHA(NDIM),SEXPO(NDIM)
-      DIMENSION NFIRS0(MAXATOM),NLAST0(MAXATOM)
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM) 
-c     CHARACTER*8 AGAUNT(NDIM)
+
+      DIMENSION NCHARG (N), WEIGHT(N),ELEVEL(N)
+      DIMENSION EION(N),EINST(N, N)
+
+      DIMENSION ALPHA(N), SEXPO(N)
+      DIMENSION NFIRS0(NATOM), NLAST0(NATOM)
+      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
+
       COMMON/INTKEY/INMOD,INTRPL,ICHANG,ICHEMC
-      COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,
-     $ IOPFE1 
-C
-c     open (5,file='h5he11.inp5',STATUS='OLD')
-      open (555,file='input_sun',STATUS='OLD')
-      read(555,*) incode
-C
+      COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,IOPFE1
+
+      open(555, file = 'input_sun', STATUS='OLD')
+      read(555, *) incode
+
 C     original input - routine START and others
-C
+
       if(incode.eq.0) then
          print *,' ***** original form of input!'
-c        call start
+
          call inimod
          call tint
-c        call inibl0
+
 C**** CHANGED BY MARGIT HABERREITER
-         call inibl0(WAVARR,SIGARR,NDIM,NFDIM)
+         call inibl0(WAVARR, SIGARR, N, NF)
 C***********************************
          call hylset
          call he2set
@@ -332,20 +335,20 @@ CMH  IFB = 9: OPACITY PROJECT XS-FITS (INTERPOLATIONS)
       WRITE(6,603) INMOD,ND,IDSTD,INTRPL,ICHANG,
      *             NATOM,NION,NLEVE0,
      *             IELH,IELHM,IATH
-c
+
       do 60 id=1,nd
        !   print*, 'vt test', id, vturb(id)
          vturb(id)=vturb(id)*vturb(id)
    60 continue
-c
+
       print *,' call inimod'
       call inimod
       print *,' call tint'
       call tint
       print *,' call inibl0(WAVARR,SIGARR)'
-c      call inibl0
+
 C***  CHANGED BY MARGIT HABERREITER
-      call inibl0(WAVARR,SIGARR,NDIM,NFDIM)
+      call inibl0(WAVARR, SIGARR, N, NF)
 C***********************************
       print *,' call hylset'
       call hylset
@@ -528,32 +531,29 @@ c         write (90,*) nvopa-kopa+1,wlam(nvopa-kopa+1)
       teff0=teff 
       return
       end subroutine
-C
-C     ****************************************************************
-c
-      subroutine synopa(WAVARR,SIGARR,NDIM,NFDIM)
+
+
+      subroutine synopa(WAVARR, SIGARR, N, NF)
       use MOD_SYNSUBM
       use MOD_INIBL0  !contains OPAC
       use SYNTHP_CONT
       use OPINT,  only: OPATOT,ETATOT
       
-c     =================
-c
 c     Interface opacity routine
-c
+
       implicit none
-      integer,intent(in   ) :: NDIM,NFDIM
-      real*8, intent(in   ) :: WAVARR,SIGARR
+      integer, intent(in) :: N, NF
+      real*8,  intent(in) :: WAVARR,SIGARR
       real*8 :: ABSO,EMIS
     
       integer :: ID,IJ, i
-      !integer,intent(inout) ::
-      !real*8, intent(inout) ::
+
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
       INCLUDE '../inc/MODELP.FOR'
-      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
-C     common opatot(mfreq,mdepth),etatot(mfreq,mdepth)
+
+      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
+
 CMH   MARGIT HABERREITER
 CMH   IJ:    INDEX OF FREQUENCT
 CMH   NFREQ: NUMBER OF FREQUENCY POINTS
@@ -563,8 +563,6 @@ CMH   OUTPUT PARAMETERS:
 CMH   OPATOT: NEW ARRAY FOR OPACITY for each frequency nfreq and depth point nd
 CMH   ETATOT: NEW ARRAY FOR EMISSIVITY for each frequency nfreq and depth point nd
       dimension abso(mfreq),emis(mfreq) !,scat(2)
-c      print *,' nfreq= ',nfreq
-c     print *,' Mfreq= ',Mfreq
 
        if (.not. allocated(wav_oi)) then
        allocate(wav_oi(20))
@@ -573,28 +571,14 @@ c     print *,' Mfreq= ',Mfreq
        endif
 
 
-  !     print*, nd
- !      stop
-
        do 20 id=1,nd
-cpr_opa write (200,*) nfreq, id
-C        print *,'synopa, id loop',id,nd
 
-         call opac(id,1,abso,emis,WAVARR,SIGARR,NDIM,NFDIM)
+         call opac(id, 1, abso, emis, WAVARR, SIGARR, N, NF)
 
-
-  !     print*, opac_oi
-  !     stop
-           
-          opac_f(1:20,ND+1-id)=opac_oi(1:20)
-
-
-
-
+         opac_f(1:20,ND+1-id)=opac_oi(1:20)
 
 C     loop over frequency points
          do ij=1,nfreq
-
 
 cws May-24-96: Ivan's routine calculated low to high freqency
 c         it is (in QUANT): 

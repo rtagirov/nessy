@@ -273,8 +273,6 @@
       !MH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
       !MH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF	
 
-!      DIMENSION WAVARR(NDIM,NFDIM),SIGARR(NDIM,NFDIM)
-
       DIMENSION VERTVELO(NDDIM),VELOVAR(NDDIM)
       COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2	
       INTEGER XLBKG1,XLBKG2
@@ -360,10 +358,6 @@
       NF = read_param('NF')
 
       ndaddim = 2 * ND + 12
-
-      print*, 'fioss here: ', ND, NP, NF
-
-      stop
 
       allocate(entot(ND), enlte(N))
       allocate(T(ND), RNE(ND))
@@ -661,8 +655,9 @@
       CALL COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $            N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,WAVARR,SIGARR,
-     $            LBKG,XLBKG1,XLBKG2,NFDIM)
+     $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,
+     $            WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
+     $            LBKG,XLBKG1,XLBKG2,NF)
       !***  CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
       CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,A,B,C,W,BX,WX,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
       print *,' Continuum Flux interpolated from the model: ',FNUEC
@@ -757,11 +752,10 @@
       rewind 55
       rewind 56
 
-      call intrfc_m(n,ncharg,weight,elevel,eion,
-     *              einst,alpha,sexpo,agaunt,
-     *              maxatom,natom,
+      call intrfc_m(ncharg,weight,elevel,eion,
+     *              einst,alpha,sexpo,agaunt,natom,
      *              symbol,nfirst,nlast,
-     *              WAVARR,SIGARR,NDIM,NFDIM)
+     *              WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
 
       PRINT *,'FIOSS8: Time elapsed after INTRFC_M: ',TOC()
 
@@ -801,14 +795,9 @@
           open(201,file=flnam,status='REPLACE',action='write')
       end select
 
-
-
-
       !*****************************************************************
-
-
    
-      call synopa(WAVARR,SIGARR,NDIM,NFDIM)
+      call synopa(WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
   
    
       PRINT *,'FIOSS8: Time elapsed after SYNOPA: ',TOC()
