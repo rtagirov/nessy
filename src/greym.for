@@ -271,7 +271,7 @@ C*****************************************************************************
         CALL OPAROSS_M(OPARL,ENLTE,TP,RNEL,ENTOT(L),RSTAR,N,
      $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
      $                 ALPHA,SEXPO,AGAUNT,NF,XLAMBDA(1 : NF),FWEIGHT(1 : NF),NOM,
-     $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+     $                 WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),LBKG,XLBKG1,XLBKG2)
 C***************************************************************************** 
 C***  COMPUTATION OF THE ROSSELAND MEAN OPACITY  AT POINT L+1 
 C***  IN THE FIRST ITERATION USING T(L) 

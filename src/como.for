@@ -157,21 +157,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 !     PRECALCULATION OF THE BOUND-FREE CROSS SECTIONS SIGMAKI
       CALL BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
      $             XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,
-     $             WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
-
-!      do k = 1, NF
-
-!         do iii = 1, N
-
-!            write(*, '(A,1x,i4,1x,e15.7,1x,i4,1x,e15.7)'), 'como sigmaki: ', k, xlambda(k), iii, sigmaki(k, iii)
-
-!         enddo
-
-!      enddo
-
-!      print*, maxval(sigmaki), minval(sigmaki)
-
-!      stop 'como stop after bfcross'
+     $             WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF))
 
 !     ETLA TREATMENT OF CONTINUA (OPTIONALLY)
       IF (NCON .EQ. 0) GOTO 4
@@ -193,7 +179,8 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
          CALL COOP_M(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $               OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $               N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $               DUMMY1,DUMMY1,CDUMMY1,K,SIGMAKI,WAVARR,SIGARR,
+     $               DUMMY1,DUMMY1,CDUMMY1,K,SIGMAKI,
+     $               WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
      $               LBKG,XLBKG1,XLBKG2,NF)
 
          IF (LSOPA .GT. 0) THEN

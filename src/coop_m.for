@@ -186,7 +186,8 @@
 !***      Changes by Margit Haberreiter
 !MH       SIGMA IN CM^2
 
-              CALL PHOTOCS_M(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,WAVARR,SIGARR,N,NF)
+              CALL PHOTOCS_M(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,
+     $                       WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF), N, NF)
 
           ENDIF
 !***      RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON

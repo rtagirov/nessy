@@ -63,17 +63,14 @@
 
                if (WAVENUM .lt. EDGE) then
 
-                  SIGMAKI(K, LOW) = .0
-
-!                  write(*, '(A,3(1x,i4),2(2x,e15.7),1x,A)'), 'bfcross zero   :', low, nup, k, sigma, sigmaki(k, low), agaunt(low)
+                  SIGMAKI(K, LOW) = 0.0d0
 
                else
 
-                  call PHOTOCS_M(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,WAVARR,SIGARR,N,NF)
+                  call PHOTOCS_M(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,
+     $                           WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
 
                   sigmaki(k, low) = sigma
-
-!                  write(*, '(A,3(1x,i4),2(2x,e15.7),1x,A)'), 'bfcross photocs:', low, nup, k, sigma, sigmaki(k, low), agaunt(low)
 
                endif
 

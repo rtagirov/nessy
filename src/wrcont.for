@@ -173,20 +173,16 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
       ALLOCATE(EDDI_OLD(3, ND)); EDDI_OLD = EDDI(1 : 3, 1 : ND)
 
-!      do i = 1, ND; print*, 'check etot wrcont: ', i, EDDI(1, i), XJC(i); enddo; stop
-
       FRQS: DO K = 1, NF
 
 !       now extract XJC and EDDI for the frequency K
         CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
 
-!        do l = 1, ND; write(*, '(A,2x,2(i4,2x),2(e15.7,2x))'), 
-!     $  'wrcont check: ', k, l, xjc(l), xjcarr(l, k); enddo
-
         CALL COOP_M(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $              OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $              N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $              ALPHA,SEXPO,AGAUNT,0,DUMMY2,WAVARR,SIGARR,
+     $              ALPHA,SEXPO,AGAUNT,0,DUMMY2,
+     $              WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF),
      $              LBKG,XLBKG1,XLBKG2,NF)
 
         CALL DIFFUS(XLAMBDA(K),T,RADIUS,ND,BCORE,DBDR)
