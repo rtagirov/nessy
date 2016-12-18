@@ -21,17 +21,14 @@
 !     "Solution of the comoving-frame equation of transfer in spherically symmetric flows. 
 !     I.Computational method for equivalent-two-level-atom source functions" (MKH)
 
-      use MOD_MDV
       use MOD_MOMADD
       use MOD_COFREQ
-      use MOD_VMALV
       use MOD_INVTRI
       use MOD_GMALU
       USE MOD_CALCLAMBDAS
       USE FILE_OPERATIONS
       USE UTILS
-
-      use matoper
+      USE MATOPER
 
       IMPLICIT REAL*8(A - H, O - Z)
 
