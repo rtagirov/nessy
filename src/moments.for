@@ -77,7 +77,7 @@ C***  FEAUTRIER-INTENSITY U(J), IMPACT PARAMETER MESH P(J)
 C***  AND RADIUS POINT R ARE GIVEN.
 C***  WEIGHTS ARE ACCORDING TO TRAPEZOIDAL RULE IN Z*Z*DZ, Z=SQRT(R*R-P*P)
 
-      implicit real*8(a-h,o-z)
+      implicit real*8(a - h, o - z)
 
       DIMENSION P(JMAX), U(JMAX)
 
