@@ -197,7 +197,7 @@ done
 
 function check_f_dirs
 {
-FI_DIR=${FI_BASE_DIR}IT$ODF_IT/
+FI_DIR=$FI_BASE_DIR/IT$ODF_IT/
 
 for RUN in $1; do check_dir $FI_DIR$RUN; done; check_dir $ITX_DIR
 }
@@ -485,7 +485,7 @@ fi
 
 function fi_xt_run
 {
-FI_DIR=${FI_BASE_DIR}IT$ODF_IT/
+FI_DIR=$FI_BASE_DIR/IT$ODF_IT/
 
 RUNS=$1
 
@@ -538,7 +538,7 @@ fi
 
 function fi_bg_run
 {
-FI_DIR=${FI_BASE_DIR}IT$ODF_IT/
+FI_DIR=$FI_BASE_DIR/IT$ODF_IT/
 
 RUNS=$1
 
@@ -641,7 +641,7 @@ if [ $1 == "hminus" ]; then
 
    for RUN in $2; do
 
-       hminus_prepare $ODF_IT $RUN > ${FI_BASE_DIR}IT$ODF_IT_M1/$RUN/$HMP_LOG &
+       hminus_prepare $ODF_IT $RUN > $FI_BASE_DIR/IT$ODF_IT_M1/$RUN/$HMP_LOG &
 
    done; wait
 
@@ -682,7 +682,7 @@ done
 
 function run_opac
 {
-FI_DIR=${FI_BASE_DIR}IT$ODF_IT
+FI_DIR=$FI_BASE_DIR/IT$ODF_IT
 
 check_file $LBKG_CONTROL_FILE
 
