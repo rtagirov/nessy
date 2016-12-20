@@ -1,6 +1,5 @@
 # nessy-src
 source files of the NESSY code
 
-This branch doesn't work anywhere (currently).
-It is intended to work at PMOD, MPS and Imperial College HPC cluster as well as on
-the local Imperial College machines.
+In this branch hminus runs at ICL.
+The purpose of this branch is to get fioss running at ICL.
