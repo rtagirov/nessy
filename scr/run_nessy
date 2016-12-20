@@ -168,7 +168,7 @@ for RUN in $1; do
 
           create_dir $HM_DIR$RUN
 
-          process_message "Copying the files from $HM_GENERIC_DIR to $HM_DIR$RUN/" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
+          process_message "Copying files from $HM_GENERIC_DIR to $HM_DIR$RUN" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
 
           if [ ! $COMPILATION ]; then cp -v $HM_EXE $FI_EXE -t $HM_DIR$RUN/; echo; fi
 
@@ -182,7 +182,7 @@ for RUN in $1; do
 
           process_message "Cleaning $HM_DIR$RUN/" "rm -r $HM_DIR$RUN/*"
 
-          process_message "Copying the files from $HM_GENERIC_DIR to $HM_DIR$RUN/" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
+          process_message "Copying files from $HM_GENERIC_DIR to $HM_DIR$RUN" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
 
           if [ ! $COMPILATION ]; then cp -v $HM_EXE $FI_EXE -t $HM_DIR$RUN/; echo; fi
 
@@ -253,7 +253,7 @@ for RUN in $RUNS; do
 
        if [ $COMPILATION ] || [ $SRC ]; then
 
-          rm -rf $HM_DIR$RUN/src/; mkdir -p $HM_DIR$RUN/src/; process_message "Copying files from ${nessy_src} to $HM_DIR$RUN/src/" "cp -r $nessy_src/*.for $HM_DIR$RUN/src/"
+          rm -rf $HM_DIR$RUN/src/; mkdir -p $HM_DIR$RUN/src/; process_message "Copying files from ${nessy_src} to $HM_DIR$RUN/src" "cp -r $nessy_src/*.for $HM_DIR$RUN/src/"
 
        fi
 
@@ -281,7 +281,7 @@ for RUN in $RUNS; do
 
        if [ $COMPILATION ] || [ $SRC ]; then
 
-          rm -rf $HM_DIR$RUN/src/; mkdir -p $HM_DIR$RUN/src/; process_message "Copying files from ${nessy_src} to $HM_DIR$RUN/src/" "cp -r $nessy_src/*.for $HM_DIR$RUN/src/"
+          rm -rf $HM_DIR$RUN/src/; mkdir -p $HM_DIR$RUN/src/; process_message "Copying files from ${nessy_src} to $HM_DIR$RUN/src" "cp -r $nessy_src/*.for $HM_DIR$RUN/src/"
 
        fi
 
@@ -392,7 +392,7 @@ for RUN in $RUNS; do
 
        if [ $COMPILATION ] || [ $SRC ]; then
 
-          rm -rf $HM_DIR$RUN/src/; mkdir -p $HM_DIR$RUN/src/; process_message "Copying files from ${nessy_src} to $HM_DIR$RUN/src/" "cp -r $nessy_src/*.for $HM_DIR$RUN/src/"
+          rm -rf $HM_DIR$RUN/src/; mkdir -p $HM_DIR$RUN/src/; process_message "Copying files from ${nessy_src} to $HM_DIR$RUN/src" "cp -r $nessy_src/*.for $HM_DIR$RUN/src/"
 
        fi
 
@@ -420,7 +420,7 @@ for RUN in $RUNS; do
 
        if [ $COMPILATION ] || [ $SRC ]; then
 
-          rm -rf $HM_DIR$RUN/src/; mkdir -p $HM_DIR$RUN/src/; process_message "Copying files from ${nessy_src} to $HM_DIR$RUN/src/" "cp -r $nessy_src/*.for $HM_DIR$RUN/src/"
+          rm -rf $HM_DIR$RUN/src/; mkdir -p $HM_DIR$RUN/src/; process_message "Copying files from ${nessy_src} to $HM_DIR$RUN/src" "cp -r $nessy_src/*.for $HM_DIR$RUN/src/"
 
        fi
 

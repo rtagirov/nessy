@@ -103,7 +103,7 @@ C***  ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY !
 
       real*8, allocatable, dimension(:) :: opal, etal
 
-      print*, 'entering etl.. ' // writeTOC()
+      print*, 'entering etl... ' // writeTOC()
       call tic(timer)
 
 C***  DECODING INPUT CARDS
@@ -149,7 +149,7 @@ C***  READING OF THE MODEL FILE
       IFL=3
       open (IFL,file='POPNUM',STATUS='OLD')
 
-      call readpop (ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
+      call readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
 
       close (ifl)
 

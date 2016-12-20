@@ -419,11 +419,11 @@
      $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,lastind,
      $             EINST,MODHEAD,JOBNUM)
 
-      do i = 1, ND
+!      do i = 1, ND
 
-         print*, 'fioss XJC here:', i, XJC(i)
+!         print*, 'fioss XJC here:', i, XJC(i)
 
-      enddo
+!      enddo
 
 !      stop
 
@@ -668,6 +668,18 @@
      $            WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
      $            LBKG,XLBKG1,XLBKG2,NF)
       !***  CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
+
+!      do i = 1, ND
+
+!         do j = 1, NP
+
+!            print*, 'fioss8 WX here:',  WX(j, i)
+
+!          enddo
+
+!      enddo
+
+!      stop
 
       CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,A,B,C,W,BX,WX,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 

@@ -348,7 +348,7 @@ C***  WOBEI DIE UEBERZAEHLIGEN ZEILEN DER DIAGONALMATRIX C VERSCHWINDEN
       RETURN
       end subroutine
 
-      SUBROUTINE MVV (WX,B,W,JMAX,JMM,NP)
+      SUBROUTINE MVV(WX, B, W, JMAX, JMM, NP)
 C***  MATRIX (VOLL)  B  *  VEKTOR W
 C***  ERGEBNIS-VEKTOR  WX
 C***  AKTUELLES FORMAT  WX(JMAX) = B(JMAX,JMM) * W(JMM)
@@ -388,31 +388,37 @@ C***  A := A - B
       RETURN
       end subroutine
 
-      SUBROUTINE MDMV (A,B,JMAX,NP)
-C***  MATRIX (DIAGONAL)  A  *  MATRIX (VOLL)  B
-C***  ERGEBNIS-MATRIX UEBERSCHREIBT  B
-      implicit real*8(a-h,o-z)
+      SUBROUTINE MDMV(A, B, JMAX, NP)
+!     MATRIX (DIAGONAL)  A  *  MATRIX (VOLL)  B
+!     ERGEBNIS-MATRIX UEBERSCHREIBT B
+      implicit real*8(a - h, o - z)
 
-      DIMENSION A(NP),B(NP,NP)
-      DO 1 I=1,JMAX
-      AI=A(I)
-      DO 1 K=1,JMAX
-    1 B(I,K)=B(I,K)*AI
+      DIMENSION A(NP), B(NP, NP)
+      DO 1 I = 1, JMAX
+      AI = A(I)
+      DO 1 K = 1, JMAX
+    1 B(I, K) = B(I, K) * AI
+
       RETURN
+
       end subroutine
 
-      SUBROUTINE VMALV (VA,VB,V,Q,LMAX)
+      SUBROUTINE VMALV(VA, VB, V, Q, LMAX)
 C***  ALGEBRAIC ROUTINE CALLED FROM CMFRAY
-      implicit real*8(a-h,o-z)
+      implicit real*8(a - h, o - z)
 
-      DIMENSION VA(LMAX),VB(LMAX),V(LMAX),Q(LMAX)
+      DIMENSION VA(LMAX), VB(LMAX), V(LMAX), Q(LMAX)
       LZ=LMAX-1
       Q(1)=VB(1)*V(1)
+
       DO 1 L=2,LZ
       Q(L)=VA(L)*V(L-1)+VB(L)*V(L)
     1 CONTINUE
+
       Q(LMAX)=VA(LMAX)*V(LZ)
+
       RETURN
+
       END subroutine
 
       end module

@@ -2,7 +2,8 @@
 
       contains
 
-      SUBROUTINE ELIMIN(XLAM,EMFLUX,FLUXIN,U,Z,A,B,C,W,BX,WX,XJC,RADIUS,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+      SUBROUTINE ELIMIN(XLAM,EMFLUX,FLUXIN,U,Z,A,B,C,W,BX,WX,XJC,RADIUS,
+     $                  P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
 !     CALLED BY FORMAL, ETL, FIOSS8, WRCONT
 !     FEAUTRIER SCHEME FOR CONTINUOUS RADIATION TRANSFER IN SPHERICAL SYMMETRY
@@ -18,22 +19,21 @@
       IMPLICIT NONE
 
       !global variables, intent(inout|out)
-      integer ::                  ND, NP
-      real*8  ::                  BX(NP, NP, ND)
-      real*8  ::                  FLUXIN, WX(NP, ND), EMFLUX
-      real*8,dimension(ND, NP) :: U
-      real*8,dimension(3, ND)  :: EDDI
+      integer ::                   ND, NP
+      real*8  ::                   BX(NP, NP, ND)
+      real*8  ::                   FLUXIN, WX(NP, ND), EMFLUX
+      real*8, dimension(ND, NP) :: U
+      real*8, dimension(3, ND)  :: EDDI
 
       !global variables, intent(in)
-      real*8 ::               B(NP, NP), BCORE, DBDR
-      real*8,dimension(ND) :: ETA, RADIUS, XJC, OPA, THOMSON
-      real*8 ::               P(NP), XLAM, Z(ND,NP)
-      real*8,dimension(*) ::  W, C
-      real*8,dimension(:) ::  A
+      real*8 ::                B(NP, NP), BCORE, DBDR
+      real*8, dimension(ND) :: ETA, RADIUS, XJC, OPA, THOMSON
+      real*8 ::                P(NP), XLAM, Z(ND, NP)
+      real*8, dimension(NP) :: A, W, C
 
       !local variables
       real*8 ::           CORFAC, FL, FLP, H, HPLUS, RL, RLP, RRQ, XK
-      integer::           J, JC, JMAX, L, NC2, i
+      integer::           J, JC, JMAX, L, NC2, i, k
 
       real*8,parameter :: ONE = 1.D+0, TWO = 2.D0, THREE = 3.D0
      
@@ -45,29 +45,45 @@
 
 !      stop
 
+      WX(1 : NP, 1 : ND) = 0.0d0
+
+!      do i = 1, ND
+
+!         do k = 1, NP
+
+!            print*, 'elimin WX here:',  WX(k, i), WX(1, 2)
+
+!          enddo
+
+!      enddo
+
+!      print*, 'elimin WX, check 0 (0):', WX(1, 2)
+
 C***  GAUSS-ELIMINATION
       DO L = 1, ND
 
+!        print*, 'elimin WX, check 0 (1):', L, WX(1, L), WX(1, 2)
+
         CALL SETUP(L,A,B,C,W,JMAX,ND,NP,OPA,ETA,THOMSON,Z,RADIUS,BCORE,DBDR)
 
-        print*, 'elimin WX, check 0:', WX(1, L)
+!        print*, 'elimin WX, check 0 (2):', L, WX(1, L), WX(1, 2)
 
         if (L .NE. 1) then
 
             CALL MDMV(A, BX(1, 1, L), JMAX, NP)
             CALL MSUB(B, BX(1, 1, L), JMAX, NP)
 
-            print*, 'elimin WX, check 1:', WX(1, L)
+!            print*, 'elimin WX, check 1:', L, WX(1, L)
 
             CALL MDV (A, WX(1, L),    JMAX)
             CALL VADD(W, WX(1, L),    JMAX)
 
-            print*, 'elimin WX, check 2:', WX(1, L)
+!            print*, 'elimin WX, check 2:', L, WX(1, L)
 
         endif
 
         CALL INV(JMAX, B(1 : jmax, 1 : jmax))
-        CALL MVV (WX(1,L),B,W,JMAX,JMAX,NP)
+        CALL MVV(WX(1, L), B, W, JMAX, JMAX, NP)
 
 !        print*, 'elimin XJC here 2:', l, XJC(l)
 
@@ -131,13 +147,13 @@ C***  WX(J) IS THE FEAUTRIER-INTENSITY U AT RADIUS R(L)
 !      CALL MOMENT2(RL, JMAX, P(1 : JMAX), U(L, 1 : JMAX), XK)
       EDDI(1, L) = XK / XJC(L)
 
-!      if (isnan(eddi(1, L))) then
+      if (isnan(eddi(1, L))) then
 
       write(*, '(I4,3(2x,e15.7))') l, eddi(1, l), xk, xjc(l)
 
-!         stop 'elimin eddi(1, l) is nan'
+         stop 'elimin eddi(1, l) is nan'
 
-!      endif
+      endif
 
 C***  THIS IS AN INGENIOUS (;) RECURSION FORMULA FOR THE SPHERICITY FACTOR !
       RLP=RADIUS(L+1)
@@ -160,5 +176,7 @@ C***  EMFLUX IS THE EMERGENT FLUX, BUT RELATED TO THE INNER RADIUS
       EDDI(3,1)=H/XJC(1)
      
       RETURN
+
       END subroutine
+
       end module
