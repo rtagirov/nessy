@@ -328,33 +328,35 @@ C***  VERTAUSCHEN DER ZEILEN I UND K
       A(K,J)=-A(I,J)
   120 A(I,J)=SAVE
   130 CONTINUE
-C
+
       RETURN
 
       END SUBROUTINE inv
 
-      SUBROUTINE MVMD (BX,B,C,JMAX,JMM,NP)
+      SUBROUTINE MVMD (BX, B, C, JMAX, JMM)
 C***  MATRIX (VOLL)  B  *  MATRIX (DIAGONAL)  C
 C***  ERGEBNIS-MATRIX  BX(VOLL)
-C*** AKTUELLES FORMAT BX(JMAX,JMM)=B(JMAX,JMAX)*C(JMAX,JMM)
+C***  AKTUELLES FORMAT BX(JMAX,JMM)=B(JMAX,JMAX)*C(JMAX,JMM)
 C***  WOBEI DIE UEBERZAEHLIGEN ZEILEN DER DIAGONALMATRIX C VERSCHWINDEN
-      implicit real*8(a-h,o-z)
+      implicit real*8(a - h, o - z)
 
-      DIMENSION BX(NP,NP),B(NP,NP),C(NP)
-      DO 1 K=1,JMM
-      CK=C(K)
-      DO 1 I=1,JMAX
-    1 BX(I,K)=B(I,K)*CK
+      DIMENSION BX(JMAX, JMAX), B(JMAX, JMAX), C(JMAX)
+      DO 1 K = 1, JMM
+      CK = C(K)
+      DO 1 I = 1, JMAX
+    1 BX(I, K) = B(I, K) * CK
+
       RETURN
+
       end subroutine
 
-      SUBROUTINE MVV(WX, B, W, JMAX, JMM, NP)
+      SUBROUTINE MVV(WX, B, W, JMAX, JMM)
 C***  MATRIX (VOLL)  B  *  VEKTOR W
 C***  ERGEBNIS-VEKTOR  WX
 C***  AKTUELLES FORMAT  WX(JMAX) = B(JMAX,JMM) * W(JMM)
-      implicit real*8(a-h,o-z)
+      implicit real*8(a - h, o - z)
 
-      DIMENSION WX(NP),B(NP,NP),W(NP)
+      DIMENSION WX(NP), B(NP, NP), W(NP)
       DO 1 I=1,JMAX
       WXI = .0
       DO 2 K=1,JMM
@@ -377,26 +379,29 @@ C***  ERGEBNIS-VEKTOR UEBERSCHREIBT  W
 
       end subroutine
 
-      SUBROUTINE MSUB (A,B,JMAX,NP)
+      SUBROUTINE MSUB (A, B, N)
 C***  A := A - B
-      implicit real*8(a-h,o-z)
+      implicit real*8(a - h, o - z)
 
-      DIMENSION A(NP,NP),B(NP,NP)
-      DO 1 I=1,JMAX
-      DO 1 K=1,JMAX
-    1 A(I,K)=A(I,K)-B(I,K)
+      DIMENSION A(N, N), B(N, N)
+
+      DO 1 I = 1, N
+      DO 1 K = 1, N
+    1 A(I, K) = A(I, K) - B(I, K)
+
       RETURN
+
       end subroutine
 
-      SUBROUTINE MDMV(A, B, JMAX, NP)
+      SUBROUTINE MDMV(A, B, N)
 !     MATRIX (DIAGONAL)  A  *  MATRIX (VOLL)  B
 !     ERGEBNIS-MATRIX UEBERSCHREIBT B
       implicit real*8(a - h, o - z)
 
-      DIMENSION A(NP), B(NP, NP)
-      DO 1 I = 1, JMAX
+      DIMENSION A(N), B(N, N)
+      DO 1 I = 1, N
       AI = A(I)
-      DO 1 K = 1, JMAX
+      DO 1 K = 1, N
     1 B(I, K) = B(I, K) * AI
 
       RETURN

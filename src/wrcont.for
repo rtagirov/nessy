@@ -37,22 +37,22 @@
       USE VARDATOM
       USE VARHMINUS
  
-C***  THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
-C***  CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
-C***  IT MAKES USE OF THE ATOMIC DATA (FILE DATOM)
-C***  AND THE FREQUENCY GRID (FILE FGRID)
-C***  PRESENT VERSION: MODEL ATMOSPHERE OF HELIUM (CODE NR. "1") WITH
-C***                                       HYDROGEN         "2"
-C***  FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS:
-C***  MODIFY SUBROUTINES  "DATOM", "DECSTAR"
-C***  INSERT CORRESPONDING ATOMIC DATA INTO SUBR. "COLLI", "PHOTOCS"
+!***  THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
+!***  CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
+!***  IT MAKES USE OF THE ATOMIC DATA (FILE DATOM)
+!***  AND THE FREQUENCY GRID (FILE FGRID)
+!***  PRESENT VERSION: MODEL ATMOSPHERE OF HELIUM (CODE NR. "1") WITH
+!***                                       HYDROGEN         "2"
+!***  FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS:
+!***  MODIFY SUBROUTINES  "DATOM", "DECSTAR"
+!***  INSERT CORRESPONDING ATOMIC DATA INTO SUBR. "COLLI", "PHOTOCS"
       IMPLICIT REAL*8(A - H, O - Z)
  
       real*8, ALLOCATABLE :: DUMMY2(:, :)
 
-C***  CHANGES BY MARGIT HABERREITER, 20 MAY, 2002
-C***  LEVLOW NEEDS TO BE DEFINED, AS IT IS USED AS A KEYWORD TO SELECT THE 
-C***  ELEMENT AND LEVEL TO READ THE CONTINUUM OPACITIES FROM AN INPUT TABLE
+!***  CHANGES BY MARGIT HABERREITER, 20 MAY, 2002
+!***  LEVLOW NEEDS TO BE DEFINED, AS IT IS USED AS A KEYWORD TO SELECT THE 
+!***  ELEMENT AND LEVEL TO READ THE CONTINUUM OPACITIES FROM AN INPUT TABLE
 CMH   LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
@@ -60,8 +60,6 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 !     WITH GIVEN POPULATION NUMBERS
 
         COMMON // ETA(NDDIM),OPA(NDDIM),THOMSON(NDDIM),TAUTHOM(NDDIM)
-     $ ,A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
-     $ ,BX(NPDIM,NPDIM,NDDIM),WX(NPDIM,NDDIM)
      $ ,U(NDDIM,NPDIM),VL(NPDIM),HNU(NDDIM),VJL(NPDIM,NDDIM)
      $ ,ITNE(NDDIM),NFEDGE(NDIM)
      $ ,IWARN(NDDIM),LEVELPL(NDIM)
@@ -94,7 +92,7 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 !      print*, 'wrcont: NFDIM = ', NF, NFDIM
 
-C**** Changes by Margit Haberreiter
+!**** Changes by Margit Haberreiter
        CALL DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $              EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $              INDNUP,INDLOW,LASTIND,NATOM,
@@ -104,10 +102,10 @@ C**** Changes by Margit Haberreiter
       CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,LDUMMY1,LBKG,XLBKG1,XLBKG2,
      $               LDUMMY3,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN)
 
-C***  DECODING INPUT OPTIONS *******************************************
+!***  DECODING INPUT OPTIONS *******************************************
       CALL DECON(LSOPA,LSINT,IFLUX,JOBMAX,LPRIH,LPHNU,LPRIV,TEFF,LBLANK)
 
-C***  READING OF THE MODEL FILE ----------------------------------------
+!***  READING OF THE MODEL FILE ----------------------------------------
       IFL = 3
 
       open(IFL, file = 'MODFILE', STATUS = 'OLD')
@@ -131,7 +129,7 @@ C***  READING OF THE MODEL FILE ----------------------------------------
 
       close(ifl)
 
-c     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage) 
+!     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage) 
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             NCHARG,EDDARR,EDDI,NOM,WCHARM,
@@ -139,7 +137,7 @@ c     read the radiation field from files RADIOC and RADIOL (pop1 is used as dum
 
       JOBNUM = JOBNUM + 1
 
-C     initialize frequency integrated quantities
+!     initialize frequency integrated quantities
       TOTIN =        0.0d0
       TOTOUT =       0.0d0
 
@@ -148,12 +146,12 @@ C     initialize frequency integrated quantities
       XTOT(1 : ND) = 0.0d0
       HTOT(1 : ND) = 0.0d0
 
-c***  the blanketing table is read by routine READMOD
-c***  if lblank.gt.0 then read a new table from the file LIBLANK
+!***  the blanketing table is read by routine READMOD
+!***  if lblank.gt.0 then read a new table from the file LIBLANK
       CALL REBLANK(LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
 
       if (lblank.lt.0) then
-c***     the new blanketing table needs to be written to the model file
+!***     the new blanketing table needs to be written to the model file
          IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'UNKNOWN')
 
          CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
@@ -169,7 +167,7 @@ c***     the new blanketing table needs to be written to the model file
 
       call TIC(timer)
 
-C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
+!***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
       ALLOCATE(EDDI_OLD(3, ND)); EDDI_OLD = EDDI(1 : 3, 1 : ND)
 
@@ -204,9 +202,8 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
 
         endif
 
-        CALL ELIMIN(XLAMBDA(K), EMFLUX(K), FLUXIN, U, Z,
-     $              A, B, C, W, BX, WX, XJC, RADIUS, P, BCORE, DBDR,
-     $              OPA, ETA, THOMSON, EDDI, ND, NP)
+        CALL ELIMIN(XLAMBDA(K),EMFLUX(K),FLUXIN,U,Z,XJC,RADIUS,
+     $              P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
         !***  INTEGRATION OF THE TOTAL INCIDENT AND EMERGENT FLUX
         TOTIN=TOTIN+FLUXIN*FWEIGHT(K)
@@ -330,7 +327,7 @@ C***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
       enddo
  11   continue
 
-C***  UPDATING THE MODEL HISTORY
+!***  UPDATING THE MODEL HISTORY
       write(LCARD,88) JOBNUM,'. WRCONT   LASTK=',LASTK,TOC(TIMER),' sec'
    88 FORMAT (1H/,I3,A,I5,' COMPLETE  -  run time all K: ',i10,A)
       write (7,'(A100)') LCARD

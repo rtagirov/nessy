@@ -236,7 +236,7 @@
 
       real*8, allocatable, dimension(:) ::       eta, opa, thomson, tauthom, dil
 
-      real*8, allocatable, dimension(:) ::       A, C, W
+      real*8, allocatable, dimension(:) ::       ZR
 
       real*8, allocatable, dimension(:) ::       XLAMBDA, FWEIGHT, EMFLUX, AKEY
 
@@ -250,7 +250,7 @@
 
       CHARACTER*10, allocatable, dimension(:) :: MAINPRO, MAINLEV
 
-      real*8, allocatable, dimension(:, :) ::    B, WLK
+      real*8, allocatable, dimension(:, :) ::    WLK
 
       real*8, allocatable, dimension(:, :) ::    Z
 
@@ -262,9 +262,9 @@
       real*8, allocatable, dimension(:, :) ::    XJL
       real*8, allocatable, dimension(:, :) ::    WCHARM
 
-      real*8, allocatable, dimension(:, :) ::    EDDI, WX, U
+      real*8, allocatable, dimension(:, :) ::    EDDI, U
 
-      real*8, allocatable, dimension(:, :, :) :: EDDARR, BX
+      real*8, allocatable, dimension(:, :, :) :: EDDARR
 
       PARAMETER (NBLEND = 6)
       !***  ARRAYS FOR TREATMENT OF LINE OVERLAPS (MAX. DIMENSION: NBLEND)
@@ -363,7 +363,7 @@
       allocate(T(ND), RNE(ND))
       allocate(XJC(ND), XJCARR(ND, NF), WCHARM(ND, NF), XJL(ND, LASTIND))
       allocate(R(ND), TAUROSS(ND))
-      allocate(VELO(ND), GRADI(ND))
+      allocate(VELO(ND), GRADI(ND), VDU(ND))
 
       allocate(HTOT(ND), GTOT(ND), XTOT(ND), ETOT(ND))
 
@@ -371,7 +371,7 @@
 
       allocate(xlambda(NF), fweight(NF), emflux(NF), akey(NF))
 
-      allocate(P(NP), Z(ND, NP))
+      allocate(P(NP), Z(ND, NP), ZR(ND))
 
       allocate(popnum(ND, N), pop1(ND, N), pop2(ND, N), pop3(ND, N))
 
@@ -379,11 +379,7 @@
 
       allocate(thomson(ND), tauthom(ND))
 
-      allocate(A(NP), B(NP, NP), C(NP), W(NP))
-
-      allocate(BX(NP, NP, ND), WX(NP, ND), U(ND, NP), WLK(ND, NP))
-
-      allocate(VDU(ND))
+      allocate(U(ND, NP), WLK(ND, NP))
 
       allocate(ZRAY(ndaddim), xcmf(ndaddim), rray(ndaddim))
 
@@ -642,10 +638,10 @@
       print*, 'RWLAE = ', rwlae
 
 !***  PREPARATION OF LINE QUANTITIES (ALSO FOR BLENDING LINES)
-      CALL       PREF_SYN (KARTE,N,ELEVEL,LINE,INDLOW,INDNUP,LASTIND,
-     $                      VDOP,FMAX,FMIN,XMAX,VDU(1),VSIDU,esca_wd,
-     $                      DXOBS,NFOBS,XLAM,FREMAX,
-     $                      NF,EMFLUX,XLAMBDA,FNUEC)
+      CALL PREF_SYN(KARTE,N,ELEVEL,LINE,INDLOW,INDNUP,LASTIND,
+     $              VDOP,FMAX,FMIN,XMAX,VDU(1),VSIDU,esca_wd,
+     $              DXOBS,NFOBS,XLAM,FREMAX,
+     $              NF,EMFLUX,XLAMBDA,FNUEC)
 
       IF (LINE .EQ. 0) cycle MAIN_LOOP       ! go back to DECF_SYN
 !***  replace the wavelength XLAM by the reference RWLAE
@@ -654,8 +650,6 @@
          PRINT *,' ',XLAM,' replaced by ',RWLAE
          XLAM=RWLAE
       ENDIF
-
-
     
       !***  DEFINING ZERO-POINT OF THE OBSERVER)S FRAME FREQUENCY
       xobs0 = FREMAX-DXOBS
@@ -669,19 +663,7 @@
      $            LBKG,XLBKG1,XLBKG2,NF)
       !***  CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
 
-!      do i = 1, ND
-
-!         do j = 1, NP
-
-!            print*, 'fioss8 WX here:',  WX(j, i)
-
-!          enddo
-
-!      enddo
-
-!      stop
-
-      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,A,B,C,W,BX,WX,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
       print *,' Continuum Flux interpolated from the model: ',FNUEC
       print *,'      "      "  from ELIMIN ',FNUCONT,
@@ -782,7 +764,7 @@
 
       PRINT *,'FIOSS8: Time elapsed after INTRFC_M: ',TOC()
 
-      !$$$c calculate opacities
+      !$$$ calculate opacities
       !*****************************************************************
       !***  MARGIT HABERREITER
       !***  FROM SYNOPA OPAC IS CALLED THE LAST TIME IN FIOSS8 RUN
@@ -934,17 +916,17 @@
             IRAY=ND*(JP-1)+1
             IF (NPHI.GT.1) PHI=PI*(LPHI-1)/(NPHI-1)
 
-            CALL extUray (Z,w,nd,np,jp)
+            CALL EXTURAY(Z, ZR, nd, np, jp)
 
-            CALL PREPR_F (w,P,ND,NDDIM,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
+            CALL PREPR_F(ZR,P,ND,NDDIM,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
      $                   IRIND,IBACK,RRAY,ZRAY,XCMF,NDADDIM,PJPJ)
 
-            CALL OBSINT10(LTOT,CORE,BCORE,DBDR,PJPJ
-     $                   ,IRIND,RRAY,ZRAY,XCMF
-     $                   ,ND,NP,JP,NVOPA,VOPA0,DVOPA
-     $                   ,EMINT,XOBS0,DXOBS,NFOBS,XN
-     $                   ,ENTOT,RNE,SIGMAE,RSTAR,NDDIM
-     $                   ,XJK,CWK,XJ,DINT,XNU,NDDOUB,RWLAE,DLAM)
+            CALL OBSINT10(LTOT,CORE,BCORE,DBDR,PJPJ,
+     $                    IRIND,RRAY,ZRAY,XCMF,
+     $                    ND,NP,JP,NVOPA,VOPA0,DVOPA,
+     $                    EMINT,XOBS0,DXOBS,NFOBS,XN,
+     $                    ENTOT,RNE,SIGMAE,RSTAR,NDDIM,
+     $                    XJK,CWK,XJ,DINT,XNU,NDDOUB,RWLAE,DLAM)
 
             !***  Compute the Line Intensity Field (Moment 0)
             !* add into array XJK

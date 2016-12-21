@@ -2,15 +2,10 @@
 
       contains
 
-      SUBROUTINE ELIMIN(XLAM,EMFLUX,FLUXIN,U,Z,A,B,C,W,BX,WX,XJC,RADIUS,
-     $                  P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+      SUBROUTINE ELIMIN(XLAM,EMFLUX,FLUXIN,U,Z,XJC,RADIUS,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
 !     CALLED BY FORMAL, ETL, FIOSS8, WRCONT
 !     FEAUTRIER SCHEME FOR CONTINUOUS RADIATION TRANSFER IN SPHERICAL SYMMETRY
-!     TAPE7 = MASS STORAGE FILE FOR FEAUTRIER MATRICES
-!     LAST PARAMETER -1 IN WRITMS IS VERY IMPORTANT
-!     OTHERWISE "MASS STORAGE LIMIT" EXCEEDED BECAUSE OLD RECORDS ARE NOT OVERWRITTEN.
-!     ATTENTION: B AND C MUST BE LOCATED SUBSEQUENTLY IN THE MEMORY
 
       use MOD_SETUP
       use MOMENTS
@@ -32,60 +27,28 @@
       real*8, dimension(NP) :: A, W, C
 
       !local variables
-      real*8 ::           CORFAC, FL, FLP, H, HPLUS, RL, RLP, RRQ, XK
+      real*8 ::           FL, FLP, H, HPLUS, RL, RLP, RRQ, XK
       integer::           J, JC, JMAX, L, NC2, i, k
 
       real*8,parameter :: ONE = 1.D+0, TWO = 2.D0, THREE = 3.D0
      
-!      do L = 1, ND
-
-!         print*, 'elimin XJC here:', L, XJC(L)
-
-!      enddo
-
-!      stop
-
-      WX(1 : NP, 1 : ND) = 0.0d0
-
-!      do i = 1, ND
-
-!         do k = 1, NP
-
-!            print*, 'elimin WX here:',  WX(k, i), WX(1, 2)
-
-!          enddo
-
-!      enddo
-
-!      print*, 'elimin WX, check 0 (0):', WX(1, 2)
-
 C***  GAUSS-ELIMINATION
       DO L = 1, ND
 
-!        print*, 'elimin WX, check 0 (1):', L, WX(1, L), WX(1, 2)
-
         CALL SETUP(L,A,B,C,W,JMAX,ND,NP,OPA,ETA,THOMSON,Z,RADIUS,BCORE,DBDR)
-
-!        print*, 'elimin WX, check 0 (2):', L, WX(1, L), WX(1, 2)
 
         if (L .NE. 1) then
 
-            CALL MDMV(A, BX(1, 1, L), JMAX, NP)
-            CALL MSUB(B, BX(1, 1, L), JMAX, NP)
-
-!            print*, 'elimin WX, check 1:', L, WX(1, L)
+            CALL MDMV(A, BX(1, 1, L), JMAX)
+            CALL MSUB(B, BX(1, 1, L), JMAX)
 
             CALL MDV (A, WX(1, L),    JMAX)
             CALL VADD(W, WX(1, L),    JMAX)
-
-!            print*, 'elimin WX, check 2:', L, WX(1, L)
 
         endif
 
         CALL INV(JMAX, B(1 : jmax, 1 : jmax))
         CALL MVV(WX(1, L), B, W, JMAX, JMAX, NP)
-
-!        print*, 'elimin XJC here 2:', l, XJC(l)
 
         IF (L.EQ.ND) GOTO 2
         CALL MVMD (BX(1,1,L),B,C,JMAX,JMAX-1,NP)
@@ -100,12 +63,6 @@ C***  GAUSS-ELIMINATION
 C***  BACK SUBSTITUTION
 C***  RECENT WX IS THE FEAUTRIER-INTENSITY U AT THE INNER BOUNDARY
     2 CALL MOMENT0(ND,RADIUS,ND,JMAX,Z,WX(1,ND),XJC(ND),.FALSE.)
-
-!      do L = 1, ND
-
-!         print*, 'elimin XJC here 3:', l, XJC(l)
-
-!      enddo
 
       CALL MOMENT1(RADIUS(ND),JMAX,P,WX(1,ND),H)
       HPLUS=BCORE/two + DBDR/three/OPA(ND)
@@ -165,12 +122,7 @@ C***  THIS IS AN INGENIOUS (;) RECURSION FORMULA FOR THE SPHERICITY FACTOR !
     4 enddo
      
       CALL MOMENT1 (RADIUS(1),NP,P,WX(1,1),H)
-C***  MODIFICATION FOR NONZERO INCIDENT RADIATION  FROM TRUNCATED LAYERS
-CCCCCC      CORFAC=one-EXP(-RADIUS(1)*OPA(1))
-C***  AUSSSER BETRIEB ----------------------------- !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      CORFAC=.0
-C***  WENN C GELOCHT, WIEDER IN BETRIEB !!!  ---------------------------
-      H=H-0.5*CORFAC*ETA(1)/OPA(1)
+
 C***  EMFLUX IS THE EMERGENT FLUX, BUT RELATED TO THE INNER RADIUS
       EMFLUX=4*H*RADIUS(1)*RADIUS(1)
       EDDI(3,1)=H/XJC(1)
