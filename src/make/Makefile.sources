@@ -17,7 +17,6 @@ FIOSS_SRCS= \
 	moments.for\
 	hydtab.for\
 	tictoc.for\
-	setup.for\
 	rdopac.for\
 	hminusff.for\
 	liop.for\
@@ -61,13 +60,13 @@ FIOSS_SRCS= \
 	synsubm.for\
 	traplo.for\
 	wmom0_f.for\
-	zcalc.for\
 	linop_ms.for\
         gff_temp.for\
         hyd_ion_step.for\
         comblock.for\
         fileoper.for\
         vardatom.for\
+        geomesh.for\
 	fioss8.for
 
 
@@ -95,7 +94,6 @@ writms.for\
 deriv.for\
 rdopac.for\
 moments.for\
-setup.for\
 hminusff.for\
 hminus.for\
 xrudi.for\
@@ -227,7 +225,6 @@ writradl.for\
 wrstart.for\
 wrvel.for\
 stateq.for\
-zcalc.for\
 hydcolrate.for\
 phys.for\
 math.for\

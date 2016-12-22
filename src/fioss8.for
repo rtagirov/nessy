@@ -165,7 +165,6 @@
       use MOD_ELIMIN
       use MOD_extUray
       use MOD_INTRFC_M
-      use MOD_ZCALC
       use MOD_PRIDAT
       use MOD_WMOM0_F
       use MOD_TRAPLO
@@ -186,6 +185,7 @@
       USE FILE_OPERATIONS
       USE FIOSS_AUX
       USE VARDATOM
+      USE MOD_GEOMESH
 
 !             intrfc passes new a AGAUNT !!
 !*******************************************************************************
@@ -253,6 +253,8 @@
       real*8, allocatable, dimension(:, :) ::    WLK
 
       real*8, allocatable, dimension(:, :) ::    Z
+
+      real*8, allocatable, dimension(:) ::       Z1D
 
       real*8, allocatable, dimension(:, :) ::    POPNUM, POP1, POP2, POP3
 
@@ -371,7 +373,7 @@
 
       allocate(xlambda(NF), fweight(NF), emflux(NF), akey(NF))
 
-      allocate(P(NP), Z(ND, NP), ZR(ND))
+      allocate(P(NP), ZR(ND), Z1D(ND * NP), Z(ND, NP))
 
       allocate(popnum(ND, N), pop1(ND, N), pop2(ND, N), pop3(ND, N))
 
@@ -397,7 +399,7 @@
 
       lblank=0
 
-      CALL READMOD(IFL,N,ND,TEFF,R,NP,P,Z,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
+      CALL READMOD(IFL,N,ND,TEFF,R,NP,P,Z1D,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
      $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
@@ -440,7 +442,9 @@
         close (IFL)
       ENDIF
 
-      call zcalc(R, P, Z, ND, NP) ! calculate the Z grid
+      call ZGRID(R, P, Z1D, ND, NP) ! calculate the Z grid
+
+      Z = RESHAPE(Z1D, (/ND, NP/))
 
       !***  PRINTOUT OF THE ATOMIC DATA
       AKEY(1:NF)=8H             
@@ -661,8 +665,8 @@
      $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,
      $            WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
      $            LBKG,XLBKG1,XLBKG2,NF)
-      !***  CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
 
+!     CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
       CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
       print *,' Continuum Flux interpolated from the model: ',FNUEC
@@ -902,6 +906,8 @@
 
          DO JP = JFIRST, JLAST
 
+          print*, 'fioss JP cycle here:', JP, JFIRST, JLAST
+
           if (Jfirst.eq.Jlast) print *,'fioss8.for: JP= ',jp
           !***  LOOP FOR EACH ANGLE TO THE ROTATION AXIS
           !***  RESET EMINT
@@ -918,8 +924,12 @@
 
             CALL EXTURAY(Z, ZR, nd, np, jp)
 
+            print*, 'before prepr_f'
+
             CALL PREPR_F(ZR,P,ND,NDDIM,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
      $                   IRIND,IBACK,RRAY,ZRAY,XCMF,NDADDIM,PJPJ)
+
+            print*, 'after prepr_f'
 
             CALL OBSINT10(LTOT,CORE,BCORE,DBDR,PJPJ,
      $                    IRIND,RRAY,ZRAY,XCMF,
@@ -944,12 +954,7 @@
             ENDIF
           ENDDO ! LPHI
 
-!          high resolution (for Nnew = 2000)
- !          do k=1, Nnew   
- !          wav_o(k)=DLAM(k)+RWLAE
- !          flux_o(jp,k)=emint(k)
- !          enddo
-!          high resolution
+          print*, 'after LPHI'
 
 !         AVERAGING THE SPECTRUM FOR CLV CALCULATIONS
 
@@ -994,7 +999,9 @@
 
         ENDDO ! LOOP OVER JP (IMPACT PARAMETERS)
 
-           close(250)
+        print*, 'after JP loop'
+
+        close(250)
 
         !***  THE EXTREME FREQUENCY POINTS DEFINE THE REFERENCE CONTINUUM
         print *

@@ -1,6 +1,7 @@
       module MOD_MOMO
+
       contains
-C**********  MODULNAME: MOMO      ******* 24/03/87  21.21.58.******    58 KARTEN
+
       SUBROUTINE MOMO (OPA,ETA,THOMSON,EDDI,R,XJC,A,B,C,W,ND)
 C***  SOLUTION OF THE MOMENT EQUATION **********************************
 ! Calculates, intent(out),  A,B,C,W, XJC 

@@ -681,19 +681,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         read(201,*) EMLIN(1:NFREQ)
       ELSE
 
-!        PRINT*, 'WE ARE HERE'
-
         CALL LINOP_MS(ID,ABLIN,EMLIN)
- !       print*, emlin
-
-!          PRINT*, 'LA 1'
-!          write(*, *) NFREQ, ID
-!          PRINT*, 'LA 2'
-!          write(*, *) ABLIN(1 : NFREQ)
-!          PRINT*, 'LA 3'
-!          write(*, *) EMLIN(1 : NFREQ)
-
-
 
         if(cards.ABEMLIN==card_params.ABEMLIN_WRITE) then
           write(201,*) NFREQ,ID

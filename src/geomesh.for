@@ -17,25 +17,7 @@
 
       CALL PGRID(NP, ND, RADIUS, P)
 
-      if (allocated(z)) deallocate(z)
-
-      allocate(z(nd * np))
-
-      z(1 : nd * np) = 0.0d0
-
-      do L = 1, ND
-
-         JMAX = NP + 1 - L
-
-         do j = 1, JMAX
-
-            i = (j - 1) * ND + L
-
-            Z(i) = SQRT((radius(l) - P(j)) * (radius(l) + P(j)))
-
-        enddo
-
-      enddo
+      CALL ZGRID(RADIUS, P, Z, ND, NP)
 
       return
 
@@ -99,8 +81,6 @@
 
       NC = 13; NP = ND + NC
 
-      if (allocated(P)) deallocate(P)
-
       allocate(P(NP))
 
       P(1 : NC) = cp(1 : NC)
@@ -112,5 +92,39 @@
       return
 
       end subroutine
+
+      SUBROUTINE ZGRID(RADIUS, P, Z, ND, NP)
+
+      implicit none
+!     THIS SUBROUTINE GENERATES THE GEOMETRICAL POINT MESH IN Z
+
+      integer, intent(in)  :: ND, NP
+      real*8,  intent(in)  :: RADIUS(ND), P(NP)
+
+      real*8,  allocatable, dimension(:), intent(out) :: Z
+
+      integer :: i, j, L, JMAX
+
+      allocate(z(nd * np))
+
+      z(1 : nd * np) = 0.0d0
+
+      do L = 1, ND
+
+         JMAX = NP + 1 - L
+
+         do j = 1, JMAX
+
+            i = (j - 1) * ND + L
+
+            Z(i) = SQRT((radius(l) - P(j)) * (radius(l) + P(j)))
+
+        enddo
+
+      enddo
+
+      RETURN
+
+      END subroutine
 
       end module

@@ -333,7 +333,7 @@ C***  VERTAUSCHEN DER ZEILEN I UND K
 
       END SUBROUTINE inv
 
-      SUBROUTINE MVMD (BX, B, C, JMAX, JMM)
+      SUBROUTINE MVMD(BX, B, C, JMAX, JMM)
 C***  MATRIX (VOLL)  B  *  MATRIX (DIAGONAL)  C
 C***  ERGEBNIS-MATRIX  BX(VOLL)
 C***  AKTUELLES FORMAT BX(JMAX,JMM)=B(JMAX,JMAX)*C(JMAX,JMM)
@@ -351,23 +351,25 @@ C***  WOBEI DIE UEBERZAEHLIGEN ZEILEN DER DIAGONALMATRIX C VERSCHWINDEN
       end subroutine
 
       SUBROUTINE MVV(WX, B, W, JMAX, JMM)
-C***  MATRIX (VOLL)  B  *  VEKTOR W
-C***  ERGEBNIS-VEKTOR  WX
-C***  AKTUELLES FORMAT  WX(JMAX) = B(JMAX,JMM) * W(JMM)
+!     MATRIX (VOLL)  B  *  VEKTOR W
+!     ERGEBNIS-VEKTOR  WX
+!     AKTUELLES FORMAT  WX(JMAX) = B(JMAX,JMM) * W(JMM)
       implicit real*8(a - h, o - z)
 
-      DIMENSION WX(NP), B(NP, NP), W(NP)
+      DIMENSION WX(JMAX), B(JMAX, JMAX), W(JMAX)
       DO 1 I=1,JMAX
       WXI = .0
       DO 2 K=1,JMM
     2 WXI=WXI+B(I,K)*W(K)
     1 WX(I)=WXI
+
       RETURN
+
       end subroutine
 
       SUBROUTINE MDV(A, W, N)
-C***  MATRIX A (DIAGONAL)  *  VEKTOR W
-C***  ERGEBNIS-VEKTOR UEBERSCHREIBT  W
+!     MATRIX A (DIAGONAL)  *  VEKTOR W
+!     ERGEBNIS-VEKTOR UEBERSCHREIBT  W
 
       implicit real*8(a - h, o - z)
 
@@ -379,8 +381,8 @@ C***  ERGEBNIS-VEKTOR UEBERSCHREIBT  W
 
       end subroutine
 
-      SUBROUTINE MSUB (A, B, N)
-C***  A := A - B
+      SUBROUTINE MSUB(A, B, N)
+!     A = A - B
       implicit real*8(a - h, o - z)
 
       DIMENSION A(N, N), B(N, N)
