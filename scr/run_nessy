@@ -491,6 +491,15 @@ RUN=$1
 
 XTERM_CMD_FILE=$FI_DIR$RUN/$XTERM_CMD_FILE_NAME
 
+job_dir=$FI_DIR$RUN/JOB-*
+
+if [ $COMPILATION ] || [ $EXE_UPD ]; then cp -v $FI_EXE -t $job_dir; fi
+
+insert "cd $job_dir; echo -e DIRECTORY: $job_dir'\n'" "$XTERM_CMD_FILE" "r"
+
+xterm_cmd "./$FI_EXE_NAME | tee fioss_test.log; bash"
+
+xterm $XTERM_SET_FRE -title "IT$ODF_IT/$RUN (fioss_test@$(hostname))" -e "bash --rcfile $XTERM_CMD_FILE -i" &
 }
 
 function fi_xt_run

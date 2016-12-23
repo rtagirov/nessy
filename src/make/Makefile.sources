@@ -22,9 +22,7 @@ FIOSS_SRCS= \
 	liop.for\
 	lipo.for\
 	error.for\
-	compgau9.for\
 	compro.for\
-	compxj9.for\
 	coop_m.for\
 	intpl.for\
 	cstabread.for\
@@ -110,9 +108,7 @@ cofreq.for\
 colli.for\
 coma.for\
 como.for\
-compgau9.for\
 partf2.for\
-compxj9.for\
 coop_m.for\
 coopfrq.for\
 cstabread.for\

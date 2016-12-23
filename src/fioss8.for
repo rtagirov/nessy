@@ -132,6 +132,86 @@
 
       END SUBROUTINE
 
+      SUBROUTINE COMPXJ9(ND, NP, JP, NVOPA, DINT, XJK, WLK, IBACK)
+
+C***  Compute mean Intensity (Moment 0)
+C***  add for each impact parameter the intensities DINT
+C***  WLK are the weigths given by the geometry of the grid
+C***  This routine is called within the impact parameter loop
+c     modified: 20.1.01  do loop only up tp LMAX
+
+      implicit real*8(a - h, o - z)
+
+      DIMENSION DINT(:,:),XJK(:,:),WLK(ND,NP)
+      DIMENSION IBACK(ND,NP)
+
+      LMAX=MIN(NP+1-JP,ND)
+
+      DO 1 L=1,LMAX
+
+        DO 2 K=1,NVOPA
+           XJK(L,K)=XJK(L,K)+WLK(L,JP)*((DINT(K,L)
+     $              +DINT(K,IBACK(L,JP)))/2.0d0)
+    2    ENDDO
+    1 ENDDO
+
+      RETURN
+
+      END subroutine
+
+      SUBROUTINE COMPGAU9(XJ,XJK,CWK,XNU,T,DSTEP,ND,NVOPA)
+
+C***  Computation of the Gauss-Profile to fold on to the Thomson Emissivity
+C***  The formula for the thermal Gauss Profile is written in
+C***  Mihalas : Stellar Atmospheres (Second Ed.) page 420
+C***  and has been translated so that the frequencies (XNU) are in
+C***  Doppler Units
+
+      implicit real*8(a-h,o-z)
+
+      parameter (PI=3.1415926535898d0)
+C***  Constant for thermal Gauss-Profile (= m(e)/(4k)) (cgs?)
+      PARAMETER (GAUKONST=1.649538d-12)
+
+      real*4 pot
+      DIMENSION XJ(:,:),XJK(:,:)
+      DIMENSION CWK(:,:),XNU(:),T(ND)
+
+C***  First Reset the Intensity Array
+      XJ(:,:) = 0.0
+      
+C***  now convolve the mean intensity
+C***  with the Gauss profile of thermal electrons
+C***  output: array XJ
+
+      DO L =1,ND
+
+
+
+
+
+        weight = dstep*sqrt(gaukonst/t(L)/pi)
+        DO K=1,NVOPA
+          DO KK=1,NVOPA
+            XNU2=(XNU(K)-XNU(KK))*(XNU(K)-XNU(KK))
+            pot=GAUKONST*XNU2/T(L)
+            XJ(L,K)=XJ(L,K)+XJK(L,KK)
+     $           *exp(-pot)*WEIGHT
+          ENDDO
+
+
+c version with fraction of integral
+          XJ(L,K)=XJ(L,K)/CWK(L,K)
+
+
+
+
+        ENDDO
+      ENDDO
+
+      RETURN
+
+      END subroutine
 
       FUNCTION airlambda(vaclambda)
 !    translate vacuum to the airlambda lambda in A                             
@@ -156,9 +236,7 @@
       use MOD_READMOD
       use MOD_READPOP
       use MOD_READRAD
-      use MOD_COMPGAU9
       use MOD_COMPRO
-      use MOD_COMPXJ9
       use MOD_CWGAUSS9
       use MOD_DECF_SYN
       use MOD_DIFFUS
@@ -267,6 +345,8 @@
       real*8, allocatable, dimension(:, :) ::    EDDI, U
 
       real*8, allocatable, dimension(:, :, :) :: EDDARR
+
+      integer :: NVD
 
       PARAMETER (NBLEND = 6)
       !***  ARRAYS FOR TREATMENT OF LINE OVERLAPS (MAX. DIMENSION: NBLEND)
@@ -713,18 +793,20 @@
       print *,vopa0,vopam,dvopa,nvopa,nvdim()
       
       print *, '2. FIOSS8 NVOPA=', NVOPA
-      ! arrays with dim NVDIM
-      allocate(XJK(ND,NVDIM()))
-      allocate(CWK(ND,NVDIM()))
-      allocate(DINT(NVDIM(),2*ND))
-      allocate(XJ(ND,NVDIM()))
-      allocate(XNU(NVDIM()))
+
+      NVD = NVDIM()
+
+      allocate(XJK(ND, NVD))
+      allocate(CWK(ND, NVD))
+      allocate(DINT(NVD, 2 * ND))
+      allocate(XJ(ND, NVD))
+      allocate(XNU(NVD))
 
       if (nvopa.gt.nvdim()) then
          print *,'nvopa,nvdim',nvopa,nvdim()
          print *,' opa/eta - dimension insufficient'
          stop ' change dimensions'
-         endif
+      endif
 
       do kopa=1,nvopa
          vopa(kopa)=vopa0+(kopa-1)*dvopa
@@ -906,8 +988,6 @@
 
          DO JP = JFIRST, JLAST
 
-          print*, 'fioss JP cycle here:', JP, JFIRST, JLAST
-
           if (Jfirst.eq.Jlast) print *,'fioss8.for: JP= ',jp
           !***  LOOP FOR EACH ANGLE TO THE ROTATION AXIS
           !***  RESET EMINT
@@ -924,37 +1004,37 @@
 
             CALL EXTURAY(Z, ZR, nd, np, jp)
 
-            print*, 'before prepr_f'
+            CALL PREPR_F(ZR,P,ND,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
+     $                   IRIND,IBACK,RRAY,ZRAY,XCMF,NDADDIM)
 
-            CALL PREPR_F(ZR,P,ND,NDDIM,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
-     $                   IRIND,IBACK,RRAY,ZRAY,XCMF,NDADDIM,PJPJ)
-
-            print*, 'after prepr_f'
-
-            CALL OBSINT10(LTOT,CORE,BCORE,DBDR,PJPJ,
+            CALL OBSINT10(LTOT,CORE,BCORE,DBDR,P,
      $                    IRIND,RRAY,ZRAY,XCMF,
-     $                    ND,NP,JP,NVOPA,VOPA0,DVOPA,
+     $                    ND,NP,NVD,JP,NVOPA,VOPA0,DVOPA,
      $                    EMINT,XOBS0,DXOBS,NFOBS,XN,
-     $                    ENTOT,RNE,SIGMAE,RSTAR,NDDIM,
-     $                    XJK,CWK,XJ,DINT,XNU,NDDOUB,RWLAE,DLAM)
+     $                    ENTOT,RNE,SIGMAE,RSTAR,
+     $                    XJ,DINT,NDDOUB,RWLAE,DLAM)
 
             !***  Compute the Line Intensity Field (Moment 0)
             !* add into array XJK
-            if (m.lt.maxiter) CALL COMPXJ9(ND,NP,JP,NVopa,DINT,XJK,WLK,IBACK,NDDIM)
+            if (m.lt.maxiter) CALL COMPXJ9(ND,NP,JP,NVopa,DINT,XJK,WLK,IBACK)
 
             !***  Compute the Profile by adding the new Intensities per JP
             !     add into array PROFILE
-            IF (NPHI.GT.1) THEN
-              WPHI=1./(NPHI-1)
-              IF (LPHI.EQ.1 .OR. LPHI.EQ.NPHI) WPHI=WPHI/2.
-              WPHI=WPHI*WE
-              CALL COMPRO (PROFILE,EMINT,NFOBS,WPHI,JFIRST,JLAST)
-            ELSE
-              CALL COMPRO (PROFILE,EMINT,NFOBS,WE,JFIRST,JLAST)
-            ENDIF
-          ENDDO ! LPHI
 
-          print*, 'after LPHI'
+            IF (NPHI .GT. 1) THEN
+
+                WPHI = 1. / (NPHI - 1)
+                IF (LPHI.EQ.1 .OR. LPHI.EQ.NPHI) WPHI=WPHI/2.
+                WPHI=WPHI*WE
+                CALL COMPRO (PROFILE,EMINT,NFOBS,WPHI,JFIRST,JLAST)
+
+            ELSE
+
+                CALL COMPRO (PROFILE,EMINT,NFOBS,WE,JFIRST,JLAST)
+
+            ENDIF
+
+          ENDDO ! LPHI
 
 !         AVERAGING THE SPECTRUM FOR CLV CALCULATIONS
 
@@ -1015,12 +1095,12 @@
               CON=((NFOBS-K)*PROF1+(K-1)*PROF2)/real(NFOBS-1)
               print *,' K=',K,PROFILE(K)
               PROFILE(K)=PROFILE(K)/CON
-          ! else
-          !!   print *,k,dlam(k),rwlae
-          !   alam=DLAM(k)+RWLAE
-          !!   dnudlam=2.99792456e18/alam/alam
-          !   wrat=alam/rwlae
-          !   PROFILE(K)=PROFILE(K)*wrat/fnucont
+
+
+
+
+
+
            endif
         enddo
         print '(A,1pe12.4,A,e12.4)',
@@ -1037,8 +1117,7 @@
         !***  Compute the new mean intensity XJ for use in Obsint
         !***  Electron-Scattering Computation and fold with thermal
         !***  Gauss-Profile
-        if (m.lt.maxiter)
-     &     CALL COMPGAU9(XJ,XJK,CWK,XNU,T,DSTEP,NDDIM,ND,NVOPA)
+        if (m.lt.maxiter) CALL COMPGAU9(XJ,XJK,CWK,XNU,T,DSTEP,ND,NVOPA)
 
       ENDDO DO_ITER
 !***  200: END OF el-sca MAXITER LOOP ----------------------------------------------

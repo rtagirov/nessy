@@ -434,7 +434,6 @@ c     print *,' n .ne. nlevel'
 cstop ' adjust grid dimensions - nlevel'
 cendif
 C***  READING VELOCITY ASPLUND 2000, A&A 359, 729
-      print *, 'before VELO'
       IF (ADDASPL) THEN
       open (unit=9999,file='VELO',STATUS='OLD')
       DO 9999 L=1,NDDIM
@@ -444,7 +443,6 @@ C***  READING VELOCITY ASPLUND 2000, A&A 359, 729
  9999 continue
       CLOSE (9999)
       ENDIF
-        print *, 'after VELO'
 
 CMH   IF ADDTURB TRUE THEN READ THE TURBULENCE BROADENING FROM FAL_VD
       IF (ADDTURB) THEN
@@ -457,7 +455,6 @@ CMH   IF ADDTURB TRUE THEN READ THE TURBULENCE BROADENING FROM FAL_VD
       ENDDO
       CLOSE (9999)
       ENDIF
-        print *, 'after FAL'
 C**********************************************************************
       do l=1,nddim
          temp(l)   = t(l)
@@ -486,7 +483,6 @@ C***    original:
 c         vturb(l)  = vdopp
         PRINT*,'ASPLUND VELOCITY NOT ACTIVE',vturb(l)
       ENDIF
-        print *, 'after FAL broadening'
 
 C***  END OF CHANGES 
 C****************************************************************************

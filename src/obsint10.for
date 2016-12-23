@@ -1,28 +1,30 @@
       module MOD_OBSINT10
+
       contains
-      SUBROUTINE OBSINT10(LTOT,CORE,BCORE,DBDR,PJPJ
-     $                  ,IRIND,RRAY,ZRAY,XCMF
-     $                  ,ND,NP,JP,NVOPA,VOPA0,DVOPA
-     $                  ,EMINT,XOBS0,DXOBS,NFOBR,XN
-     $                  ,ENTOT,RNE,SIGMAE,RSTAR,NDDIM
-     $                  ,XJK,CWK,XJ,DINT,XNU,NDDOUB,  RWLAE,DLAM)
-!***********************************************************************
+
+      SUBROUTINE OBSINT10(LTOT,CORE,BCORE,DBDR,ip,
+     $                    IRIND,RRAY,ZRAY,XCMF,
+     $                    ND,NP,NVD,JP,NVOPA,VOPA0,DVOPA,
+     $                    EMINT,XOBS0,DXOBS,NFOBR,XN,
+     $                    ENTOT,RNE,SIGMAE,RSTAR,
+     $                    XJ,DINT,NDDOUB,RWLAE,DLAM)
+
 !***  FORMAL INTEGRATION ALONG A RAY AT IMPACT PARAMETER JP
-!***********************************************************************
-!
 ! ==> test version: see for "cpr" for opcity prints...
-!
-!
+
       use MOD_CUBIC
       use MOD_DECF_SYN
       use OPINT
+
       implicit real*8(a-h,o-z)
-      real*8 :: RWLAE, DLAM(:)
-      !include '../inc/OPINT.FOR'
-      real*8 :: XJK(:,:),CWK(:,:),DINT(:,:),XJ(:,:),XNU(:)
+      real*8 :: RWLAE, DLAM(NFOBR)
+      real*8 :: DINT(NVD, 2 * ND), XJ(ND, NVD)
       DIMENSION RRAY(LTOT),ZRAY(LTOT),XCMF(LTOT)
       DIMENSION EMINT(NFOBR)
-      DIMENSION ENTOT(NDDIM),RNE(NDDIM)
+      DIMENSION ENTOT(ND), RNE(ND)
+
+      real*8, dimension(NP), intent(in) :: ip
+
       INTEGER   IRIND(LTOT)
       real*8 :: conf
       real*8,allocatable :: TAUSUM(:,:)  ! needed to print out the TAU=1 values
@@ -39,11 +41,6 @@ C***  THE FOLLOWING VECTORS ARE LOCAL IN ORDER TO SUPPORT AUTO-VECTORIZATION
 cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
       DIMENSION QIWI(NMAX),PIWI(NMAX)
       LOGICAL CORE
-
-      !***  WPI = SQRT(PI)
-      ! DATA WPI /1.7724538509055d0/
-      ! write(9998,*) LTOT, NFOBR
-      ! print *,'obsint10: n, nfobr:',  N, NFOBR
 
       IF (LTOT.LE.1) STOP ' OBSINT-1'
 
@@ -62,6 +59,7 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
       !***  START AT FAR END OF GRID (from LTOT to 1)
       !***  (integration is from near to far within one grid step)
       LOOP_L: DO L=LTOT-1,1,-1
+
         !*** L  is the near side grid point
         !*** L1 is the far side point
         L1=L+1
@@ -78,21 +76,25 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
         !***  avoid detailed integration through the core
         IF (CORE .AND. (L1 .EQ. ND)) N=2
         DX=DELX/FLOAT(N-1)
+
         IF (N .GT. NMAX) THEN
           print *,' N, delx, dx: ',N, delx, dx
           STOP 'DIMENSION NMAX IS INSUFFICIENT - OBSINT'
-          ENDIF
+        ENDIF
+
         if (n.gt.2) then
           !***        N>2 BRANCH ==> implies interpolation between grid points
           !
           !***  CUBIC INTERPOLATION OF Z AS FUNCTION OF XCMF
           !***  CALCULATE THE COEFFICIENTS P1 ... P4 FOR THE INTERVAL L,L1
-          CALL CUBIC (L1,LTOT,ZRAY,XCMF,P1,P2,P3,P4)
+          CALL CUBIC(L1,LTOT,ZRAY,XCMF,P1,P2,P3,P4)
           !***  find grid-z and correction
-          zl    = sqrt(rray(l)*rray(l)-pjpj)
-          zl1  = sqrt(rray(l1)*rray(l1)-pjpj)
-          dizl  = zl  -abs(zray(l))
-          dizl1= zl1-abs(zray(l1))
+          zl  = sqrt((rray(l) -  ip(jp)) * (rray(l)  + ip(jp)))
+          zll = sqrt((rray(ll) - ip(jp)) * (rray(ll) + ip(jp)))
+
+          dizl  = zl  - abs(zray(l))
+          dizl1 = zl1 - abs(zray(l1))
+
           !***  INTEGRATE FROM NEAR TO FAR
           LOOP_N:DO I=1,N
             XI=FLOAT(I-1)*DX+XCMF(L)
@@ -107,18 +109,11 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
             p=(zFINE(i)-zRAY(L1))/(zRAY(L)-zRAY(L1))
             q=1.-p
             diffz = Q*dizl1+P*dizl
+
             gridz = diffz+abs(zfine(I))
-            rfine=SQRT(PJPJ+gridz*gridz)
-            !! sig = (rfine-rray(l))*(rfine-rray(l1))/abs(rfine)
-            ! print *, i,zray(l),zfine(i),zray(l1)
-            ! print *, zl,gridz,zl1
-            ! print *, p,q
-            ! print *, dizl,diffz,dizl1
-            ! print *, rray(l),rfine,rray(l1)
-            ! print *,sig
-            !! if (sig.gt.1.e-12) stop ' rfine-interpol'
-            !-old  RFINE=SQRT(PJPJ+ZFINE(I)*ZFINE(I))
-            !-old  RFINE=SQRT(PJPJ+ZFINE(I)*ZFINE(I))
+
+            rfine = SQRT(ip(jp) * ip(jp) + gridz * gridz)
+
             !***  now ... INTERPOLATED LINEARLY IN RADIUS R
             P=(RFINE-RRAY(L))/(RRAY(L1)-RRAY(L))
             Q=1.-P
@@ -141,12 +136,14 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
           IF (CORE .AND. (L1 .EQ. ND)) XFINE(2)=-XCMF(L1)
           ZFINE(1)=zray(l)
           ZFINE(2)=zray(l1)
-          ! print *,'linop10: zfine',zfine(1)-zfine(2)
+
           !***  outward integration away from the core
           IF (CORE .AND. (L1 .EQ. ND)) ZFINE(2)=abs(zray(l1))
         endif
+
         if(cards.PRINT_TAU) ZFINE_SUM(L)=ZFINE(1)-ZFINE(N)+ZFINE_SUM(L+1)
         !***  loop over the number of inter-mesh grid points
+
         DO 3 I=1,N
           !***  loop over all observers-frame frequency points
           DO 13 K=1,NFOBR
@@ -230,17 +227,15 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
             ETA   = QIWI(I)*ETATL + PIWI(I)*ETATL1
               !***  CALCULATE SOURCE FUNCTION
             SFINE(K,I)=ETA/OPAFINE(K,I)
-cpr
-c               if (abs(xi).lt.2.) 
-c     $         print '(2I5,3E10.2)',L,L1,OPAFINE(K,I),ETA,SFINE(K,I)
+
  13       ENDDO
  3      ENDDO
+
         !***  ESTABLISH DTAU(I) = OPTICAL DEPTH INCREMENT BETWEEN I-1 AND I
         DO I=2,N
           DELTAZ=(ZFINE(I-1)-ZFINE(I))
           DO K=1,NFOBR
             DTAU(K,I)=0.5*(OPAFINE(K,I-1)+OPAFINE(K,I))*DELTAZ
-c            write(9998,*) l,i,k,DELTAZ,DTAU(K,I)
             
           ENDDO
         ENDDO
@@ -249,42 +244,14 @@ c            write(9998,*) l,i,k,DELTAZ,DTAU(K,I)
         !***  note: i=1 is the near side (=L) and i=n the far (=L1)
         !*** Warning: TAU is the DTAU over the depth points L
         TAU(1:NFOBR,1)=0.
-        DO I=2,N
-          ! print *,'1. TAU =',TAU(K,I-1),DTAU(k,I)
+        DO I = 2, N
+
           TAU(1:NFOBR,I)=TAU(1:NFOBR,I-1)+DTAU(1:NFOBR,I)
-          !*** MH: Attention: tau here actually is the dtau increment!!!?
-          !*** MH: to get optical depth summation over tau!
-          !*** TAU(k,i) is the TAU per depth point l
-                    !  l    i    k     ZFINE       TAU
-          ! write(9998,'(i5,1x,i5,1x,i5,1x,e18.10e4,1x,e18.10e4)')
-          ! $                      l,i,k,ZFINE(I),TAU(K,I)
+
         ENDDO
-
-
-!       print*, NFOBR, JP, L, tau(1000., 2)
-
-!       output for the contribution functions
-
-!       print*, N
-
-     
-
-  !   conf=sfine(1000,i)*exp(-tau(1000,i))*TAU(1000,I)
-  !   print*, 'test', i, N, TAU(1000, I)
-
- !       if (L .le. ND) then
- !      print*, 'contr. func.', JP, L, SFINE(1000,2)*OPAFINE(1000,2),  
- !    * SFINE(1000,2)
- !      write(250,280), JP, L,SFINE(1000,2)*OPAFINE(1000,2)
- !      endif
-     
-! 280    format(I3, 2x, I3, 2x, E12.4, E12.4)
-
-*       output for the contribution functions
 
         if(CARDS.PRINT_TAU) TAUSUM(l,1:NFOBR)=TAU(1:NFOBR,N)
 
-        
         if ((JP .eq. 1) .and. (L .le. ND-1)) then   ! do the job only for the central ray and for the near-side
         mu_c=1.  ! disc center
         mu_l=0.31225  ! R/R_sun=0.95
@@ -297,60 +264,33 @@ c            write(9998,*) l,i,k,DELTAZ,DTAU(K,I)
         contr_c(l)=0.
         contr_l(l)=0.
 
-
-  
-
         do ii=1, NFOBR
- !       contr_c_fr(l)=SFINE(ii,1)*OPAFINE(ii,1)*exp(-tau_r(ii)/mu_c)/mu_c   
 
-        contr_c(l)=contr_c(l)+SFINE(ii,1)*OPAFINE(ii,1)*exp(-tau_r(ii)/mu_c)/mu_c
-        contr_l(l)=contr_l(l)+SFINE(ii,1)*OPAFINE(ii,1)*exp(-tau_r(ii)/mu_l)/mu_l 
+           contr_c(l)=contr_c(l)+SFINE(ii,1)*OPAFINE(ii,1)*exp(-tau_r(ii)/mu_c)/mu_c
+           contr_l(l)=contr_l(l)+SFINE(ii,1)*OPAFINE(ii,1)*exp(-tau_r(ii)/mu_l)/mu_l 
+
         enddo
 
         contr_c(l)=contr_c(l)/NFOBR
         contr_l(l)=contr_l(l)/NFOBR
 
-        if (contr_c(l) .lt. 1.E-30) then
-        contr_c(l)=0.
-        endif
+        if (contr_c(l) .lt. 1.E-30) contr_c(l)=0.
 
-        if (contr_l(l) .lt. 1.E-30) then
-        contr_l(l)=0.
-        endif
-
-
-
+        if (contr_l(l) .lt. 1.E-30) contr_l(l)=0.
 
         write(250,280), L, contr_c(l), contr_l(l) 
 
-
-
-
         endif
 
- 280        format(I3, 2x, E12.4, E12.4) 
+ 280    format(I3, 2x, E12.4, E12.4)
 
-c         print '(i5,5e15.4)',L,(tau(k,n),k=1,nfobr)
-C***  IF TAUSC IS LESS THAN 1.E-10:
-C***     DON'T ADD ANY NEW INTENSITY TO PREVENT DIVISION BY DTAU=.0 
-
-C***  CALCULATE INTEGRATION WEIGHTS EXP(-TAU) DTAU
-c     it is assumed that S is a linear function of tau
-c     thus:
-c          Int from tau1 to tau2 e**-t *[S1+(S2-S1)/(tau2-tau1)*(t-tau1)] dt
-c
-c     note: Int t*e**-t dt = -e**-t - t*e**-t
-c       in the S1 contribution the exp**-tau2 terms cancel
-c       in consequtive depth points the S2*exp**-tau2 cancels with the next
-c                                       S2*exp**-tau2 term (new S1 term)
-c
         DO 53 K=1,NFOBR
           IF (TAU(K,N) .GT. 1.E-10) THEN
-            ! EXPTAU=EXP(-TAU(1))
             EXPTAU=1.
             WTAU(K,1)=EXPTAU+ (EXP(-TAU(K,2))-EXPTAU)/DTAU(K,2)
           ENDIF
  53     ENDDO
+
         IF (N.GT.2) THEN
           DO 6 I=2,N-1
             DO 63 K=1,NFOBR
@@ -365,12 +305,14 @@ c
 63          ENDDO
  6        ENDDO
         ENDIF
+
         DO K=1,NFOBR
           IF (TAU(K,N) .GT. 1.E-10) THEN
             EXPTAU=EXP(-TAU(K,N))
             WTAU(K,N)=-EXPTAU-(EXPTAU-EXP(-TAU(K,N-1)))/DTAU(K,N)
           ENDIF
         ENDDO
+
         IF (CORE .AND. (L .EQ. ND)) THEN
           do 40 k=1,nfobr
             XO=XOBS0+K*DXOBS
@@ -399,16 +341,9 @@ c
  83         ENDDO
  93       ENDDO
 
-
-
           !*** the formal integration is finished
           !*** now store the intensity in the array DINT
           !*** DINT is the co-moving frame intensity
-
-
-
-
-
 
           DO KOPA=1,NVOPA
             XI=vopa0+(kopa-1)*dvopa
@@ -420,30 +355,26 @@ c
           ENDDO
         ENDIF
 
-
-
-
-
-
-
-
-
-
-
       ENDDO LOOP_L
+
       !***  END OF LOOP OVER GRID POINTS
       !*** sum over the depthpoints and when > 1 print out
-      IF(CARDS.PRINT_TAU)
-     &   call PRINTTAU(NFOBR,TAUSUM,ZFINE_SUM,ND,RSTAR,RWLAE,DLAM,JP)
+
+      IF(CARDS.PRINT_TAU) call PRINTTAU(NFOBR,TAUSUM,ZFINE_SUM,ND,RSTAR,RWLAE,DLAM,JP)
       if(allocated(ZFINE_SUM)) deallocate(ZFINE_SUM)
       if(allocated(TAUSUM)   ) deallocate(TAUSUM)
+
       RETURN
+
       END subroutine
 
       subroutine PRINTTAU(NFOBR,TAUSUM,ZFINE_SUM,ND,RSTAR,RWLAE,DLAM,JP)
+
       use interpolation
       use utils
+
       implicit none
+
       integer,intent(in):: NFOBR,ND,JP  !# of Freq/Depth points, Impact Parameter
       real*8, intent(in):: TAUSUM(:,:),RSTAR ! L,K
       real*8, intent(in):: RWLAE,DLAM(:)     ! central frequency, delta to RWLAE
@@ -488,10 +419,10 @@ c*** call PRINTTAU only for the central ray
         tau1=taussum(L-1)
         tau2=taussum(L)
         FH(K)=ZZ1-(tau1-1.)/(tau1-tau2)*(ZZ1-ZZ2)
-!        print*, 'test', K, FH(K)
+
 
          if ((JP .eq. 1) .and. (K .eq. 1000)) then
-!         print*, 'NFOBR', NFOBR, L, Z(L)
+
          open(270, file='atmosinfo.txt',status='unknown') 
          do L=1, ND         
 
