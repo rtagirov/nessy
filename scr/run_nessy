@@ -755,7 +755,7 @@ for RUN in $RUNS; do
 
        xterm_cmd "cd $LBKG_DIR"; xterm_cmd "opacity"; xterm_cmd "cd $LBKG_RUN"
 
-       xterm $XTERM_OPA_SET -title IT${ODF_IT}_IT$NEXT_ODF_IT/$RUN -e "bash --rcfile $XTERM_CMD_FILE -i" &
+       xterm $XTERM_OPA_SET -title "IT${ODF_IT}_IT$NEXT_ODF_IT/$RUN (opacity@$(hostname))" -e "bash --rcfile $XTERM_CMD_FILE -i" &
 
        if [ $i -ne $(echo $RUNS | wc -w) ]; then echo; read -t 3 -p "The ODF calculation for the next run will start in 3 seconds..."; fi
 

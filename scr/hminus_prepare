@@ -1,7 +1,6 @@
 #!/bin/bash
-#****************************************************************
 
-source ~/sim-rinat/sync_pool/aux_func.sh
+source $scr/aux_func.sh
 
 if [ -z "$1" ] || [ -z "$2" ]; then abort "One or more arguments are missing."; fi
 
@@ -12,26 +11,23 @@ PREV_ODF_IT=$(echo $ODF_IT-1 | bc -l)
 
 RUN=$2
 
-INIT_DIR=~/sim-rinat/Asplund_C_final
+INIT_DIR=$sim/runs
 
 PREV_RUN_DIR=$INIT_DIR/hminus/IT$PREV_ODF_IT/$RUN
 
-BASE_DIR=/nfs/projects/cosi
-DATA_DIR=${BASE_DIR}/input
-ORIG_SRC=~/sim-rinat/cosi/cosi_rinat/
+ORIG_SRC=$src
 ORIG_EXE_FILE=$PREV_RUN_DIR/hminus.exe
 DATOM_FILE=$PREV_RUN_DIR/DATOM
-FGRID_FILE=${DATA_DIR}/fgrid/fgridHZN.dat
+FGRID_FILE=$inp/fgr/fgridHZN.dat
 FALVD_FILE=$PREV_RUN_DIR/FAL_VD
-CROSS_SECTION_FILES="${BASE_DIR}/input/cross_sections/002/"
+CROSS_SECTION_FILES=$inp/crs/002
 CHEMIN_FILE=$PREV_RUN_DIR/chem.in
 RUN_DIR=$INIT_DIR/hminus/IT${ODF_IT}/$RUN
-#DIR_EXE=dir_exe/
 
 if [ ${ODF_IT} != 0 ]; then
 
    __OLD_COSI=$PREV_RUN_DIR
-   FIOSS_DIR=$INIT_DIR/fioss/calc/runs/runs/IT${PREV_ODF_IT}/$RUN
+   FIOSS_DIR=$INIT_DIR/fioss/IT${PREV_ODF_IT}/$RUN
    POPNUM=${FIOSS_DIR}/POPNUM
    RADIOC=${FIOSS_DIR}/RADIOC
    RADIOL=${FIOSS_DIR}/RADIOL
@@ -51,10 +47,15 @@ function error_ifunset() {
 }
 
 if [[ "$0" =~ '(^-)|(/bin/)bash' ]]; then
+
   echo "Script must be called, not sourced!"
+
 else
-[[ "$COSI_BIN" == "" ]] && echo "Variable COSI_BIN must be set"
-source $COSI_BIN/helper_scripts
+
+[[ "$scr" == "" ]] && echo "Variable scr must be set"
+
+source $scr/helper_scripts
+
 trap error ERR
 
 change_dir $INIT_DIR
@@ -63,8 +64,6 @@ change_dir $INIT_DIR
 
 THIS_SCRIPT=$0
 echo "===================================================================================================
-BASE_DIR =            $BASE_DIR
-DATA_DIR =            $DATA_DIR
 DATOM_FILE =          $DATOM_FILE
 FGRID_FILE =          $FGRID_FILE
 CROSS_SECTION_FILES = $CROSS_SECTION_FILES
@@ -82,11 +81,9 @@ error_ifunset CROSS_SECTION_FILES DATOM_FILE FGRID_FILE FALVD_FILE RUN_DIR ORIG_
 rm_dir $RUN_DIR; create_dir $RUN_DIR
 
 pushd . &> /dev/null
-cd        ${ORIG_SRC}
-#tar -czf  ${RUN_DIR}/cosi-src.tgz `find -iname '*.for' ` `find -iname 'Makefile*'`
-popd &> /dev/null
+cd        $ORIG_SRC
 
-#[[ -e hminus-fioss.settings ]] && cp hminus-fioss.settings $RUN_DIR
+popd &> /dev/null
 
 change_dir ${RUN_DIR}
 

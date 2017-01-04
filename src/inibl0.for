@@ -854,8 +854,8 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !     Rinat, use it to calculate continuum
 
-      ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)*0.
-      EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)*0.
+      ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)!*0.
+      EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)!*0.
 
 
 !      ABLIN(1:NFREQ)= ABLIN(1:NFREQ)*0.
