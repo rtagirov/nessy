@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
+if [ -z "$scr" ]; then echo "Variable scr must be declared in .bashrc!"; exit; fi
 
 source $scr/aux_func.sh
 source $scr/helper_scripts
@@ -27,7 +27,7 @@ SPE_DIR=./mdisp
 SPE_TEMP_FILE=./spec.uvi
 SPE_FILE=./SPE_UVI
 
-rm -rf title abemlin output output2
+rm -rf title abemlin output output2 ctrl-* JOB-*
 
 rm -f $CLV_FILE $TAU_FILE $SPE_FILE log.uvi
 
@@ -243,4 +243,4 @@ catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
 
 for DIR in $DIRS; do cat $DIR/frequencies.log >> log.uvi; done
 
-rm -rf title abemlin output output2
+rm -rf title abemlin output output2 $DIRS ctrl-*

@@ -68,10 +68,10 @@ CMH	CP: cross section for collisions of Hminus with protons
       THETA32 = THETA*THETART
       THETA13 = THETA**(1./3.)
 
-!      CE = (10.**(-8.7))/THETA32
-      CE = 10*(10.**(-8.7))/THETA32
-!      CP = 10.**(-7.4)*THETA13
-      CP = 10*10.**(-7.4)*THETA13
+      CE = (10.**(-8.7))/THETA32
+!      CE = 10*(10.**(-8.7))/THETA32
+      CP = 10.**(-7.4)*THETA13
+!      CP = 10*10.**(-7.4)*THETA13
       CH = 10.**(-10.9+0.5*THETA)/THETA32
 
       if (natom.gt.30) stop "colli - natom"
@@ -415,8 +415,8 @@ CMH****************************************************************
 
       IF (LEVEL(LOW) .EQ. 'H MINUS..1' .AND. LEVEL(NUP) .EQ. 'H I......1') THEN
 
-!         ElecProtHydTerm = Hminfac * (CE * ENE + CP * POPHIIL + CH * POPHIL)
-         ElecProtHydTerm = Hminfac * (CE * ENE + CP * POPHIIL)
+         ElecProtHydTerm = Hminfac * (CE * ENE + CP * POPHIIL + CH * POPHIL)
+!         ElecProtHydTerm = Hminfac * (CE * ENE + CP * POPHIIL)
 
          CRATE(LOW, NUP) = CRATE(LOW, NUP) + ElecProtHydTerm
          CRATE(NUP, LOW) = CRATE(NUP, LOW) + ElecProtHydTerm * ENLTE(LOW) / ENLTE(NUP)

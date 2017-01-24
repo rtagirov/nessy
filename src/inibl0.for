@@ -544,12 +544,7 @@ C     **** calculated only in the first and the last frequency *****
 !GFF_TEMP is the gaunt factor for any Rydberg system as a function of temperature and frequency
 !See the subroutine for more details
 
-!              PRINT*, 'ACHTUNG: FR =' , FR
-
-              CALL GFF_TEMP(1, 1.0D0, PlanckConstantEV * FR,
-     $                      BoltzmannConstantEV * T, SG)
-
-!              SG = SG * 15.0D0
+              CALL GFF_TEMP(1, 1.0D0, PlanckConstantEV * FR, BoltzmannConstantEV * T, SG)
 
               SF2=SF2+SG-UN
             endif
@@ -558,7 +553,8 @@ C     **** calculated only in the first and the last frequency *****
             X1=UN-X
 !***********************************************************************************
 !RINAT TAGIROV, ALEXANDER SHAPIRO
-            SFF=X1*SF1*SF2 !!! X1 has been added to account for the induced emission for every element except H^- (the induced emission for H^- was taken into account in hminusff)
+            SFF = X1 * SF1 * SF2 !!! X1 has been added to account for the induced emission for every element except H^- (the induced emission for H^- was taken into account in hminusff)
+!            SFF = SF1 * SF2 !!! X1 has been added to account for the induced emission for every element except H^- (the induced emission for H^- was taken into account in hminusff)
 !***********************************************************************************
           ENDIF ! IE==IELHM
 
