@@ -195,7 +195,7 @@
       REAL*8, DIMENSION(:), ALLOCATABLE :: H, TEMP, ELEC_CONC
       REAL*8, DIMENSION(:), ALLOCATABLE :: HEAVY_ELEM_CONC, V_TURB
 
-      REAL*8, DIMENSION(:), ALLOCATABLE :: rho, pressure, zz
+      REAL*8, DIMENSION(:), ALLOCATABLE :: rho, pressure, vturb
 
       character (len = 10000) ::           header
 
@@ -263,7 +263,7 @@
           ALLOCATE(temp(LINE_NUM))
           ALLOCATE(pressure(LINE_NUM))
           ALLOCATE(elec_conc(LINE_NUM))
-          ALLOCATE(zz(LINE_NUM))
+          ALLOCATE(vturb(LINE_NUM))
 
           OPEN(UNIT = FILE_UNIT, FILE = FILENAME, ACTION = 'READ')
 
@@ -271,7 +271,7 @@
 
           DO I = 1, LINE_NUM
 
-             READ(FILE_UNIT, *) rho(i), temp(i), pressure(i), elec_conc(i), w, w, zz(i)
+             READ(FILE_UNIT, *) rho(i), temp(i), pressure(i), elec_conc(i), w, w, vturb(i)
 
           ENDDO
 
@@ -283,7 +283,7 @@
               CASE('2'); ARRAY(1 : LINE_NUM) = temp(1 : LINE_NUM)
               CASE('3'); ARRAY(1 : LINE_NUM) = pressure(1 : LINE_NUM)
               CASE('4'); ARRAY(1 : LINE_NUM) = elec_conc(1 : LINE_NUM)
-              CASE('7'); ARRAY(1 : LINE_NUM) = zz(1 : LINE_NUM)
+              CASE('7'); ARRAY(1 : LINE_NUM) = vturb(1 : LINE_NUM)
 
               CASE DEFAULT; STOP 'FUNCTION READ_ATM_MOD: COL_NUM ARGUMENT IS NOT RECOGNIZED. ABORT.'
 
@@ -293,8 +293,7 @@
           DEALLOCATE(TEMP)
           DEALLOCATE(elec_conc)
           DEALLOCATE(pressure)
-          DEALLOCATE(zz)
-          
+          DEALLOCATE(vturb)
 
       endif
 

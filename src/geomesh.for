@@ -43,7 +43,7 @@
 
       real*8, allocatable, dimension(:), intent(out) :: T, entot, radius
 
-      real*8, allocatable, dimension(:) :: elec_conc, rho, zz, pressure
+      real*8, allocatable, dimension(:) :: elec_conc, rho, vturb, pressure
 
       real*8, allocatable, dimension(:) :: entotn, delr
 
@@ -86,7 +86,7 @@
           if(allocated(rho))       deallocate(rho)
           if(allocated(pressure))  deallocate(pressure)
           if(allocated(elec_conc)) deallocate(elec_conc)
-          if(allocated(zz))        deallocate(zz)
+          if(allocated(vturb))     deallocate(vturb)
           if(allocated(entotn))    deallocate(entotn)
           if(allocated(delr))      deallocate(delr)
 
@@ -96,7 +96,7 @@
           allocate(rho(ND))
           allocate(pressure(ND))
           allocate(elec_conc(ND))
-          allocate(zz(ND))
+          allocate(vturb(ND))
           allocate(entotn(ND))
           allocate(delr(ND))
 
@@ -104,13 +104,13 @@
           T =         read_atm_mod(kur_mod_file, '2')
           pressure =  read_atm_mod(kur_mod_file, '3')
           elec_conc = read_atm_mod(kur_mod_file, '4')
-          zz =        read_atm_mod(kur_mod_file, '7')
+          vturb =        read_atm_mod(kur_mod_file, '7')
 
 !          pressure(L) = rho(L) * 10.0**4.44 ! this is from the old version and I do not understand what's it doing there
 
 !         TAKING INTO ACCOUNT TURBULEN PRESSURE
               
-          ENTOTN = pressure / (AK * T + 0.5 * ATMEAN * MUN * ZZ**2.)
+          ENTOTN = pressure / (AK * T + 0.5 * ATMEAN * MUN * vturb**2.)
 
           ENTOT  = ENTOTN - elec_conc
 
@@ -129,7 +129,7 @@
       DO K = 1, ND - 1; RADIUS(ND - K) = RADIUS(ND - K + 1) + DELR(ND - K); ENDDO
 
       deallocate(rho)
-      deallocate(zz)
+      deallocate(vturb)
       deallocate(elec_conc)
       deallocate(pressure)
       deallocate(delr)
