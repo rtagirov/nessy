@@ -254,7 +254,7 @@
 
       if (filename .eq. kur_mod_file) then
 
-          LINE_NUM = NUM_OF_LINES(filename) - 1
+          LINE_NUM = NUM_OF_LINES(filename) - 1 ! minus one because of the header
 
           IF (ALLOCATED(ARRAY)) DEALLOCATE(ARRAY)
 
