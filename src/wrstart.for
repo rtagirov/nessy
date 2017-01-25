@@ -57,14 +57,14 @@
 
       INTEGER XLBKG1, XLBKG2
       LOGICAL LBKG
-      LOGICAL TTABLE, TPLOT, SPHERIC
+      LOGICAL TTABLE, TPLOT, SPHERIC, FAL
 
       CHARACTER MODHEAD*104
 
       CHARACTER   NAME*10, fstring*24
       integer timer
 
-      real*8 ATMEAN
+      real*8 ATMEAN, AMU
 
       integer NA
       REAL*8 CSARR(5000,4)
@@ -77,6 +77,8 @@
 
       REAL*8 :: H
 
+      DATA AMU /1.660531d-24/
+
       call FDATE(fstring)
       call TIC(timer)
 
@@ -88,7 +90,7 @@
      $             NLAST,WAVARR,SIGARR,NFDIM)
 
 !     DECODING INPUT DATA
-      CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
+      CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,FAL,LBKG,XLBKG1,XLBKG2,
      $               TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
@@ -106,7 +108,7 @@
 
       CALL FGRID(NFDIM,NF,XLAMBDA,FWEIGHT,AKEY,NOM,SYMBOL,NATOM,N,NCHARG,ELEVEL,EION,EINST)
 
-      CALL GEOMESH(RADIUS, ENTOT, T, P, Z, RSTAR, ND, NP)
+      CALL GEOMESH(RADIUS, ENTOT, T, FAL, P, Z, RSTAR, AMU, ATMEAN, ND, NP)
 
       allocate(XJC(ND))
       allocate(XJCARR(ND, NF))
@@ -232,8 +234,8 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
          ALLOCATE(ELEC_CONC(ND))
          ALLOCATE(HEAVY_ELEM_CONC(ND))
 
-         ELEC_CONC =       READ_ATM_MOD(ATM_MOD_FILE, '3')
-         HEAVY_ELEM_CONC = READ_ATM_MOD(ATM_MOD_FILE, '4')
+         ELEC_CONC =       READ_ATM_MOD(fal_mod_file, '3')
+         HEAVY_ELEM_CONC = READ_ATM_MOD(fal_mod_file, '4')
 
          RNE(1 : ND) = ELEC_CONC(1 : ND) / HEAVY_ELEM_CONC(1 : ND)
 

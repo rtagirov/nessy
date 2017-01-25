@@ -623,8 +623,8 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
       IF (CONST_ELEC) THEN ! PRE-SET ELECTRON CONCENTRATION
 
-          ELEC_CONC =       READ_ATM_MOD(ATM_MOD_FILE, '3')
-          HEAVY_ELEM_CONC = READ_ATM_MOD(ATM_MOD_FILE, '4')
+          ELEC_CONC =       READ_ATM_MOD(fal_mod_file, '3')
+          HEAVY_ELEM_CONC = READ_ATM_MOD(fal_mod_file, '4')
 
           EN(NPLUS1) = ELEC_CONC(L) / HEAVY_ELEM_CONC(L)
 
@@ -1217,7 +1217,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       OPEN(UNIT = 1935, FILE = 'FAL_VD')
 
-      CALL RM_FILE(UPD_ATM_MOD_FILE, '-f'); CALL OPEN_TO_APPEND(1936, UPD_ATM_MOD_FILE)
+      CALL RM_FILE(upd_fal_mod_file, '-f'); CALL OPEN_TO_APPEND(1936, upd_fal_mod_file)
 
       DO I = 1, DPN
 

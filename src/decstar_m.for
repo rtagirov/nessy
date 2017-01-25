@@ -7,7 +7,7 @@
 
       CONTAINS
 
-      SUBROUTINE DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
+      SUBROUTINE DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,FAL,LBKG,XLBKG1,XLBKG2,
      $                     TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN)
 C***********************************************************************
 C***  DECODES INPUT CARDS, CALLED FROM WRSTART
@@ -381,13 +381,13 @@ C***  INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
 !        no longer match those indicated in the CARDS file.
 !        See INITVEL.FOR, WRVEL.FOR and GEOMESH.FOR for details.
 !*************************************************************************************
-         HEIGHT_DIM = NUM_OF_LINES(ATM_MOD_FILE)
+         HEIGHT_DIM = NUM_OF_LINES(fal_mod_file)
 
          IF (ALLOCATED(HEIGHT)) deallocate(HEIGHT)
 
          allocate(height(height_dim))
 
-         HEIGHT = READ_ATM_MOD(ATM_MOD_FILE, '1')
+         HEIGHT = READ_ATM_MOD(fal_mod_file, '1')
 
          RMAX = 1.0 + MAXVAL(HEIGHT) * 1.0D+5 / RSTAR
 !*************************************************************************************

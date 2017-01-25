@@ -16,8 +16,10 @@
       CHARACTER (LEN = 3),  PARAMETER :: NCRM_FILE_NAME =    'CNR' ! NCRM = Net Collision Rate Matrix
       CHARACTER (LEN = 3),  PARAMETER :: NTRM_FILE_NAME =    'TNR' ! NTRM = Net Total Rate Matrix
 
-      CHARACTER (LEN = 6),  PARAMETER :: ATM_MOD_FILE =      'FAL_VD'
-      CHARACTER (LEN = 10), PARAMETER :: UPD_ATM_MOD_FILE =  'FAL_VD.UPD'
+      CHARACTER (LEN = 6),  PARAMETER :: fal_mod_file     =  'FAL_VD'
+      CHARACTER (LEN = 10), PARAMETER :: upd_fal_mod_file =  'FAL_VD.UPD'
+
+      character (len = 5),  parameter :: kur_mod_file =      'TABLE'
 
       CHARACTER (LEN = 12), PARAMETER :: VEL_FIELD_FILE =    'vel_field.in'
 
@@ -32,7 +34,6 @@
       PUBLIC
 
       CONTAINS
-
 
       SUBROUTINE CLEAN_DIR(DIR)
 
@@ -194,46 +195,108 @@
       REAL*8, DIMENSION(:), ALLOCATABLE :: H, TEMP, ELEC_CONC
       REAL*8, DIMENSION(:), ALLOCATABLE :: HEAVY_ELEM_CONC, V_TURB
 
+      REAL*8, DIMENSION(:), ALLOCATABLE :: rho, pressure, zz
+
+      character (len = 10000) ::           header
+
+      logical ::                           file_exists
+
+      real*8 :: w
+
+      inquire(file = filename, exist = file_exists)
+
+      if (.not. file_exists) stop 'Atmosphere model file has not been found. Abort.'
+
       FILE_UNIT = 1834
 
-      LINE_NUM = NUM_OF_LINES(FILENAME)
+      if (filename .eq. fal_mod_file) then
 
-      IF (ALLOCATED(ARRAY)) DEALLOCATE(ARRAY)
+          LINE_NUM = NUM_OF_LINES(FILENAME)
 
-      ALLOCATE(ARRAY(LINE_NUM))
-      ALLOCATE(H(LINE_NUM))
-      ALLOCATE(TEMP(LINE_NUM))
-      ALLOCATE(ELEC_CONC(LINE_NUM))
-      ALLOCATE(HEAVY_ELEM_CONC(LINE_NUM))
-      ALLOCATE(V_TURB(LINE_NUM))
+          IF (ALLOCATED(ARRAY)) DEALLOCATE(ARRAY)
 
-      OPEN(UNIT = FILE_UNIT, FILE = FILENAME, ACTION = 'READ')
+          ALLOCATE(ARRAY(LINE_NUM))
+          ALLOCATE(H(LINE_NUM))
+          ALLOCATE(TEMP(LINE_NUM))
+          ALLOCATE(ELEC_CONC(LINE_NUM))
+          ALLOCATE(HEAVY_ELEM_CONC(LINE_NUM))
+          ALLOCATE(V_TURB(LINE_NUM))
 
-      DO I = 1, LINE_NUM
+          OPEN(UNIT = FILE_UNIT, FILE = FILENAME, ACTION = 'READ')
 
-         READ(FILE_UNIT, *) H(I), TEMP(I), ELEC_CONC(I), HEAVY_ELEM_CONC(I), V_TURB(I)
+          DO I = 1, LINE_NUM
 
-      ENDDO
+             READ(FILE_UNIT, *) H(I), TEMP(I), ELEC_CONC(I), HEAVY_ELEM_CONC(I), V_TURB(I)
 
-      CLOSE(FILE_UNIT)
+          ENDDO
 
-      SELECTCASE(COL_NUM)
+          CLOSE(FILE_UNIT)
 
-      CASE('1'); ARRAY(1 : LINE_NUM) = H(1 : LINE_NUM)
-      CASE('2'); ARRAY(1 : LINE_NUM) = TEMP(1 : LINE_NUM)
-      CASE('3'); ARRAY(1 : LINE_NUM) = ELEC_CONC(1 : LINE_NUM)
-      CASE('4'); ARRAY(1 : LINE_NUM) = HEAVY_ELEM_CONC(1 : LINE_NUM)
-      CASE('5'); ARRAY(1 : LINE_NUM) = V_TURB(1 : LINE_NUM)
+          SELECTCASE(COL_NUM)
 
-      CASE DEFAULT; STOP 'FUNCTION READ_ATM_MOD: COL_NUM ARGUMENT IS NOT RECOGNIZED. ABORT.'
+              CASE('1'); ARRAY(1 : LINE_NUM) = H(1 : LINE_NUM)
+              CASE('2'); ARRAY(1 : LINE_NUM) = TEMP(1 : LINE_NUM)
+              CASE('3'); ARRAY(1 : LINE_NUM) = ELEC_CONC(1 : LINE_NUM)
+              CASE('4'); ARRAY(1 : LINE_NUM) = HEAVY_ELEM_CONC(1 : LINE_NUM)
+              CASE('5'); ARRAY(1 : LINE_NUM) = V_TURB(1 : LINE_NUM)
 
-      ENDSELECT
+              CASE DEFAULT; STOP 'FUNCTION READ_ATM_MOD: COL_NUM ARGUMENT IS NOT RECOGNIZED. ABORT.'
 
-      DEALLOCATE(H)
-      DEALLOCATE(TEMP)
-      DEALLOCATE(ELEC_CONC)
-      DEALLOCATE(HEAVY_ELEM_CONC)
-      DEALLOCATE(V_TURB)
+          ENDSELECT
+
+          DEALLOCATE(H)
+          DEALLOCATE(TEMP)
+          DEALLOCATE(ELEC_CONC)
+          DEALLOCATE(HEAVY_ELEM_CONC)
+          DEALLOCATE(V_TURB)
+
+      endif
+
+      if (filename .eq. kur_mod_file) then
+
+          LINE_NUM = NUM_OF_LINES(filename) - 1
+
+          IF (ALLOCATED(ARRAY)) DEALLOCATE(ARRAY)
+
+          ALLOCATE(ARRAY(LINE_NUM))
+          ALLOCATE(rho(LINE_NUM))
+          ALLOCATE(temp(LINE_NUM))
+          ALLOCATE(pressure(LINE_NUM))
+          ALLOCATE(elec_conc(LINE_NUM))
+          ALLOCATE(zz(LINE_NUM))
+
+          OPEN(UNIT = FILE_UNIT, FILE = FILENAME, ACTION = 'READ')
+
+          READ(FILE_UNIT, *) header
+
+          DO I = 1, LINE_NUM
+
+             READ(FILE_UNIT, *) rho(i), temp(i), pressure(i), elec_conc(i), w, w, zz(i)
+
+          ENDDO
+
+          CLOSE(FILE_UNIT)
+
+          SELECTCASE(COL_NUM)
+
+              CASE('1'); ARRAY(1 : LINE_NUM) = rho(1 : LINE_NUM)
+              CASE('2'); ARRAY(1 : LINE_NUM) = temp(1 : LINE_NUM)
+              CASE('3'); ARRAY(1 : LINE_NUM) = pressure(1 : LINE_NUM)
+              CASE('4'); ARRAY(1 : LINE_NUM) = elec_conc(1 : LINE_NUM)
+              CASE('7'); ARRAY(1 : LINE_NUM) = zz(1 : LINE_NUM)
+
+              CASE DEFAULT; STOP 'FUNCTION READ_ATM_MOD: COL_NUM ARGUMENT IS NOT RECOGNIZED. ABORT.'
+
+          ENDSELECT
+
+          DEALLOCATE(rho)
+          DEALLOCATE(TEMP)
+          DEALLOCATE(elec_conc)
+          DEALLOCATE(pressure)
+          DEALLOCATE(zz)
+          
+
+      endif
 
       RETURN
 
