@@ -91,7 +91,7 @@
 
 !     DECODING INPUT DATA
       CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,FAL,LBKG,XLBKG1,XLBKG2,
-     $               TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN)
+     $               TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN, AMU)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)

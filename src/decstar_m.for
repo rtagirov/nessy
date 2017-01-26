@@ -8,17 +8,24 @@
       CONTAINS
 
       SUBROUTINE DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,FAL,LBKG,XLBKG1,XLBKG2,
-     $                     TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN)
+     $                     TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN, amu)
 C***********************************************************************
 C***  DECODES INPUT CARDS, CALLED FROM WRSTART
 C***********************************************************************
       USE MOD_INITVEL
       USE FILE_OPERATIONS
       USE COMMON_BLOCK
+      use mod_geomesh
  
       IMPLICIT REAL*8(A-H,O-Z)
 
       INTEGER :: HEIGHT_DIM
+
+      real*8, intent(in) :: amu
+
+      real*8, allocatable, dimension(:) :: fudge_r1, fudge_r2, fudge_r3
+
+      integer :: fudge_i
 
       PARAMETER (ONE = 1.D+0)
       
@@ -369,7 +376,7 @@ c     (this was just 3.02 !)
 C***  STELLAR RADIUS IN CM
       RSTAR=RSTAR*RSUN
 C***  INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
-      IF (RPAR(20:24).NE.'TABLE') THEN
+!      IF (RPAR(20:24).NE.'TABLE') THEN
 
 !        RINAT TAGIROV:
 !        This bit is necessary to correct for the 
@@ -380,24 +387,23 @@ C***  INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
 !        inconsistent with RMAX and the velocity boundary values calculated in the code
 !        no longer match those indicated in the CARDS file.
 !        See INITVEL.FOR, WRVEL.FOR and GEOMESH.FOR for details.
-!*************************************************************************************
-         HEIGHT_DIM = NUM_OF_LINES(fal_mod_file)
 
-         IF (ALLOCATED(HEIGHT)) deallocate(HEIGHT)
+      if (FAL) height = read_atm_mod(fal_mod_file, '1')
 
-         allocate(height(height_dim))
+      if (.not. FAL) then
 
-         HEIGHT = READ_ATM_MOD(fal_mod_file, '1')
+         call read_kur_mod(amu, atmean, rstar, height, fudge_r1, fudge_r2, fudge_r3, fudge_i)
 
-         RMAX = 1.0 + MAXVAL(HEIGHT) * 1.0D+5 / RSTAR
-!*************************************************************************************
+         deallocate(fudge_r1); deallocate(fudge_r2); deallocate(fudge_r3)
 
-         CALL INITVEL(RMAX,TEFF,GLOG,RSTAR,XMASS)
+      endif
 
-      ENDIF
+      rmax = 1.0 + maxval(height) * 1.0d+5 / rstar
 
-      RETURN
+      call initvel(rmax, teff, glog, rstar, xmass)
 
-      END SUBROUTINE
+      return
 
-      END MODULE
+      end subroutine
+
+      end module
