@@ -721,6 +721,65 @@ c version with fraction of integral
       xlam=rwlae
       print*, 'RWLAE = ', rwlae
 
+!*********************************************************************************
+! Miha Cernetic ODF
+      reduced='1.rk'
+      print *, 'testMiha min/max: ', XLMIN, XLMAX
+      OPEN (UNIT=1312,FILE=trim('../sB/')//trim(reduced),STATUS='OLD', READONLY)
+      sub_bin_number = 0
+      found_sub_bin = .FALSE.
+      DO i = 1, FILE_LINE_NUM(1313, '../sB/'//trim(reduced))
+         READ (1312,*) beginning, ending, opacity
+         IF (((beginning.GE.XLMIN).OR.(abs(beginning - XLMIN)<1.0D-1)).AND.((ending.LE.XLMAX).OR.(abs(ending - XLMAX)<1.0D-5))) THEN
+           sub_bin_number = sub_bin_number + 1
+           print *,'OK: ', beginning
+         ELSE IF (beginning.LT.XLMIN) THEN
+            continue
+         ELSE
+           DO j = 1, sub_bin_number + 1
+             BACKSPACE(1312)
+           ENDDO
+           allocate(sub_bin_wavelength(sub_bin_number))
+           DO j = 1, sub_bin_number
+             READ (1312,*) beginning, ending, opacity
+            sub_bin_wavelength(j)  = (beginning + ending) / 2
+             print *, 'b: ', beginning, ' e: ', ending, ' mid: ', sub_bin_wavelength(j)
+           ENDDO
+           found_sub_bin = .TRUE. 
+         END IF
+         IF (found_sub_bin == .TRUE.) THEN
+           EXIT
+         END IF
+      ENDDO
+        
+      print *, 'sub_bin_wavelenghts: '
+      DO i = 1, SIZE(sub_bin_wavelength)
+        print *, 'i=', i, ' item: ', sub_bin_wavelength(i)
+      ENDDO
+
+      NFOBS = sub_bin_number
+
+      allocate(DLAM(NFOBS))
+      allocate(PROFILE(NFOBS))
+      allocate(PROFN(NFOBS))
+      allocate(DLAM(NFOBS))
+      allocate(EMINT(NFOBS))
+
+      do i = 1, sub_bin_number
+        DLAM(i) = sub_bin_wavelength(i) - XLAM
+        print *, DLAM(i)
+      enddo
+
+      PRINT *,' VERSION 8 / SYNSPEC'
+      print *,' xobs0, dxobs ',xobs0,dxobs
+      do K=1,NFOBS
+!        XO=XOBS0+K*DXOBS
+!        DLAM(K)=-XO*XLAM*VDOP/CLIGHT ! going from freqency step to wavelength step deltaLambda=-deltaNu/Nu_0*Lambda_0
+        print *, RWLAE(K)
+        PROFILE(K)=0.0
+      enddo
+!*********************************************************************************
+
 !***  PREPARATION OF LINE QUANTITIES (ALSO FOR BLENDING LINES)
       CALL PREF_SYN(KARTE,N,ELEVEL,LINE,INDLOW,INDNUP,LASTIND,
      $              VDOP,FMAX,FMIN,XMAX,VDU(1),VSIDU,esca_wd,
