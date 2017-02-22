@@ -850,8 +850,47 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !     Rinat, use it to calculate continuum
 
-      ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)!*0.
-      EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)!*0.
+      FMTT = "(F8.3, 2X, F8.3, 2X, F8.3)"
+      ODF = .TRUE.
+      IF (ODF) THEN
+      reduced='.r434'
+      IF (ID.GT.9) THEN
+        write(ID_string, '(i2)') ID
+      ELSE
+      	write(ID_string, '(i1)') ID
+      END IF
+      currentFile = trim(ID_string) // trim(reduced)
+!      print*, 'testMiha File: ', trim(currentFile)
+      OPEN (UNIT=1312,FILE=trim('../sB/')//trim(currentFile),STATUS='OLD', READONLY)
+      READ (1312,*) beginning, ending, opacity
+      DO i = NFREQ, 1, -1
+ 1122    wavelength = (clight_cgs/freq(i))*1.d8
+!       print*, 'testMiha wavelength: '
+!       write(*,FMTT),wavelength, beginning, ending
+         IF ((beginning.LE.wavelength).AND.(ending.GE.wavelength)) THEN
+!            print*, 'testMiha wavelength: '
+!            write(*,FMTT),wavelength, beginning, ending
+            ABLIN(i) = opacity
+         ELSE
+!            READ (1312,*) beginning, ending, opacity
+!            print*, 'NOTOKtestMiha wavelength: '
+!            write(*,FMTT),wavelength, beginning, ending
+            READ (1312,*) beginning, ending, opacity
+            GOTO 1122
+         END IF      
+      ENDDO
+      
+      ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
+
+      EMIS(1:NFREQ)=EMIS(1:NFREQ)+ABLIN(1:NFREQ)*PLAN(max(NDPMIN,id))
+      
+      ELSE
+         ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
+         EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)
+      END IF
+      
+      
+
 
 
 !      ABLIN(1:NFREQ)= ABLIN(1:NFREQ)*0.
