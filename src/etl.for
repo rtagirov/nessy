@@ -393,6 +393,16 @@
 
       CLOSE(ifl)
 
+      do ind = 1, lastind
+
+         do l = 1, ND
+
+            LOO(l, ind) = LOO(l, ind) * (1.0D0 - entot(1) / entot(l))
+
+         enddo
+
+      enddo
+
 !***  store the line radiation field in file RADIOL
       call writradl(XJL,XJLMEAN,EINST,NCHARG,NOM,ND,N,LASTIND,MODHEAD,JOBNUM)
 

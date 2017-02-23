@@ -58,7 +58,7 @@
       integer tdiff,tstart,tend
       integer,external :: time
 
-      integer :: iii
+      integer :: l
 
 !     CONTINUOUS RADIATION TRANSFER (MOMENT EQUATIONS) WITH GIVEN EDDI-FACTORS
 !     FORMAL SOLUTION FROM GIVEN POP NUMBERS
@@ -111,16 +111,6 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       call readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
       close(ifl)
-
-!      print*, 'como shape print: ', shape(popnum), sum(popnum(64, :)) + rne(64)
-
-!      do iii = 1, 12
-
-!         print*, 'como popnum print: ', iii, popnum(64, iii)
-
-!      enddo
-
-!      stop
 
       if (allocated(wcharm)) deallocate(wcharm)
 
@@ -202,6 +192,12 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
          WCHARM(1 : ND, K) = CALCLAMBDAS(OPA, RADIUS, EDDI, ND)
 
+         do l = 1, ND
+
+            WCHARM(l, K) = WCHARM(l, K) * (1.0D0 - entot(1) / entot(l))
+
+         enddo
+
 C***     UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
 c***     XJC and EDDI are stored for later write to file RADIOC
 
@@ -232,18 +228,6 @@ c***     XJC and EDDI are stored for later write to file RADIOC
 
       ENDIF
 
-!      do k = 1, NF
-
-!         do iii = 1, ND
-
-!            write(*, '(A,1x,i4,1x,e15.7,1x,i4,1x,e15.7)'), 'como wcharm: ', k, xlambda(k), iii, wcharm(iii, k)
-
-!         enddo
-
-!      enddo
-
-!      stop 'como stop'
-     
 C***  ENDLOOP  ---------------------------------------------------------
  
 C***  NOTE THAT THE POPNUMBERS ARE NOT UPDATED BY THIS PROGRAM  !!!!!
@@ -261,8 +245,6 @@ C***  UPDATING THE MODEL HISTORY
    88 FORMAT (1H/,I3,A,I3,' COMPLETE  -  run time all K: ',F10.2,A)
       write (7,'(A100)') LCARD
       close (7)   ! MODHIST
-
-!      close (6)  ! como.out
 
       RETURN
 
