@@ -702,14 +702,6 @@ c version with fraction of integral
       !*** V-sini is in km/s
       VSIDU=VSINI/VDOP
       IF (VSINI.NE.0.) THEN
-
-
-
-
-
-
-
-
          NPHI=NPHIP
          LPEND=NPHI
          IF (LPSTI.NE.0) LPSTA=LPSTI
@@ -732,7 +724,6 @@ c version with fraction of integral
 !*********************************************************************************
 ! Miha Cernetic ODF
       reduced='1.rk'
-      print *, 'testMiha min/max: ', XLMIN, XLMAX
       OPEN (UNIT=1312,FILE=trim('../sB/')//trim(reduced),STATUS='OLD', READONLY)
       sub_bin_number = 0
       found_sub_bin = .FALSE.
@@ -740,7 +731,7 @@ c version with fraction of integral
          READ (1312,*) beginning, ending, opacity
          IF (((beginning.GE.XLMIN).OR.(abs(beginning - XLMIN)<1.0D-1)).AND.((ending.LE.XLMAX).OR.(abs(ending - XLMAX)<1.0D-5))) THEN
            sub_bin_number = sub_bin_number + 1
-           print *,'OK: ', beginning
+!           print *,'OK: ', beginning
          ELSE IF (beginning.LT.XLMIN) THEN
             continue
          ELSE
@@ -751,7 +742,7 @@ c version with fraction of integral
            DO j = 1, sub_bin_number
              READ (1312,*) beginning, ending, opacity
             sub_bin_wavelength(j)  = (beginning + ending) / 2
-             print *, 'b: ', beginning, ' e: ', ending, ' mid: ', sub_bin_wavelength(j)
+!             print *, 'b: ', beginning, ' e: ', ending, ' mid: ', sub_bin_wavelength(j)
            ENDDO
            found_sub_bin = .TRUE. 
          END IF
@@ -762,7 +753,7 @@ c version with fraction of integral
         
       print *, 'sub_bin_wavelenghts: '
       do i = 1, SIZE(sub_bin_wavelength)
-        print *, 'i=', i, ' item: ', sub_bin_wavelength(i)
+        print *, sub_bin_wavelength(i)
       enddo
 
       NFOBS = sub_bin_number
@@ -771,7 +762,8 @@ c version with fraction of integral
       allocate(PROFN(NFOBS))
       allocate(DLAM(NFOBS))
       allocate(EMINT(NFOBS))
-
+      
+      print *, 'dlam:'
       do i = 1, sub_bin_number
         DLAM(i) = sub_bin_wavelength(i) - XLAM
         print *, DLAM(i)
@@ -800,8 +792,9 @@ c version with fraction of integral
          XLAM=RWLAE
       ENDIF
     
-      !***  DEFINING ZERO-POINT OF THE OBSERVER)S FRAME FREQUENCY
-      xobs0 = FREMAX-DXOBS
+      !***  DEFINING ZERO-POINT OF THE OBSERVER'S FRAME FREQUENCY
+!      xobs0 = FREMAX-DXOBS
+      xobs0 = clight/dlam(1)
       CALL DIFFUS (XLAM,T,R,ND,BCORE,DBDR)   !BCORE=Plank (XLAM, T) at R(ND), DBDR=d(BCORE)/dR at R=ND
       ncoop=n
       CALL COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
