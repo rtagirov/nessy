@@ -178,10 +178,10 @@ c*** first entry for rnel =  0.99997
 
             T32=TP*SQRT(TP) 
 
-!          RNEL=ABH/2.+SQRT(ABH*ABH/4.+2.*EXP(-285645./TP)*T32/2.07E-16
-!     $        *ABHE/ENTOT(L))
+          RNEL=ABH/2.+SQRT(ABH*ABH/4.+2.*EXP(-285645./TP)*T32/2.07E-16
+     $        *ABHE/ENTOT(L))
 
-          RNEL = ABXYZ_new(3) + ABXYZ_new(4) + ABXYZ_new(5)
+!          RNEL = ABXYZ_new(3) + ABXYZ_new(4) + ABXYZ_new(5)
 !          RNEL = 0.0001
 
 !          PRINT*, 'ACHTUNG 2: RNEL', ITER, L, RNEL
