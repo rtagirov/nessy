@@ -404,6 +404,14 @@ c version with fraction of integral
       logical :: CORE,FILE_EXIST
       real*8,allocatable,dimension(:,:) :: XJK,CWK,DINT,XJ
       real*8,allocatable,dimension(:) :: XNU
+      !******************************************************************
+      ! Added by Miha Cernetic for ODF
+      real, allocatable :: sub_bin_wavelength(:)
+      integer :: sub_bin_number
+      real :: beginning, ending, opacity
+      logical :: found_sub_bin 
+      character :: reduced*12
+      !*******************************************************************
 
       !MH   VARIABILITY OF VELOCITY ACTIV/NONACTIVE
       !MH var = true then variation of Doppler velocity considered

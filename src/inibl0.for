@@ -1,5 +1,5 @@
       module MOD_INIBL0
-      character*(*),private,parameter :: FMT_LOPA='(1pe12.5)'   ! format 310
+      character*(*),private,parameter :: FMT_LOPA='(1pe12.5)'!, FMTT = "(F8.3, 2X, F8.3, 2X, F8.3)"   ! format 310
       real*8, allocatable ::wav_oi(:), opac_oi(:), opac_f(:,:)
       contains
 
@@ -16,7 +16,7 @@ C       use MOD_LINOP_MS
 C
 C     AUXILIARY INITIALIZATION PROCEDURE
 C
-      implicit none
+      !implicit none
       integer,intent(in) :: N,      NF
       real*8, intent(in) :: WAVARR, SIGARR
 
@@ -826,13 +826,16 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !************* opacities FALC ******************
 
+!******************************************************
+      !***MIHA
+      logical :: ODF
+      character :: currentFile*12, reduced*12, ID_string*2, FMTT*30
+      real :: beginning, ending, opacity
+      !***/MIHA
+!******************************************************
 
 ! *****************************
 !     Test for continuum calculations
-
-
-          
-
 
 !      ABSO(1:NFREQ)=ABSO(1:NFREQ)*contf
       
@@ -845,7 +848,6 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !      EMIS(i)=EMIS(i)*contf
 !      endif
 
-
 !      enddo
 
 !     Rinat, use it to calculate continuum
@@ -853,7 +855,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
       FMTT = "(F8.3, 2X, F8.3, 2X, F8.3)"
       ODF = .TRUE.
       IF (ODF) THEN
-      reduced='.r434'
+      reduced='.rk'
       IF (ID.GT.9) THEN
         write(ID_string, '(i2)') ID
       ELSE
