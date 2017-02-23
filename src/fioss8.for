@@ -756,24 +756,24 @@ c version with fraction of integral
         print *, sub_bin_wavelength(i)
       enddo
 
-      NFOBS = sub_bin_number
+!      NFOBS = sub_bin_number
 
       allocate(PROFILE(NFOBS))
       allocate(PROFN(NFOBS))
       allocate(DLAM(NFOBS))
       allocate(EMINT(NFOBS))
       
-      print *, 'dlam:'
-      do i = 1, sub_bin_number
-        DLAM(i) = sub_bin_wavelength(i) - XLAM
-        print *, DLAM(i)
-      enddo
+!      print *, 'dlam:'
+!      do i = 1, sub_bin_number
+!        DLAM(i) = sub_bin_wavelength(i) - XLAM
+!        print *, DLAM(i)
+!      enddo
 
       print *,' VERSION 8 / SYNSPEC'
       print *,' xobs0, dxobs ',xobs0,dxobs
       do K=1,NFOBS
-!        XO=XOBS0+K*DXOBS
-!        DLAM(K)=-XO*XLAM*VDOP/CLIGHT ! going from freqency step to wavelength step deltaLambda=-deltaNu/Nu_0*Lambda_0
+        XO=XOBS0+K*DXOBS
+        DLAM(K)=-XO*XLAM*VDOP/CLIGHT ! going from freqency step to wavelength step deltaLambda=-deltaNu/Nu_0*Lambda_0
         PROFILE(K)=0.0
       enddo
 !*********************************************************************************
@@ -793,8 +793,8 @@ c version with fraction of integral
       ENDIF
     
       !***  DEFINING ZERO-POINT OF THE OBSERVER'S FRAME FREQUENCY
-!      xobs0 = FREMAX-DXOBS
-      xobs0 = clight/dlam(1)
+      xobs0 = FREMAX-DXOBS
+!      xobs0 = clight/dlam(1)
       CALL DIFFUS (XLAM,T,R,ND,BCORE,DBDR)   !BCORE=Plank (XLAM, T) at R(ND), DBDR=d(BCORE)/dR at R=ND
       ncoop=n
       CALL COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,

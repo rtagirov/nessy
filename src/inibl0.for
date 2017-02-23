@@ -684,7 +684,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         read(201,*) EMLIN(1:NFREQ)
       ELSE
 
-        CALL LINOP_MS(ID,ABLIN,EMLIN)
+!        CALL LINOP_MS(ID,ABLIN,EMLIN)
 
         if(cards.ABEMLIN==card_params.ABEMLIN_WRITE) then
           write(201,*) NFREQ,ID
@@ -778,16 +778,11 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !************* opacities FALC ******************
 
 
-      ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+ABSO(1:NFREQ)*(contf-1.)
+!      ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+ABSO(1:NFREQ)*(contf-1.)
        
       
       do i=1, NFREQ 
-
-    
-      EMLIN(i)=EMLIN(i)+ABSO(i)*(contf-1.)*PLAN(max(NDPMIN,id))
-    
-
-
+        EMLIN(i)=EMLIN(i)+ABSO(i)*(contf-1.)*PLAN(max(NDPMIN,id))
       enddo
 
 
@@ -796,19 +791,16 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 
 
-       do i=1,nfreq
-!!!       write (200,310) ablin(i),emlin(i)
-        write (200,FMT_LOPA) ablin(i)
-        IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
-          PRINT '(i0,X,i0," ",$)',I,ID
-          PRINT '("inibl0: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
-     &             ' EMISSIVITY : ",$)' ! WARNING!!!
-          PRINT *,I, ABLIN(I),EMLIN(I)
-        ENDIF
-      enddo
-
-  300 CONTINUE
-
+!       do i=1,nfreq
+!!       write (200,310) ablin(i),emlin(i)
+!        write (200,FMT_LOPA) ablin(i)
+!        IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
+!          PRINT '(i0,X,i0," ",$)',I,ID
+!          PRINT '("inibl0: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
+!     &             ' EMISSIVITY : ",$)' ! WARNING!!!
+!          PRINT *,I, ABLIN(I),EMLIN(I)
+!        ENDIF
+!      enddo
 
 
 
@@ -851,6 +843,14 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !      enddo
 
 !     Rinat, use it to calculate continuum
+
+
+
+
+
+
+
+
       print *, "inibl0 ODF procedure start"
       fmtt = "(f8.3, 2x, f8.3, 2x, f8.3)"
       odf = .true.

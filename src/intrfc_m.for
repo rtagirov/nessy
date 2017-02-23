@@ -583,36 +583,14 @@ c                freq(nvopa-kopa+1) = cl8/wlam(nvopa-kopa+1)
             opatot(nfreq-ij+1,id)=abso(ij)
             etatot(nfreq-ij+1,id)=emis(ij)
 
-
-
-
-
             if (id.le.1) then
                etatot(nfreq-ij+1,id)=emisc(getContIdx(ij))
             endif
 
 
-
-
-
-
-
 CMH   print line opacity to file
 cpr_opa          write(200,310) opatot(nfreq-ij+1,id),etatot(nfreq-ij+1,id)
          enddo
-
-
-
-        
-
-
-
-
-
-
-
-
-
 
 c        write(91,691) id
 c        write(91,692) (abso(ij),ij=1,nfreq)
@@ -634,20 +612,9 @@ c 692    format(1p8e10.2)
 !*       write(100, '(81e12.5)'), opac_f(i,1:81)
 
 !*       enddo
-
-        
-
 !*       close(100)
       
-
-
-
-      
-
-
-
       return
       end subroutine
       end module
-C
-C
+
