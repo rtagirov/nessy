@@ -16,7 +16,7 @@ C       use MOD_LINOP_MS
 C
 C     AUXILIARY INITIALIZATION PROCEDURE
 C
-      !implicit none
+      implicit none
       integer,intent(in) :: N,      NF
       real*8, intent(in) :: WAVARR, SIGARR
 
@@ -402,6 +402,13 @@ C
       INTEGER :: UnitRatios
 
       REAL*8 ::  RI, f_0
+!******************************************************
+!******************************************************
+      !***MIHA
+      logical :: ODF
+      character :: currentFile*12, reduced*12, ID_string*2, FMTT*30
+      real :: beginning, ending, opacity, wavelength
+      !***/MIHA
 !******************************************************
 
 !******************************************************************************************************************************************
@@ -826,13 +833,6 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !************* opacities FALC ******************
 
-!******************************************************
-      !***MIHA
-      logical :: ODF
-      character :: currentFile*12, reduced*12, ID_string*2, FMTT*30
-      real :: beginning, ending, opacity
-      !***/MIHA
-!******************************************************
 
 ! *****************************
 !     Test for continuum calculations
@@ -851,46 +851,43 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !      enddo
 
 !     Rinat, use it to calculate continuum
-
-      FMTT = "(F8.3, 2X, F8.3, 2X, F8.3)"
-      ODF = .TRUE.
-      IF (ODF) THEN
+      print *, "inibl0 ODF procedure start"
+      fmtt = "(f8.3, 2x, f8.3, 2x, f8.3)"
+      odf = .true.
+      if (odf) then
       reduced='.rk'
-      IF (ID.GT.9) THEN
-        write(ID_string, '(i2)') ID
-      ELSE
-      	write(ID_string, '(i1)') ID
-      END IF
-      currentFile = trim(ID_string) // trim(reduced)
-!      print*, 'testMiha File: ', trim(currentFile)
-      OPEN (UNIT=1312,FILE=trim('../sB/')//trim(currentFile),STATUS='OLD', READONLY)
-      READ (1312,*) beginning, ending, opacity
-      DO i = NFREQ, 1, -1
+      if (id.gt.9) then
+        write(id_string, '(i2)') id
+      else
+        write(id_string, '(i1)') id
+      end if
+      currentfile = trim(id_string) // trim(reduced)
+!      print*, 'testmiha file: ', trim(currentfile)
+      open (unit=1312,file=trim('../sB/')//trim(currentfile),status='old', readonly)
+      rewind(1312)
+      read (1312,*) beginning, ending, opacity
+      do i = nfreq, 1, -1
  1122    wavelength = (clight_cgs/freq(i))*1.d8
-!       print*, 'testMiha wavelength: '
-!       write(*,FMTT),wavelength, beginning, ending
-         IF ((beginning.LE.wavelength).AND.(ending.GE.wavelength)) THEN
-!            print*, 'testMiha wavelength: '
-!            write(*,FMTT),wavelength, beginning, ending
-            ABLIN(i) = opacity
-         ELSE
-!            READ (1312,*) beginning, ending, opacity
-!            print*, 'NOTOKtestMiha wavelength: '
-!            write(*,FMTT),wavelength, beginning, ending
-            READ (1312,*) beginning, ending, opacity
-            GOTO 1122
-         END IF      
-      ENDDO
-      
-      ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
-
-      EMIS(1:NFREQ)=EMIS(1:NFREQ)+ABLIN(1:NFREQ)*PLAN(max(NDPMIN,id))
-      
-      ELSE
-         ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
-         EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)
-      END IF
-      
+!       print*, 'testmiha wavelength: '
+!       write(*,fmtt),wavelength, beginning, ending
+         if ((beginning.le.wavelength).and.(ending.ge.wavelength)) then
+!            print*, 'testmiha wavelength: '
+!            write(*,fmtt),wavelength, beginning, ending
+            ablin(i) = opacity
+         else
+            read (1312,*) beginning, ending, opacity
+!            print*, 'notoktestmiha wavelength: '
+!            write(*,fmtt),wavelength, beginning, ending
+            goto 1122
+         end if      
+      enddo
+      abso(1:nfreq)=abso(1:nfreq)+ablin(1:nfreq)
+      emis(1:nfreq)=emis(1:nfreq)+ablin(1:nfreq)*plan(max(ndpmin,id))
+      else
+         abso(1:nfreq)=abso(1:nfreq)+ablin(1:nfreq)
+         emis(1:nfreq)=emis(1:nfreq)+emlin(1:nfreq)
+      end if
+ 
       
 
 
