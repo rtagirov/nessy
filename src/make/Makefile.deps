@@ -85,7 +85,7 @@ setxjl.for:           $(addprefix $(OUT), lipo.o liop.o xrudi.o constants.o comb
 stateq.for:           $(addprefix $(OUT), partf2.o )
 steal.for:            $(addprefix $(OUT), datom_m.o decste.o linpop.o plotpop.o plottab.o plott.o popzero.o pribla.o pricorr.o pridat.o priexpo.o prih.o prihist.o prihist.o pripop.o pritau.o readmod.o readpop.o readrad.o redcor.o sthist.o writpop.o plotflu.o priflux.o reblank.o writmod.o abund.o fileoper.o comblock.o vardatom.o varhminus.o varsteal.o )
 sthist.for:           $(addprefix $(OUT), comblock.o )
-synsubm.for:          $(addprefix $(OUT), constants.o synthp_cont.o synthp_cont.o constants.o constants.o constants.o constants.o constants.o constants.o synthp_cont.o constants.o constants.o constants.o hydtab.o synthp_cont.o constants.o constants.o constants.o stateq.o constants.o constants.o constants.o intplcs.o constants.o utils.o hydtab.o hydtab.o params_array.o hydtab.o )
+synsubm.for:          $(addprefix $(OUT), test.o constants.o synthp_cont.o synthp_cont.o constants.o constants.o constants.o constants.o constants.o constants.o synthp_cont.o constants.o constants.o constants.o hydtab.o synthp_cont.o constants.o constants.o constants.o stateq.o constants.o constants.o constants.o intplcs.o constants.o utils.o hydtab.o hydtab.o params_array.o hydtab.o )
 synthp_cont.for:      $(addprefix $(OUT), utils.o utils.o )
 tcolor.for:           $(addprefix $(OUT), bnue.o delpla.o regula.o )
 utils.for:            $(addprefix $(OUT), error.o error.o )

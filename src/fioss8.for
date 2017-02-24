@@ -756,18 +756,18 @@ c version with fraction of integral
         print *, sub_bin_wavelength(i)
       enddo
 
-!      NFOBS = sub_bin_number
+      NFOBS = sub_bin_number
 
       allocate(PROFILE(NFOBS))
       allocate(PROFN(NFOBS))
       allocate(DLAM(NFOBS))
       allocate(EMINT(NFOBS))
       
-!      print *, 'dlam:'
-!      do i = 1, sub_bin_number
-!        DLAM(i) = sub_bin_wavelength(i) - XLAM
-!        print *, DLAM(i)
-!      enddo
+      print *, 'dlam:'
+      do i = 1, sub_bin_number
+        DLAM(i) = sub_bin_wavelength(i) - XLAM
+        print *, DLAM(i)
+      enddo
 
       print *,' VERSION 8 / SYNSPEC'
       print *,' xobs0, dxobs ',xobs0,dxobs
@@ -815,13 +815,13 @@ c version with fraction of integral
 
 
 
-      PRINT *,' VERSION 8 / SYNSPEC'
-      print *,' xobs0, dxobs ',xobs0,dxobs
-      do K=1,NFOBS
-        XO=XOBS0+K*DXOBS
-        DLAM(K)=-XO*XLAM*VDOP/CLIGHT
-        PROFILE(K)=0.0
-      enddo
+!      PRINT *,' VERSION 8 / SYNSPEC'
+!      print *,' xobs0, dxobs ',xobs0,dxobs
+!      do K=1,NFOBS
+!        XO=XOBS0+K*DXOBS
+!        DLAM(K)=-XO*XLAM*VDOP/CLIGHT
+!        PROFILE(K)=0.0
+!      enddo
 
 !*** create the wavelength array for the opacity routine
 !       note: the dlam array starts with the zero element
@@ -831,7 +831,7 @@ c version with fraction of integral
 !***  negative velocities: vdu(1) not max. value
 !***  instead of vdu(1) use amaxvdu
 !***  groesster abs Wert von VDU
-      vopa0 = xobs0+dxobs       + vdu(1) + 1./xn/1000. + vsidu
+      vopa0 = xobs0 + dxobs + vdu(1) + 1./xn/1000. + vsidu
       nvopa = vopa0*xn 
       nvopa = nvopa + 1
       print *, '1. FIOSS8 NVOPA=', NVOPA
