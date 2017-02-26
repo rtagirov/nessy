@@ -1,16 +1,15 @@
-      MODULE MOD_CALCLAMBDAS
+      module local_operator
 
-      CONTAINS
+      contains
 
-      !*** micha: Caclulate the accelerated Lambda Iterator.
-      !PURE FUNCTION CALCLAMBDAS(OPA,ETA,THOMSON,R,EDDI,ND)
+!     Calculate the local operator for continuum
 
-      FUNCTION CALCLAMBDAS(OPA, R, EDDI, ND)
+      function continuum_local_operator(OPA, R, EDDI, ND)
       ! called by como.for
       ! calculate the LambdaStar operator
       IMPLICIT NONE
       integer, intent(in):: ND                 !Number of Depth/Frequency points, index
-      real*8, dimension(ND) :: CALCLAMBDAS     !Approximated Lambda Operator
+      real*8, dimension(ND) :: continuum_local_operator
       real*8, intent(in), dimension(ND)  :: OPA, R  !OPA: Opacity, R: Distance from surface
       !real*8,intent(in),dimension(ND)  :: THOMSON !relative Electron Scattering factor
       real*8, intent(in), dimension(3,ND):: EDDI    !Eddi,sphericity and flux factors, see comment below
@@ -63,7 +62,7 @@
       C(ND) = 0d0
       B =  A+C+1d0
 
-      CALCLAMBDAS = INVTRIDIAG(A, B, C)
+      continuum_local_operator = INVTRIDIAG(A, B, C)
 
       END FUNCTION
 
@@ -124,5 +123,67 @@
       ENDDO
 
       END FUNCTION
+
+      FUNCTION EXTRAP_LO_B_VAL(LO, LO_SIZE, PD, UD, BD) RESULT(LO_B_VAL)
+
+!     LINEARLY EXTRAPOLATES THE LOCAL OPERATOR ELEMENT BOUNDARY VALUE FROM THE TWO PRECEDING VALUES
+
+      USE COMMON_BLOCK
+
+      IMPLICIT NONE
+
+      INTEGER, INTENT(IN) ::                    LO_SIZE
+
+      REAL*8, DIMENSION(LO_SIZE), INTENT(IN) :: LO
+
+      INTEGER, INTENT(IN) ::                    BD, UD, PD
+
+      REAL*8 ::                                 C1, C2
+
+      REAL*8 ::                                 LO_B_VAL
+
+      C1 = (LO(PD) - LO(UD)) / (HEIGHT(PD) - HEIGHT(UD))
+
+      C2 = LO(UD) - C1 * HEIGHT(UD)
+
+      LO_B_VAL = C1 * HEIGHT(BD) + C2
+
+      RETURN
+
+      END FUNCTION EXTRAP_LO_B_VAL
+
+      subroutine acceleration_damping(nd, nf, tau, lo)
+
+!     Rinat Tagirov:
+!     if the density is too high at the outer edge of the atmoshere in question the local operator is too close to one there.
+!     Thus it stops working and the convergence is lost.
+!     Therefore, in this case the local acceleration has to be damped.
+!     Here, I damp it if 1 - Lambda^* < exp(-tau).
+!     My reasoning is that exp(-tau) is the lower limit for the escape probability.
+!     Therefore 1 - Lambda^* (which is an estimate of the escape probability) has to be greater than exp(-tau).
+!     Since the problem is encountered at the outer edge only I apply this damping in the optically thin regime (tau <= 1).
+
+      integer, intent(in) :: nd, nf
+
+      real*8, intent(in), dimension(nd, nf) :: tau
+
+      real*8, intent(inout), dimension(nd, nf) :: lo
+
+      real*8 :: escape_probability
+
+      do k = 1, nf
+
+         do l = 1, nd
+
+            escape_probability = exp(-tau(l, k))
+
+            if (tau(l, k) <= 1.0D0 .and. 1.0D0 - lo(l, k) < escape_probability)
+     $          lo(l, k) = 1.0D0 - escape_probability
+
+         enddo
+
+      enddo
+
+      end subroutine acceleration_damping
 
       END MODULE

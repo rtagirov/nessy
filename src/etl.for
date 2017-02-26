@@ -35,11 +35,16 @@
       use PARAMS_ARRAY
       use ABUNDANCES
       USE CONSTANTS
+
       USE COMMON_BLOCK
       USE FILE_OPERATIONS
       USE VARDATOM
       USE VARHMINUS
       USE VARSTEAL
+
+      use phys
+
+      use local_operator
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -133,11 +138,14 @@
       print *,'ETL: ND = ',ND,' NP = ',NP
       call assert(ND*NP>1,'ND*NP <= 1')
 
-!     LOO is declared in common_block.for
-      IF (ALLOCATED(LOO)) DEALLOCATE(LOO)
+!     LLO is declared in common_block.for
+      IF (ALLOCATED(LLO))      DEALLOCATE(LLO)
+      IF (ALLOCATED(tau_line)) DEALLOCATE(tau_line)
 
       ALLOCATE(U(ND, NP))
-      ALLOCATE(LOO(ND, LASTIND))
+      ALLOCATE(LLO(ND, LASTIND))
+
+      allocate(tau_line(ND, LASTIND))
 
       IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
       PRINT *,'ETL: VDOP=',VDOP
@@ -318,6 +326,8 @@
 
       CALL LIOP_RTE(EINST(NUP,LOW),WEIGHT(LOW),WEIGHT(NUP),LOW,NUP,
      $              ND,XLAM,ENTOT,POPNUM,RSTAR,OPAL,ETAL,VDOP, N)
+
+      tau_line(1 : ND, ind) = optical_depth(opal(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
  
 !***  FORMAL SOLUTION OF RAD.TRANSFER IN THE COMOVING FRAME
 !***  IN ORDER TO OBTAIN THE 0. TO 3. MOMENTS OF THE RADIATION FIELD
@@ -381,8 +391,8 @@
       LO(1) =  EXTRAP_LO_B_VAL(LO, ND, 3, 2, 1)
       LO(ND) = EXTRAP_LO_B_VAL(LO, ND, ND - 2, ND - 1, ND)
 
-!     XJLMEAN is stored in XJL, LO is stored in LOO (which means LO OVERALL, i.e. for all lines at once)
-      CALL STORXJL(XJL, XJLMEAN, ND, LASTIND, IND, LOO, LO)
+!     XJLMEAN is stored in XJL, LO is stored for each line in LLO (which means Line Local Operator)
+      CALL STORXJL(XJL, XJLMEAN, ND, LASTIND, IND, LLO, LO)
 
       LineNumber = LineNumber + 1
 
@@ -393,15 +403,8 @@
 
       CLOSE(ifl)
 
-      do ind = 1, lastind
-
-         do l = 1, ND
-
-            LOO(l, ind) = LOO(l, ind) * (1.0D0 - entot(1) / entot(l))
-
-         enddo
-
-      enddo
+!     perform the acceleration damping in case the density is too high at the outer edge of the atmosphere
+      call acceleration_damping(ND, lastind, tau_line, LLO)
 
 !***  store the line radiation field in file RADIOL
       call writradl(XJL,XJLMEAN,EINST,NCHARG,NOM,ND,N,LASTIND,MODHEAD,JOBNUM)
@@ -436,43 +439,8 @@
       write (6,*) ' ETL: error exit 1001'
 	call error('etl: error exit 1001')
 
-10231 FORMAT(2x,'NL',7x,'JP',9x,'K',8x,'ID',14x,
-     $ 'TAL',20x,'TBL',20x,'TCL',16x,'LambdaOperDiag')
-
-!10233 FORMAT('LN',14x,'IND',13x,'XLAM',13x,'ID',8x,'HEIGHT',8x,
-!     $ 'OpacLine',8x,'EmisLine',8x,'OptDepLine',8x,'LamOpDiagMean')
-
-!10234 FORMAT(I2,5x,I3,5x,E15.7,5x,I2,5x,E15.7,5x,E15.7,5x,E15.7,5x,E15.7,5x,E23.15)
+10231 FORMAT(2x,'NL',7x,'JP',9x,'K',8x,'ID',14x, 'TAL',20x,'TBL',20x,'TCL',16x,'LambdaOperDiag')
 
       END SUBROUTINE
-
-
-      FUNCTION EXTRAP_LO_B_VAL(LO, LO_SIZE, PD, UD, BD) RESULT(LO_B_VAL)
-
-!     LINEARLY EXTRAPOLATES THE LOCAL OPERATOR ELEMENT BOUNDARY VALUE FROM THE TWO PRECEDING VALUES
-
-      USE COMMON_BLOCK
-
-      IMPLICIT NONE
-
-      INTEGER, INTENT(IN) ::                    LO_SIZE
-
-      REAL*8, DIMENSION(LO_SIZE), INTENT(IN) :: LO
-
-      INTEGER, INTENT(IN) ::                    BD, UD, PD
-
-      REAL*8 ::                                 C1, C2
-
-      REAL*8 ::                                 LO_B_VAL
-
-      C1 = (LO(PD) - LO(UD)) / (HEIGHT(PD) - HEIGHT(UD))
-
-      C2 = LO(UD) - C1 * HEIGHT(UD)
-
-      LO_B_VAL = C1 * HEIGHT(BD) + C2
-
-      RETURN
-
-      END FUNCTION EXTRAP_LO_B_VAL
 
       END MODULE

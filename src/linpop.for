@@ -287,7 +287,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
             XLAM = 1.0D8 / (ELEVEL(NUP) - ELEVEL(LOW))
 
             CALL PRINT_HYD_NLTE_TRA(LEVEL(LOW), LEVEL(NUP), IND, XLAM, VDOP,
-     $                              LOO(1 : ND, IND), 
+     $                              LLO(1 : ND, IND), 
      $                              XJL(1 : ND, IND),
      $                              SLOLD(1 : ND, IND),
      $                              Z,
@@ -436,7 +436,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
       POPHML  = POPNUM(L, 1)  *       ENTOT(L)
       POPHIL =  POPNUM(L, 2)  *       ENTOT(L)
 
-!     LOO is declared in common_block.for along with its description
+!     LLO is declared in common_block.for along with its description
 
       CALL COMA(CRATE,RRATE,RATCO,DM,N,NRANK,V1,ABXYZ_new,
      $          ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,EION,WEIGHT,ALTESUM,
@@ -446,7 +446,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
      $          NFL,OPAC,DOPA,DETA,OPAL,SLNEW(L, 1 : LASTIND),
      $          DOPAL, DETAL, SIGMAKI,ETAC,NFEDGE,EXPFAC,NODM,
      $          WCHARM,EN,RSTAR,SCOLD,VDOP,COCO,KEYCOL,
-     $          POPHIIL,POPHML, POPHIL, LOO(L, 1 : LASTIND), ITNE(L),
+     $          POPHIIL,POPHML, POPHIL, LLO(L, 1 : LASTIND), ITNE(L),
      $          LEVEL, JOBNUM, IRESTA)
 
       JNEW(L, 1 : LASTIND) = XJLAPP(1 : LASTIND)
@@ -699,7 +699,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
             XLAM = 1.0D8 / (ELEVEL(NUP) - ELEVEL(LOW))
 
             CALL PRINT_HYD_NLTE_TRA(LEVEL(LOW), LEVEL(NUP), IND, XLAM, VDOP,
-     $                              LOO(1 : ND, IND), 
+     $                              LLO(1 : ND, IND), 
      $                              XJL(1 : ND, IND), 
      $                              SLOLD(1 : ND, IND), 
      $                              JNEW(1 : ND, IND), 

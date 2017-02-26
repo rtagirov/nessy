@@ -236,8 +236,6 @@
          if (level(i).eq.'H I......1') l_h0 = i
          SIGMAFF=PRESIG*GFF(NCHARG(I))
 
-!         if (L .eq. 64 .and. I .eq. 2) print*, 'coop_m 1: ', popnum(64, i)
-
          SUM=RNE(L)*ENTOT(L)*POPNUM(L,I)*SIGMAFF
          EMINDU=SUM*EXPFAC
          SUM=SUM-EMINDU

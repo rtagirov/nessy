@@ -4,6 +4,8 @@
 
       SUBROUTINE GEOMESH(RADIUS, ENTOT, T, FAL, P, Z, RSTAR, AMU, ATMEAN, ND, NP)
 
+      use common_block
+
 !     THIS SUBROUTINE GENERATES THE GEOMETRICAL POINT MESH IN RADIUS, P AND Z
 !     P and Z mesh is needed for the ray-by-ray solution of the radiative transfer equation in spherical symmetry
 
@@ -17,31 +19,6 @@
       real*8, allocatable, dimension(:), intent(out) :: Z, P
       real*8, allocatable, dimension(:), intent(out) :: T, entot, radius
 
-      CALL RGRIDM(RADIUS, ENTOT, T, FAL, RSTAR, AMU, ATMEAN, ND)
-
-      CALL PGRID(NP, ND, RADIUS, P)
-
-      CALL ZGRID(RADIUS, P, Z, ND, NP)
-
-      return
-
-      end subroutine
-
-      SUBROUTINE RGRIDM(radius, entot, T, FAL, rstar, AMU, ATMEAN, ND)
-
-      USE COMMON_BLOCK
-      use FILE_OPERATIONS
-
-      integer, intent(out) :: ND
-
-      real*8,  intent(in)  :: rstar
-
-      logical, intent(in) :: FAL
-
-      real*8, intent(in) :: AMU, ATMEAN
-
-      real*8, allocatable, dimension(:), intent(out) :: T, entot, radius
-
 !     height: height in km
 !     T:      Temperature in K
 !     entot:  HEAVY PARTICLE DENSITY
@@ -52,6 +29,12 @@
       if (.not. FAL) call read_kur_mod(amu, atmean, rstar, height, radius, T, entot, ND)
 
       dpn = ND
+
+      CALL PGRID(NP, ND, RADIUS, P)
+
+      CALL ZGRID(RADIUS, P, Z, ND, NP)
+
+      return
 
       end subroutine
 
@@ -146,7 +129,7 @@
       T =      read_atm_mod(fal_mod_file, '2')
       entot =  read_atm_mod(fal_mod_file, '4')
 
-      radius = 1.0d0 + height * 1.0d5 / rstar ! height in km, rstar and radius in cm
+      radius = 1.0d0 + height * 1.0d5 / rstar ! height in km, rstar in cm
 
       end subroutine
 
@@ -218,7 +201,7 @@
 
       DO K = 1, ND - 1; RADIUS(ND - K) = RADIUS(ND - K + 1) + DELR(ND - K); ENDDO
 
-      height = (radius - radius(ND)) * rstar / 1D+5 ! height in km, rstar and radius in cm
+      height = (radius - radius(ND)) * rstar / 1D+5 ! height in km, rstar in cm
 
       deallocate(rho)
       deallocate(vturb)

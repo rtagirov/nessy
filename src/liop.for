@@ -43,20 +43,13 @@
 !     RINAT TAGIROV:
 !     VDOP = sqrt(V_therm^2 + V_turb^2), where V_therm is the
 !     thermal velocity of atoms and V_turb is the turbulent velocity
-!     of separate parcels of gas. This can be inferred from the FLGRID.for procedure,
-!     formula for the Doppler line profile in page 205 of Lang's "Astrophysical formulas"
-!     and the way VDOP enters this routine. While it is very simple to calculate
-!     VDOP at any height having the model of the atmosphere in HMINUS
-!     it is a free parameter set it the CARDS file.
-!     It has to be free because of some computational obstacles arising in case
-!     when VDOP is depth dependent (for details refer to Werner cuz I never quite figured
-!     out the reason properly). However, one of the possible reasons could be that 
+!     of separate parcels of gas.
+!     It is a free parameter set in the CARDS file.
+!     One of the reasons for it to be free is that
 !     in ETL.FOR the velocity field and its gradient are divided by VDOP
-!     for the purposes of their conversion into dimensionless units.
+!     for them to be converted into dimensionless units.
 !     Velocity field has to be monotonic and dividing it by a function of height
-!     could obviate the monotonicity. Therefore VDOP has to be constant, hence it has to
-!     be a free parameter. Why one needs to introduce the dimensionless velocity field
-!     is another question which I don't have an answer to.
+!     could violate the monotonicity.
 !     ************************************************************************************
 
       EMINDU = EINST * XLAMCM * XLAMCM / PI8 * RSTAR
@@ -120,20 +113,13 @@
 !     RINAT TAGIROV:
 !     VDOP = sqrt(V_therm^2 + V_turb^2), where V_therm is the
 !     thermal velocity of atoms and V_turb is the turbulent velocity
-!     of separate parcels of gas. This can be inferred from the FLGRID.for procedure,
-!     formula for the Doppler line profile in page 205 of Lang's "Astrophysical formulas"
-!     and the way VDOP enters this routine. While it is very simple to calculate
-!     VDOP at any height having the model of the atmosphere in HMINUS
-!     it is a free parameter set it the CARDS file.
-!     It has to be free because of some computational obstacles arising in case
-!     when VDOP is depth dependent (for details refer to Werner cuz I never quite figured
-!     out the reason properly). However, one of the possible reasons could be that 
+!     of separate parcels of gas.
+!     It is a free parameter set in the CARDS file.
+!     One of the reasons for it to be free is that
 !     in ETL.FOR the velocity field and its gradient are divided by VDOP
-!     for the purposes of their conversion into dimensionless units.
+!     for them to be converted into dimensionless units.
 !     Velocity field has to be monotonic and dividing it by a function of height
-!     could obviate the monotonicity. Therefore VDOP has to be constant, hence it has to
-!     be a free parameter. Why one needs to introduce the dimensionless velocity field
-!     is another question which I don't have an answer to.
+!     could violate the monotonicity.
 !     ************************************************************************************
 
       EMINDU = EINST * XLAMCM * XLAMCM / PI8 * RSTAR
@@ -146,8 +132,6 @@
       OPAL = (ENI * ABSORP - ENJ * EMINDU) / DND
 
       ETAL = ENJ * EMSPON / DND
-
-!      if (j .eq. 3 .and. i .eq. 2) print*, 'liop:', popnum(i), popnum(j)
 
       IF (OPAL .LT. 0.0D0) OPAL = 0.0D0
 

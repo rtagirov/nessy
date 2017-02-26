@@ -25,10 +25,11 @@
       use MOD_COFREQ
       use MOD_INVTRI
       use MOD_GMALU
-      USE MOD_CALCLAMBDAS
       USE FILE_OPERATIONS
       USE UTILS
       USE MATOPER
+
+      use local_operator
 
       IMPLICIT REAL*8(A - H, O - Z)
 

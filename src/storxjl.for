@@ -2,7 +2,7 @@
 
       CONTAINS
 
-      SUBROUTINE STORXJL(XJL, XJLMEAN, ND, LASTIND, IND, LOO, LO)
+      SUBROUTINE STORXJL(XJL, XJLMEAN, ND, LASTIND, IND, LLO, LO)
 
       IMPLICIT NONE
 
@@ -16,11 +16,11 @@
       REAL*8, DIMENSION(ND) ::          LO
 
 !     the Local approximate lambda-Operator for all lines (Overall)
-      REAL*8, DIMENSION(ND, LASTIND) :: LOO
+      REAL*8, DIMENSION(ND, LASTIND) :: LLO
 
       XJL(1 : ND, IND) = XJLMEAN(1 : ND)
 
-      LOO(1 : ND, IND) = LO(1 : ND)
+      LLO(1 : ND, IND) = LO(1 : ND)
 
       RETURN
 

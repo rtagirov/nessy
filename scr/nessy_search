@@ -36,8 +36,8 @@ function cpl_src_list
 while read -r LINE; do identify_src $LINE; done < "$1"
 }
 
-if [ -z $3 ];                    then GREP='grep -iw --color'; fi
-if [ ! -z $3 ] && [ $3 == "-e" ]; then GREP='grep -iw --color --exclude='$1.for; fi
+if [ -z $3 ];                     then GREP='grep -inw --color'; fi
+if [ ! -z $3 ] && [ $3 == "-e" ]; then GREP='grep -inw --color --exclude='$1.for; fi
 
 if [ ! -z $3 ] && [ $3 != "-e" ]; then abort "The third argument is not understood."; fi
 
@@ -71,6 +71,6 @@ if [ $SEARCH_FIOSS ];  then cpl_src_list $NESSY_SRCS; fi
 
 if [ -z $3 ]; then cd $src; $GREP "$1" $SRCS; fi
 
-if [ ! -z $3 ]; then cd $src; $GREP "$1" $SRCS | grep -iw --color call; fi
+if [ ! -z $3 ]; then cd $src; $GREP "$1" $SRCS | grep -inw --color call; fi
 
 rm -f $NESSY_SRCS_REV

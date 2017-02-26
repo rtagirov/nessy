@@ -54,4 +54,26 @@
 
       END FUNCTION PLANCK_FUNC
 
+      function optical_depth(opacity, height, ND) result(tau)
+
+      integer, intent(in) :: ND
+
+      real*8, intent(in), dimension(ND) :: opacity, height
+
+      real*8, dimension(ND) :: tau
+
+      integer :: l
+
+      tau(1) = 0.0D0
+
+      do l = 2, ND
+
+         tau(l) = (height(l - 1) - height(l)) * (opacity(l - 1) + opacity(l)) / 2.0D0
+
+      enddo
+
+      return
+
+      end function optical_depth
+
       END MODULE PHYS

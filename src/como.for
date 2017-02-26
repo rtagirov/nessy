@@ -4,7 +4,6 @@
 
       SUBROUTINE COMO
 
-      use MOD_CALCLAMBDAS
       use MOD_COOP_M
       use MOD_DATOM_M
       use MOD_DECOMO
@@ -26,10 +25,15 @@
       use PARAMS_ARRAY ! NFDIM is known from here (see params_array.for)
       use ABUNDANCES
       USE MOD_BFCROSS
+
       USE COMMON_BLOCK
       USE VARDATOM
       USE VARHMINUS
       USE VARSTEAL
+
+      use phys
+
+      use local_operator
 
       IMPLICIT NONE
 
@@ -112,9 +116,13 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       close(ifl)
 
-      if (allocated(wcharm)) deallocate(wcharm)
+      if (allocated(wcharm))   deallocate(wcharm)
+
+      if (allocated(tau_cont)) deallocate(tau_cont)
 
       allocate(WCHARM(ND, NF))
+
+      allocate(tau_cont(ND, NF))
 
       WCHARM(1 : ND, 1 : NF) = 0.0d0
 
@@ -190,13 +198,12 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
    6     CONTINUE
 
-         WCHARM(1 : ND, K) = CALCLAMBDAS(OPA, RADIUS, EDDI, ND)
+         WCHARM(1 : ND, K) = continuum_local_operator(OPA, RADIUS, EDDI, ND)
 
-         do l = 1, ND
+         tau_cont(1 : ND, K) = optical_depth(opa(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
 
-            WCHARM(l, K) = WCHARM(l, K) * (1.0D0 - entot(1) / entot(l))
-
-         enddo
+!         WCHARM(1, K) =  EXTRAP_LO_B_VAL(WCHARM(1 : ND, K), ND, 3, 2, 1)
+!         WCHARM(ND, K) = EXTRAP_LO_B_VAL(WCHARM(1 : ND, K), ND, ND - 2, ND - 1, ND)
 
 C***     UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
 c***     XJC and EDDI are stored for later write to file RADIOC
@@ -210,6 +217,9 @@ c***     XJC and EDDI are stored for later write to file RADIOC
       ENDDO
 
       call assert(.not.any(isnan(WCHARM)),'COMO: WCHARM is NaN')
+
+!     perform the acceleration damping in case the density is too high at the outer edge of the atmosphere
+      call acceleration_damping(ND, NF, tau_cont, WCHARM)
 
       !Sanity Check ----------------------------------------------------
       IF(maxval(WCHARM) >= 1d0-1d-20) THEN

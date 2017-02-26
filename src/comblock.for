@@ -19,8 +19,10 @@
 
 !     the Local approximate lambda-Operator for all lines (Overall)
 !******************************************************************
-      REAL*8, DIMENSION(:, :), ALLOCATABLE ::    LOO
+      REAL*8, DIMENSION(:, :), ALLOCATABLE ::    LLO
 !******************************************************************
+
+      real*8, dimension(:, :), allocatable ::    tau_line, tau_cont
 
       INTEGER ::                                 LAMBDA_ITER
 
