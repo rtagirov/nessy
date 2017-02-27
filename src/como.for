@@ -116,13 +116,19 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       close(ifl)
 
-      if (allocated(wcharm))   deallocate(wcharm)
+      if (allocated(wcharm))    deallocate(wcharm)
 
-      if (allocated(tau_cont)) deallocate(tau_cont)
+      if (allocated(tau_cont))  deallocate(tau_cont)
+
+      if (allocated(damp_cont)) deallocate(damp_cont)
 
       allocate(WCHARM(ND, NF))
 
       allocate(tau_cont(ND, NF))
+
+      allocate(damp_cont(ND, NF))
+
+      damp_cont(1 : ND, 1 : NF) = 'n'
 
       WCHARM(1 : ND, 1 : NF) = 0.0d0
 
@@ -198,12 +204,9 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
    6     CONTINUE
 
-         WCHARM(1 : ND, K) = continuum_local_operator(OPA, RADIUS, EDDI, ND)
+         WCHARM(1 : ND, K) = cont_loc_oper(OPA, RADIUS, EDDI, ND)
 
-         tau_cont(1 : ND, K) = optical_depth(opa(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
-
-!         WCHARM(1, K) =  EXTRAP_LO_B_VAL(WCHARM(1 : ND, K), ND, 3, 2, 1)
-!         WCHARM(ND, K) = EXTRAP_LO_B_VAL(WCHARM(1 : ND, K), ND, ND - 2, ND - 1, ND)
+         tau_cont(1 : ND, K) = opt_dep(opa(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
 
 C***     UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
 c***     XJC and EDDI are stored for later write to file RADIOC
@@ -219,7 +222,7 @@ c***     XJC and EDDI are stored for later write to file RADIOC
       call assert(.not.any(isnan(WCHARM)),'COMO: WCHARM is NaN')
 
 !     perform the acceleration damping in case the density is too high at the outer edge of the atmosphere
-      call acceleration_damping(ND, NF, tau_cont, WCHARM)
+      if (damp_acc) call acc_damp(ND, NF, tau_cont, WCHARM, damp_cont)
 
       !Sanity Check ----------------------------------------------------
       IF(maxval(WCHARM) >= 1d0-1d-20) THEN
@@ -237,6 +240,8 @@ c***     XJC and EDDI are stored for later write to file RADIOC
 !         where(WCHARM <  1d-35 ) WCHARM = 1d-35
 
       ENDIF
+
+      call print_clo(ND, NF, xlambda, T, tau_cont, wcharm, damp_cont)
 
 C***  ENDLOOP  ---------------------------------------------------------
  
@@ -260,4 +265,63 @@ C***  UPDATING THE MODEL HISTORY
 
       END SUBROUTINE
 
-      END MODULE
+      subroutine print_clo(nd, nf, wvl, T, tau, clo, damp)
+
+      use common_block
+      use file_operations
+
+      implicit none
+
+      integer, intent(in) :: nd, nf
+
+      real*8, intent(in), dimension(nf) :: wvl
+
+      real*8, intent(in), dimension(nd) :: T
+
+      real*8, intent(in), dimension(nd, nf) :: tau, clo
+
+      character(len = 1), intent(in), dimension(nd, nf) :: damp
+
+      character(len = 1000) :: fmt_head, fmt_body
+
+      integer :: file_unit
+
+      character(len = 3) :: file_name
+
+      integer :: l, k
+
+      file_unit = 165; file_name = 'CLO'
+
+      fmt_head = '(1x,A,4x,A,8x,A,8x,A,6x,A,8x,A,12x,A,14x,A,8x,A,/)'
+
+      fmt_body = '(2(i5,2x),e15.7,2x,i3,2(3x,F9.2),2(2x,es15.7),4x,A1)'
+      
+      if ((each_ali .and. lambda_iter .eq. 0) .or. .not. each_ali) then
+
+          call rm_file(file_name, '-f')
+
+          call open_to_append(file_unit, file_name)
+
+          write(file_unit, fmt_head) 'lit', 'wid', 'wvl', 'hid', 'hei', 'tem', 'tau', 'clo', 'dam'
+
+      else
+
+          call open_to_append(file_unit, file_name)
+
+      endif
+
+      do k = 1, nf
+
+         do l = 1, nd
+
+            write(file_unit, fmt_body) lambda_iter, k, wvl(k), l, height(l), T(l), tau(l, k), clo(l, k), damp(l, k)
+
+         enddo
+
+      enddo
+
+      close(file_unit)
+
+      end subroutine print_clo
+
+      end module

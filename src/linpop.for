@@ -43,6 +43,7 @@
       use MOD_COMA
       use ABUNDANCES
       use MOD_LIOP
+
       USE FILE_OPERATIONS
       USE COMMON_BLOCK
       USE MATOPER
@@ -274,7 +275,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
          CALL PRINT_NLTE_LEV('ELECTRONS ', RNE(1 : ND), RNE(1 : ND), ONE)
 
-         CALL PRINT_HYD_NLTE_TRA('H MINUS..1', 'H I......1', 0, 0.0D0, VDOP,
+         CALL PRINT_HYD_NLTE_TRA('H MINUS..1', 'H I......1', 0, 0.0D0, T,
      $                           Z, Z, Z, Z, Z,
      $                           POP1(1 : ND, 1), POP1(1 : ND, 2),
      $                           Z, Z, Z, Z, Z)
@@ -286,7 +287,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
             XLAM = 1.0D8 / (ELEVEL(NUP) - ELEVEL(LOW))
 
-            CALL PRINT_HYD_NLTE_TRA(LEVEL(LOW), LEVEL(NUP), IND, XLAM, VDOP,
+            CALL PRINT_HYD_NLTE_TRA(LEVEL(LOW), LEVEL(NUP), IND, XLAM, T,
      $                              LLO(1 : ND, IND), 
      $                              XJL(1 : ND, IND),
      $                              SLOLD(1 : ND, IND),
@@ -299,7 +300,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
          DO I = 2, NLAST(1) - 1
 
-            CALL PRINT_HYD_NLTE_TRA(LEVEL(I), 'H II......', NLINE + I - 1, 0.0D0, VDOP,
+            CALL PRINT_HYD_NLTE_TRA(LEVEL(I), 'H II......', NLINE + I - 1, 0.0D0, T,
      $                              Z, Z, Z, Z, Z,
      $                              POP1(1 : ND, I), POP1(1 : ND, NLAST(1)),
      $                              Z, Z, Z, Z, Z)
@@ -683,7 +684,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
          CALL PRINT_NLTE_LEV('ELECTRONS ', ElecConcLTE(1 : ND),
      $                        ElecConc(1 : ND), ElecConcDep(1 : ND))
 
-         CALL PRINT_HYD_NLTE_TRA('H MINUS..1', 'H I......1', 0, 0.0D0, VDOP,
+         CALL PRINT_HYD_NLTE_TRA('H MINUS..1', 'H I......1', 0, 0.0D0, T,
      $                           Z, Z, Z, Z, Z,
      $                           POPNUM(1 : ND, NFIRST(1)), 
      $                           POPNUM(1 : ND, NFIRST(1) + 1),
@@ -698,7 +699,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
             XLAM = 1.0D8 / (ELEVEL(NUP) - ELEVEL(LOW))
 
-            CALL PRINT_HYD_NLTE_TRA(LEVEL(LOW), LEVEL(NUP), IND, XLAM, VDOP,
+            CALL PRINT_HYD_NLTE_TRA(LEVEL(LOW), LEVEL(NUP), IND, XLAM, T,
      $                              LLO(1 : ND, IND), 
      $                              XJL(1 : ND, IND), 
      $                              SLOLD(1 : ND, IND), 
@@ -714,7 +715,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
          DO I = 2, NLAST(1) - 1
 
-            CALL PRINT_HYD_NLTE_TRA(LEVEL(I), 'H II......', NLINE + I - 1, 0.0D0, VDOP,
+            CALL PRINT_HYD_NLTE_TRA(LEVEL(I), 'H II......', NLINE + I - 1, 0.0D0, T,
      $                              Z, Z, Z, Z, Z,
      $                              POPNUM(1 : ND, I), POPNUM(1 : ND,  NLAST(1)),
      $                              ARR(1 : ND, NLAST(1), I), ARR(1 : ND, I, NLAST(1)),
@@ -918,25 +919,19 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       FILE_UNIT = FLOOR(100D0 + RAND * 1000D0)
 
-      IF (.NOT. NLTE_REWRITE) THEN
+      if ((each_ali .and. lambda_iter .eq. 0) .or. .not. each_ali) then
 
-         CALL OPEN_TO_APPEND(FILE_UNIT, FILE_NAME)
+          call rm_file(file_name, '-f')
 
-         IF (LAMBDA_ITER .EQ. 0) WRITE(FILE_UNIT, '(3x,A,3x,A,8x,A,12x,A,14x,A,/)') 'LI',
-     $                                                                              'DI',
-     $                                                                              'LPLTE',
-     $                                                                              'LP',
-     $                                                                              'DZ'
+          call open_to_append(file_unit, file_name)
 
-      ELSE
+          write(file_unit, '(3x,A,3x,A,8x,A,12x,A,14x,A,/)') 'li', 'di', 'lplte', 'lp', 'dz'
 
-         CALL RM_FILE(FILE_NAME, '-f')
+      else
 
-         CALL OPEN_TO_APPEND(FILE_UNIT, FILE_NAME)
-         
-         WRITE(FILE_UNIT, '(3x,A,3x,A,8x,A,12x,A,14x,A,/)') 'LI', 'DI', 'LPLTE', 'LP', 'DZ'
+          call open_to_append(file_unit, file_name)
 
-      ENDIF
+      endif
 
       DO DI = 1, DPN
 
@@ -950,128 +945,83 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
       END SUBROUTINE PRINT_NLTE_LEV
 
 
-      SUBROUTINE PRINT_HYD_NLTE_TRA(LowLevel, UpLevel,
-     $                              LineInd,
-     $                              WAV,
-     $                              VDOP,
-     $                              LO,
-     $                              JOLD,
-     $                              SLOLD,
-     $                              JNEW,
-     $                              SLNEW,
-     $                              PopLow, PopUp,
-     $                              RadUpLow, RadLowUp,
-     $                              ColUpLow, ColLowUp,
-     $                              R_BRACKET)
+      subroutine print_hyd_nlte_tra(ll, ul, idx, wvl, T, lo,
+     $                              jold, sold, jnew, snew,
+     $                              nl, nu, rul, rlu, cul, clu, rb)
 
-      USE FILE_OPERATIONS
-      USE STRING_OPERATIONS
-      USE COMMON_BLOCK
+      use file_operations
+      use string_operations
+      use common_block
 
-      IMPLICIT NONE
+      implicit none
 
-      CHARACTER*10, INTENT(IN) ::           UpLevel, LowLevel
+      character*10, intent(in) ::           ul, ll
 
-      INTEGER, INTENT(IN) ::                LineInd
+      integer, intent(in) ::                idx
 
-      REAL*8, INTENT(IN) ::                 WAV, VDOP
+      real*8, intent(in) ::                 wvl
 
-      REAL*8, DIMENSION(DPN), INTENT(IN) :: LO, SLNEW, JOLD, SLOLD, JNEW, R_BRACKET
+      real*8, dimension(dpn), intent(in) :: lo, snew, jold, sold, jnew, rb
 
-      REAL*8, DIMENSION(DPN), INTENT(IN) :: PopLow, PopUp
+      real*8, dimension(dpn), intent(in) :: T, nl, nu
 
-      REAL*8, DIMENSION(DPN), INTENT(IN) :: RadUpLow, RadLowUp, ColUpLow, ColLowUp
+      real*8, dimension(dpn), intent(in) :: rul, rlu, cul, clu
 
-      CHARACTER(:), ALLOCATABLE ::          FILE_NAME, TRAN_NAME, LowLev, UpLev
+      character(:), allocatable ::          file_name, tran_name, llev, ulev
 
-      INTEGER ::                            FILE_UNIT
+      integer ::                            file_unit
 
-      INTEGER ::                            DI
+      integer ::                            l
 
-      LowLev = RM_CHAR(RM_CHAR(LowLevel, ' '), '.')
+      character(len = 1000) ::              fmt_head, fmt_body
 
-      IF (LowLev .EQ. 'HMINUS1') LowLev = 'HMINUS'
+      fmt_head = '(A,9x,A,9x,A,4x,A,7x,A,8x,A,12x,A,18x,A,12x,A,8x,A,10(14x,A),/)'
 
-      UpLev = RM_CHAR(RM_CHAR(UpLevel, ' '), '.')
+      fmt_body = '(i3,2x,es15.7,2(2x,i5),2(3x,F9.2),2x,es15.7,2x,es23.15,4x,A1,11(2x,es15.7))'
 
-      TRAN_NAME = LowLev//'_'//UpLev
+      llev = rm_char(rm_char(ll, ' '), '.')
 
-      FILE_NAME = TRIM(ADJUSTL(NLTE_DIR_2//TRAN_NAME))
+      IF (llev .EQ. 'HMINUS1') llev = 'HMINUS'
 
-      FILE_UNIT = LineInd * 165
+      ulev = rm_char(rm_char(ul, ' '), '.')
 
-      IF (.NOT. NLTE_REWRITE) THEN
+      tran_name = llev//'_'//ulev
 
-         CALL OPEN_TO_APPEND(FILE_UNIT, FILE_NAME)
+      file_name = trim(adjustl(nlte_dir_2//tran_name))
 
-         IF (LAMBDA_ITER .EQ. 0)
-     $   WRITE(FILE_UNIT, '(3x,A,7x,A,2x,A,6x,A,7x,A,7x,A,2x,A,13x,A,19x,A,20x,A,17x,A,12x,A,3(14x,A),4(13x,A),/)') 'LL',
-     $                                                                                                              'UL',
-     $                                                                                                              'IND',
-     $                                                                                                              'WAV',
-     $                                                                                                              'VDOP',
-     $                                                                                                              'LI',
-     $                                                                                                              'DI',
-     $                                                                                                              'LOE',
-     $                                                                                                              'JOL',
-     $                                                                                                              'SLO',
-     $                                                                                                              'JNE',
-     $                                                                                                              'SLN',
-     $                                                                                                              'PU',
-     $                                                                                                              'PL',
-     $                                                                                                              'RUL',
-     $                                                                                                              'RLU',
-     $                                                                                                              'CUL',
-     $                                                                                                              'CLU',
-     $                                                                                                              'RBR'
+      file_unit = idx * 165
 
-      ELSE
+      if ((each_ali .and. lambda_iter .eq. 0) .or. .not. each_ali) then
 
-         CALL RM_FILE(FILE_NAME, '-f')
+           call rm_file(file_name, '-f')
+            
+           call open_to_append(file_unit, file_name)
 
-         CALL OPEN_TO_APPEND(FILE_UNIT, FILE_NAME)
+           write(file_unit, fmt_head) 'wid', 'wvl', 'lit', 'hid', 'hei', 'tem', 'tau', 'llo',
+     $                                'dam', 'jol', 'sol', 'jne', 'sne', 'nup', 'nlo',
+     $                                'rul', 'rlu', 'cul', 'clu', 'rbr'
 
-         WRITE(FILE_UNIT, '(3x,A,7x,A,2x,A,6x,A,7x,A,7x,A,2x,A,13x,A,19x,A,20x,A,17x,A,12x,A,3(14x,A),4(13x,A),/)') 'LL',
-     $                                                                                                              'UL',
-     $                                                                                                              'IND',
-     $                                                                                                              'WAV',
-     $                                                                                                              'VDOP',
-     $                                                                                                              'LI',
-     $                                                                                                              'DI',
-     $                                                                                                              'LOE',
-     $                                                                                                              'JOL',
-     $                                                                                                              'SLO',
-     $                                                                                                              'JNE',
-     $                                                                                                              'SLN',
-     $                                                                                                              'PU',
-     $                                                                                                              'PL',
-     $                                                                                                              'RUL',
-     $                                                                                                              'RLU',
-     $                                                                                                              'CUL',
-     $                                                                                                              'CLU',
-     $                                                                                                              'RBR'
+      else
 
-      ENDIF
+           call open_to_append(file_unit, file_name)
 
-      DO DI = 1, DPN
+      endif
 
-         WRITE(FILE_UNIT, '(2(A6,2x),I3,3x,ES9.3,3x,ES7.1,2x,I5,1x,I3,1x,3(E23.15),9(1x,E15.7))')
-     $         LowLev, UpLev, LineInd, WAV, VDOP, LAMBDA_ITER, DI,
-     $         LO(DI),
-     $         JOLD(DI),
-     $         SLOLD(DI),
-     $         JNEW(DI),
-     $         SLNEW(DI),
-     $         PopUp(DI), PopLow(DI),
-     $         RadUpLow(DI), RadLowUp(DI),
-     $         ColUpLow(DI), ColLowUp(DI),
-     $         R_BRACKET(DI)
+      do l = 1, dpn
 
-      ENDDO
+         write(file_unit, fmt_body) idx, wvl, lambda_iter, l, 
+     $         height(l), T(l), tau_line(l, idx), lo(l), damp_line(l, idx),
+     $         jold(l), sold(l), jnew(l), snew(l),
+     $         nu(l), nl(l),
+     $         rul(l), rlu(l),
+     $         cul(l), clu(l),
+     $         rb(l)
 
-      CLOSE(FILE_UNIT)
+      enddo
 
-      END SUBROUTINE PRINT_HYD_NLTE_TRA
+      close(file_unit)
+
+      end subroutine print_hyd_nlte_tra
 
 
       SUBROUTINE PRINT_NLTETRAPOP(PopLow, PopUp, DEPLOW, DEPUP)

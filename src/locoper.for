@@ -2,14 +2,14 @@
 
       contains
 
-!     Calculate the local operator for continuum
+      function cont_loc_oper(OPA, R, EDDI, ND)
 
-      function continuum_local_operator(OPA, R, EDDI, ND)
-      ! called by como.for
-      ! calculate the LambdaStar operator
+!     calculate the LambdaStar operator
+!     calculate the local operator for continuum
+
       IMPLICIT NONE
       integer, intent(in):: ND                 !Number of Depth/Frequency points, index
-      real*8, dimension(ND) :: continuum_local_operator
+      real*8, dimension(ND) :: cont_loc_oper
       real*8, intent(in), dimension(ND)  :: OPA, R  !OPA: Opacity, R: Distance from surface
       !real*8,intent(in),dimension(ND)  :: THOMSON !relative Electron Scattering factor
       real*8, intent(in), dimension(3,ND):: EDDI    !Eddi,sphericity and flux factors, see comment below
@@ -62,7 +62,7 @@
       C(ND) = 0d0
       B =  A+C+1d0
 
-      continuum_local_operator = INVTRIDIAG(A, B, C)
+      cont_loc_oper = INVTRIDIAG(A, B, C)
 
       END FUNCTION
 
@@ -152,7 +152,7 @@
 
       END FUNCTION EXTRAP_LO_B_VAL
 
-      subroutine acceleration_damping(nd, nf, tau, lo)
+      subroutine acc_damp(nd, nf, tau, lo, damp)
 
 !     Rinat Tagirov:
 !     if the density is too high at the outer edge of the atmoshere in question the local operator is too close to one there.
@@ -169,21 +169,28 @@
 
       real*8, intent(inout), dimension(nd, nf) :: lo
 
-      real*8 :: escape_probability
+      character (len = 1), intent(inout), dimension(nd, nf) :: damp ! damping flag ('y' - acceleration is damped, 'n' - otherwise)
+
+      real*8 :: ep ! Escape Probability
 
       do k = 1, nf
 
          do l = 1, nd
 
-            escape_probability = exp(-tau(l, k))
+            ep = exp(-tau(l, k))
 
-            if (tau(l, k) <= 1.0D0 .and. 1.0D0 - lo(l, k) < escape_probability)
-     $          lo(l, k) = 1.0D0 - escape_probability
+            if (tau(l, k) <= 1.0D0 .and. 1.0D0 - lo(l, k) < ep) then 
+
+               lo(l, k) = 1.0D0 - ep
+
+               damp(l, k) = 'y'
+
+            endif
 
          enddo
 
       enddo
 
-      end subroutine acceleration_damping
+      end subroutine acc_damp
 
       END MODULE

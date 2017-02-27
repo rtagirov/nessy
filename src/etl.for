@@ -139,13 +139,19 @@
       call assert(ND*NP>1,'ND*NP <= 1')
 
 !     LLO is declared in common_block.for
-      IF (ALLOCATED(LLO))      DEALLOCATE(LLO)
-      IF (ALLOCATED(tau_line)) DEALLOCATE(tau_line)
+      IF (ALLOCATED(LLO))       DEALLOCATE(LLO)
+      IF (ALLOCATED(tau_line))  DEALLOCATE(tau_line)
+      IF (ALLOCATED(damp_line)) DEALLOCATE(damp_line)
 
       ALLOCATE(U(ND, NP))
+
       ALLOCATE(LLO(ND, LASTIND))
 
       allocate(tau_line(ND, LASTIND))
+
+      allocate(damp_line(ND, LASTIND))
+
+      damp_line(1 : ND, 1 : LASTIND) = 'n'
 
       IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
       PRINT *,'ETL: VDOP=',VDOP
@@ -327,7 +333,7 @@
       CALL LIOP_RTE(EINST(NUP,LOW),WEIGHT(LOW),WEIGHT(NUP),LOW,NUP,
      $              ND,XLAM,ENTOT,POPNUM,RSTAR,OPAL,ETAL,VDOP, N)
 
-      tau_line(1 : ND, ind) = optical_depth(opal(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
+      tau_line(1 : ND, ind) = opt_dep(opal(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
  
 !***  FORMAL SOLUTION OF RAD.TRANSFER IN THE COMOVING FRAME
 !***  IN ORDER TO OBTAIN THE 0. TO 3. MOMENTS OF THE RADIATION FIELD
@@ -404,7 +410,7 @@
       CLOSE(ifl)
 
 !     perform the acceleration damping in case the density is too high at the outer edge of the atmosphere
-      call acceleration_damping(ND, lastind, tau_line, LLO)
+      if (damp_acc) call acc_damp(ND, lastind, tau_line, LLO, damp_line)
 
 !***  store the line radiation field in file RADIOL
       call writradl(XJL,XJLMEAN,EINST,NCHARG,NOM,ND,N,LASTIND,MODHEAD,JOBNUM)

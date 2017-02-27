@@ -54,11 +54,14 @@
 
       END FUNCTION PLANCK_FUNC
 
-      function optical_depth(opacity, height, ND) result(tau)
+      function opt_dep(opac, h, ND) result(tau)
+
+!     Calculate optical depth (tau) from a given 
+!     opacity (opac) on a given height grid (h)
 
       integer, intent(in) :: ND
 
-      real*8, intent(in), dimension(ND) :: opacity, height
+      real*8, intent(in), dimension(ND) :: opac, h
 
       real*8, dimension(ND) :: tau
 
@@ -68,12 +71,12 @@
 
       do l = 2, ND
 
-         tau(l) = (height(l - 1) - height(l)) * (opacity(l - 1) + opacity(l)) / 2.0D0
+         tau(l) = (h(l - 1) - h(l)) * (opac(l - 1) + opac(l)) / 2.0D0
 
       enddo
 
       return
 
-      end function optical_depth
+      end function opt_dep
 
       END MODULE PHYS

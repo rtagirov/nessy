@@ -735,7 +735,7 @@ c version with fraction of integral
          XLAM=RWLAE
       ENDIF
     
-      !***  DEFINING ZERO-POINT OF THE OBSERVER)S FRAME FREQUENCY
+      !***  DEFINING ZERO-POINT OF THE OBSERVER'S FRAME FREQUENCY
       xobs0 = FREMAX-DXOBS
       CALL DIFFUS (XLAM,T,R,ND,BCORE,DBDR)   !BCORE=Plank (XLAM, T) at R(ND), DBDR=d(BCORE)/dR at R=ND
       ncoop=n

@@ -24,13 +24,17 @@
 
       real*8, dimension(:, :), allocatable ::    tau_line, tau_cont
 
+      character (len = 1), dimension(:, :), allocatable :: damp_line, damp_cont
+
+      logical ::                                 damp_acc = .true.
+
       INTEGER ::                                 LAMBDA_ITER
 
       LOGICAL, DIMENSION(:), ALLOCATABLE ::      NOFILE
 
       LOGICAL ::                                 CONST_ELEC = .FALSE.
 
-      LOGICAL ::                                 NLTE_REWRITE = .TRUE.
+      logical ::                                 each_ali = .true.
 
       LOGICAL ::                                 VEL_FIELD_FROM_FILE
 
