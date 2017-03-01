@@ -853,7 +853,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !     Rinat, use it to calculate continuum
 
       FMTT = "(F8.3, 2X, F8.3, 2X, F8.3)"
-      ODF = .TRUE.
+      ODF = .FALSE.
       IF (ODF) THEN
       reduced='.rk'
       IF (ID.GT.9) THEN

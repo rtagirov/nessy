@@ -815,13 +815,13 @@ c version with fraction of integral
 
 
 
-!      PRINT *,' VERSION 8 / SYNSPEC'
-!      print *,' xobs0, dxobs ',xobs0,dxobs
-!      do K=1,NFOBS
-!        XO=XOBS0+K*DXOBS
-!        DLAM(K)=-XO*XLAM*VDOP/CLIGHT
-!        PROFILE(K)=0.0
-!      enddo
+      PRINT *,' VERSION 8 / SYNSPEC'
+      print *,' xobs0, dxobs ',xobs0,dxobs
+      do K=1,NFOBS
+        XO=XOBS0+K*DXOBS
+        DLAM(K)=-XO*XLAM*VDOP/CLIGHT
+        PROFILE(K)=0.0
+      enddo
 
 !*** create the wavelength array for the opacity routine
 !       note: the dlam array starts with the zero element
