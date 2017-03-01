@@ -1,7 +1,6 @@
       module MOD_SYNSUBM
       contains
       FUNCTION PHE1(ID,FREQ,ILINE)
-      use test
       use constants
 C     ============================
 C
@@ -41,7 +40,6 @@ C
       ANE=ELEC(ID)
       ANEL=LOG10(ANE)
       !ALAM=2.99792458E18/FREQ
-      call wololo()
       ALAM=CLIGHT_SI*1e10/FREQ
       DLAM=ALAM-WLAM0(ILINE)
       DOPL=SQRT(4.125E7*T+VTURB(ID))*WLAM0(ILINE)/CLIGHT_CGS

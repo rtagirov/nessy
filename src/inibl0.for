@@ -245,13 +245,21 @@ C***  CHANGES BY MARGIT HABERREITER ***
           call readMolconc(ND)
           print*, 'readMolconc'
 
+       
+    
 
          DO ID=1,ND
+
        
             CALL OPAC(ID,0,ABSO,EMIS,WAVARR,SIGARR,N,NF)
-            ABSTD(ID)=MINVAL(ABSOC(:NFCONT()))
 
+        
+
+            ABSTD(ID)=MINVAL(ABSOC(:NFCONT()))
          ENDDO
+
+   
+       
 
    
 
@@ -260,6 +268,7 @@ C***  CHANGES BY MARGIT HABERREITER ***
      *    CALL INILIN(INLIST)
 
       END IF
+
 
   502 FORMAT(16I5)
   503 FORMAT(4F10.3,2E10.3)
@@ -666,51 +675,51 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
       !*** If the ABEMLIN key is set to READ then read the precalculated
       !*** ABLIN/EMLIN from files, otherwise calculate and write out the
       !*** lopa and if the ABEMLIN key is set to WRITE then write out
-!      !*** the ABLIN/EMLIN variables.
-!      IF(cards.ABEMLIN==card_params.ABEMLIN_READ) THEN
-!        read(201,*) NFREQ_TMP,ID_TMP
-!        call assert(ID_TMP==ID,'opac:ABEMLIN R:ID /= FILE ID')
-!        call assert(NFREQ==NFREQ_TMP,'opac:ABEMLIN R:NFREQ/=FILE NFREQ')
-!        read(201,*) ABLIN(1:NFREQ)
-!        read(201,*) EMLIN(1:NFREQ)
-!      ELSE
+      !*** the ABLIN/EMLIN variables.
+      IF(cards.ABEMLIN==card_params.ABEMLIN_READ) THEN
+        read(201,*) NFREQ_TMP,ID_TMP
+        call assert(ID_TMP==ID,'opac:ABEMLIN R:ID /= FILE ID')
+        call assert(NFREQ==NFREQ_TMP,'opac:ABEMLIN R:NFREQ/=FILE NFREQ')
+        read(201,*) ABLIN(1:NFREQ)
+        read(201,*) EMLIN(1:NFREQ)
+      ELSE
 
-!        CALL LINOP_MS(ID,ABLIN,EMLIN)
+        CALL LINOP_MS(ID,ABLIN,EMLIN)
 
-!        if(cards.ABEMLIN==card_params.ABEMLIN_WRITE) then
-!          write(201,*) NFREQ,ID
-!          write(201,*) ABLIN(1:NFREQ)
-!          write(201,*) EMLIN(1:NFREQ)
-!        endif
-!      ENDIF  ! EMABLIN /= EMABLIN_READ
-!      ! CALL LINOP(ID,ABLIN,EMLIN,AVAB)
-!      ! print *,(abso(ij),emlin(ipj),ij=1,nfreq)
-!      !***********************************************************
-!      !***  MARGIT HABERREITER
-!      !***  WRITING OUTPUT FOR NON-LTE BLANKETING
-!      !***  WHICH WILL BE THE INBUT FOR HMINUS-ROUTINE
-!      !***  ID: depth point
-!      !***  NFREQ: number of frequency points
-!      write (200,*) nfreq, id
-!    
-!
+        if(cards.ABEMLIN==card_params.ABEMLIN_WRITE) then
+          write(201,*) NFREQ,ID
+          write(201,*) ABLIN(1:NFREQ)
+          write(201,*) EMLIN(1:NFREQ)
+        endif
+      ENDIF  ! EMABLIN /= EMABLIN_READ
+      ! CALL LINOP(ID,ABLIN,EMLIN,AVAB)
+      ! print *,(abso(ij),emlin(ipj),ij=1,nfreq)
+      !***********************************************************
+      !***  MARGIT HABERREITER
+      !***  WRITING OUTPUT FOR NON-LTE BLANKETING
+      !***  WHICH WILL BE THE INBUT FOR HMINUS-ROUTINE
+      !***  ID: depth point
+      !***  NFREQ: number of frequency points
+      write (200,*) nfreq, id
+    
+
 ! *****************************
-!       freqt=(freq(1)+freq(NFREQ))/2.
-!
-!       lambdat=(clight_cgs/freqt)*1.d8
-!
-!       contf=1.
+       freqt=(freq(1)+freq(NFREQ))/2.
+
+       lambdat=(clight_cgs/freqt)*1.d8
+
+       contf=1.
 
 !====================================================================
 !FUDGE REGULAR
-!
-!       if ((lambdat .lt. 3200.) .and. (lambdat .gt. 1600.)) then
-!        
-!       ind=minloc(abs(wav_f(1:Nfudge)-lambdat))  
-!
-!       contf=ffactor(ind(1))
-!  
-!       endif 
+
+       if ((lambdat .lt. 3200.) .and. (lambdat .gt. 1600.)) then
+        
+       ind=minloc(abs(wav_f(1:Nfudge)-lambdat))  
+
+       contf=ffactor(ind(1))
+  
+       endif 
 !====================================================================
 !FUDGE BIG
 
@@ -724,11 +733,11 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !===================================================================
 
-!       totFe=popul(101,id)+popul(102,id)+popul(103,id)+popul(104,id)+popul(105,id)+popul(106,id)   
-!       totFeII=popul(106, id)
-!       totFeI=totFe-totFeII
-!
-!       totH=sum(popul(1:12,id))
+       totFe=popul(101,id)+popul(102,id)+popul(103,id)+popul(104,id)+popul(105,id)+popul(106,id)   
+       totFeII=popul(106, id)
+       totFeI=totFe-totFeII
+
+       totH=sum(popul(1:12,id))
 
 !        open(unit=400, file='conc.txt', access='append')
 !       write(400, '(i3, 4e12.5)'), id, molconc(4, id)/totH, molconc(3, id)/totH, totFeI/totH, totFeII/totH 
@@ -769,12 +778,17 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !************* opacities FALC ******************
 
 
-!      ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+ABSO(1:NFREQ)*(contf-1.)
+      ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+ABSO(1:NFREQ)*(contf-1.)
        
       
-!      do i=1, NFREQ 
-!        EMLIN(i)=EMLIN(i)+ABSO(i)*(contf-1.)*PLAN(max(NDPMIN,id))
-!      enddo
+      do i=1, NFREQ 
+
+    
+      EMLIN(i)=EMLIN(i)+ABSO(i)*(contf-1.)*PLAN(max(NDPMIN,id))
+    
+
+
+      enddo
 
 
 
@@ -782,16 +796,19 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 
 
-!       do i=1,nfreq
-!!       write (200,310) ablin(i),emlin(i)
-!        write (200,FMT_LOPA) ablin(i)
-!        IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
-!          PRINT '(i0,X,i0," ",$)',I,ID
-!          PRINT '("inibl0: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
-!     &             ' EMISSIVITY : ",$)' ! WARNING!!!
-!          PRINT *,I, ABLIN(I),EMLIN(I)
-!        ENDIF
-!      enddo
+       do i=1,nfreq
+!!!       write (200,310) ablin(i),emlin(i)
+        write (200,FMT_LOPA) ablin(i)
+        IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
+          PRINT '(i0,X,i0," ",$)',I,ID
+          PRINT '("inibl0: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
+     &             ' EMISSIVITY : ",$)' ! WARNING!!!
+          PRINT *,I, ABLIN(I),EMLIN(I)
+        ENDIF
+      enddo
+
+  300 CONTINUE
+
 
 
 
@@ -835,59 +852,45 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !     Rinat, use it to calculate continuum
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      print *, "inibl0 ODF procedure start"
-      fmtt = "(f8.3, 2x, f8.3, 2x, f8.3)"
-      odf = .true.
-      if (odf) then
+      FMTT = "(F8.3, 2X, F8.3, 2X, F8.3)"
+      ODF = .TRUE.
+      IF (ODF) THEN
       reduced='.rk'
-      if (id.gt.9) then
-        write(id_string, '(i2)') id
-      else
-        write(id_string, '(i1)') id
-      end if
-      currentfile = trim(id_string) // trim(reduced)
-!      print*, 'testmiha file: ', trim(currentfile)
-      open (unit=1312,file=trim('../sB/')//trim(currentfile),status='old', readonly)
-      rewind(1312)
-      read (1312,*) beginning, ending, opacity
-      do i = nfreq, 1, -1
+      IF (ID.GT.9) THEN
+        write(ID_string, '(i2)') ID
+      ELSE
+        write(ID_string, '(i1)') ID
+      END IF
+      currentFile = trim(ID_string) // trim(reduced)
+!      print*, 'testMiha File: ', trim(currentFile)
+      OPEN (UNIT=1312,FILE=trim('../sB/')//trim(currentFile),STATUS='OLD', READONLY)
+      READ (1312,*) beginning, ending, opacity
+      DO i = NFREQ, 1, -1
  1122    wavelength = (clight_cgs/freq(i))*1.d8
-!       print*, 'testmiha wavelength: '
-!       write(*,fmtt),wavelength, beginning, ending
-         if ((beginning.le.wavelength).and.(ending.ge.wavelength)) then
-!            print*, 'testmiha wavelength: '
-!            write(*,fmtt),wavelength, beginning, ending
-            ablin(i) = opacity
-         else
-            read (1312,*) beginning, ending, opacity
-!            print*, 'notoktestmiha wavelength: '
-!            write(*,fmtt),wavelength, beginning, ending
-            goto 1122
-         end if      
-      enddo
-      abso(1:nfreq)=abso(1:nfreq)+ablin(1:nfreq)
-      emis(1:nfreq)=emis(1:nfreq)+ablin(1:nfreq)*plan(max(ndpmin,id))
-      else
-         abso(1:nfreq)=abso(1:nfreq)+ablin(1:nfreq)
-         emis(1:nfreq)=emis(1:nfreq)+emlin(1:nfreq)
-      end if
- 
+!       print*, 'testMiha wavelength: '
+!       write(*,FMTT),wavelength, beginning, ending
+         IF ((beginning.LE.wavelength).AND.(ending.GE.wavelength)) THEN
+!            print*, 'testMiha wavelength: '
+!            write(*,FMTT),wavelength, beginning, ending
+            ABLIN(i) = opacity
+         ELSE
+!            READ (1312,*) beginning, ending, opacity
+!            print*, 'NOTOKtestMiha wavelength: '
+!            write(*,FMTT),wavelength, beginning, ending
+            READ (1312,*) beginning, ending, opacity
+            GOTO 1122
+         END IF      
+      ENDDO
+      
+      ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
+
+      EMIS(1:NFREQ)=EMIS(1:NFREQ)+ABLIN(1:NFREQ)*PLAN(max(NDPMIN,id))
+      
+      ELSE
+         ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
+         EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)
+      END IF
+      
       
 
 
@@ -935,27 +938,27 @@ C     **** Detailed opacity and emissivity in hydrogen lines ****
 C          (for IHYL=1)
 C
 C
-!      IF(IHYL.GE.0) THEN
-!        IF(IBVCS==24) THEN
-!          CALL HYDLIN(ID,T,ANE,ABLIN,EMLIN)
-!        ELSE
-!          CALL HYDLIN_IVANY(ID,T,ANE,ABLIN,EMLIN)
-!        ENDIF
-!        ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
-!        EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)
-!        IF(ANY(ABLIN<0)) PRINT *,'ABLIN HYD < 0 @ ',ID
-!        IF(ANY(EMLIN<0)) PRINT *,'ABLIN HYD < 0 @ ',ID
-!      END IF
+      IF(IHYL.GE.0) THEN
+        IF(IBVCS==24) THEN
+          CALL HYDLIN(ID,T,ANE,ABLIN,EMLIN)
+        ELSE
+          CALL HYDLIN_IVANY(ID,T,ANE,ABLIN,EMLIN)
+        ENDIF
+        ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
+        EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)
+        IF(ANY(ABLIN<0)) PRINT *,'ABLIN HYD < 0 @ ',ID
+        IF(ANY(EMLIN<0)) PRINT *,'ABLIN HYD < 0 @ ',ID
+      END IF
 C
 C     **** Detailed opacity and emissivity in HE II lines ****
 C          (for IHE2L=1)
 C
-!      IF(IHE2L.GE.0) THEN
-!        CALL HE2LIN(ID,T,ANE,ABLIN,EMLIN)
-!        ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
-!        EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)
-!c     write (200,310) ABSO(IJ),EMIS(IJ)
-!      END IF
+      IF(IHE2L.GE.0) THEN
+        CALL HE2LIN(ID,T,ANE,ABLIN,EMLIN)
+        ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
+        EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)
+c     write (200,310) ABSO(IJ),EMIS(IJ)
+      END IF
 C
 C     opacity due to detailed photoinization cross-section
 C     (from tables; including resonance features)

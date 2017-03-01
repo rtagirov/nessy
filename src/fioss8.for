@@ -637,10 +637,10 @@ c version with fraction of integral
       if(allocated(PROFN   )) deallocate(PROFN  )
       if(allocated(DLAM    )) deallocate(DLAM   )
       if(allocated(EMINT   )) deallocate(EMINT  )
-!      allocate(PROFILE(NFOBS))
-!      allocate(PROFN(NFOBS))
-!      allocate(DLAM(NFOBS))
-!      allocate(EMINT(NFOBS))
+      allocate(PROFILE(NFOBS))
+      allocate(PROFN(NFOBS))
+      allocate(DLAM(NFOBS))
+      allocate(EMINT(NFOBS))
       if (FIN) exit MAIN_LOOP ! that is GOTO END
 
 !***  Calculate the ionisation temperatures
@@ -723,51 +723,51 @@ c version with fraction of integral
 
 !*********************************************************************************
 ! Miha Cernetic ODF
-      reduced='1.rk'
-      OPEN (UNIT=1312,FILE=trim('../sB/')//trim(reduced),STATUS='OLD', READONLY)
-      sub_bin_number = 0
-      found_sub_bin = .FALSE.
-      DO i = 1, NUM_OF_LINES('../sB/'//trim(reduced))
-         READ (1312,*) beginning, ending, opacity
-         IF (((beginning.GE.XLMIN).OR.(abs(beginning - XLMIN)<1.0D-1)).AND.((ending.LE.XLMAX).OR.(abs(ending - XLMAX)<1.0D-5))) THEN
-           sub_bin_number = sub_bin_number + 1
-!           print *,'OK: ', beginning
-         ELSE IF (beginning.LT.XLMIN) THEN
-            continue
-         ELSE
-           DO j = 1, sub_bin_number + 1
-             BACKSPACE(1312)
-           ENDDO
-           allocate(sub_bin_wavelength(sub_bin_number))
-           DO j = 1, sub_bin_number
-             READ (1312,*) beginning, ending, opacity
-            sub_bin_wavelength(j)  = (beginning + ending) / 2
-!             print *, 'b: ', beginning, ' e: ', ending, ' mid: ', sub_bin_wavelength(j)
-           ENDDO
-           found_sub_bin = .TRUE. 
-         END IF
-         IF (found_sub_bin == .TRUE.) THEN
-           EXIT
-         END IF
-      ENDDO
-        
-      print *, 'sub_bin_wavelenghts: '
-      do i = 1, SIZE(sub_bin_wavelength)
-        print *, sub_bin_wavelength(i)
-      enddo
-
-      NFOBS = sub_bin_number
-
-      allocate(PROFILE(NFOBS))
-      allocate(PROFN(NFOBS))
-      allocate(DLAM(NFOBS))
-      allocate(EMINT(NFOBS))
-      
-      print *, 'dlam:'
-      do i = 1, sub_bin_number
-        DLAM(i) = sub_bin_wavelength(i) - XLAM
-        print *, DLAM(i)
-      enddo
+!      reduced='1.rk'
+!      OPEN (UNIT=1312,FILE=trim('../sB/')//trim(reduced),STATUS='OLD', READONLY)
+!      sub_bin_number = 0
+!      found_sub_bin = .FALSE.
+!      DO i = 1, NUM_OF_LINES('../sB/'//trim(reduced))
+!         READ (1312,*) beginning, ending, opacity
+!         IF (((beginning.GE.XLMIN).OR.(abs(beginning - XLMIN)<1.0D-1)).AND.((ending.LE.XLMAX).OR.(abs(ending - XLMAX)<1.0D-5))) THEN
+!           sub_bin_number = sub_bin_number + 1
+!!           print *,'OK: ', beginning
+!         ELSE IF (beginning.LT.XLMIN) THEN
+!            continue
+!         ELSE
+!           DO j = 1, sub_bin_number + 1
+!             BACKSPACE(1312)
+!           ENDDO
+!           allocate(sub_bin_wavelength(sub_bin_number))
+!           DO j = 1, sub_bin_number
+!             READ (1312,*) beginning, ending, opacity
+!            sub_bin_wavelength(j)  = (beginning + ending) / 2
+!!             print *, 'b: ', beginning, ' e: ', ending, ' mid: ', sub_bin_wavelength(j)
+!           ENDDO
+!           found_sub_bin = .TRUE. 
+!         END IF
+!         IF (found_sub_bin == .TRUE.) THEN
+!           EXIT
+!         END IF
+!      ENDDO
+!        
+!      print *, 'sub_bin_wavelenghts: '
+!      do i = 1, SIZE(sub_bin_wavelength)
+!        print *, sub_bin_wavelength(i)
+!      enddo
+!
+!      NFOBS = sub_bin_number
+!
+!      allocate(PROFILE(NFOBS))
+!      allocate(PROFN(NFOBS))
+!      allocate(DLAM(NFOBS))
+!      allocate(EMINT(NFOBS))
+!      
+!      print *, 'dlam:'
+!      do i = 1, sub_bin_number
+!        DLAM(i) = sub_bin_wavelength(i) - XLAM
+!        print *, DLAM(i)
+!      enddo
 
       print *,' VERSION 8 / SYNSPEC'
       print *,' xobs0, dxobs ',xobs0,dxobs
