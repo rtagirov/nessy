@@ -4,8 +4,8 @@
 
       SUBROUTINE cstabread(SIGMA, WAVENUM, LOW, WAVARR, SIGARR, N, NF)
 
-C     CALLED BY PHOTOCS_M
-C     written by Margit Haberreiter to read cross section tables
+!     CALLED BY PHOTOCS
+!     written by Margit Haberreiter to read cross section tables
 
       USE MOD_INTPL
       USE UTILS
@@ -22,18 +22,6 @@ C     written by Margit Haberreiter to read cross section tables
 
       real*8 :: WAV1, SIG1, WAV2, SIG2
 
-!      do ii = 1, N
-
-!         do k = 1, NF
-
-!            write(*, '(A,2x,4(i4,2x),2(2x,e15.7))'), 'cstabread:', ii, N, k, NF, wavarr(ii, k), wavenum
-
-!         enddo
-
-!      enddo
-
-!      stop
-
       SIGMA = 0.
 
       ! find the index k in the reverse-sorted array WAVARR(low,:)
@@ -46,9 +34,6 @@ C     written by Margit Haberreiter to read cross section tables
       BIN_SEARCH: DO ii = 1, 999 ! safety guard if list is unorderd
 
         k = (nup + nlow) / 2
-
-!        write(*, '(A,2x,4(i4,2x),2(e15.7,2x))'), 'cstabread:', low, N, k, NF, wavenum, wavarr(low, k)
-!        if (low .le. 0 .or. low .gt. N .or. k .le. 0 .or. k .gt. NF) write(*, '(A,2(2x,i4))'), 'cstabread:', low, k
 
         IF (wavenum .gt. WAVARR(low, k)) THEN
 

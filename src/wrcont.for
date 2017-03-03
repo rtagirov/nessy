@@ -6,10 +6,10 @@
 
       use MOD_AMBIPOLAR
       use MOD_CALCH
-      use MOD_COOP_M
-      use MOD_DATOM_M
+      use MOD_COOP
+      use MOD_DATOM
       use MOD_DECON
-      use MOD_DECSTAR_M
+      use MOD_DECSTAR
       use MOD_DIFFUS
       use MOD_ELIMIN
       use MOD_extrxjc
@@ -30,13 +30,13 @@
       use MOD_WRITMOD
       use MOD_WRITRADC
       use ABUNDANCES
-
       USE CONSTANTS
-      USE COMMON_BLOCK
-      USE FILE_OPERATIONS
-      USE VARDATOM
-      USE VARHMINUS
-      USE VARSTEAL
+
+      use common_block
+      use file_operations
+      use vardatom
+      use varhminus
+      use varsteal
 
       use local_operator
  
@@ -82,7 +82,7 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       real*8 :: amu
 
-      LOGICAL LDUMMY1, LDUMMY2, LDUMMY3
+      LOGICAL LDUMMY1, LDUMMY2
 
       REAL*8, ALLOCATABLE, DIMENSION(:, :) :: EDDI_OLD
 
@@ -94,15 +94,14 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       print*, 'Entering wrcont, JOB = '//JOB
 
-!**** Changes by Margit Haberreiter
-       CALL DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $              EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $              INDNUP,INDLOW,LASTIND,NATOM,
-     $              ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $              NLAST,WAVARR,SIGARR,NFDIM)
+      CALL DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $           INDNUP,INDLOW,LASTIND,NATOM,
+     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+     $           NLAST,WAVARR,SIGARR,NFDIM)
 
-      CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,LDUMMY1,LDUMMY2,LBKG,XLBKG1,XLBKG2,
-     $               LDUMMY3,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN,amu)
+      CALL DECSTAR(MODHEAD,FM,RSTAR,teff,glog,xmass,VDOP,LDUMMY1,LBKG,XLBKG1,XLBKG2,
+     $             LDUMMY2,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN,amu)
 
 !***  DECODING INPUT OPTIONS *******************************************
       CALL DECON(LSOPA,LSINT,IFLUX,JOBMAX,LPRIH,LPHNU,LPRIV,TEFF,LBLANK)
@@ -178,12 +177,14 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 !       now extract XJC and EDDI for the frequency K
         CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
 
-        CALL COOP_M(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
-     $              OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $              N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $              ALPHA,SEXPO,AGAUNT,0,DUMMY2,
-     $              WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF),
-     $              LBKG,XLBKG1,XLBKG2,NF)
+        CALL COOP(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
+     $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $            N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,
+     $            WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF),
+     $            LBKG,XLBKG1,XLBKG2,NF)
+
+        print*, 'wrcont: K = ', K, ' out of ', NF
 
         CALL DIFFUS(XLAMBDA(K),T,RADIUS,ND,BCORE,DBDR)
 

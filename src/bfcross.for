@@ -7,7 +7,7 @@
 !     THIS ROUTINE PREPARES AN ARRAY SIGMAKI WITH THE BOUND-FREE CROSS SECTIONS
 !     (IN CM**2) TO AVOID UNNECCESSARY MULTIPLE CALCULATIONS
 
-      USE MOD_PHOTOCS_M 
+      USE MOD_PHOTOCS
 
       implicit none
 
@@ -24,14 +24,6 @@
 
       integer ::                               NUP, K, LOW, I
       real*8 ::                                SIGMATH, EDGE, WAVENUM, sigma
-
-!      do i = 1, N
-
-!         print*, 'bfcross ncharg:', i, ncharg(i)
-
-!      enddo
-
-!      stop 'bfcross stop'
 
       do 8 NUP = 2, N
 
@@ -67,8 +59,8 @@
 
                else
 
-                  call PHOTOCS_M(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,
-     $                           WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
+                  call PHOTOCS(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,
+     $                         WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
 
                   sigmaki(k, low) = sigma
 

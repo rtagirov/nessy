@@ -1,9 +1,11 @@
       module MOD_SYNSUBM
+
       contains
+
       FUNCTION PHE1(ID,FREQ,ILINE)
+
       use constants
-C     ============================
-C
+
 C     Absorption profile for four lines of He I, given by
 C     Barnard, Cooper, Smith (1974) JQSRT 14, 1025 for the 4471 line;
 C     Shamey (1969) PhD thesis, for other lines
@@ -17,7 +19,7 @@ C                                        = 4  for 4922)
 C
 C     Output: PHE1 - profile coefficient in frequency units,
 C                    normalized to sqrt(pi) [not unity]
-C
+
       implicit real*8(a-h,o-z)
       integer,intent(in   ) :: ID,ILINE
       real*8, intent(in   ) :: FREQ
@@ -4708,7 +4710,7 @@ C
       DIMENSION WAVARR(N, NF), SIGARR(N, NF)
       logical,save :: first=.true.
 
-CMH  INPUT FOR HMINUS BF CALCULATION TAKEN FORM THE PHOTOCS_M - ROUTINE
+CMH  INPUT FOR HMINUS BF CALCULATION TAKEN FROM THE PHOTOCS - ROUTINE
 CMH  H- FROM JOHN A&A193,189 (1988)
       real*8, parameter :: CN(6) = (/152.519d0,49.534d0,-118.858d0,92.536d0,-34.194d0,4.982d0/)
 

@@ -1,31 +1,24 @@
-      MODULE MOD_DECSTAR_M
+      MODULE MOD_DECSTAR
 
-        type :: DECSTAR_PARAMS 
-          integer :: POPNUM_CP
-        end type
-        type(DECSTAR_PARAMS) :: DECSTAR_OPT = DECSTAR_PARAMS(0)
+      type :: DECSTAR_PARAMS 
+      integer :: POPNUM_CP
+      end type
+      type(DECSTAR_PARAMS) :: DECSTAR_OPT = DECSTAR_PARAMS(0)
 
       CONTAINS
 
-      SUBROUTINE DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,FAL,LBKG,XLBKG1,XLBKG2,
-     $                     TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN, amu)
+      SUBROUTINE DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
+     $                   TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN, amu)
 C***********************************************************************
 C***  DECODES INPUT CARDS, CALLED FROM WRSTART
 C***********************************************************************
-      USE MOD_INITVEL
-      USE FILE_OPERATIONS
-      USE COMMON_BLOCK
-      use mod_geomesh
+
+      use file_operations
+      use common_block
  
       IMPLICIT REAL*8(A-H,O-Z)
 
-      INTEGER :: HEIGHT_DIM
-
       real*8, intent(in) :: amu
-
-      real*8, allocatable, dimension(:) :: fudge_r1, fudge_r2, fudge_r3
-
-      integer :: fudge_i
 
       PARAMETER (ONE = 1.D+0)
       
@@ -166,9 +159,9 @@ c       read (KARTE,*) XLBKG1,XLBKG2
         IF ((XLBKG1 .eq. 0) .or. (XLBKG1 .eq. 0) .or.
      $              (xlbkg2 .lt. xlbkg1)) THEN
           write (6,*) 'something wrong with lbkg-wavelength range'
-          write (6,*) 'decstar_m: LBKG= ',LBKG,XLBKG1,XLBKG2
+          write (6,*) 'decstar: LBKG= ',LBKG,XLBKG1,XLBKG2
           print *, 'possibly wrong format lbkg-wavelength range'
-          print *, 'decstar_m: LBKG= ',LBKG,XLBKG1,XLBKG2
+          print *, 'decstar: LBKG= ',LBKG,XLBKG1,XLBKG2
           pause
         ENDIF
         GOTO 10
@@ -373,34 +366,11 @@ C***  COMPUTATION OF THE MASS FLUX
 c     3.01516 = log( Mo/(yr/sec)/Ro/Ro/4/Pi )
 c     (this was just 3.02 !)
       IF (XMDOT .NE. .0) FM= 10.**(XMDOT+3.01516) /RSTAR/RSTAR
+
 C***  STELLAR RADIUS IN CM
-      RSTAR=RSTAR*RSUN
-C***  INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
-!      IF (RPAR(20:24).NE.'TABLE') THEN
+      RSTAR = RSTAR * RSUN
 
-!        RINAT TAGIROV:
-!        This bit is necessary to correct for the 
-!        inconsistency of the RMAX parameter given in the CARDS file.
-!        Here we change the RMAX value, so that it becomes consistent 
-!        with the height grid from the FAL_VD file.
-!        Without this correction the radial scale in the velocity law becomes 
-!        inconsistent with RMAX and the velocity boundary values calculated in the code
-!        no longer match those indicated in the CARDS file.
-!        See INITVEL.FOR, WRVEL.FOR and GEOMESH.FOR for details.
-
-      if (FAL) height = read_atm_mod(fal_mod_file, '1')
-
-      if (.not. FAL) then
-
-         call read_kur_mod(amu, atmean, rstar, height, fudge_r1, fudge_r2, fudge_r3, fudge_i)
-
-         deallocate(fudge_r1); deallocate(fudge_r2); deallocate(fudge_r3)
-
-      endif
-
-      rmax = 1.0 + maxval(height) * 1.0d+5 / rstar
-
-      call initvel(rmax, teff, glog, rstar, xmass)
+      t_eff = TEFF
 
       return
 

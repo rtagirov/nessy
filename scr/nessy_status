@@ -64,9 +64,9 @@ for PID in `pgrep hminus.exe`; do
 
        if [[ `echo $PATHNAME | grep -- "$1"` ]]; then
 
-          echo -e "\n${bold}HMINUS $PATHNAME/ $offbold\n"
+          echo -en "\n${bold}HMINUS $PATHNAME/: $offbold"
 
-          echo -e "PID: $PID; JOB: `cat /proc/$PID/cwd/fort.99`\n"
+          echo -n  "PID = $PID; JOB = `cat /proc/$PID/cwd/fort.99`; "
 
           if [ -f /proc/$PID/cwd/$CONV_FILE ]; then
 
@@ -76,19 +76,20 @@ for PID in `pgrep hminus.exe`; do
              CORMAX_NHN=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $4}')
              CORMAX_HYD=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $5}')
 
-             echo -e "LAMBDA ITERATION: $LAMBDA_ITE\n"
+             echo -n "ALI = $LAMBDA_ITE; "
 
-             echo -e "CORMAX: ALL = $CORMAX_ALL \n\tNHN = $CORMAX_NHN \n\tHYD = $CORMAX_HYD \n"
+#             echo -e "CORMAX: ALL = $CORMAX_ALL; NHN = $CORMAX_NHN; HYD = $CORMAX_HYD \n"
+             echo -e "CMX = $CORMAX_NHN (NHN), $CORMAX_HYD (HYD)\n"
 
           else
 
-             echo -e "NO LAMBDA ITERATION HAS BEEN COMPLETED YET.\n"
+             echo -e "NO ALI HAS BEEN COMPLETED YET.\n"
 
           fi
 
        fi
 
-       echo "---------------------------------------------------------------------------------------"
+       echo "----------------------------------------------------------------------------------------------------------------------------------------"
 
     else
 
@@ -96,6 +97,6 @@ for PID in `pgrep hminus.exe`; do
  
     fi
 
-    echo "---------------------------------------------------------------------------------------"
+#    echo "---------------------------------------------------------------------------------------"
 
 done

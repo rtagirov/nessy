@@ -1,8 +1,8 @@
-      MODULE MOD_PHOTOCS_M
+      MODULE MOD_PHOTOCS
 
       contains
 
-      SUBROUTINE PHOTOCS_M(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,WAVARR,SIGARR,N,NF)
+      SUBROUTINE PHOTOCS(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,WAVARR,SIGARR,N,NF)
 
 C***  CALCULATES SIGMA(NUE), THE FREQUENCY DEPENDENT PHOTO CROSS SECTION
 C***  Returns SIGMA
@@ -44,8 +44,6 @@ C***  THE FOLLOWING DATA ARE FOR MIHALAS' GAUNT FACTOR FIT ( HI AND HE II, N=1)
       
       X = EDGE / WAVENUM
 
-!      print*, 'photocs_m: ', alpha(low), sexpo(low), ' ', agaunt(low)
-
 C***  VARIABLE AGAUNT IS MISUSED TO CARRY THE KEYWORD 'KOESTER' FOR
 C***  NEW PHOTOIONIZATION CROSS SECTIONS (KOESTER ET AL. 1985, A+A 149, 423)
 C***  FIT COEFFICIENTS FOR THE MODIFIED (!) FORMULA:
@@ -58,8 +56,6 @@ C***  FIT COEFFICIENTS FOR THE MODIFIED (!) FORMULA:
           X0LN2=X0LN*X0LN
           SIGMA=SIGMATH*X**ALPHA(LOW)*EXP(SEXPO(LOW)*(XLN2-X0LN2))
 
-!          write(*, '(A,1x,2(2x,e15.7),1x,A)'), 'photocs_m koester:', sigma, sigmath, agaunt(low)
-
 C*****************************************************************
 C***  changes by Margit Haberreiter
 CMH   IN CASE OF TABLE READ CROSS SECTIONS FROM TABLE
@@ -70,8 +66,6 @@ CMH  else if (AGAUNT(LOW) .EQ. 7HTABLE01) THEN
       else if (AGAUNT(LOW) .EQ. 'TABLE') THEN
 
         call cstabread(SIGMA, WAVENUM, LOW, WAVARR, SIGARR, N, NF)
-
-!        write(*, '(A,1x,2x,e15.7,A,1x,A)'), 'photocs_m table:  ', sigma, '                 ', agaunt(low)
 
 C*****************************************************************
 CMH  HIER IST DAS PROBLEM, AGAUNT(LOW) WIRD NICHT ERKANNT ??
@@ -92,8 +86,6 @@ c        control table: Wishart 1979, MNRAS 187, 59p
 
          SIGMA=FLAMDA*X*X*X3*SIGMATH
 
-!         write(*, '(A,1x,2(2x,e15.7),1x,A)'), 'photocs_m h-minus:', sigma, sigmath, agaunt(low)
-
       ELSE
 C***  OLD VERSION: SEATON / HYDROGENIC
 
@@ -105,8 +97,6 @@ C***  ALPHA(LOW) NOT DEFINED: HYDROGENIC EXPONENT NUE**(-3)
            SIGMA=SIGMATH*X*X*X
           ENDIF
 
-!          write(*, '(A,1x,2(2x,e15.7),1x,A)'), 'photocs_m else:   ', sigma, sigmath, agaunt(low)
-
       ENDIF 
 C***  BOUND-FREE GAUNT FACTORS ARE CALCULATED DEPENDING ON KEYWORD AGAUNT
      
@@ -117,23 +107,19 @@ C***  THIS MIHALAS GAUNT FACTOR IS ONLY VALID FOR GROUND STATE N=1 !
             GAUNT=A0+X*(AM1+X*AM2)+(A1+(A2+A3/X)/X)/X
             SIGMA=SIGMA*GAUNT
 
-!            write(*, '(A,1x,2x,e15.7,A,1x,A)'), 'photocs_m mihalas:', sigma, '                 ', agaunt(low)
-
       ENDIF
 C***  GII FIT FROM SEATON (1960), REP. PROG. PHYS. 23, P. 313
 C***  THIS FORMULA IS VALID FOR ALL HYDROGENIC LEVELS ( H OR HE II)
 C***  VARIABLE SEXPO IS MISUSED TO CARRY THE MAIN QUANTUM NUMBER
       IF (AGAUNT(LOW) .EQ. 'SEATON' ) THEN
 
-            IF (SEXPO(LOW) .LE. .0d0) stop 'ERROR in PHOTOCS_M: MAIN QUANTUM NUMBER UNDEFINED'
+            IF (SEXPO(LOW) .LE. .0d0) stop 'ERROR in PHOTOCS: MAIN QUANTUM NUMBER UNDEFINED'
 
             U=one/X - one
             DEN=(X/SEXPO(LOW))**0.666666666666d0
             GAUNT=one + 0.1728d0 * (U-one) * DEN -
      -            0.0496d0 * (U*(U+1.333333333333d0)+one) * DEN * DEN
             SIGMA=SIGMA*GAUNT
-
-!            write(*, '(A,1x,2x,e15.7,A,1x,A)'), 'photocs_m seaton: ', sigma, '                 ', agaunt(low)
 
       ENDIF
 

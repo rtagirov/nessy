@@ -10,7 +10,7 @@ C***********************************************************************
 C***  PRINTOUT OF THE NLTE OPTICAL DEPTH SCALES (ROSSELAND, THOMSON)
 C***********************************************************************
       USE MOD_LIPO
-      use MOD_OPAROSS_M
+      use MOD_OPAROSS
       IMPLICIT REAL*8(A-H,O-Z)
      
       DIMENSION RADIUS(ND),RNE(ND),ENTOT(ND),T(ND)
@@ -62,10 +62,11 @@ C***  LOOP OVER ALL DEPTH POINTS  --------------------------------------
       DO 20 I=1,N
    20 EN(I)=POPNUM(L,I)
 C***  CHANGES BY MARGIT HABERREITER
-      CALL OPAROSS_M(OPARL,EN,TL,RNEL,ENTOTL,RSTAR,N,
-     $               LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $               ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
-     $               WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+      CALL OPAROSS(OPARL,EN,TL,RNEL,ENTOTL,RSTAR,N,
+     $             LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $             ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
+     $             WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+
       IF (L .GT. 1) THEN
          DR=RM1-RL
          ENEMEAN=0.5d0*(ENEL+ENELM1)

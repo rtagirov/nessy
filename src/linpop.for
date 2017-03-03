@@ -1,6 +1,6 @@
-      MODULE MOD_LINPOP
+      module mod_linpop
 
-      CONTAINS
+      contains
 
       SUBROUTINE LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART_ZWAAN,POP1,
      $                  N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN,EINST,LEVEL,
@@ -624,8 +624,8 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
       IF (CONST_ELEC) THEN ! PRE-SET ELECTRON CONCENTRATION
 
-          ELEC_CONC =       READ_ATM_MOD(fal_mod_file, '3')
-          HEAVY_ELEM_CONC = READ_ATM_MOD(fal_mod_file, '4')
+          ELEC_CONC =       read_atm_file_col(3)
+          HEAVY_ELEM_CONC = read_atm_file_col(4)
 
           EN(NPLUS1) = ELEC_CONC(L) / HEAVY_ELEM_CONC(L)
 
@@ -759,9 +759,6 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
          IF (LAMBDA_ITER .EQ. 1) CLOSE(195)
 
-!        RINAT TAGIROV: WRITING THE NEW ELECTRON CONCENTRATION TO THE UPDATED ATMOSPHERE MODEL FILE FAL_VD.UPD
-!         CALL UPDATE_ATM_MOD(RNE(1 : ND) * ENTOT(1 : ND))
-
       ENDIF
 
 !      WRITE(*, '(/,A)') '******** REFINEMENT PROTONS **********'
@@ -883,16 +880,13 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       END SUBROUTINE LINPOP
 
-      SUBROUTINE PRINT_NLTE_LEV(Level,
-     $                          LevPopLTE,
-     $                          LevPop,
-     $                          DepartZwaan)
+      subroutine print_nlte_lev(Level, LevPopLTE, LevPop, DepartZwaan)
 
-      USE FILE_OPERATIONS
-      USE STRING_OPERATIONS
-      USE COMMON_BLOCK
+      use file_operations
+      use string_operations
+      use common_block
 
-      IMPLICIT NONE
+      implicit none
 
       CHARACTER*10, INTENT(IN) ::           Level
 
@@ -902,9 +896,9 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       REAL*8 ::                             RAND
 
-      INTEGER ::                            FILE_UNIT
+      integer ::                            file_unit
 
-      INTEGER ::                            DI
+      integer ::                            di
 
       IF (Level(1:3) .NE. 'HEI') LevName = RM_CHAR(RM_CHAR(RM_CHAR(Level, ' '), '.'), '-')
 
@@ -1085,7 +1079,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       CLOSE(SEP_FILE_UNIT)
 
-      END SUBROUTINE PRINT_LTE_LEV
+      END SUBROUTINE
 
 
       SUBROUTINE PRINT_LTE_TRA(LowLevel, UpLevel, LineInd,
@@ -1147,38 +1141,8 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       ENDDO
 
-      CLOSE(FILE_UNIT)
+      close(file_unit)
 
-      END SUBROUTINE PRINT_LTE_TRA
+      end subroutine
 
-
-      SUBROUTINE UPDATE_ATM_MOD(ELEC_CONC)
-
-      USE FILE_OPERATIONS
-      USE COMMON_BLOCK
-
-      IMPLICIT NONE
-
-      REAL*8, DIMENSION(DPN), INTENT(IN) :: ELEC_CONC
-
-      REAL*8 :: H, TEMP, ELEC_CONC_OLD, HEAVY_ELEM_CONC, V_TURB
-
-      INTEGER :: I
-
-      OPEN(UNIT = 1935, FILE = 'FAL_VD')
-
-      CALL RM_FILE(upd_fal_mod_file, '-f'); CALL OPEN_TO_APPEND(1936, upd_fal_mod_file)
-
-      DO I = 1, DPN
-
-         READ(1935, *) H, TEMP, ELEC_CONC_OLD, HEAVY_ELEM_CONC, V_TURB
-
-         WRITE(1936, '(F10.5,2x,F12.5,1x,ES15.7,1x,ES15.7,1x,F10.5)') H, TEMP, ELEC_CONC(I), HEAVY_ELEM_CONC, V_TURB
-
-      ENDDO
-
-      CLOSE(1935); CLOSE(1936)
-
-      END SUBROUTINE UPDATE_ATM_MOD
-
-      END MODULE MOD_LINPOP
+      end module

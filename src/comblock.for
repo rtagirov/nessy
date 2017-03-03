@@ -26,7 +26,8 @@
 
       character (len = 1), dimension(:, :), allocatable :: damp_line, damp_cont
 
-      logical ::                                 damp_acc = .true.
+!      logical ::                                 damp_acc = .true.
+      logical ::                                 damp_acc = .false.
 
       INTEGER ::                                 LAMBDA_ITER
 
@@ -34,7 +35,7 @@
 
       LOGICAL ::                                 CONST_ELEC = .FALSE.
 
-      logical ::                                 each_ali = .true.
+      logical ::                                 each_ali = .false.
 
       LOGICAL ::                                 VEL_FIELD_FROM_FILE
 

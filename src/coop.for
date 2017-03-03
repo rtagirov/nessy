@@ -1,15 +1,18 @@
-      module MOD_COOP_M
+      module MOD_COOP
 
       integer :: NDPMIN_WARN=0 !* set to true if an NDPMIN sanity check fails
 
       contains
 
-      SUBROUTINE COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
-     $                  OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $                  N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $                  ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,
-     $                  LBKG,XLBKG1,XLBKG2,NF)
+      SUBROUTINE COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
+     $                OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $                N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $                ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,
+     $                LBKG,XLBKG1,XLBKG2,NF)
+
       use MOD_BNUE
+
+      use file_operations
 
 !***  NON-LTE CONTINUOUS OPACITY AT GIVEN FREQUENCY POINT K (XLAM)
 !***  OPACITY AT DEPTH POINT L: OPAL
@@ -17,8 +20,8 @@
 !***  FREQUENCY POINT L
 !**** N:      NUMBER OF LEVELS
 !MH   ND:     NUMBER OF DEPTH POINTS
-!MH   ND  = 1 WHEN COOP_M IS CALLED FROM OPAROSS_M
-!MH   XLAM    : FREQUENCY (LOOP OVER NF IN OPAROSS_M)
+!MH   ND  = 1 WHEN COOP IS CALLED FROM OPAROSS
+!MH   XLAM    : FREQUENCY (LOOP OVER NF IN OPAROSS)
 !MH   T(ND)   : TEMPERATURE AT EACH DEPTH POINT ND
 !MH   RNE(ND)  : RELATIVE ELECTRON DENSITY AT EACH DEPTH POINT ND
 !MH   POPNUM(ND,N): ARRAY WITH POPULATION NUMBERS FOR EACH DEPTH POINT ND AND LEVEL N
@@ -31,8 +34,8 @@
 !MH   W3      =W*W*W, W is wavenumber
 !MH   C2      = 2 * H * C    ( G * CM**3 / S**2 )
 !MH   C2*W3   = 2 * H * NU^3/ C^2
-!MH   CALLED BY OPAROSS_M, CCORE, COMO, ETL, WRCONT, FIOSS8
-!MH   ND = 1 WHEN COOP_M IS CALLED FROM OPAROSS_M
+!MH   CALLED BY OPAROSS, CCORE, COMO, ETL, WRCONT, FIOSS8
+!MH   ND = 1 WHEN COOP IS CALLED FROM OPAROSS
 !MH   CALLED BY OPAROSS:  NLTELBKG=1
 !MH            ABLIN,EMLIN IS THEN WRITTEN TO *.LBKG FILE
 !MH                      OPACITY.FOR HAS TO BE RUN IN ORDER TO BIN
@@ -41,10 +44,10 @@
 !MH                      LINE OPACITY, EMISSIVITY MUST NOT BE ADDED TO TOTAL OPACITY, EMISSIVITY
 !***********************************************************************
 !MH  VERY IMPORTANT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!MH  ND = 1 WHEN COOP_M IS CALLED FROM OPAROSS_M!!!!!!!!!!!!!!
+!MH  ND = 1 WHEN COOP IS CALLED FROM OPAROSS!!!!!!!!!!!!!!
 !***********************************************************************
 
-      use MOD_PHOTOCS_M
+      use MOD_PHOTOCS
       use MOD_GAUNTFF
       use MOD_HMINUSFF
       use MOD_LINSCA
@@ -120,11 +123,17 @@
 !***  LINEBLANKETING=0
 !MH   DETERMINE DEPTH INDEX OF TEMPERATURE MINIMUM
         NDPMIN = 0       ! Sanity check 1
+
         DO L=2,ND-1       ! Find minimum
           if ((T(L) .LT. T(L-1)) .AND. (T(L) .LT. T(L+1))) THEN
             NDPMIN = L
           endif
         ENDDO
+
+        if (num_of_columns(atm_mod_file) .eq. 7 .or. num_of_columns(atm_mod_file) .eq. 4) NDPMIN = 1
+
+!        print*, 'temp min loc:', NDPMIN
+
         if (LBKG) then
           NLTELBKG=1
         else
@@ -132,7 +141,7 @@
         endif
         if (NDPMIN .eq. 0) then     ! Sanity check 1 - finish
           if(NDPMIN_WARN==0)
-     $      print *,'coop_m: something wrong! NDPMIN = ',NDPMIN, 
+     $      print *,'coop: something wrong! NDPMIN = ',NDPMIN, 
      $              ' setting NDPMIN to 1'
           !pause
           NDPMIN = 1      ! continue, dont abort
@@ -186,8 +195,8 @@
 !***      Changes by Margit Haberreiter
 !MH       SIGMA IN CM^2
 
-              CALL PHOTOCS_M(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,
-     $                       WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF), N, NF)
+              CALL PHOTOCS(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,
+     $                     WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF), N, NF)
 
           ENDIF
 !***      RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON
@@ -200,8 +209,6 @@
 
           G=WEIGHT(I)/WEIGHT(J)*WE*EXP(C1*(EDGE-W)/TL)
           EMINDU=G*POPNUM(L,J)*SIGMA
-
-!          if (L .eq. 64 .and. I .eq. 2) print*, 'coop_m 1: ', popnum(64, i)
 
           SUM=POPNUM(L,I)*SIGMA-EMINDU
           OPAL=OPAL+SUM
@@ -232,7 +239,7 @@
       l_h0 = 0
       DO I=1,N
 !-hm-addition
-!MH   COOP_M HYDROGEN FF OPACITY
+!MH   coop HYDROGEN FF OPACITY
          if (level(i).eq.'H I......1') l_h0 = i
          SIGMAFF=PRESIG*GFF(NCHARG(I))
 
@@ -306,14 +313,14 @@
 !MH**  CHANGES BY MARGIT HABERREITER
 !MH**  RDOPAC: READS BINNED LINE OPACITY DATA FROM *.LBKG FILES
 !MH**  LINOP, LINEM AT DEPTHPOINT L AND FREQUENCY XLAM
-!MH**  IF COOP_M IS CALLED FROM WRCONT
+!MH**  IF coop IS CALLED FROM WRCONT
         IF (NLTELBKG .EQ. 1) THEN
           ! PRINT *,l,xlam, 'READING NON-LTE LINEBLANKETING DATA'
           !MH**  LINEMMIN: EMISSIVITY AT DEPTH POINT 84 (MODELC)
           !MH** LINEMMIN: NOT YET DEVIDED BY ENTOT(L)
           !MH** check temperature minimum
           if (NDPMIN .NE. 1 .AND. (  T(NDPMIN) .gt. 5000d0)) then
-            print *, 'coop_m: NDPMIN wrong! ', NDPMIN, T(NDPMIN)
+            print *, 'coop: NDPMIN wrong! ', NDPMIN, T(NDPMIN)
             pause
           endif
 

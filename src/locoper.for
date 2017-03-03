@@ -124,34 +124,6 @@
 
       END FUNCTION
 
-      FUNCTION EXTRAP_LO_B_VAL(LO, LO_SIZE, PD, UD, BD) RESULT(LO_B_VAL)
-
-!     LINEARLY EXTRAPOLATES THE LOCAL OPERATOR ELEMENT BOUNDARY VALUE FROM THE TWO PRECEDING VALUES
-
-      USE COMMON_BLOCK
-
-      IMPLICIT NONE
-
-      INTEGER, INTENT(IN) ::                    LO_SIZE
-
-      REAL*8, DIMENSION(LO_SIZE), INTENT(IN) :: LO
-
-      INTEGER, INTENT(IN) ::                    BD, UD, PD
-
-      REAL*8 ::                                 C1, C2
-
-      REAL*8 ::                                 LO_B_VAL
-
-      C1 = (LO(PD) - LO(UD)) / (HEIGHT(PD) - HEIGHT(UD))
-
-      C2 = LO(UD) - C1 * HEIGHT(UD)
-
-      LO_B_VAL = C1 * HEIGHT(BD) + C2
-
-      RETURN
-
-      END FUNCTION EXTRAP_LO_B_VAL
-
       subroutine acc_damp(nd, nf, tau, lo, damp)
 
 !     Rinat Tagirov:

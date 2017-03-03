@@ -10,7 +10,8 @@
 
 C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
 
-      use MOD_COOP_M
+      use MOD_COOP
+
       implicit none
 
       ! GLOBAL Variables intent(out)
@@ -54,12 +55,12 @@ C***  LOOP OVER ALL CONTINUUM FREQUENCIES  *************************************
 
         XLAM = XLAMBDA(K)
 
-        CALL  COOP_M(XLAM,ND,T,RNE,POP1,ENTOT,RSTAR,
-     $               OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $	             N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $	             DUMMY1,DUMMY1,CDUMMY1,K,
-     $               SIGMAKI,WAVARR(1 : N, 1 : NF),
-     $               SIGARR(1 : N, 1 : NF),LBKG,XLBKG1,XLBKG2,NF)
+        CALL COOP(XLAM,ND,T,RNE,POP1,ENTOT,RSTAR,
+     $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $	          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $	          DUMMY1,DUMMY1,CDUMMY1,K,
+     $            SIGMAKI,WAVARR(1 : N, 1 : NF),
+     $            SIGARR(1 : N, 1 : NF),LBKG,XLBKG1,XLBKG2,NF)
 
 C***  SOURCE FUNCTION WITH OLD POP.NUMBERS (WITHOUT THOMSON OPACITY)
 	  DO L=1,ND

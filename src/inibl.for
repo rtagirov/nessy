@@ -1,9 +1,9 @@
-      module MOD_INIBL0
+      module MOD_INIBL
       character*(*),private,parameter :: FMT_LOPA='(1pe12.5)'   ! format 310
       real*8, allocatable ::wav_oi(:), opac_oi(:), opac_f(:,:)
       contains
 
-       SUBROUTINE inibl0(WAVARR, SIGARR, N, NF)
+       SUBROUTINE inibl(WAVARR, SIGARR, N, NF)
        use MOD_SYNSUBM
        use SYNTHP_CONT,only: FREQC,ABSOC,NFCONT
        use UTILS,only:assert
@@ -794,7 +794,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         write (200,FMT_LOPA) ablin(i)
         IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
           PRINT '(i0,X,i0," ",$)',I,ID
-          PRINT '("inibl0: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
+          PRINT '("inibl: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
      &             ' EMISSIVITY : ",$)' ! WARNING!!!
           PRINT *,I, ABLIN(I),EMLIN(I)
         ENDIF
@@ -981,7 +981,7 @@ C
         getContIdx=i
         return
       endif
-      print *,'inibl0:getContIdx:ERROR:',
+      print *,'inibl:getContIdx:ERROR:',
      &                    idxFreq,NFCONT(),FRXIDX(NFCONT())
       call error('Could not find FrxIdx')
       end function getContIdx

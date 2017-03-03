@@ -1,17 +1,17 @@
-      module MOD_DATOM_M
+      module MOD_DATOM
 
       contains
 
-      subroutine DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $                   EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $                   INDNUP,INDLOW,LASTIND,NATOM,
-     $                   ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $                   NLAST,WAVARR,SIGARR, NFDIM)
+      subroutine DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+     $                 EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $                 INDNUP,INDLOW,LASTIND,NATOM,
+     $                 ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+     $                 NLAST,WAVARR,SIGARR, NFDIM)
 
 C***  Changes by Margit Haberreiter, May 20, 2002
 C*** CALLED BY COMO, ETL, STEAL, WRCONT, WRSTART, FIOSS8
 C*******************************************************************************
-CMH   DATOM_M: CODE NUMBER OF ELEMETS CHANGED
+CMH   DATOM: CODE NUMBER OF ELEMETS CHANGED
 C***  READS ATOMIC DATA FROM TAPE4=DATOM  **************************************
 C***  CODE NUMBER OF ELEMENT HELIUM    (HE): COMPONENT 1 OF VECTOR 'KODAT'
 C***                         HYDROGEN  (H )            2
@@ -237,14 +237,14 @@ c      IF (IECHO.EQ.1) PRINT *,KARTE
 c     ignore dielectronic option
       IF (KARTE(:10) .EQ. 'DIELECREC ') GOTO 1  ! ignored
       IF (KARTE(:10) .EQ. 'DRTRANSIT ') GOTO 1  ! ignored
-      print *, 'UNRECOGNIZED DATA INPUT IN DATOM_M: '
+      print *, 'UNRECOGNIZED DATA INPUT IN DATOM: '
       print *,'KARTE="'//KARTE//'"'
-      CALL ERROR('UNRECOGNIZED DATA INPUT IN DATOM_M: "'//KARTE//'"')
+      CALL ERROR('UNRECOGNIZED DATA INPUT IN DATOM: "'//KARTE//'"')
     3 IECHO=1
       GOTO 1
 C***  ELEMENTS ---------------------------------------------------------
     5 NATOM=NATOM+1
-      if (natom .gt. 30) stop 'datom_m natom > 30'
+      if (natom .gt. 30) stop 'datom: natom > 30'
 !      IF (NATOM .GT. MAXATOM) THEN
 !          print *, 'DATOM: MORE ELEMENTS THAN ALLOWED'
 !          STOP 'ERROR'

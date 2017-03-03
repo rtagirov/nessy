@@ -49,7 +49,7 @@
 
       REAL*8 :: PL, PU, DL, DU
 
-      DEPTH_POINTS_NUM = NUM_OF_LINES(FAL_MOD_FILE)
+      depth_points_num = num_of_lines(atm_mod_file)
 
       ALLOCATE(TPL(DEPTH_POINTS_NUM, NTC))
       ALLOCATE(TPU(DEPTH_POINTS_NUM, NTC))
@@ -231,8 +231,8 @@ c version with fraction of integral
 
       PROGRAM FIOSS8
 
-      use MOD_COOP_M
-      use MOD_DATOM_M
+      use MOD_COOP
+      use MOD_DATOM
       use MOD_READMOD
       use MOD_READPOP
       use MOD_READRAD
@@ -242,7 +242,7 @@ c version with fraction of integral
       use MOD_DIFFUS
       use MOD_ELIMIN
       use MOD_extUray
-      use MOD_INTRFC_M
+      use MOD_INTRFC
       use MOD_PRIDAT
       use MOD_WMOM0_F
       use MOD_TRAPLO
@@ -259,11 +259,12 @@ c version with fraction of integral
       use CONSTANTS,only:CLIGHT_SI
       use PARAMS_ARRAY
       use ABUNDANCES
-      USE COMMON_BLOCK
-      USE FILE_OPERATIONS
-      USE FIOSS_AUX
-      USE VARDATOM
-      USE MOD_GEOMESH
+
+      use common_block
+      use file_operations
+      use fioss_aux
+      use vardatom
+      use geo_mesh
 
 !             intrfc passes new a AGAUNT !!
 !*******************************************************************************
@@ -427,11 +428,11 @@ c version with fraction of integral
 
       CALL TIC()
 
-      call DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $             EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $             INDNUP,INDLOW,LASTIND,NATOM,
-     $             ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $             NLAST,WAVARR,SIGARR,NFDIM)
+      call DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $           INDNUP,INDLOW,LASTIND,NATOM,
+     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+     $           NLAST,WAVARR,SIGARR,NFDIM)
 
 !     READING OF THE MODEL FILE ------------------------------------
 
@@ -739,12 +740,12 @@ c version with fraction of integral
       xobs0 = FREMAX-DXOBS
       CALL DIFFUS (XLAM,T,R,ND,BCORE,DBDR)   !BCORE=Plank (XLAM, T) at R(ND), DBDR=d(BCORE)/dR at R=ND
       ncoop=n
-      CALL COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
-     $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $            N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,
-     $            WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
-     $            LBKG,XLBKG1,XLBKG2,NF)
+      CALL COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
+     $          OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $          ALPHA,SEXPO,AGAUNT,0,DUMMY2,
+     $          WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
+     $          LBKG,XLBKG1,XLBKG2,NF)
 
 !     CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
       CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
@@ -843,12 +844,12 @@ c version with fraction of integral
       rewind 55
       rewind 56
 
-      call intrfc_m(ncharg,weight,elevel,eion,
-     *              einst,alpha,sexpo,agaunt,natom,
-     *              symbol,nfirst,nlast,
-     *              WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
+      call intrfc(ncharg,weight,elevel,eion,
+     *            einst,alpha,sexpo,agaunt,natom,
+     *            symbol,nfirst,nlast,
+     *            WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
 
-      PRINT *,'FIOSS8: Time elapsed after INTRFC_M: ',TOC()
+      PRINT *,'FIOSS8: Time elapsed after INTRFC: ',TOC()
 
       !$$$ calculate opacities
       !*****************************************************************
@@ -856,7 +857,7 @@ c version with fraction of integral
       !***  FROM SYNOPA OPAC IS CALLED THE LAST TIME IN FIOSS8 RUN
       !***  OPENING FILE FOR EMLIN, ABLIN OUTPUT
       !***  WRITTEN IN OPAC, CALLED BY SYNOPA
-      !***  FREQUENCY GRID WRITTEN IN INTRFC_M
+      !***  FREQUENCY GRID WRITTEN IN INTRFC
       write (flnam,'(F14.0)') XLAM
       flnam = adjustl(trim(flnam)//'lopa')
       open (200,file=flnam,status='unknown')

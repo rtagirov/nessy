@@ -68,7 +68,7 @@ c	print *,'SABOLT 1: zeta',zeta(i)
 c	enddo
 
       ihelium = kodat(1)           ! KODAT(n) Number of elements/atom n
-      ihydro  = kodat(2)           !n=1: helium, n=2: hydrogen, more see datom_m
+      ihydro  = kodat(2)           !n=1: helium, n=2: hydrogen, more see datom
       if (ihelium.gt.0) print *,' helium   included',ihelium
       if (ihydro .gt.0) print *,' hydrogen included',ihydro
 

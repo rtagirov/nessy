@@ -4,11 +4,9 @@
 
       SUBROUTINE WRSTART
 
-      use MOD_DATOM_M
-      use MOD_DECON
-      use MOD_DECSTAR_M
+      use MOD_DATOM
+      use MOD_DECSTAR
       use MOD_FGRID
-      use MOD_GEOMESH
       use MOD_GRADIFF
       use MOD_GREYM
       use MOD_PRIBLA
@@ -25,10 +23,13 @@
       use MOD_ERROR
       use MOD_chemeq      
       use ABUNDANCES
-      USE COMMON_BLOCK
-      USE FILE_OPERATIONS
-      USE VARDATOM
-      USE VARHMINUS
+
+      use geo_mesh
+      use init_vel
+      use common_block
+      use file_operations
+      use vardatom
+      use varhminus
 
 !     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
 !     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
@@ -57,7 +58,7 @@
 
       INTEGER XLBKG1, XLBKG2
       LOGICAL LBKG
-      LOGICAL TTABLE, TPLOT, SPHERIC, FAL
+      LOGICAL TTABLE, TPLOT, SPHERIC
 
       CHARACTER MODHEAD*104
 
@@ -83,15 +84,15 @@
       call TIC(timer)
 
 !     READ ATOMIC DATA FROM FILE DATOM
-      CALL DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $             EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $             INDNUP,INDLOW,LASTIND,NATOM,
-     $             ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $             NLAST,WAVARR,SIGARR,NFDIM)
+      CALL DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $           INDNUP,INDLOW,LASTIND,NATOM,
+     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+     $           NLAST,WAVARR,SIGARR,NFDIM)
 
 !     DECODING INPUT DATA
-      CALL DECSTAR_M(MODHEAD,FM,RSTAR,VDOP,TTABLE,FAL,LBKG,XLBKG1,XLBKG2,
-     $               TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN, AMU)
+      CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
+     $             TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN, AMU)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
@@ -108,7 +109,10 @@
 
       CALL FGRID(NFDIM,NF,XLAMBDA,FWEIGHT,AKEY,NOM,SYMBOL,NATOM,N,NCHARG,ELEVEL,EION,EINST)
 
-      CALL GEOMESH(RADIUS, ENTOT, T, FAL, P, Z, RSTAR, AMU, ATMEAN, ND, NP)
+      CALL GEOMESH(RADIUS, ENTOT, T, P, Z, RSTAR, AMU, ATMEAN, ND, NP)
+
+!     INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
+      call initvel(maxval(radius), t_eff, glog, rstar, xmass)
 
       allocate(XJC(ND))
       allocate(XJCARR(ND, NF))
@@ -167,7 +171,7 @@
 !     type of radiative transfer scheme implemented in the code)
 !     ...the law gets extrapolated from the point of the extremum
 !     to the innermost point yelding therefore a monotonically increasing/decreasing function.
-!     The height grid in the VEL_FIELD_FILE has to be the same as in the atmosphere model file FAL_VD.
+!     The height grid in the VEL_FIELD_FILE has to be the same as in the atmosphere model file ATM_MOD.
 !     The TABLE string in CARDS file was used before to
 !     control the calculation/read-out option but is obsolete now (it is still in the CARDS file though).
 !     The logical variable VEL_FIELD_FROM_FILE is declared in comblock.for and set in hminus.for.
@@ -234,8 +238,8 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
          ALLOCATE(ELEC_CONC(ND))
          ALLOCATE(HEAVY_ELEM_CONC(ND))
 
-         ELEC_CONC =       READ_ATM_MOD(fal_mod_file, '3')
-         HEAVY_ELEM_CONC = READ_ATM_MOD(fal_mod_file, '4')
+         ELEC_CONC =       read_atm_file_col(3)
+         HEAVY_ELEM_CONC = read_atm_file_col(4)
 
          RNE(1 : ND) = ELEC_CONC(1 : ND) / HEAVY_ELEM_CONC(1 : ND)
 

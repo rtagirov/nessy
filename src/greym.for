@@ -34,7 +34,7 @@ C***  FOR THE CALCULATION OF THE LTE IONIZATION STRUCTURE A MINIMUM
 C***  TEMPERATURE OF Teff*0.8112 IS USED
 C*********************************************************************** 
       use MOD_LIPO
-      use MOD_OPAROSS_M
+      use MOD_OPAROSS
       use MOD_LTEPOP
       use MOD_RKQS
       use MOD_DTDR
@@ -268,10 +268,11 @@ C*****************************************************************************
         IF (L .EQ. ND) GOTO 10
 C***************************************************************************** 
 
-        CALL OPAROSS_M(OPARL,ENLTE,TP,RNEL,ENTOT(L),RSTAR,N,
-     $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
-     $                 ALPHA,SEXPO,AGAUNT,NF,XLAMBDA(1 : NF),FWEIGHT(1 : NF),NOM,
-     $                 WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),LBKG,XLBKG1,XLBKG2)
+        CALL OPAROSS(OPARL,ENLTE,TP,RNEL,ENTOT(L),RSTAR,N,
+     $               LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
+     $               ALPHA,SEXPO,AGAUNT,NF,XLAMBDA(1 : NF),FWEIGHT(1 : NF),NOM,
+     $               WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),LBKG,XLBKG1,XLBKG2)
+
 C***************************************************************************** 
 C***  COMPUTATION OF THE ROSSELAND MEAN OPACITY  AT POINT L+1 
 C***  IN THE FIRST ITERATION USING T(L) 
@@ -332,10 +333,11 @@ c     IF (ABS(RNEDIF/RNEL).GT.0.01 .OR. ABS(RNEDIF).GT.0.001)
      $    GOTO 13 
 
 C***************************************************************************** 
-        CALL OPAROSS_M(OPARL1,ENLTE,TP1,RNEL,ENTOT(L+1),RSTAR,N,
-     $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
-     $                 ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
-     $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+        CALL OPAROSS(OPARL1,ENLTE,TP1,RNEL,ENTOT(L+1),RSTAR,N,
+     $               LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
+     $               ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
+     $               WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+
 C***************************************************************************** 
 C***  ARITHMETIC MEAN OF OPARL AND OPARL1 
 C***************************************************************************** 

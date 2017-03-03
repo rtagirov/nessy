@@ -1,15 +1,15 @@
-      module MOD_INTRFC_M
+      module MOD_INTRFC
 
       contains
 
-      subroutine intrfc_m(ncharg,weight,elevel,eion,
-     *                    einst,alpha,sexpo,agaunt,natom,
-     *                    symbol,nfirs0,nlast0,
-     *                    WAVARR,SIGARR,N,NF)
+      subroutine intrfc(ncharg,weight,elevel,eion,
+     *                  einst,alpha,sexpo,agaunt,natom,
+     *                  symbol,nfirs0,nlast0,
+     *                  WAVARR,SIGARR,N,NF)
 
 !     now includes fix of quantum number of HeI lines
 
-      use MOD_INIBL0
+      use MOD_INIBL
       use MOD_SYNSUBM
       use MOD_STATEQ
 
@@ -55,7 +55,7 @@ C     original input - routine START and others
          call tint
 
 C**** CHANGED BY MARGIT HABERREITER
-         call inibl0(WAVARR, SIGARR, N, NF)
+         call inibl(WAVARR, SIGARR, N, NF)
 C***********************************
          call hylset
          call he2set
@@ -345,10 +345,10 @@ CMH  IFB = 9: OPACITY PROJECT XS-FITS (INTERPOLATIONS)
       call inimod
       print *,' call tint'
       call tint
-      print *,' call inibl0(WAVARR,SIGARR)'
+      print *,' call inibl(WAVARR,SIGARR)'
 
 C***  CHANGED BY MARGIT HABERREITER
-      call inibl0(WAVARR, SIGARR, N, NF)
+      call inibl(WAVARR, SIGARR, N, NF)
 C***********************************
       print *,' call hylset'
       call hylset
@@ -444,9 +444,9 @@ C***  READING VELOCITY ASPLUND 2000, A&A 359, 729
       CLOSE (9999)
       ENDIF
 
-CMH   IF ADDTURB TRUE THEN READ THE TURBULENCE BROADENING FROM FAL_VD
+CMH   IF ADDTURB TRUE THEN READ THE TURBULENCE BROADENING FROM ATM_MOD
       IF (ADDTURB) THEN
-      open (UNIT=9999,file='FAL_VD',STATUS='OLD')
+      open (UNIT=9999,file='ATM_MOD',STATUS='OLD')
       DO L=1,NDDIM
         READ (UNIT=9999, fmt=*),WW, XX,YY,ZZ,TURB(L)
         PRINT *, L,'FIOSS: TURB= ',TURB(L)
@@ -531,7 +531,7 @@ c         write (90,*) nvopa-kopa+1,wlam(nvopa-kopa+1)
 
       subroutine synopa(WAVARR, SIGARR, N, NF)
       use MOD_SYNSUBM
-      use MOD_INIBL0  !contains OPAC
+      use MOD_INIBL  !contains OPAC
       use SYNTHP_CONT
       use OPINT,  only: OPATOT,ETATOT
       

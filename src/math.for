@@ -1,14 +1,15 @@
-      MODULE MATH
+      module math
 
-      IMPLICIT NONE
+      implicit none
 
-      PRIVATE
+      private
 
-      PUBLIC :: EXPINT
-      PUBLIC :: DSQ, ISQ
-      PUBLIC :: DCUBE, ICUBE
+      public :: expint
+      public :: dsq, isq
+      public :: dcube, icube
+      public :: extrap_to_boundary
 
-      CONTAINS
+      contains
 
       RECURSIVE FUNCTION EXPINT(n, x) RESULT (Enx)
 
@@ -120,5 +121,28 @@
       RETURN
 
       END FUNCTION ICUBE
+
+      function extrap_to_boundary(n, x, y, bm2, bm1, b) result(yb)
+
+!     linearly extrapolates the boundary value (yb) of the array y which is a 
+!     function of x using the two preceding values (y(bm1), y(bm2))
+
+      integer, intent(in) ::              n
+
+      real*8, dimension(n), intent(in) :: x, y
+
+      integer, intent(in) ::              b, bm1, bm2
+
+      real*8 ::                           c1, c2, yb
+
+      c1 = (y(bm2) - y(bm1)) / (x(bm2) - x(bm1))
+
+      c2 = y(bm1) - c1 * x(bm1)
+
+      yb = c1 * x(b) + c2
+
+      return
+
+      end function
 
       END MODULE MATH

@@ -7,7 +7,7 @@
       ! Calculate the line absorption and emission for every frequency point
       ! (ABLIN, EMLIN) based on the line profile, the depthpoint ID
 
-      ! Called by inibl0
+      ! Called by inibl
       SUBROUTINE LINOP_MS(ID,ABLIN,EMLIN)
 
       use MOD_SYNSUBM, only:PROFIL,PHE1,PHE2

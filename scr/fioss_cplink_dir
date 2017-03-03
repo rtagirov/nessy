@@ -29,7 +29,7 @@ FILES="AlI------1  CI-------3    FeI------3   fioss_prepare   MgI------2  NaI---
 CaI------1  DATOM         FeI------4     MgI------3  NaI------4  POPNUM      SI-------3  SiI------6
 CaI------2  Dilfac.mdisp  FeI------5  
 MODFILE     NaI------5  O2_H   RADIOC MolConc.txt c2.asc  ch.asc  cn.asc  co.asc  h2.asc  nh.asc  oh.asc o2.asc SiI------1  VELO
-CaI------3  FAL_VD        FGRID        NaI------1  NaI------6  RADIOCL     SiI------2
+CaI------3  ATM_MOD     FGRID        NaI------1  NaI------6  RADIOCL     SiI------2
 CI-------1  FeI------1    fioss8.exe   input_sun   NaI-----10  NaI------7  RADIOL      SiI------3
 CI-------2  FeI------2    fioss_do_mu  MgI------1  NaI------2  NaI------8  SI-------1  SiI------4  `echo fort.*`"
 

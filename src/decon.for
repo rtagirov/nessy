@@ -1,12 +1,12 @@
       module MOD_DECON
+
       contains
-      SUBROUTINE DECON(LSOPA,LSINT,IFLUX,JOBMAX,
-     $                 LPRIH,LPHNU,LPRIV,TEFF,LBLANK)
-C***********************************************************************
-C***  DECODING INPUT OPTIONS, CALLED FROM WRCONT *******************************
-C***********************************************************************
-C234567890 234567890 234567890 234567890 234567890 234567890 234567890 234567890 
-      IMPLICIT REAL*8(A-H,O-Z)
+
+      SUBROUTINE DECON(LSOPA,LSINT,IFLUX,JOBMAX,LPRIH,LPHNU,LPRIV,TEFF,LBLANK)
+
+!     DECODING INPUT OPTIONS, CALLED FROM WRCONT
+
+      implicit real*8(a - h, o - z)
       
       LOGICAL NOTEMP
       CHARACTER KARTE*80

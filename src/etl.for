@@ -9,11 +9,11 @@
       use MOD_WRITMS
       use MOD_WRITMSI
       use MOD_READPOP
-      use MOD_COOP_M
+      use MOD_COOP
       use MOD_READMS
       use MOD_READMSI
       use MOD_LIOP
-      use MOD_DATOM_M
+      use MOD_DATOM
       use MOD_READRAD
       use MOD_ETLRAY
       use MOD_extUray
@@ -36,17 +36,16 @@
       use ABUNDANCES
       USE CONSTANTS
 
-      USE COMMON_BLOCK
-      USE FILE_OPERATIONS
-      USE VARDATOM
-      USE VARHMINUS
-      USE VARSTEAL
-
+      use common_block
+      use file_operations
+      use vardatom
+      use varhminus
+      use varsteal
+      use math
       use phys
-
       use local_operator
 
-      IMPLICIT REAL*8(A - H, O - Z)
+      implicit real*8(a - h, o - z)
 
       INTEGER :: LASTUPD
       integer :: timer
@@ -116,11 +115,11 @@
       CALL FLGRID(NFLDIM, NFL, PHI, PWEIGHT, DELTAX)
 
 !***  changes by Margit Haberreiter
-	CALL DATOM_M(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $               EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $               INDNUP,INDLOW,LASTIND,NATOM,
-     $               ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $               NLAST,WAVARR,SIGARR,NFDIM)
+	CALL DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+     $         EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $         INDNUP,INDLOW,LASTIND,NATOM,
+     $         ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+     $         NLAST,WAVARR,SIGARR,NFDIM)
 	
 !***  READING OF THE MODEL FILE
       IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'OLD')
@@ -271,7 +270,9 @@
      $             BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,ELEVEL,NL,
      $             NDIM,EINST,INDNUP,INDLOW,LASTIND)
 
-      IF ( (NUP .EQ. 0) .OR. (LRUD .EQ. 0) ) GOTO 7 ! THIS IS HOW WE GET 75 LINES OUT OF NLINE = 150
+      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0)) GOTO 7 ! THIS IS HOW WE GET 75 LINES OUT OF NLINE = 150
+
+      print*, 'etl: NL = ', NL, ' out of ', NLINE
  
 !***  COMPUTATION OF THE ETLA SOURCE FUNCTION COEFFICIENTS, ASF AND BSF
 !***  RATES AND POPNUMBERS ARE UPDATED !
@@ -292,12 +293,12 @@
       CALL DIFFUS (XLAM,T,RADIUS,ND,BCORE,DBDR)
  
 !***  CONTINUUM AND LINE OPACITIES
-      CALL COOP_M(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
-     $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
-     $            N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,
-     $            WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
-     $            LBKG,XLBKG1,XLBKG2,NF)
+      CALL COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
+     $          OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
+     $          ALPHA,SEXPO,AGAUNT,0,DUMMY2,
+     $          WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
+     $          LBKG,XLBKG1,XLBKG2,NF)
 
 !***  BACKGROUND CONTINUUM RADIATION FIELD
 
@@ -394,11 +395,11 @@
 !     Be that as it may, in what follows, to obviate this irregular behavior I linearly
 !     extrapolated LO(ND) and LO(1) using the two preceding LO elements.
 
-      LO(1) =  EXTRAP_LO_B_VAL(LO, ND, 3, 2, 1)
-      LO(ND) = EXTRAP_LO_B_VAL(LO, ND, ND - 2, ND - 1, ND)
+      lo(1) =  extrap_to_boundary(ND, height, lo, 3,      2,      1)
+      lo(ND) = extrap_to_boundary(ND, height, lo, ND - 2, ND - 1, ND)
 
 !     XJLMEAN is stored in XJL, LO is stored for each line in LLO (which means Line Local Operator)
-      CALL STORXJL(XJL, XJLMEAN, ND, LASTIND, IND, LLO, LO)
+      CALL STORXJL(XJL, XJLMEAN, ND, LASTIND, IND, llo, lo)
 
       LineNumber = LineNumber + 1
 
