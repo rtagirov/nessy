@@ -382,7 +382,7 @@ C***  INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
 !        This bit is necessary to correct for the 
 !        inconsistency of the RMAX parameter given in the CARDS file.
 !        Here we change the RMAX value, so that it becomes consistent 
-!        with the height grid from the FAL_VD file.
+!        with the height grid from the ATM_MOD file.
 !        Without this correction the radial scale in the velocity law becomes 
 !        inconsistent with RMAX and the velocity boundary values calculated in the code
 !        no longer match those indicated in the CARDS file.

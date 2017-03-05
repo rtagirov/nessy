@@ -167,7 +167,7 @@
 !     type of radiative transfer scheme implemented in the code)
 !     ...the law gets extrapolated from the point of the extremum
 !     to the innermost point yelding therefore a monotonically increasing/decreasing function.
-!     The height grid in the VEL_FIELD_FILE has to be the same as in the atmosphere model file FAL_VD.
+!     The height grid in the VEL_FIELD_FILE has to be the same as in the atmosphere model file ATM_MOD.
 !     The TABLE string in CARDS file was used before to
 !     control the calculation/read-out option but is obsolete now (it is still in the CARDS file though).
 !     The logical variable VEL_FIELD_FROM_FILE is declared in comblock.for and set in hminus.for.

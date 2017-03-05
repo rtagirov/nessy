@@ -95,7 +95,7 @@ AcceleratingProcedureName=setxjl
 AccelerationSwitchedOn='.*AccFactCutOff = .*'
 AccelerationSwitchedOff='      AccFactCutOff = 0.0D0'
 
-FILES_TO_IGNORE='CARDS FAL_VD vel_field.in'
+FILES_TO_IGNORE='CARDS ATM_MOD vel_field.in'
 ##############################################################################################################################
 
 function cp_to_src_dir
@@ -315,7 +315,7 @@ for RUN in $RUNS; do
 
  fi
 
- if [ $ATM_MOD ]; then check_file $ATM_MOD_DIR$ATM_MOD; cp -v $ATM_MOD_DIR$ATM_MOD $HM_DIR$RUN/FAL_VD; echo; fi
+ if [ $ATM_MOD ]; then check_file $ATM_MOD_DIR$ATM_MOD; cp -v $ATM_MOD_DIR$ATM_MOD $HM_DIR$RUN/ATM_MOD; echo; fi
 
  if [ $DATOM ];   then check_file $DATOM_DIR/$DATOM;    cp -v $DATOM_DIR/$DATOM    $HM_DIR$RUN/DATOM;  echo; fi
 
@@ -350,7 +350,7 @@ for RUN in $RUNS; do
  if [ $JOBMAX ]; then sed -i "s/$JOBMAXStringPattern/$JOBMAXString/" $HM_SET; fi
  unset IFS
 
- if [ $ATM_MOD ] &&   [ "$ODF_IT" == "0" ]; then check_file $ATM_MOD_DIR$ATM_MOD;     cp -v $ATM_MOD_DIR$ATM_MOD     $HM_DIR$RUN/FAL_VD;       echo; fi
+ if [ $ATM_MOD ] &&   [ "$ODF_IT" == "0" ]; then check_file $ATM_MOD_DIR$ATM_MOD;     cp -v $ATM_MOD_DIR$ATM_MOD     $HM_DIR$RUN/ATM_MOD;       echo; fi
 
  if [ $DATOM ] &&     [ "$ODF_IT" == "0" ]; then check_file $DATOM_DIR/$DATOM;        cp -v $DATOM_DIR/$DATOM        $HM_DIR$RUN/DATOM;        echo; fi
 
@@ -684,7 +684,7 @@ for BRANCH in $1; do
 
     for RUN in $2; do
 
-        for I in $3; do insert "rm -rvf ${BASE_DIR}IT$I/$RUN | tee -a $LOG_FILE" "$XTERM_CMD_FILE" "a"; done
+        for I in $3; do insert "rm -rvf ${BASE_DIR}/IT$I/$RUN | tee -a $LOG_FILE" "$XTERM_CMD_FILE" "a"; done
 
     done
 
@@ -729,7 +729,7 @@ for RUN in $RUNS; do
 
     while [ "$SSLC" -le "120" ]; do sleep $RTB; SSLC=`expr $(date +%s) - $(date +%s -r $LBKG_CONTROL_FILE)`; done
 
-    DIM=$(wc -l $FI_DIR/$RUN/FAL_VD | awk '{print $1}')
+    DIM=$(wc -l $FI_DIR/$RUN/ATM_MOD | awk '{print $1}')
 
     DIM="DIM "$DIM
 

@@ -19,7 +19,7 @@ ORIG_SRC=$src
 ORIG_EXE_FILE=$PREV_RUN_DIR/hminus.exe
 DATOM_FILE=$PREV_RUN_DIR/DATOM
 FGRID_FILE=$inp/fgr/fgridHZN.dat
-FALVD_FILE=$PREV_RUN_DIR/FAL_VD
+FALVD_FILE=$PREV_RUN_DIR/ATM_MOD
 CROSS_SECTION_FILES=$inp/crs/002
 CHEMIN_FILE=$PREV_RUN_DIR/chem.in
 RUN_DIR=$INIT_DIR/hminus/IT${ODF_IT}/$RUN
@@ -89,7 +89,7 @@ change_dir ${RUN_DIR}
 
 cp -v ${DATOM_FILE}            ./DATOM
 cp -v ${FGRID_FILE}            ./FGRID
-cp -v ${FALVD_FILE}            ./FAL_VD
+cp -v ${FALVD_FILE}            ./ATM_MOD
 cp -v ${CROSS_SECTION_FILES}/* ./
 cp -v ${CHEMIN_FILE}           ./chem.in
 

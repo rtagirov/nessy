@@ -76,7 +76,7 @@ mkdir -p $OUTPUT_DIR
 
 change_dir $OUTPUT_DIR
 
-$CP ${ORIG_COSI}/FAL_VD     ./
+$CP ${ORIG_COSI}/ATM_MOD     ./
 $CP ${ORIG_COSI}/MODFILE    ./
 $CP ${ORIG_COSI}/FGRID	    ./
 $CP ${ORIG_COSI}/DATOM	    ./

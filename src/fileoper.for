@@ -16,8 +16,8 @@
       CHARACTER (LEN = 3),  PARAMETER :: NCRM_FILE_NAME =    'CNR' ! NCRM = Net Collision Rate Matrix
       CHARACTER (LEN = 3),  PARAMETER :: NTRM_FILE_NAME =    'TNR' ! NTRM = Net Total Rate Matrix
 
-      CHARACTER (LEN = 6),  PARAMETER :: fal_mod_file     =  'FAL_VD'
-      CHARACTER (LEN = 10), PARAMETER :: upd_fal_mod_file =  'FAL_VD.UPD'
+      CHARACTER (LEN = 7),  PARAMETER :: fal_mod_file     =  'ATM_MOD'
+      CHARACTER (LEN = 10), PARAMETER :: upd_fal_mod_file =  'ATM_MOD.UPD'
 
       character (len = 5),  parameter :: kur_mod_file =      'TABLE'
 
