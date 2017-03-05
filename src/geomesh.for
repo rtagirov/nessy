@@ -33,11 +33,11 @@
 
       selectcase(num_of_columns(atm_mod_file))
 
-          case(4); call read_mur_fmt_mod(rstar, height, radius, T, entot, ND)
+          case(4); call read_mur_fmt_mod(rstar, height, radius, T, entot, ND) ! Atmosphere model in MURAM format
 
-          case(5); call read_fal_fmt_mod(rstar, height, radius, T, entot, ND)
+          case(5); call read_fal_fmt_mod(rstar, height, radius, T, entot, ND) ! Atmosphere model in FAL format
 
-          case(7); call read_kur_fmt_mod(amu, atmean, rstar, height, radius, T, entot, ND)
+          case(7); call read_kur_fmt_mod(amu, atmean, rstar, height, radius, T, entot, ND) ! Atmosphere model in Kurucz format
 
           case default; stop 'Function read_atm_file_col: col argument is not recognized. Abort.'
 
@@ -193,15 +193,15 @@
       allocate(r(ND))
       allocate(p(ND))
 
-      h = read_atm_file_col(1)
-      T = read_atm_file_col(2)
-      p = read_atm_file_col(3)
+      h = read_atm_file_col(1) ! Height
+      T = read_atm_file_col(2) ! Temperature
+      p = read_atm_file_col(3) ! Pressure
 
-      n = p / (boltz * T)
+      n = p / (boltz * T) ! Number density
 
       h = abs(h - maxval(h))
 
-      r = 1.0d0 + h * 1.0d5 / rstar ! h (height) in km, rstar in cm
+      r = 1.0d0 + h * 1.0d5 / rstar ! Calculation of radius in relative units: h (height) in km, rstar in cm
 
       deallocate(p)
 
@@ -224,11 +224,11 @@
       allocate(n(ND))
       allocate(r(ND))
 
-      h = read_atm_file_col(1)
-      T = read_atm_file_col(2)
-      n = read_atm_file_col(4)
+      h = read_atm_file_col(1) ! Height
+      T = read_atm_file_col(2) ! Temperature
+      n = read_atm_file_col(4) ! Number density
 
-      r = 1.0d0 + h * 1.0d5 / rstar ! h (height) in km, rstar in cm
+      r = 1.0d0 + h * 1.0d5 / rstar ! Calculation of radius in relative units: h (height) in km, rstar in cm
 
       end subroutine
 

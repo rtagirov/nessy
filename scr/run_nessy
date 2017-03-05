@@ -684,7 +684,7 @@ for BRANCH in $1; do
 
     for RUN in $2; do
 
-        for I in $3; do insert "rm -rvf ${BASE_DIR}IT$I/$RUN | tee -a $LOG_FILE" "$XTERM_CMD_FILE" "a"; done
+        for I in $3; do insert "rm -rvf ${BASE_DIR}/IT$I/$RUN | tee -a $LOG_FILE" "$XTERM_CMD_FILE" "a"; done
 
     done
 
@@ -694,7 +694,7 @@ for BRANCH in $1; do
 
     confirm
 
-    xterm $XTERM_SET_DEL -title "$BRANCH runs removal" -e "bash --rcfile $XTERM_CMD_FILE -i" &
+    xterm $XTERM_SET_DEL -title "Removing $BRANCH runs" -e "bash --rcfile $XTERM_CMD_FILE -i" &
 
 done
 }
