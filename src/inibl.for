@@ -574,29 +574,6 @@ C     **** calculated only in the first and the last frequency *****
 
         ENDDO NION_LOOP
 
-!**************************************************************************************************
-!Introduction of the plasma refractive index by Rinat Tagirov (see Tapping & DeTracey, 1990, SoPh)
-
-!        f_0 = 9.0D3 * DSQRT(ANE)
-
-!        IF (f_0 / FR .GE. 1.0D0) THEN
-
-!           AFF = 1.0D40
-
-!        ELSE
-
-!        PRINT*, 'AAAAAAAAAAAAAAAA', f_0, FR, ANE
-
-!           RI = DSQRT(1.0D0 - (f_0 / FR)**2.0D0)
-
-!        PRINT*, 'AAAAAAAAAAAAAAA2', RI
-
-!           AFF = AFF / RI
-
-!        ENDIF
-
-!**************************************************************************************************
-
         !* Additional opacities
 
         CALL OPADD(0,IJ,ID,FR,ABAD,EMAD,SCAD)

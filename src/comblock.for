@@ -29,6 +29,8 @@
 !      logical ::                                 damp_acc = .true.
       logical ::                                 damp_acc = .false.
 
+      logical ::                                 rayleigh = .true.
+
       INTEGER ::                                 LAMBDA_ITER
 
       LOGICAL, DIMENSION(:), ALLOCATABLE ::      NOFILE

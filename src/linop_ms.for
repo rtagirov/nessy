@@ -17,8 +17,8 @@
       use MOD_chemeq
       use constants
 
-      USE COMMON_BLOCK
-      USE PHYS
+      use common_block
+      use phys
 
 C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       implicit none
@@ -82,6 +82,10 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       integer :: iD1, iD2, Nc
       integer :: iL1, iL2, ILmin, ILmax
       integer :: mn, j, ii, i
+
+      integer :: idx
+
+      real*8, dimension(nfreq) :: wA
 
       real*8, allocatable :: ABLIN_old(:)
       real*8 :: testint
@@ -557,6 +561,22 @@ C     print *,ID,'LINOP: USE THE PLANCK FUNKTION OF ID=55 (FOR MODEL C)'
 !     the one the functioning of which we didn't quite understand, it doesn't pertain to what we implemented in the loop above)
 
       ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+ABLINN(:)
+
+      if (rayleigh) then
+
+          wA(1 : NFREQ) = light_speed * 1.0d+8 / freq(1 : NFREQ)
+
+          if (wA(1) .le. 2000.0d0) then
+
+              do idx = 1, nfreq
+
+                 ablin(idx) = ablin(idx) + rrr(id, 0, 1) * sigma_rayleigh(wA(idx))
+
+              enddo
+
+          endif
+
+      endif
 
 !     special routine for selected He II lines
 

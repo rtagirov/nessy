@@ -4,19 +4,23 @@
 
       REAL*8, PARAMETER :: pai = 3.1415926
 
-      REAL*8, PARAMETER :: boltz = 1.3806488D-16 ! Boltzmann constant, erg / K
+      REAL*8, PARAMETER :: boltz = 1.3806488D-16       ! Boltzmann constant, erg / K
 
-      REAL*8, PARAMETER :: elec_mass = 9.1093829D-28 ! Electron mass, g
+      REAL*8, PARAMETER :: elec_mass = 9.1093829D-28   ! Electron mass, g
 
-      REAL*8, PARAMETER :: prot_mass = 1.6726217D-24 ! Proton mass, g
+      REAL*8, PARAMETER :: prot_mass = 1.6726217D-24   ! Proton mass, g
 
-      REAL*8, PARAMETER :: bohr_rad = 5.29D-9 ! Bohr radius, cm
+      REAL*8, PARAMETER :: bohr_rad = 5.29D-9          ! Bohr radius, cm
 
-      REAL*8, PARAMETER :: fine_str = 7.2973525D-3 ! Fine structure constant
+      REAL*8, PARAMETER :: fine_str = 7.2973525D-3     ! Fine structure constant
 
       REAL*8, PARAMETER :: light_speed = 2.9979245D+10 ! Speed of light, cm / s
 
-      REAL*8, PARAMETER :: planck = 6.6260688D-27 ! Planck constant, erg * s
+      REAL*8, PARAMETER :: planck = 6.6260688D-27      ! Planck constant, erg * s
+
+      real*8, parameter :: elec_charg = 4.80320425d-10 ! Electron charge in statcoulombs
+
+      real*8, parameter :: sigma_thomson = 6.65d-25    ! Thomson cross-section in cm^{-2}
 
       PUBLIC
 
@@ -78,5 +82,58 @@
       return
 
       end function opt_dep
+
+      function sigma_rayleigh(wvl) result(sigma)
+
+      use vardatom
+
+      real*8, intent(in) :: wvl ! wavelength in angstroems
+
+      real*8 :: sigma
+
+      integer :: u, l
+
+      real*8 :: f, d, r, w
+
+      integer :: j, n_hyd_lev, n_hyd_lin
+
+      n_hyd_lev = nlast(1) - 2
+
+      n_hyd_lin = 0
+
+      do j = 1, n_hyd_lev - 1; n_hyd_lin = n_hyd_lin + j; enddo
+
+      sigma = 0.0d0
+
+      do j = 1, n_hyd_lin
+
+         u = indnup(j); l = indlow(j)
+
+         if (l .eq. 2) then
+
+             wcm = 1.0d0 / (elevel(u) - elevel(l))
+
+             f = (elec_mass * light_speed * wcm**2.0d0 * weight(l) * einst(u, l)) /
+     $           (8.0d0 * pai**2.0d0 * elec_charg**2.0d0 * weight(u))
+
+             wA = 1.0d8 * wcm
+
+             if (abs(wvl - wA) .lt. 1.0d0) return
+
+             r = wvl / wA
+
+             d = (r - 1.0d0) * (r + 1.0d0)
+
+             sigma = sigma + f / d
+
+         endif
+
+      enddo
+
+      sigma = sigma_thomson * sigma**2.0d0
+
+      return
+
+      end function
 
       END MODULE PHYS
