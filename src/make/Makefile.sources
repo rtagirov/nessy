@@ -1,5 +1,5 @@
 # Generated manually
-FIOSS_PROG=${OUT}fioss8.exe
+FIOSS_PROG=${OUT}fioss.exe
 FIOSS_SRCS=\
 chemeq.for\
 abund.for\
@@ -39,7 +39,7 @@ intrfc.for\
 matoper.for\
 linsca.for\
 lpplot.for\
-obsint10.for\
+obsint.for\
 omeg.for\
 partf2.for\
 photocs.for\
@@ -58,15 +58,18 @@ stateq.for\
 synsubm.for\
 traplo.for\
 wmom0_f.for\
-linop_ms.for\
+linop.for\
 gff_temp.for\
-hyd_ion_step.for\
 math.for\
+phys.for\
 comblock.for\
 fileoper.for\
 vardatom.for\
 geomesh.for\
-fioss8.for
+opac.for\
+synopa.for\
+auxfioss.for\
+fioss.for
 
 HMINUS_PROG=$(OUT)/hminus.exe
 HMINUS_SRCS=\

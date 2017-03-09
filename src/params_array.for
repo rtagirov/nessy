@@ -12,4 +12,4 @@
 
       end module
 
-! Achtung: fioss8.for definiert seine eigenen Parameter
+! Achtung: fioss.for definiert seine eigenen Parameter

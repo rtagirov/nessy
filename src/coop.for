@@ -34,13 +34,13 @@
 !MH   W3      =W*W*W, W is wavenumber
 !MH   C2      = 2 * H * C    ( G * CM**3 / S**2 )
 !MH   C2*W3   = 2 * H * NU^3/ C^2
-!MH   CALLED BY OPAROSS, CCORE, COMO, ETL, WRCONT, FIOSS8
+!MH   CALLED BY OPAROSS, CCORE, COMO, ETL, WRCONT, FIOSS
 !MH   ND = 1 WHEN COOP IS CALLED FROM OPAROSS
 !MH   CALLED BY OPAROSS:  NLTELBKG=1
 !MH            ABLIN,EMLIN IS THEN WRITTEN TO *.LBKG FILE
 !MH                      OPACITY.FOR HAS TO BE RUN IN ORDER TO BIN
-!MH   CALLED BY FIOSS8:   NLTELBKG=0
-!MH                      SECOND TIME FIOSS8 IS RUN:
+!MH   CALLED BY FIOSS:   NLTELBKG=0
+!MH                      SECOND TIME FIOSS IS RUN:
 !MH                      LINE OPACITY, EMISSIVITY MUST NOT BE ADDED TO TOTAL OPACITY, EMISSIVITY
 !***********************************************************************
 !MH  VERY IMPORTANT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

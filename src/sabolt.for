@@ -28,9 +28,12 @@
      $ KODAT,NOM,MAXATOM,XTOT,HTOT,GTOT,
      $ RADIUS,MODHEAD,JOBNUM,
      $ Npot,Tion_pot,dil,teff,iTionsel)
-      USE MOD_LINOP_MS,only:getLocalTMin
+
       use MOD_DECF_SYN,only:CARDS
       use MOD_ERROR
+
+      use auxfioss
+
       IMPLICIT REAL*8(A-H,O-Z)
       integer,intent(  out) :: npot
       real*8, intent(  out) :: TEFF,dil(nd),Tion_pot(ND,3)

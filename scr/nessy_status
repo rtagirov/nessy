@@ -25,8 +25,8 @@ echo "${bold}-------------`date                       `-------------------------
 [[ "$PROGSC" ]] && ps --sort=uid -p $PROGSC  -H -o '%p%P%U%C%t%x%n  %a'  
 #[[ "$PROGSC" ]] && echo        "————————————————————————————————————————————————————————————————————————————————————————————————————"
 [[ "$PROGSC" ]] && echo        "${bold}----------------------------------------------------------------------------------------------------${offbold}"
-### Fioss8
-for PID in `pgrep fioss8.exe`; do
+### fioss
+for PID in `pgrep fioss.exe`; do
   if  [[ -r /proc/$PID/cwd ]]; then
     PATHNAME=$(echo " FIOSS `ls -hld /proc/$PID/cwd | grep -o '\->.*$'`")
     if [[ `echo $PATHNAME | grep -- "$1" `    ]]; then

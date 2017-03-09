@@ -12,7 +12,7 @@ ctrl_XXXXX_Directories=ctrl-*
 OverallJobLogFileName=log.rad
 OverallJobLogFile=$RUN_DIR/$OverallJobLogFileName
 
-ExecutiveFileName=fioss8.exe
+ExecutiveFileName=fioss.exe
 ExecutiveFile=~/sim-rinat/cosi/out-intel-x86_64/$ExecutiveFileName
 
 ThisScriptName=run_fioss_do2_radio
@@ -37,7 +37,7 @@ CLV_TEMP_FILE=$RUN_DIR/clv.temp.rad
 CLV_FILE=$RUN_DIR/CLV_RAD
 ##############################################################################################
 
-function process_fioss8_output
+function process_fioss_output
 {
 newest_JOB_1_XXXXX_Directory=./`ls -rtd $JOB_1_XXXXX_Directories | tail -n 1`
 
@@ -65,7 +65,7 @@ DeltaLambda=`echo "$Lambda/$LambdaDivisor" | bc -l`
 
 $ComputationalScriptName ${Lambda/.*} ${DeltaLambda/.*} ${Lambda/.*}
 
-process_fioss8_output ${Lambda/.*} $AngstromFactor
+process_fioss_output ${Lambda/.*} $AngstromFactor
 }
 
 function process_uniform_grid

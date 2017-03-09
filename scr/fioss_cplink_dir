@@ -30,7 +30,7 @@ CaI------1  DATOM         FeI------4     MgI------3  NaI------4  POPNUM      SI-
 CaI------2  Dilfac.mdisp  FeI------5  
 MODFILE     NaI------5  O2_H   RADIOC MolConc.txt c2.asc  ch.asc  cn.asc  co.asc  h2.asc  nh.asc  oh.asc o2.asc SiI------1  VELO
 CaI------3  ATM_MOD     FGRID        NaI------1  NaI------6  RADIOCL     SiI------2
-CI-------1  FeI------1    fioss8.exe   input_sun   NaI-----10  NaI------7  RADIOL      SiI------3
+CI-------1  FeI------1    fioss.exe   input_sun   NaI-----10  NaI------7  RADIOL      SiI------3
 CI-------2  FeI------2    fioss_do_mu  MgI------1  NaI------2  NaI------8  SI-------1  SiI------4  `echo fort.*`"
 
 if [ -f $NTW_FILE_NAME ] && [ -f $NTP_FILE_NAME ]; then FILES=$FILES" $NTW_FILE_NAME $NTP_FILE_NAME"; fi

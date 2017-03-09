@@ -120,7 +120,7 @@ else
 
 fi
 
-cmd "$CP $ORIG_COSI/fioss8.exe ./"
+cmd "$CP $ORIG_COSI/fioss.exe ./"
 ###########################################################################
 
 $CP ${ORIG_COSI}/MolConc.txt     ./

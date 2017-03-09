@@ -187,7 +187,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
      $             WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
      $             LBKG,XLBKG1,XLBKG2,NF)
 
-         print*, 'como: K = ', K, ' out of ', NF
+!         print*, 'como: K = ', K, ' out of ', NF
 
          IF (LSOPA .GT. 0) THEN
 

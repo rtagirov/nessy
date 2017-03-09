@@ -44,7 +44,7 @@ HM_GENERIC_DIR=$nessy_inp/gen
 COMPILE="make 64"
 
 HM_EXE_NAME=hminus.exe
-FI_EXE_NAME=fioss8.exe
+FI_EXE_NAME=fioss.exe
 
 HM_EXE=$nessy_obj/$HM_EXE_NAME
 FI_EXE=$nessy_obj/$FI_EXE_NAME
@@ -885,8 +885,8 @@ MAX_PROC=1
 branch=main
 ##############################################################################################
 
-ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:M:nlF:zP:HLp:D:i:OITtj:a:m:A:f:v:V:N:J:g:G:"\
-                --longoptions "comp,nobj,ndep,src,exe,old,rep:,mode:,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,acc:,atm:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
+ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:xnlF:zP:HLp:D:i:OITtj:a:m:A:f:v:V:N:J:g:G:"\
+                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,acc:,atm:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
 
 if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
@@ -910,7 +910,7 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
        -R|--rep)    OS_IT_NUM=$2;       shift 2;;
 
-       -M|--mode)   MODE=$2;            shift 2;;
+       -x|--xterm)  MODE="xt";          shift;;
 
        -n|--clean)  CLEAN=Yes;          shift;;
 

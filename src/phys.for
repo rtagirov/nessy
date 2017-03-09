@@ -95,6 +95,8 @@
 
       real*8 :: f, d, r, w
 
+      real*8 :: wcm, wA
+
       integer :: j, n_hyd_lev, n_hyd_lin
 
       n_hyd_lev = nlast(1) - 2
@@ -102,6 +104,8 @@
       n_hyd_lin = 0
 
       do j = 1, n_hyd_lev - 1; n_hyd_lin = n_hyd_lin + j; enddo
+
+!      print*, 'n_hyd_lin = ', n_hyd_lin
 
       sigma = 0.0d0
 
@@ -113,12 +117,12 @@
 
              wcm = 1.0d0 / (elevel(u) - elevel(l))
 
-             f = (elec_mass * light_speed * wcm**2.0d0 * weight(l) * einst(u, l)) /
-     $           (8.0d0 * pai**2.0d0 * elec_charg**2.0d0 * weight(u))
-
              wA = 1.0d8 * wcm
 
-             if (abs(wvl - wA) .lt. 1.0d0) return
+             if (abs(wvl - wA) .lt. 1.0d0) cycle
+
+             f = (elec_mass * light_speed * wcm**2.0d0 * weight(l) * einst(u, l)) /
+     $           (8.0d0 * pai**2.0d0 * elec_charg**2.0d0 * weight(u))
 
              r = wvl / wA
 

@@ -1,10 +1,15 @@
       module SYNTHP_CONT
-      implicit none
-      integer,private :: NFCONT__ = -1
 
-      !include '../inc/PARAMS.FOR'
-      real*8,allocatable :: FREQC(:),ABSOC(:),EMISC(:),SCATC(:)
+      implicit none
+
+      integer, private :: NFCONT__ = -1
+
+      real*8, allocatable :: FREQC(:), ABSOC(:), EMISC(:)!, SCATC(:)
+
+      real*8, allocatable :: absoc_rayleigh(:)
+
       contains
+
       subroutine setNFCONT(NFCONT_VAL)
         use UTILS
         integer,intent(in) :: NFCONT_VAL
@@ -27,6 +32,9 @@
         allocate(FREQC(NFCONT()))
         allocate(ABSOC(NFCONT()))
         allocate(EMISC(NFCONT()))
-        allocate(SCATC(NFCONT()))
+
+        allocate(absoc_rayleigh(nfcont()))
+
+!        allocate(SCATC(NFCONT()))
       endsubroutine
       endmodule

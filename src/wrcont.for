@@ -184,7 +184,7 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
      $            WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF),
      $            LBKG,XLBKG1,XLBKG2,NF)
 
-        print*, 'wrcont: K = ', K, ' out of ', NF
+!        print*, 'wrcont: K = ', K, ' out of ', NF
 
         CALL DIFFUS(XLAMBDA(K),T,RADIUS,ND,BCORE,DBDR)
 

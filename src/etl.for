@@ -272,7 +272,7 @@
 
       IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0)) GOTO 7 ! THIS IS HOW WE GET 75 LINES OUT OF NLINE = 150
 
-      print*, 'etl: NL = ', NL, ' out of ', NLINE
+!      print*, 'etl: NL = ', NL, ' out of ', NLINE
  
 !***  COMPUTATION OF THE ETLA SOURCE FUNCTION COEFFICIENTS, ASF AND BSF
 !***  RATES AND POPNUMBERS ARE UPDATED !

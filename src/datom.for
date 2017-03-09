@@ -9,7 +9,7 @@
      $                 NLAST,WAVARR,SIGARR, NFDIM)
 
 C***  Changes by Margit Haberreiter, May 20, 2002
-C*** CALLED BY COMO, ETL, STEAL, WRCONT, WRSTART, FIOSS8
+C*** CALLED BY COMO, ETL, STEAL, WRCONT, WRSTART, FIOSS
 C*******************************************************************************
 CMH   DATOM: CODE NUMBER OF ELEMETS CHANGED
 C***  READS ATOMIC DATA FROM TAPE4=DATOM  **************************************

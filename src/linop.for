@@ -1,14 +1,15 @@
-      MODULE MOD_LINOP_MS
+      MODULE MOD_LINOP
 
-      PUBLIC :: LINOP_MS
+      PUBLIC :: LINOP
 
       CONTAINS
-      !*****************************************************************
+
       ! Calculate the line absorption and emission for every frequency point
       ! (ABLIN, EMLIN) based on the line profile, the depthpoint ID
 
       ! Called by inibl
-      SUBROUTINE LINOP_MS(ID,ABLIN,EMLIN)
+
+      SUBROUTINE LINOP(ID,ABLIN,EMLIN)
 
       use MOD_SYNSUBM, only:PROFIL,PHE1,PHE2
       use MOD_TICTOC,  only:WRITETOC
@@ -17,31 +18,20 @@
       use MOD_chemeq
       use constants
 
-      use common_block
-      use phys
+!      use common_block
+!      use phys
+      use auxfioss
 
 C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       implicit none
+
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/MODELP.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
       INCLUDE '../inc/LINDAT.FOR'
+
       integer,intent(in) :: ID
       logical :: LPR,ltrad
-
-!RT:  VARIABLES FOR THE CALCULATION OF NLTE LINES
-
-!=======================================================================
-
-!      LOGICAL :: CONDITION
-
-      INTEGER :: NT
-
-      REAL*8 ::  NLTE_ABS, NLTE_EMI
-
-      REAL*8 ::  WAV, FRE, BLU, DCR, IEF, NF1, NF2
-
-!=======================================================================
 
       real*8,dimension(MFREQ) :: ABLIN,EMLIN, abs_her
       real*8,allocatable,dimension(:) :: ABLINN,XFR, xfr1
@@ -67,7 +57,7 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
                                    ! FREQ0 is the threshold frequency from
                                    ! level I of ion KI. Threshold cross-sections will be of the order
 
-      real*8, allocatable :: AB0(:), opacw(:) ! AB0: Absorption at the line center
+      real*8, allocatable :: AB0(:) ! AB0: Absorption at the line center
       integer :: AB0_COUNTER
       real*8 :: SL0                           ! Source function at the line center
       real*8 :: BI,BJ,STIMB,ABL
@@ -78,26 +68,24 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       real*8 :: linefreq, lambdaAn
       real*8 :: freqBN1, freqBN2
       real*8 :: xtest(1000)
-      real*8 :: opacwm, ABLINmean, ABLINmin
+      real*8 :: ABLINmean, ABLINmin
       integer :: iD1, iD2, Nc
       integer :: iL1, iL2, ILmin, ILmax
       integer :: mn, j, ii, i
 
       integer :: idx
 
-      real*8, dimension(nfreq) :: wA
+      real*8, dimension(nfreq) :: wvl
 
       real*8, allocatable :: ABLIN_old(:)
       real*8 :: testint
 
-      NF1 = LIGHT_SPEED**(2.0D0) / PLANCK / 2.0D0 ! FIRST NORMALIZATION FACTOR FOR NLTE LINE TREATMENT
-
       AB0_COUNTER = 0
-      print '("linop_ms: NLIN0 = ",i7,",  ID=",i3,'//
+      print '("linop: NLIN0 = ",i7,",  ID=",i3,'//
      *      '", time=",A," C(AB0) = ",$)',
      *        NLIN0,ID,writeTOC()
 
-      if(MFREQ < NFREQ) call ERROR('LINOP_MS: MFREQ < NFREQ ')
+      if(MFREQ < NFREQ) call ERROR('LINOP: MFREQ < NFREQ ')
 
       ABLIN(:NFREQ) = 0.
       EMLIN(:NFREQ) = 0.
@@ -115,7 +103,6 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       allocate(ABL_A(NFREQ))
       allocate(XFR(NFREQ))
       allocate(XFR1(NFREQ))
-      allocate(opacw(NFREQ))
       
       ABLINN(:)= 0.
       !******************************************
@@ -346,43 +333,13 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
 
           ELSE
-          IF_LPR1: if(LPR) then
-     
-!            ABL_A = AB0(IL)*VOIGTK_MS(AGAM,XFR,NFREQ)
-!            ABLINN=ABLINN+ABL_A
-!                      EMLIN(1:NFREQ)=EMLIN(1:NFREQ)+ABL_A*SL0
-            
-            
-          else IF_LPR1
-           
- 
 
- !             do l=1,nfreq
-      
-
- !             ABL=AB0(IL)*PHE1(ID,FREQ(l),ISP-1)
- !             ABLINN(l)=ABLINN(l)+ABL
-            
-!              EMLIN(l)=EMLIN(l)+ABL*SL0
-            
-!            enddo
-          endif IF_LPR1     
         ENDIF
 
-
-
-
-
         cycle LINE_LOOP
+
         endif
         
-
-
-
-!        if (((freq1 .gt. freqb2) .or. (freqN .lt. freqb1)) .and. 
-!     *  (INNLT.EQ.0.and.ltrad)) cycle LINE_LOOP
-         
-
         iD1=max(int((freq1*freqN/freqb1-freqN)*(Nfreq-1)
      *  /(freq1-freqN)),1)
         iD2=min(int((freq1*freqN/freqb2-freqN)*(Nfreq-1)/
@@ -499,84 +456,30 @@ CMH   THE PLANCK-FUNCION (OR TEMPERATURE) IS SET TO THE
 CMH   VALUE AT THE TEMPERATURE MINIMUM (ID = 55)
 C     print *,ID,'LINOP: USE THE PLANCK FUNKTION OF ID=55 (FOR MODEL C)'
 
+!      if (rayleigh) then
+
+!          wvl(1 : NFREQ) = light_speed * 1.0d+8 / freq(1 : NFREQ)
+
+!          if (wvl(1) .le. 2000.0d0) then
+
+!              do idx = 1, nfreq
+ 
+!                 ablin(idx) = ablin(idx) + popul(2, id) * sigma_rayleigh(wvl(idx))
+
+!              enddo
+
+!          endif
+
+!      endif
+
 !     always true
 
-!      CONDITION = velw(id) .le. velmax
-
-!      PRINT*, 'SUBSTITUTING NDPMIN:', MAX(NDPMIN, ID), WDIL(ID), CONDITION
-
       if (velw(id) .le. velmax) EMLIN(1 : NFREQ) = EMLIN(1:NFREQ)+ABLIN(1:NFREQ)*PLAN(max(NDPMIN,id))*WDIL(ID)
-!      if (velw(id) .le. velmax) EMLIN(1 : NFREQ) = EMLIN(1:NFREQ)+ABLIN(1:NFREQ)*PLAN(60)*WDIL(ID)
-
-      deallocate(opacw)
-
-!RT   HERE WE ADD A LOOP OVER ALL NLTE TRANSITIONS CALCULATED IN HMINUS (EXCEPT FOR HYDROGEN) BECAUSE WE DID NOT MANAGE TO
-!RT   FIGURE OUT HOW TO TREAT NLTE LINES IN FIOSS IN...NLTE.
-
-!      PRINT*, 'LINOP NTC:', NTC
-
-!      IF (NTC .GE. 1) THEN
-
-!          PRINT*, 'ENTERED THE LOOP'
-
-!          DO NT = 1, NTC
-
-!RT          FOR THE REFERENCE SEE RUTTEN, RADIATIVE TRANSFER IN STELLAR ATMOSPHERES, P.23
-
-!             PRINT*, 'ELID :', ELID(NTI(NT))
-
-!             IF (ELID(NTI(NT)) .EQ. 1) CYCLE ! HYDROGEN IS ALREADY TREATED IN NLTE ELSEWHERE IN THE CODE (NO IDEA WHERE THOUGH)
- 
-!             WAV = WAVTRA(NTI(NT)) * 1D-8 ! WAVELENGTH SHOULD BE IN CM
-
-!             PRINT*, 'WAVTRA LINOP:', WAVTRA(NTI(NT))
- 
-!             FRE = LIGHT_SPEED / WAV
- 
-!             XFR(1 : NFREQ) = ABS(FREQ(1 : NFREQ) - FRE) * DOPA1(ELID(NTI(NT)), ID)! * 10.0D0 ! FREQUENCY IN THE DIMENSIONLESS UNITS (X)
- 
-!             BLU = NF1 * (SWU(NTI(NT)) / SWL(NTI(NT))) * FRE**(-3.0D0) * AUL(NTI(NT))
- 
-!             DCR = NTDU(ID, NT) / NTDL(ID, NT) ! RATIO OF THE NLTE DEPARTURE COEFFICIENTS OF THE UPPER AND LOWER TRANSITION LEVELS
- 
-!             IEF = 1.0D0 - DCR * DEXP(-PLANCK * FRE / BOLTZ / TEMP(ID)) ! INDUCED EMISSION FACTOR
- 
-!             NF2 = PLANCK * FRE / 4.0D0 / PAI ! SECOND NORMALIZATION FACTOR FOR NLTE LINE TREATMENT
- 
-!             NLTE_ABS = NF2 * NTPL(ID, NT) * BLU * IEF * 0.0D0
- 
-!             NLTE_EMI = NF2 * NTPU(ID, NT) * AUL(NTI(NT)) * 0.0D0
- 
-!             ABLIN(1 : NFREQ) = ABLIN(1 : NFREQ) + NLTE_ABS * VOIGTK_MS(0.0D0, XFR(1 : NFREQ), NFREQ)! / SQRT(PAI)
-!             EMLIN(1 : NFREQ) = EMLIN(1 : NFREQ) + NLTE_EMI * VOIGTK_MS(0.0D0, XFR(1 : NFREQ), NFREQ)! / SQRT(PAI)
-
-!             WRITE(*, '(A,2x,I2,2x,I2,4(2x,E15.7))') 'SF:', 
-!     $       NT, ID, TEMP(ID), NLTE_EMI / NLTE_ABS / PLAN(ID), NTDU(ID, NT), NTDL(ID, NT)
-
-!          ENDDO
-
-!      ENDIF
 
 !     add opacity of NLTE lines (RT: this is a bit from the original NLTE treatment,
 !     the one the functioning of which we didn't quite understand, it doesn't pertain to what we implemented in the loop above)
 
       ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+ABLINN(:)
-
-      if (rayleigh) then
-
-          wA(1 : NFREQ) = light_speed * 1.0d+8 / freq(1 : NFREQ)
-
-          if (wA(1) .le. 2000.0d0) then
-
-              do idx = 1, nfreq
-
-                 ablin(idx) = ablin(idx) + rrr(id, 0, 1) * sigma_rayleigh(wA(idx))
-
-              enddo
-
-          endif
-
-      endif
 
 !     special routine for selected He II lines
 
@@ -587,8 +490,10 @@ C     print *,ID,'LINOP: USE THE PLANCK FUNKTION OF ID=55 (FOR MODEL C)'
           IF(ISP.GE.6.AND.ISP.LE.24) CALL PHE2(ISP,ID,ABLIN,EMLIN)
         ENDDO
       ENDIF
+
       RETURN
-      END SUBROUTINE LINOP_MS
+
+      END SUBROUTINE LINOP
 
       PURE FUNCTION VOIGTK_MS(A,V,NFREQ)
       !====================
@@ -656,45 +561,4 @@ C     print *,ID,'LINOP: USE THE PLANCK FUNKTION OF ID=55 (FOR MODEL C)'
       endif
       END FUNCTION VOIGTK_MS
 
-
-      function getLocalTMin(T,ND)
-      implicit none
-      integer :: getLocalTMin
-      integer,intent(in) ::ND
-      real*8,intent(in) :: T(ND)
-      integer :: NDPMIN,L
-      IF(ND==1) THEN
-        getLocalTMin=1
-        RETURN
-      ELSE
-      NDPMIN = 0                    ! Sanity check 1
-      DO L=2,ND-1                   ! Find local minimum in T
-        if ((T(L) .LT. T(L-1)) .AND. (T(L) .LT. T(L+1))) THEN
-          NDPMIN = L
-        endif
-      ENDDO
-
-!      PRINT*, 'TEMP MIN', NDPMIN, T(NDPMIN)
-
-      if (NDPMIN .eq. 0) then       ! Sanity check 1 - finish
-        print *,'linop_ms: something wrong! NDPMIN = ',NDPMIN,
-     $   ' setting NDPMIN to 1'
-        NDPMIN = 1              ! continue, dont abort
-      endif
-      if ((T(NDPMIN) .gt. 5000d0) .and. (ND .gt. 1)) then !Sanity check 2
-        print *,'something wrong with Temperature minimum!',NDPMIN, T(NDPMIN)
-        write(6,*)'something wrong with Temperature minimum!',
-     $                        NDPMIN,T(NDPMIN)
-        pause
-      endif
-      ENDIF
-    !! ATTENTION
-     
- !      NDPMIN=1
-
-    !! ATTENTION
-
-      getLocalTMin = NDPMIN
-      end function getLocalTMin
-
-      end module MOD_LINOP_MS
+      end module MOD_LINOP

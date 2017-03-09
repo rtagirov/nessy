@@ -1,13 +1,13 @@
-      module MOD_OBSINT10
+      module MOD_OBSINT
 
       contains
 
-      SUBROUTINE OBSINT10(LTOT,CORE,BCORE,DBDR,ip,
-     $                    IRIND,RRAY,ZRAY,XCMF,
-     $                    ND,NP,NVD,JP,NVOPA,VOPA0,DVOPA,
-     $                    EMINT,XOBS0,DXOBS,NFOBR,XN,
-     $                    ENTOT,RNE,SIGMAE,RSTAR,
-     $                    XJ,DINT,NDDOUB,RWLAE,DLAM)
+      SUBROUTINE OBSINT(LTOT,CORE,BCORE,DBDR,ip,
+     $                  IRIND,RRAY,ZRAY,XCMF,
+     $                  ND,NP,NVD,JP,NVOPA,VOPA0,DVOPA,
+     $                  EMINT,XOBS0,DXOBS,NFOBR,XN,
+     $                  ENTOT,RNE,SIGMAE,RSTAR,
+     $                  XJ,DINT,NDDOUB,RWLAE,DLAM)
 
 !***  FORMAL INTEGRATION ALONG A RAY AT IMPACT PARAMETER JP
 ! ==> test version: see for "cpr" for opcity prints...
@@ -390,7 +390,7 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
       if(JP/=1) return
       if(size(ZFINE_SUM)<ND) then
 c*** call PRINTTAU only for the central ray
-        print *,'obsint10: printTAU: warning: ZFINE to small' 
+        print *,'obsint: printTAU: warning: ZFINE to small' 
         return
       endif
 
@@ -406,7 +406,7 @@ c*** call PRINTTAU only for the central ray
         do L=2,ND
           TAUSSUM(L)=TAUSSUM(L-1)+TAUSUM(L,K)
           if(TAUSSUM(L)==TAUSSUM(L-1)) then
-            print *,'obsint10: warning: TAUSUM(L,K) < eps'
+            print *,'obsint: warning: TAUSUM(L,K) < eps'
             return
           endif
         enddo
@@ -464,22 +464,13 @@ c*** call PRINTTAU only for the central ray
       ENDDO
 
 
-      open(unit=200, file='../formation_new.txt', access='append')
+      open(unit=200, file='../form.height', access='append')
    
-
       do k=1, 100
 
       write(200, *), RWLAE+DLAM(k*20-10), sum(FH(20*(k-1)+1:20*k))/20.
 
       enddo
-
-!      do k=1, 2000
-
-!      write(200, *), RWLAE+DLAM(k), FH(K)                                                                                                                                                
-
-!      enddo    
-
-
 
       close(200)
 

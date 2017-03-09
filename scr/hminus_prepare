@@ -92,7 +92,7 @@ cp -v ${CROSS_SECTION_FILES}/* ./
 cp -v ${CHEMIN_FILE}           ./chem.in
 
 cmd "cp -v ${ORIG_EXE_FILE} ./"
-cmd "cp -v ${FIOSS_DIR}/fioss8.exe ./"
+cmd "cp -v ${FIOSS_DIR}/fioss.exe ./"
 cmd "cp -v $PREV_RUN_DIR/CARDS ./"
 
 cmd "cp -v $PREV_RUN_DIR/Uitenbroek_H_CE.dat ./"

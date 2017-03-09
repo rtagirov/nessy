@@ -903,28 +903,6 @@
  
 
 
-
-
-      FUNCTION airlambda(vaclambda)
-!    translate vacuum to the airlambda lambda in A                             
-                                                                                
-      IMPLICIT NONE
-      real*8 vaclambda, airlambda, sig, n
-
-      sig=1.d4/(vaclambda)
-      n=1.d0+6.4328d-5+(2.94981d-2)/(146.-sig**2.)+(2.554d-4)/
-     $ (41-sig**2.)
-      airlambda=vaclambda/n
-      return
-      END FUNCTION
-
-
-
-
-
-
-
-
       SUBROUTINE PARTFmol_old(j, T, PF)
       real*8 T, PF, atemp, sumpart
       integer i, j
