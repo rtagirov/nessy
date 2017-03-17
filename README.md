@@ -5,9 +5,10 @@ Note: currently this branch is almost a copy of the acc_damp branch, its develop
 The following changes with respect to the master branch have been implemented:
 
 1. The acceleration damping, which is necessary to run the code for certain types of atmospheres (see comblock.for, etl.for, como.for, phys.for; search for
-   "damp_acc", "acc_damp", "opt_dep")
+   "damp_acc", "acc_damp", "opt_dep"); to switch off the acceleration damping use the variable "damp_acc" in comblock.for
 
-2. The Rayleigh scattering on neutral hydrogen (see comblock.for, opac.for, phys.for; search for "rayleigh" or "sigma_rayleigh")
+2. The Rayleigh scattering on neutral hydrogen (see comblock.for, opac.for, phys.for; search for "rayleigh" or "sigma_rayleigh"); to switch off the rayleigh scattering
+   use the variable "rayleigh" in comblock.for
 
 3. The FAL_VD and TABLE files are abandoned. The FAL and TABLE options in the CARDS file are obsolete now. Any model of the atmosphere should be named ATM_MOD.
    The code automatically understands what format of model it is (FAL, Kurucz or MURAM) by the number of columns the atmosphere model file has
@@ -36,3 +37,5 @@ To compile HMINUS, FIOSS or HMINUS + FIOSS, run, respectively, the 3 following c
 3. make all
 
 Note: the 32-bit architecture option has been removed from ./src/Makefile and ./src/make/Makefile.opt
+
+Note: if "rayleigh" and "damp_acc" variables are set to .false. the functioning of this version is the same as that of the master branch
