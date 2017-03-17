@@ -1,76 +1,78 @@
-# Generated  manually
-FIOSS_PROG=${OUT}fioss8.exe
-FIOSS_SRCS= \
-        chemeq.for\
-        abund.for\
-	params_array.for\
-	constants.for\
-	varhminus.for\
-	synthp_cont.for\
-	bnue.for\
-	opint.for\
-	balini.for\
-        utils.for\
-	formats.for\
-	interpolation.for\
-	inibl0.for\
-	moments.for\
-	hydtab.for\
-	tictoc.for\
-	rdopac.for\
-	hminusff.for\
-	liop.for\
-	lipo.for\
-	error.for\
-	compro.for\
-	coop_m.for\
-	intpl.for\
-	cstabread.for\
-	cubic.for\
-	cwgauss9.for\
-	datom_m.for\
-	decf_syn.for\
-	diffus.for\
-	elimin.for\
-	exturay.for\
-	gauntff.for\
-	intplcs.for\
-	intrfc_m.for\
-	matoper.for\
-	linsca.for\
-	lpplot.for\
-	obsint10.for\
-	omeg.for\
-	partf2.for\
-	photocs_m.for\
-	pref_syn.for\
-	prepr_f.for\
-	pridat.for\
-	pripop.for\
-	pripro.for\
-	readmod.for\
-	readms.for\
-	readmsi.for\
-	readpop.for\
-	readrad.for\
-	sabolt.for\
-	stateq.for\
-	synsubm.for\
-	traplo.for\
-	wmom0_f.for\
-	linop_ms.for\
-        gff_temp.for\
-        hyd_ion_step.for\
-        comblock.for\
-        fileoper.for\
-        vardatom.for\
-        geomesh.for\
-	fioss8.for
+# Generated manually
+FIOSS_PROG=${OUT}fioss.exe
+FIOSS_SRCS=\
+chemeq.for\
+abund.for\
+params_array.for\
+constants.for\
+varhminus.for\
+synthp_cont.for\
+bnue.for\
+opint.for\
+balini.for\
+utils.for\
+formats.for\
+interpolation.for\
+inibl.for\
+moments.for\
+hydtab.for\
+tictoc.for\
+rdopac.for\
+hminusff.for\
+liop.for\
+lipo.for\
+error.for\
+compro.for\
+coop.for\
+intpl.for\
+cstabread.for\
+cubic.for\
+cwgauss9.for\
+datom.for\
+decf_syn.for\
+diffus.for\
+elimin.for\
+exturay.for\
+gauntff.for\
+intplcs.for\
+intrfc.for\
+matoper.for\
+linsca.for\
+lpplot.for\
+obsint.for\
+omeg.for\
+partf2.for\
+photocs.for\
+pref_syn.for\
+prepr_f.for\
+pridat.for\
+pripop.for\
+pripro.for\
+readmod.for\
+readms.for\
+readmsi.for\
+readpop.for\
+readrad.for\
+sabolt.for\
+stateq.for\
+synsubm.for\
+traplo.for\
+wmom0_f.for\
+linop.for\
+gff_temp.for\
+math.for\
+phys.for\
+comblock.for\
+fileoper.for\
+vardatom.for\
+geomesh.for\
+opac.for\
+synopa.for\
+auxfioss.for\
+fioss.for
 
-
-# Generated  manually
 HMINUS_PROG=$(OUT)/hminus.exe
-HMINUS_SRCS= \
+HMINUS_SRCS=\
 abund.for\
 chemeq.for \
 params_array.for \
@@ -102,19 +104,19 @@ lipo.for\
 bfcross.for\
 bnue.for\
 calch.for\
-lodiag.for\
+locoper.for\
 ccore.for\
 cofreq.for\
 colli.for\
 coma.for\
 como.for\
 partf2.for\
-coop_m.for\
+coop.for\
 coopfrq.for\
 cstabread.for\
 cubic.for\
 cwgauss9.for\
-datom_m.for\
+datom.for\
 broyden.for\
 dcoop.for\
 decetl.for\
@@ -122,7 +124,7 @@ decf_syn.for\
 decfreq.for\
 decomo.for\
 decon.for\
-decstar_m.for\
+decstar.for\
 decste.for\
 delpla.for\
 diffus.for\
@@ -157,9 +159,9 @@ momo.for\
 nltepop.for\
 odeint.for\
 omeg.for\
-opaross_m.for\
+opaross.for\
 phnu.for\
-photocs_m.for\
+photocs.for\
 plottab.for\
 plotanf.for\
 plotcon.for\

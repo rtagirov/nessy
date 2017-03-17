@@ -21,7 +21,7 @@ AF=100000000
 ## fioss_runProg CTRL WORKING_DIR
 ## 
 ## Does the actual work,
-## cd into $WORKING_DIR, fetch the top most file from $CTRL Directory and run fioss8.exe on it
+## cd into $WORKING_DIR, fetch the top most file from $CTRL Directory and run fioss.exe on it
 ## When finished, copy the files into $WORKING_DIR/{lopa,mdisp,title}
 function fioss_runProg (){
 CTRL=$1
@@ -88,8 +88,8 @@ fi
 ################################################################################################################################################
 
   APPEND=""
-  ## Run fioss8.exe
-  ./fioss8.exe $FREQ  &> output/fioss-$FREQ.out && echo -n >> frequencies.log ||
+  ## Run fioss.exe
+  ./fioss.exe $FREQ  &> output/fioss-$FREQ.out && echo -n >> frequencies.log ||
   echo -n " FAILED" | tee -a  frequencies.log
   if ` tail -n1 output/fioss-$FREQ.out | grep 'O.K.' &> /dev/null `; then
     echo " O.K." | tee -a frequencies.log
@@ -98,7 +98,7 @@ fi
     APPEND="fail"
   fi
   [[ -e save_out || -e ../save_out ]] && APPEND="${APPEND:+${APPEND}+}save"
-  ## Decide what to do with the fioss8.exe console output
+  ## Decide what to do with the fioss.exe console output
   if [[ "$APPEND"  ]]; then 
     mv output/fioss-$FREQ.out output/fioss-$FREQ-$APPEND.out
   else

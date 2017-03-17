@@ -78,14 +78,12 @@ LBKG =                $LBKG
 
 error_ifunset CROSS_SECTION_FILES DATOM_FILE FGRID_FILE FALVD_FILE RUN_DIR ORIG_SRC 
 
-rm_dir $RUN_DIR; create_dir $RUN_DIR
-
 pushd . &> /dev/null
 cd        $ORIG_SRC
 
 popd &> /dev/null
 
-change_dir ${RUN_DIR}
+rm_dir $RUN_DIR; create_dir $RUN_DIR; change_dir ${RUN_DIR}
 
 cp -v ${DATOM_FILE}            ./DATOM
 cp -v ${FGRID_FILE}            ./FGRID
@@ -94,7 +92,7 @@ cp -v ${CROSS_SECTION_FILES}/* ./
 cp -v ${CHEMIN_FILE}           ./chem.in
 
 cmd "cp -v ${ORIG_EXE_FILE} ./"
-cmd "cp -v ${FIOSS_DIR}/fioss8.exe ./"
+cmd "cp -v ${FIOSS_DIR}/fioss.exe ./"
 cmd "cp -v $PREV_RUN_DIR/CARDS ./"
 
 cmd "cp -v $PREV_RUN_DIR/Uitenbroek_H_CE.dat ./"

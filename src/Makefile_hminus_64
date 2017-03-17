@@ -1,8 +1,0 @@
-# Generated  manually
-include make/Makefile.sources
-SRCS = $(HMINUS_SRCS)
-ARCH=64
-COMPILER=intel
-PROG=$(OUT)hminus.exe
-include make/Makefile.opt 
-

@@ -1,9 +1,10 @@
-# Generated  manually
+#Generated manually
+
 include make/Makefile.sources
-SRCS = $(FIOSS_SRCS)
+
+SRCS=${FIOSS_SRCS}
 ARCH=64
 COMPILER=intel
-PROG=${OUT}fioss8.exe
+PROG=${OUT}fioss.exe
 
 include make/Makefile.opt
-

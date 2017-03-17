@@ -68,13 +68,9 @@ X_SECTION_FILES =   $CROSS_SECTION_FILES
 
 error_f  $ORIG_COSI  $ORIG_EXE  $VELO_FILE   $INPUT_SUN_FILE  $INPUT_STARK_BROAD  $LINELISTS  $CROSS_SECTION_FILES 
 
-if [ -d $OUTPUT_DIR ]; then chmod u+rwx -R $OUTPUT_DIR; rm_dir $OUTPUT_DIR; fi
-
 set -v
 
-mkdir -p $OUTPUT_DIR
-
-change_dir $OUTPUT_DIR
+rm_dir $OUTPUT_DIR; create_dir $OUTPUT_DIR; change_dir $OUTPUT_DIR
 
 $CP ${ORIG_COSI}/ATM_MOD     ./
 $CP ${ORIG_COSI}/MODFILE    ./
@@ -124,7 +120,7 @@ else
 
 fi
 
-cmd "$CP $ORIG_COSI/fioss8.exe ./"
+cmd "$CP $ORIG_COSI/fioss.exe ./"
 ###########################################################################
 
 $CP ${ORIG_COSI}/MolConc.txt     ./
