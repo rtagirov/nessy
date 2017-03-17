@@ -18,4 +18,4 @@ The IFORT compiler options are given in ./src/make/Makefile.opt
 
 Before compiling the code make sure to update the list of dependencies by running bash ./src/make/write_deps.sh ./src/*.for > ./src/make/Makefile.deps
 
-To compile HMINUS + FIOSS, run "make all" in the ./src directory
+To compile HMINUS + FIOSS, run "make 64" in the ./src directory
