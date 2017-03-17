@@ -1,10 +1,9 @@
 # The ICL version of the code
 
-The state of the NESSY code as it was on 01.10.2016 on the PMOD servers.
-This branch runs with the 13th version of the IFORT compiler.
-It does not run with the latest, i.e. 17th, version of IFORT (ICL servers as of 01.10.2016).
-The HMINUS part of the code, however, also runs with the 15th version of IFORT (MPS servers as of 01.10.2016).
-No tests were performed for the FIOSS part of the code and the 15th version of IFORT.
+The state of the code on 25.12.2016, when it started running at ICL, i.e. with the latest (17th) version of the IFORT compiler.
+The code also runs with the 15th version at MPS.
+Below 70 nm this version yields a discrepancy of the resulting high resolution 3 ODF spectrum with the pmod branch.
+The discrepancy is within about 8%, its origin is unknown.
 
 Compilation:
 
@@ -18,4 +17,12 @@ The IFORT compiler options are given in ./src/make/Makefile.opt
 
 Before compiling the code make sure to update the list of dependencies by running bash ./src/make/write_deps.sh ./src/*.for > ./src/make/Makefile.deps
 
-To compile HMINUS + FIOSS, run "make 64" in the ./src directory
+To compile HMINUS, FIOSS or HMINUS + FIOSS, run, respectively, the 3 following commands in the ./src directory:
+
+1. make hminus
+
+2. make fioss
+
+3. make all
+
+Note: the 32-bit architecture option has been removed from ./src/Makefile and ./src/make/Makefile.opt
