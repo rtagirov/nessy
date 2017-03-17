@@ -142,6 +142,11 @@ if [ $OPTION ] && [ "$OPTION" == "v" ]; then CP_CMD="cp -v"; fi
 if [ -f $FILE ]; then cmd "$CP_CMD $FILE $DEST"; fi
 }
 
+copy()
+{
+for file in $1; do cp -v $file $2; done
+}
+
 catenate()
 {
 ls $1/* > $2

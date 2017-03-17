@@ -90,6 +90,8 @@
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,NFDIM)
 
+!      call lte_mark(N)
+
 !     DECODING INPUT DATA
       CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
      $             TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN, AMU)
@@ -353,5 +355,51 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
       RETURN
 
       END FUNCTION EXTRAP_VEL_FIELD
+
+!      subroutine lte_mark(N)
+!
+!      use common_block
+!
+!      implicit none
+!
+!      integer, intent(in) :: N
+!
+!      integer :: i, ily, iln
+!
+!      character(len = 1), dimension(N) :: lte_flag
+!
+!      lte_flag(1 : 12) = 'n'
+!      lte_flag(13 : N) = 'y'
+!
+!      nly = 0
+!      nln = 0
+!
+!      do i = 1, N
+!
+!         if (lte_flag(i) .eq. 'y') nly = nly + 1
+!         if (lte_flag(i) .eq. 'n') nln = nln + 1
+!
+!      enddo
+!
+!      allocate(levyl(nly))
+!      allocate(levnl(nln))
+!
+!      ily = 1
+!      iln = 1
+!
+!      do i = 1, N
+!
+!         selectcase(lte_flag(i))
+!
+!             case('y'); lly(ily) = i; ily = ily + 1
+!             case('n'); lln(iln) = i; iln = iln + 1
+!
+!             case default; stop 'Array lte_flag has an unrecognized value. Abort.'
+!
+!         endselect
+!
+!      enddo
+!
+!      end subroutine
 
       END MODULE

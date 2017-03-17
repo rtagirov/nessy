@@ -5,4 +5,3 @@ ARCH=64
 COMPILER=intel
 PROG=$(OUT)hminus.exe
 include make/Makefile.opt 
-

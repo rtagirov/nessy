@@ -401,15 +401,15 @@ C***  BOUND-FREE COLLISIONAL RATE COEFFICIENTS: CRATE
       CRATE(NUP, LOW) = CRATE(LOW, NUP) * ENLTE(LOW) / ENLTE(NUP)
 
 CMH****************************************************************
-CMH	Transition from negative hydrogen to neutral hydrogen
-CMH     LOW = 1: negative hydrogen
-CMH	UP  = 2:  neutral hydrogen
-!RT     three processes are important for this transition
-CMH	H- + e- = H + e- + e- (CE * ENE)
-CMH	H- + p+ = H + H       (CP * POPHIIL)
-!RT     H- + H  = H + H + e   (CH * POPHIL)
-CMH     POPHIIL: population number of protons (HII)
-!RT     POPHIL:  population number of neutral hydrogen (HI)
+CMH	 Transition from negative hydrogen to neutral hydrogen
+CMH  LOW = 1: negative hydrogen
+CMH	 UP  = 2:  neutral hydrogen
+!RT  three processes are important for this transition
+CMH	 H- + e- = H + e- + e- (CE * ENE)
+CMH	 H- + p+ = H + H       (CP * POPHIIL)
+!RT  H- + H  = H + H + e   (CH * POPHIL)
+CMH  POPHIIL: population number of protons (HII)
+!RT  POPHIL:  population number of neutral hydrogen (HI)
 CMH****************************************************************
 
       Hminfac = 1.0D0
@@ -424,11 +424,12 @@ CMH****************************************************************
 
 CMH****************************************************************
 CMH	Transition from protons (H II) to neutral hydrogen
-CMH     LOW =  2: neutral hydrogen, ground level
-CMH     UP  = 12: protons
-CMH	POPHML: POPNUM of Hminus
-CMH	Hminus collision rates with protons:
-CMH	H- + p+ = H + H (CP * POPHML)
+CMH  LOW =  2: neutral hydrogen, ground level
+CMH  UP  = 12: protons
+CMH	 POPHML: POPNUM of Hminus
+CMH	 Hminus collision rates with protons:
+CMH	 H- + p+ = H + H (CP * POPHML)
+CMH****************************************************************
 
       ELSEIF (LEVEL(LOW) .EQ. 'H I......1' .AND. LEVEL(NUP) .EQ. 'H II......') THEN
 

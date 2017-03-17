@@ -4,6 +4,4 @@ SRCS = $(FIOSS_SRCS)
 ARCH=64
 COMPILER=intel
 PROG=${OUT}fioss.exe
-
 include make/Makefile.opt
-

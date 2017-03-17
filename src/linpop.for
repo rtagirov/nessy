@@ -4,7 +4,7 @@
 
       SUBROUTINE LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART_ZWAAN,POP1,
      $                  N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN,EINST,LEVEL,
-     $                  XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,EPSILON,NODM,IADR19,
+     $                  XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,EPSILON,NODM,
      $                  DELTAC,MODHEAD,JOBNUM,IFRRA,ITORA,
      $                  RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
      $                  VELO,GRADI,VDOP,PHI,PWEIGHT,INDNUP,INDLOW,LASTIND,
@@ -44,10 +44,10 @@
       use ABUNDANCES
       use MOD_LIOP
 
-      USE FILE_OPERATIONS
-      USE COMMON_BLOCK
-      USE MATOPER
-      USE BROYDEN
+      use file_operations
+      use common_block
+      use matoper
+      use broyden
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -178,8 +178,8 @@ C***  C1 = H * C / K (CM * KELVIN)
       ALLOCATE(ACR(ND, N, N)); ACR(:, :, :) = 0.0D0
       ALLOCATE(RBR(ND, N, N)); RBR(:, :, :) = 0.0D0
 
-      Z(1 : ND) = 0.0D0
-      ONE(1 : ND) =   1.0D0
+      Z(1 : ND) =   0.0D0
+      ONE(1 : ND) = 1.0D0
 
       NRANK = N + 1
 

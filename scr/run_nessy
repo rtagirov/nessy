@@ -41,8 +41,6 @@ ITX_DIR=$FI_BASE_DIR/ITx/
 
 HM_GENERIC_DIR=$nessy_inp/gen
 
-COMPILE="make 64"
-
 HM_EXE_NAME=hminus.exe
 FI_EXE_NAME=fioss.exe
 
@@ -55,11 +53,9 @@ XTERM_CMD_FILE_NAME=.XTERM.cmd
 
 src_prof="source ~/.profile"
 
-#XTERM_SET="-s -j -si -sk -sb -sl 10000 -bg black -fg white"
 XTERM_SET="-s -j -si -sk -sb -sl 10000"
 
 XTERM_SET_DEF="$XTERM_SET -geometry 230x100"
-#XTERM_SET_DEF="$XTERM_SET -geometry 180x50"
 XTERM_SET_DEL="$XTERM_SET -geometry 180x45"
 XTERM_SET_FRE="$XTERM_SET -geometry 105x45"
 XTERM_OPA_SET="$XTERM_SET -geometry 155x65"
@@ -79,74 +75,34 @@ ATM_MOD_DIR=$nessy_inp/atm/
 DATOM_DIR=$nessy_inp/ato
 VEL_FIELD_DIR=$nessy_inp/vel/
 
-LOC_ACC_DIR_NAME=lo/
-CS_ACC_DIR_NAME=cs/
-
-LOC_ACC_DIR=$nessy_src/$LOC_ACC_DIR_NAME
-CS_ACC_DIR=$nessy_src/$CS_ACC_DIR_NAME
-
-PossibleAccelerations=(l c z)
-
-AccelerationPostfixesForTargetDirectories="DIAG CORE ZERO"
-DirectoryPostfixesArray=($AccelerationPostfixesForTargetDirectories)
-
-AcceleratingProcedureName=setxjl
-
-AccelerationSwitchedOn='.*AccFactCutOff = .*'
-AccelerationSwitchedOff='      AccFactCutOff = 0.0D0'
-
 FILES_TO_IGNORE='CARDS ATM_MOD vel_field.in'
 ##############################################################################################################################
 
-function cp_to_src_dir
+function compile
 {
-INTERIM_DIR=$1
+if [ $NEW_OBJ_FILES ]; then
 
-i=1
+    check_dir $nessy_obj
 
-while [ $INTERIM_DIR ]; do i=$(echo $i+1 | bc); INTERIM_DIR=`echo $1 | cut -d / -f $i`; done
+    rm -f $nessy_obj/*
 
-TARGET_PROC=`ls $1*.for | cut -d / -f $i`
+fi
 
-for PROC in $TARGET_PROC; do
+change_dir $nessy_src
 
- PROC_NAME=$(echo $PROC | cut -d . -f 1)
+if [ $NEW_DEPS ]; then
 
- if [ $1 == $LOC_ACC_DIR ] || [ $1 == $CS_ACC_DIR ]; then PROC_NAME=$(echo $PROC | cut -d _ -f 1); fi
+    message "Compiling the list of dependencies..."
 
- ORIGIN=$1$PROC; DESTINATION=$nessy_src/$PROC_NAME.for
+    ./make/write_deps.sh *.for > ./make/Makefile.deps
 
- COMPARE="diff -q $ORIGIN $DESTINATION"
+fi
 
- if [ ! -f $DESTINATION ] || [ -n "$($COMPARE)" ]; then cp -v $ORIGIN $DESTINATION; fi
+if [ $HM_RUN ]; then                         echo; cmd "make hminus"; echo; fi
 
-done
-}
+if [ $F_RANGE ] || [ $FITE ]; then           echo; cmd "make fioss";  echo; fi
 
-
-function set_acc
-{
-if   [ "$ACC" == ${PossibleAccelerations[0]} ]; then echo; cp_to_src_dir $LOC_ACC_DIR
-
-elif [ "$ACC" == ${PossibleAccelerations[1]} ]; then echo; cp_to_src_dir $CS_ACC_DIR
-
-elif [ "$ACC" == ${PossibleAccelerations[2]} ]; then echo; cp_to_src_dir $LOC_ACC_DIR
-
-else abort "$FUNCNAME: The acceleration option '$ACC' does not match any option in the list of possible accelerations."; fi
-
-if [ "$ACC" == ${PossibleAccelerations[2]} ]; then sed -i "s/$AccelerationSwitchedOn/$AccelerationSwitchedOff/" $nessy_src/$AcceleratingProcedureName.for; fi
-}
-
-
-function compile_COSI
-{
-if [ $NEW_OBJ_FILES ]; then rm -f  $nessy_obj/*; fi
-
-#echo; cp_to_src_dir $HAP_DIR
-
-if [ $NEW_DEPS ]; then cd $nessy_src; message "Compiling the list of dependencies..."; ./make/write_deps.sh *.for > ./make/Makefile.deps; fi
-
-cd $nessy_src; echo; cmd "$COMPILE"; echo
+if [ $NODF ] || [ $LODF ] || [ $HMFI ]; then echo; cmd "make all";    echo; fi
 }
 
 
@@ -170,7 +126,7 @@ for RUN in $1; do
 
           process_message "Copying $HM_GENERIC_DIR -> $HM_DIR$RUN" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
 
-          if [ ! $COMPILATION ]; then cp -v $HM_EXE $FI_EXE -t $HM_DIR$RUN/; echo; fi
+          if [ ! $COMPILATION ]; then copy $exes $HM_DIR$RUN; echo; fi
 
           echo !!; echo
 
@@ -184,7 +140,7 @@ for RUN in $1; do
 
           process_message "Copying $HM_GENERIC_DIR -> $HM_DIR$RUN" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
 
-          if [ ! $COMPILATION ]; then cp -v $HM_EXE $FI_EXE -t $HM_DIR$RUN/; echo; fi
+          if [ ! $COMPILATION ]; then copy $exes $HM_DIR$RUN; echo; fi
 
           echo !!; echo; GLOBIGNORE=''
 
@@ -321,7 +277,7 @@ for RUN in $RUNS; do
 
  if [ $VEL_FIELD ]; then check_file $VEL_FIELD_DIR$VEL_FIELD; cp -v $VEL_FIELD_DIR$VEL_FIELD $HM_DIR$RUN/vel_field.in; echo; fi
 
- if [ $COMPILATION ] || [ $EXE_UPD ]; then cp -v $HM_EXE $FI_EXE -t $HM_DIR$RUN/; echo; fi
+ if [ $COMPILATION ] || [ $EXE_UPD ]; then copy $exes $HM_DIR$RUN; echo; fi
 
  xterm $XTERM_SET_DEF -title "IT$ODF_IT/$RUN (hminus@$(hostname))" -e "bash --rcfile $XTERM_CMD_FILE -i" &
 
@@ -358,7 +314,7 @@ for RUN in $RUNS; do
 
  if [ $COMPILATION ] || [ $EXE_UPD ]; then
 
-    if [ "$ODF_IT" == "0" ] || [ $HM_RUN ] || [ $HMFI ]; then cp -v $HM_EXE $FI_EXE -t $HM_DIR$RUN/; echo; fi
+    if [ "$ODF_IT" == "0" ] || [ $HM_RUN ] || [ $HMFI ]; then copy $exes $HM_DIR$RUN; echo; fi
 
  fi
 
@@ -885,8 +841,8 @@ MAX_PROC=1
 branch=main
 ##############################################################################################
 
-ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:xnlF:zP:HLp:D:i:OITtj:a:m:A:f:v:V:N:J:g:G:"\
-                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,acc:,atm:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
+ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:xnlF:zP:HLp:D:i:OITtj:m:A:f:v:V:N:J:g:G:"\
+                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,atm:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
 
 if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
@@ -944,8 +900,6 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
        -j|--job)    HM_JOB=$2;          shift 2;;
 
-       -a|--acc)    ACC=$2;             shift 2;;
-
        -m|--atm)    ATM_MOD=$2;         shift 2;;
 
        -A|--ato)    DATOM=$2;           shift 2;;
@@ -974,9 +928,7 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
    if [ -z "$1" ]; then abort "$0: The list of runs has to be provided."; fi
 
-   if [ $ACC ]; then COMPILATION=Yes; fi
-
-   if [ $COMPILATION ]; then if [ $ACC ]; then set_acc; fi; compile_COSI; fi
+   if [ $COMPILATION ]; then compile; fi
 
    if [ $F_RANGE ]; then
 
@@ -1016,6 +968,8 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
       check_hm_dirs "$1"
 
+      exes=$HM_EXE
+
       if [ "$MODE" == "bg" ]; then hm_bg_run "$1" "$HM_JOB"; elif [ "$MODE" == "xt" ]; then hm_xt_run "$1" "$HM_JOB"; else abort "$0: The MODE '$MODE' is not recognized."; fi
 
    fi
@@ -1045,6 +999,8 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
    if [ $LODF ] || [ $NODF ] || [ $HMFI ]; then
 
       check_hm_dirs "$1"
+
+      exes=$HM_EXE' '$FI_EXE
 
       if [ $LODF ]; then lte_odf  "$1"; fi
 
