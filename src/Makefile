@@ -1,8 +1,8 @@
 .PHONY: all fioss hminus
 
-all:    fioss hminus
-fioss:  fioss-64
-hminus: hminus-64
+all:    FIOSS HMINUS
+fioss:  FIOSS
+hminus: HMINUS
 
 OPTS="-j16"
 
@@ -13,9 +13,8 @@ clean-all:    all
 clean-hminus: hminus
 clean-fioss:  fioss
 
-fioss-64: 
-	make -f Makefile_fioss_64 $(TARGET) $(OPTS)
+FIOSS: 
+	make -f Makefile_fioss $(TARGET) $(OPTS)
 
-hminus-64:
-	make -f Makefile_hminus_64 $(TARGET) $(OPTS)
-
+HMINUS:
+	make -f Makefile_hminus $(TARGET) $(OPTS)
