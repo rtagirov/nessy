@@ -4,8 +4,8 @@ all:    fioss hminus
 64:     fioss-64 hminus-64
 fioss:  fioss-32 fioss-64
 hminus: hminus-32 hminus-64
-#OPTS="-j4"
-OPTS="-j16"
+OPTS="-j4"
+#OPTS="-j16"
 all-clean hminus-clean hminus-32-clean hminus-64-clean: TARGET=clean
 32-clean 64-clean fioss-clean fioss-32-clean fioss-64-clean: TARGET=clean
 
