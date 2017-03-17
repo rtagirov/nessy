@@ -19,3 +19,6 @@ The IFORT compiler options are given in ./src/make/Makefile.opt
 Before compiling the code make sure to update the list of dependencies by running bash ./src/make/write_deps.sh ./src/*.for > ./src/make/Makefile.deps
 
 To compile HMINUS + FIOSS, run "make 64" in the ./src directory
+
+Note: Because of the attempts to run the code at ICL, Makefile.opt is not the same as it is was originally, some options in it might not work on the PMOD servers
+      (see -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2 in Makefile.opt)
