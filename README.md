@@ -1,4 +1,4 @@
-# PMOD version of the code
+# The PMOD version of the code
 
 The state of the NESSY code as it was on 01.10.2016 on the PMOD servers.
 This branch runs with the 13th version of the IFORT compiler.
