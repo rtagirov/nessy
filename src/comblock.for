@@ -64,4 +64,10 @@
 
 !      REAL*8,  ALLOCATABLE, DIMENSION(:) ::      NLTE_ABS, NLTE_EMI
 
+      integer, dimension(:), allocatable :: nlte
+
+      integer :: n_nlte_lev!, n_nlte_lin
+
+      real*8, dimension(:), allocatable :: idx_nlte_lev!, idx_nlte_lin
+
       END MODULE COMMON_BLOCK

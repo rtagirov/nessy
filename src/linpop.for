@@ -3,7 +3,7 @@
       contains
 
       SUBROUTINE LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART_ZWAAN,POP1,
-     $                  N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN,EINST,LEVEL,
+     $                  N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $                  XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,EPSILON,NODM,
      $                  DELTAC,MODHEAD,JOBNUM,IFRRA,ITORA,
      $                  RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
@@ -414,13 +414,13 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 !     THIS MUST BE REPEATED, WHEN THE TEMPERATURE HAS BEEN UPDATED
       IF (ITNE(L) .EQ. 1) THEN
 
-      DO 25 K = 1, NF
+          DO K = 1, NF
 
-      WAVENUM = 1.E8 / XLAMBDA(K)
+             WAVENUM = 1.E8 / XLAMBDA(K)
 
-      EXPFAC(K) = EXP(-C1 * WAVENUM / TL)
+             EXPFAC(K) = EXP(-C1 * WAVENUM / TL)
 
-   25 CONTINUE
+          enddo
 
       ENDIF
 
@@ -434,10 +434,10 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
 !     SETUP COEFFICIENT MATRICES
       POPHIIL = POPNUM(L, NLAST(1)) * ENTOT(L)
-      POPHML  = POPNUM(L, 1)  *       ENTOT(L)
-      POPHIL =  POPNUM(L, 2)  *       ENTOT(L)
+      POPHML  = POPNUM(L, 1) *        ENTOT(L)
+      POPHIL =  POPNUM(L, 2) *        ENTOT(L)
 
-!     LLO is declared in common_block.for along with its description
+!     LLO is declared in comblock.for along with its description
 
       CALL COMA(CRATE,RRATE,RATCO,DM,N,NRANK,V1,ABXYZ_new,
      $          ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,EION,WEIGHT,ALTESUM,

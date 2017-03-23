@@ -3,7 +3,7 @@
       contains
 
       SUBROUTINE PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
-     $                  POPNUM,N,EN,LEVEL,NCHARG,WEIGHT,ELEVEL,
+     $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,
      $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
      $                  FWEIGHT,TAUTHOM,TAUROSS,WAVARR,SIGARR, NF)
 C***********************************************************************

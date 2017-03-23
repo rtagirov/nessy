@@ -1,30 +1,35 @@
       module MOD_PRELINE
-      contains
-C**********  MODULNAME: PRELINE   ******* 06/08/87  19.58.27.******    58 KARTEN
-      SUBROUTINE PRELINE (NUP,LOW,IND,N,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
-     $                   BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,ELEVEL,NL,
-     $                   NDIM,EINST,INDNUP,INDLOW,LASTIND)
-C*******************************************************************************
-C***  PREPARING SOME QUANTITIES FOR THE CONSIDERED LINE TRANSITION
-C*******************************************************************************
-      implicit real*8(a-h,o-z)
-     
-	parameter (zero=0.0d0)
 
-      DIMENSION EINST(NDIM,NDIM)
+      contains
+
+      SUBROUTINE PRELINE(NUP,LOW,IND,N,LRUD,lte_line,XLAM,ND,NFL,LINE,BMHO,BMNO,
+     $                   BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,ELEVEL,NL,
+     $                   EINST,INDNUP,INDLOW,LASTIND)
+
+      use common_block
+
+!     PREPARING SOME QUANTITIES FOR THE CONSIDERED LINE TRANSITION
+
+      implicit real*8(a - h, o - z)
+     
+	  parameter (zero = 0.0d0)
+
+      DIMENSION EINST(N, N)
       DIMENSION ELEVEL(N)
-c      DIMENSION LINE(NL)
+
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)
       DIMENSION BMHO(NFL),BMNO(NFL),BMHI(NFL),BMNI(NFL)
       DIMENSION XJLMEAN(ND),HBLUWI(ND)
       DIMENSION XJ(NFL,ND),XH(NFL,ND),XK(NFL,ND),XN(NFL,ND)
-	character*7 name,line(nl)
+      character*7 name, line(nl)
+
+      logical :: lte_line
      
 !     LOOP OVER ALL POSSIBLE LINE INDICES IND
 
-      DO 16 IND=1,LASTIND
-c      ENCODE (7,1,NAME ) 'LINE',IND
-	write (name,1) 'LINE',ind
+      DO 16 IND = 1, LASTIND
+
+   	  write(name, 1) 'LINE', ind
     1 FORMAT (A4,I3)
 
       IF (LINE(NL).EQ.NAME) GOTO 6
@@ -40,15 +45,26 @@ c      ENCODE (7,1,NAME ) 'LINE',IND
      
     6 CONTINUE
 C***  FIND THE LEVEL INDICES NUP, LOW
-      NUP=INDNUP(IND)
-      LOW=INDLOW(IND)
+      NUP = INDNUP(IND)
+      LOW = INDLOW(IND)
+
+      if (nlte(nup) .eq. 0 .or. nlte(low) .eq. 0) then
+
+          lte_line = .true.
+
+          return
+
+      endif
+
 C***  RUDIMENTAL LINES (EINST(LOW,NUP)=-2.) WILL BE MARKED BY LRUD=0
       LRUD=1
+
       IF (EINST(LOW,NUP) .EQ. -2.d0) THEN
          LINE(NL)='LINE000'
          LRUD=0
          RETURN
       ENDIF
+
       XLAM=1.d8/(ELEVEL(NUP)-ELEVEL(LOW))
      
 C***  INITIALIZE ALL ARRAYS FOR THE INTEGRATION OF MOMENTS
@@ -66,6 +82,8 @@ C***  INITIALIZE ALL ARRAYS FOR THE INTEGRATION OF MOMENTS
       XK(KL,L)=zero
    12 XN(KL,L)=zero
      
-      RETURN
-      END subroutine
+      return
+
+      end subroutine
+
       end module

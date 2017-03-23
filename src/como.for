@@ -26,14 +26,13 @@
       use ABUNDANCES
       USE MOD_BFCROSS
 
-      USE COMMON_BLOCK
-      USE VARDATOM
-      USE VARHMINUS
-      USE VARSTEAL
-
+      use common_block
+      use vardatom
+      use varhminus
+      use varsteal
       use phys
-
       use local_operator
+      use file_operations
 
       IMPLICIT NONE
 
@@ -93,7 +92,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       tstart = time()
 
-      CALL DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      CALL DATOM(datom_all,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,

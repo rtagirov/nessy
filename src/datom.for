@@ -2,13 +2,12 @@
 
       contains
 
-      subroutine DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      subroutine DATOM(datom_file,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $                 EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $                 INDNUP,INDLOW,LASTIND,NATOM,
      $                 ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $                 NLAST,WAVARR,SIGARR, NFDIM)
+     $                 NLAST,WAVARR,SIGARR,NFDIM)
 
-C***  Changes by Margit Haberreiter, May 20, 2002
 C*** CALLED BY COMO, ETL, STEAL, WRCONT, WRSTART, FIOSS
 C*******************************************************************************
 CMH   DATOM: CODE NUMBER OF ELEMETS CHANGED
@@ -57,16 +56,12 @@ C**********************************************************
 C***                         COPPER    (CU)           29
 C***                         ZINK      (ZN)           30
 C*********************************************************************************
-C*** changed by Margit Haberreiter, May 2002
-!    changed by Rinat Tagirov, November 2016 (got rid of NDIM, MAXATOM and MAXIND)
-C*********************************************************************************
+
       use MOD_ERROR
 
       use file_operations
 
       implicit none
-
-      !public variables - out
 
       integer, intent(out) ::                            N, NATOM, LASTIND
 
@@ -86,7 +81,6 @@ C*******************************************************************************
 
       character*10, intent(out), allocatable, dimension(:) :: level, element
 
-      !public variable - in
       integer, intent(in) :: NFDIM
 
       !private variables
@@ -98,6 +92,8 @@ C*******************************************************************************
       character*8 :: AGLOW
 
       integer ::     elenum, levnum, linnum
+
+      character(len = *) :: datom_file
 
       !constants
       real*8, parameter :: ONE = 1.D+0
@@ -140,9 +136,9 @@ C*******************************************************************************
       if (allocated(level))   deallocate(level)
       if (allocated(element)) deallocate(element)
 
-      call system('grep -irw ELEMENT DATOM > ele.temp')
-      call system('grep -irw LEVEL DATOM   > lev.temp')
-      call system('grep -irw LINE DATOM    > lin.temp')
+      call system('grep -irw ELEMENT'//' '//datom_file//' '//'> ele.temp')
+      call system('grep -irw LEVEL'  //' '//datom_file//' '//'> lev.temp')
+      call system('grep -irw LINE'   //' '//datom_file//' '//'> lin.temp')
 
       elenum = num_of_lines('ele.temp')
       linnum = num_of_lines('lin.temp')
@@ -219,7 +215,7 @@ C*******************************************************************************
 
       !--------------------- Initialisation Rinat Tagirov ----------------
 
-      OPEN (4, FILE = 'DATOM', status='old', readonly)
+      OPEN (4, FILE = datom_file, status='old', readonly)
 
       IECHO = 0
 
@@ -245,15 +241,15 @@ c     ignore dielectronic option
 C***  ELEMENTS ---------------------------------------------------------
     5 NATOM=NATOM+1
       if (natom .gt. 30) stop 'datom: natom > 30'
-!      IF (NATOM .GT. MAXATOM) THEN
-!          print *, 'DATOM: MORE ELEMENTS THAN ALLOWED'
-!          STOP 'ERROR'
-!          ENDIF
+
+
+
+
       LEVSEQ=0
       read (KARTE,FORMAT_ELEMENT) ELEMENT(NATOM),SYMBOL(NATOM),
      $                    ATMASS(NATOM),STAGE(NATOM)
-!    9 FORMAT (12X,A10,2X,A2,4X,F6.2,3X,F5.0)
-C***  MODEL ATOM OF 'HELIUM' DECODED
+
+
       IF ( (ELEMENT(NATOM) .EQ. 'HELIUM    ') .AND.
      $     ( SYMBOL(NATOM) .EQ. 'HE' .or. SYMBOL(NATOM) .EQ. 'He' )
      $    ) THEN   

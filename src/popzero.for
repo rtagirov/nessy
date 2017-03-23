@@ -3,7 +3,7 @@
       CONTAINS
 
       SUBROUTINE POPZERO(T,RNE,POPNUM,DEPART,ENTOT,ITNE,N,ENLTE,
-     $                   WEIGHT,NCHARG,EION,ELEVEL,EN,EINST,LEVEL,
+     $                   WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $                   XLAMBDA,FWEIGHT,XJC,NF,XJL,IFRRA,ITORA,ALPHA,
      $                   SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
      $                   LASTIND,ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
@@ -32,7 +32,6 @@
       !*******************************************************************************
 
       USE MOD_BFCROSS
-      use MOD_NLTEPOP
       use MOD_LTEPOP
       use MOD_PRIRAT
       use ABUNDANCES
@@ -55,8 +54,6 @@
       CHARACTER*4 KEYCOL(N, N)
       character*10 cread,help
       DIMENSION WAVARR(N, NF),SIGARR(N, NF)
-
-      real*8	POPHIIL, POPHML, POPHIL
 
       real*8,dimension(*) :: ALTESUM, COCO, FWEIGHT
 
@@ -204,171 +201,69 @@
         CALL  BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
      $                XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
 
-        !*** CHANGES BY MARGIT HABERREITER
-        PRINT*, 'POPZERO: non-LTE pop numbers replaced by LTE populations.'
-
         !*** LOOP OVER ALL DEPTH POINTS --------------------------------------
         DO 1 L = 1, ND
 
-          TL = T(L)
+             TL = T(L)
 
-          ENTOTL = ENTOT(L)
+             ENTOTL = ENTOT(L)
 
-          RNEL = RNE(L)
+             RNEL = RNE(L)
 
-          IF (.NOT. ALLOCATED(ABXYZ_new)) ALLOCATE(ABXYZ_new(NATOM))
+             IF (.NOT. ALLOCATED(ABXYZ_new)) ALLOCATE(ABXYZ_new(NATOM))
 
-          ABXYZ_new(1 : NATOM) = ABXYZn(1 : NATOM, L)
+             ABXYZ_new(1 : NATOM) = ABXYZn(1 : NATOM, L)
 
-          IF (LTE_RUN .OR. CONST_ELEC) THEN ! LTE RUN OR PRE-SET ELECTRON CONCENTRATION
+       !***  ITERATION FOR THE ELECTRON DENSITY
+             ITNEL = 0
+ 13          ITNEL = ITNEL + 1
 
-              ENE = RNEL * ENTOTL
+             ENE = RNEL * ENTOTL
 
-              CALL LTEPOP(N, ENLTE, TL, ENE, WEIGHT, NCHARG, EION, ELEVEL, NOM,
-     $                    ABXYZ_new, NFIRST, NLAST, NATOM)
+             IF (ENE .LT. 0) PRINT*, 'POPZERO: ENE = ', ENE
 
-              DEPART(L, 1 : N) = 1.0D0
-              POPNUM(L, 1 : N) = ENLTE(1 : N)
+             CALL LTEPOP(N, ENLTE, TL, ENE, WEIGHT, NCHARG, EION, ELEVEL, NOM,
+     $                   ABXYZ_new, NFIRST, NLAST, NATOM)
 
-          ELSEIF (.NOT. LTE_RUN .AND. .NOT. CONST_ELEC) THEN
-!          ELSEIF (.NOT. LTE_RUN) THEN
+             RNEOLD = RNEL
 
-          !***  ITERATION FOR THE ELECTRON DENSITY
-              ITNEL = 0
- 13           ITNEL = ITNEL + 1
+             RNEL = SUM(NCHARG(1 : N) * ENLTE(1 : N))
 
-              ENE = RNEL * ENTOTL
+             KONVER = ABS(RNEOLD - RNEL) .LT. EPSNE
 
-              IF (ENE .LT. 0) PRINT*, 'POPZERO: ENE = ', ENE
+             IF (ITNEL .GT. 10) STOP 'electron iteration problem'
 
-          !MH proton density
-              POPHIIL = POPNUM(L, NLAST(1)) * ENTOTL
-              POPHML =  POPNUM(L, 1) *        ENTOTL
-              POPHIL =  POPNUM(L, 2) *        ENTOTL
-
-              CALL LTEPOP(N, ENLTE, TL, ENE, WEIGHT, NCHARG, EION, ELEVEL, NOM,
-     $                    ABXYZ_new, NFIRST, NLAST, NATOM)
-
-              CALL NLTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,
-     $                     EN,EINST,XLAMBDA,FWEIGHT,XJC,NF,ITNEL,L,LEVEL,XJL,ND,LASTIND,
-     $                     CRATE,RRATE,RATCO,SIGMAKI,ALTESUM,COCO,
-     $                     KEYCOL,NOM,NATOM,ABXYZ_new,KODAT,NFIRST,NLAST,
-     $                     POPHIIL, POPHML, POPHIL)
-
-              EN(1 : N) = ENLTE(1 : N)
-
-              RNEOLD = RNEL
-
-              RNEL = SUM(NCHARG(1 : N) * EN(1 : N))
-
-              KONVER = ABS(RNEOLD - RNEL) .LT. EPSNE
-
-              IF (ITNEL .GT. 10) STOP 'electron iteration problem'
-
-              IF (.NOT. KONVER .AND. ITNEL .LT. ITMAX) GOTO 13
-              IF (.NOT. KONVER) ITNEL = -ITMAX
+             IF (.NOT. KONVER .AND. ITNEL .LT. ITMAX) GOTO 13
+             IF (.NOT. KONVER) ITNEL = -ITMAX
      
-              ITNE(L) = ITNEL
-              RNE(L) = RNEL
+             ITNE(L) = ITNEL
+             RNE(L) = RNEL
 
-              DEPART(L, 1 : N) = EN(1 : N) / ENLTE(1 : N)
-              POPNUM(L, 1 : N) = EN(1 : N)
+             DEPART(L, 1 : N) = 1.0d0
+             POPNUM(L, 1 : N) = ENLTE(1 : N)
 
-          ENDIF
-
-          IF (ALLOCATED(ABXYZ_new)) DEALLOCATE(ABXYZ_new)
+             IF (ALLOCATED(ABXYZ_new)) DEALLOCATE(ABXYZ_new)
 
     1 ENDDO
 
-      ELSE
-
-        !***  GAMMA = 0 
-        !***  EPSNE = ACCURACY LIMIT FOR THE ELECTRON DENSITY ITERATION
-        EPSNE=0.001
-        !***  MAX. NUMBER OF ITERATIONS
-        ITMAX=10
-        !***  GENERATE ONCE FOR ALL PHOTOCROSSSECTIONS AT ALL FREQUENCIES
-        !***  SIGMAKI(K,LOW) IN CM**2
-         CALL  BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
-     $                 XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
-
-        !***  CHANGES BY MARGIT HABERREITER
-        print *,' Gamma=0 branch !!!!!'
-        !***  LOOP OVER ALL DEPTH POINTS  --------------------------------------
-
-          MAIN_LOOP: DO L=1,ND
-
-          TL=T(L)
-          ENTOTL=ENTOT(L)
-          RNEL=RNE(L)
-          if (.NOT. allocated(ABXYZ_new)) allocate(ABXYZ_new(NATOM))
-          ABXYZ_new(1:NATOM)=ABXYZn(1:NATOM,L)
-          !***  ITERATION FOR THE ELECTRON DENSITY
-          ITNEL=0
- 23       ITNEL=ITNEL+1
-         
-
-          ENE = RNEL * ENTOTL
-
-          POPHIIL = POPNUM(L, NLAST(1)) * ENTOTL
-          POPHML =  POPNUM(L, 1) *        ENTOTL
-          POPHIL =  POPNUM(L, 2) *        ENTOTL
-
-          CALL LTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,
-     $                ABXYZ_new,NFIRST,NLAST,NATOM)
-
-          CALL NLTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,
-     $                 EN,EINST,XLAMBDA,FWEIGHT,XJC,NF,ITNEL,L,LEVEL,
-     $                 XJL,ND,LASTIND,
-     $                 CRATE,RRATE,RATCO,SIGMAKI,ALTESUM,COCO,
-     $                 KEYCOL,NOM,NATOM,ABXYZ_new,KODAT,NFIRST,NLAST,
-     $                 POPHIIL, POPHML, POPHIL)
-
-!         for helium always LTE        
-
-!          EN(13:23)=ENLTE(13:23)
-
-!         for helium always LTE 
-
-          RNEOLD=RNEL
-          RNEL = sum(NCHARG(:N)*EN(:N))
-          KONVER= ABS(RNEOLD-RNEL) .LT. EPSNE
-          IF (.NOT. KONVER .AND. ITNEL .LT. ITMAX) GOTO 23
-          IF (.NOT. KONVER) ITNEL=-ITMAX
-          ITNE(L)=ITNEL
-          RNE(L)=RNEL
-          DEPART(L,:N)=EN(:N)/ENLTE(:N)
-          POPNUM(L,:N)=EN(:N)
-     
-! test hminus                                                                   
-    !         POPNUM(L,1)=ENLTE(1)
-                ! test hminus  
-
-
-
-!***  ===  PRINTOUT OF RATE COEFFICIENTS ETC.  ===
-          IF (LSRAT.NE.-1) THEN
-            IF ((L.GE.IFRRA.AND.L.LE.ITORA).OR.ITORA.EQ.0) THEN
-              NETTO=0
-              LM1=L-1
-              IF (IFRRA.GT.0) LM1=L-IFRRA
-              IF (((LM1)/LSRAT)*LSRAT.EQ.(LM1).OR.L.EQ.ND)
-     $          CALL PRIRAT (IDUMMY,N,LEVEL,L,CRATE,RRATE,RATCO,EN,
-     $            IFRRA,MODHEAD,JOBNUM,NETTO )
-            ENDIF
-          ENDIF
-          if (allocated(ABXYZ_new)) deallocate(ABXYZ_new)
-
-        ENDDO MAIN_LOOP
-      !***  ENDLOOP  ---------------------------------------------------------
       ENDIF
+
       if (allocated(ABXYZ_new)) deallocate(ABXYZ_new)
+
       RETURN
+
   666 continue
+
       if (allocated(ABXYZ_new)) deallocate(ABXYZ_new)
+
       print *,' error reading job control file 99'
+
       stop ' error popzero'
+
 777   write (6,*) 'POPZERO: ERROR WHEN READING OLD MODEL FILE'
+
       STOP 'OPMS9'
-      END SUBROUTINE
+
+      end subroutine
+
       end module

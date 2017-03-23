@@ -31,11 +31,12 @@
       use MOD_REBLANK
       use MOD_WRITMOD
       use ABUNDANCES
-      USE FILE_OPERATIONS
-      USE COMMON_BLOCK
-      USE VARDATOM
-      USE VARHMINUS
-      USE VARSTEAL
+
+      use file_operations
+      use common_block
+      use vardatom
+      use varhminus
+      use varsteal
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -81,7 +82,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 C***  READING THE ATOMIC DATA FROM FILE DATOM
 
-	CALL DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+	CALL DATOM(datom_all,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $         EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $         INDNUP,INDLOW,LASTIND,NATOM,
      $         ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
@@ -89,8 +90,6 @@ C***  READING THE ATOMIC DATA FROM FILE DATOM
 
       if (allocated(levelpl)) deallocate(levelpl); allocate(levelpl(N))
       if (allocated(nfedge))  deallocate(nfedge);  allocate(nfedge(N))
-
-      if (allocated(en))      deallocate(en);      allocate(en(N + 1))
 
 C***  DECODING INPUT DATA ******************************************
       CALL DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,IFRRA,ITORA,LSEXPO,
@@ -144,7 +143,7 @@ c***  advance job-number counter
 
       CALL change(popnum, pop1, nd*n)
 
-      CALL REBLANK (LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
+      CALL REBLANK(LBLANK, NF, XLAMBDA, ND, ENTOT, RNE, SCAFAC, ABSFAC)
 
       if (lblank .lt. 0) then
 c***     the new blanketing table needs to be written to the model file
@@ -158,22 +157,13 @@ c***     the new blanketing table needs to be written to the model file
 
       endif
 
-      DO 1 MG=1,10
-      IF (NGAMR(MG).LE.JOBNUM) GAMMAR=AGAMR(MG)
-      IF (NGAML(MG).LE.JOBNUM) GAMMAL=AGAML(MG)
-    1 CONTINUE
-
       GAMMAR = 0.0D0
       GAMMAL = 0.0D0
  
       IF (JOBNUM .LE. 1) THEN
 
-!     CALCULATION OF POPNUMBERS WITH THE USUAL (LINEAR) RATE EQUATION.
-!     THIS IS ECONOMIC AND PROVIDES THE ORIGINAL RATES FOR A POSSIBLE
-!     PRINTOUT BY SUBR. PRIRAT
-      
          CALL POPZERO(T,RNE,POPNUM,DEPART,ENTOT,ITNE,N,ENLTE,
-     $                WEIGHT,NCHARG,EION,ELEVEL,EN(1 : N),EINST,LEVEL,
+     $                WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $                XLAMBDA,FWEIGHT,XJCARR,NF,XJL,IFRRA,ITORA,ALPHA,
      $                SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
      $                LASTIND,ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
@@ -186,7 +176,7 @@ c***     the new blanketing table needs to be written to the model file
 !     CALCULATION OF NEW POPULATION NUMBERS, EL. DENSITY AND DEPARTURE COEFF.
 
          CALL LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART,POP1,
-     $               N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EN(1 : N + 1),EINST,LEVEL,
+     $               N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $               XLAMBDA,FWEIGHT(1 : NF),XJCARR,NF,XJL,WCHARM,
      $               EPSILON,NODM,DELTAC,MODHEAD,JOBNUM,IFRRA,ITORA,
      $               RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
@@ -264,7 +254,7 @@ C***  UPDATING THE MODEL HISTORY
             CALL PRIPOP(LSPOP,WEIGHT,NCHARG,NOM,ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
 
             CALL PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
-     $                  POPNUM,N,EN,LEVEL,NCHARG,WEIGHT,ELEVEL,
+     $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,
      $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
      $                  FWEIGHT,TAUTHOM,TAUROSS,WAVARR,SIGARR,NF)
 

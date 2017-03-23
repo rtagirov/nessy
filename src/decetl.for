@@ -4,7 +4,7 @@
 
       SUBROUTINE DECETL(LSOPA, LSINT, VDOP, LINE, NLINE, LINEKEY, MAXIND, LBLANK)
 
-      USE FILE_OPERATIONS
+      use file_operations
 
 !*******************************************************************************
 !     DECODES INPUT CARDS FOR MAIN PROGRAM "ETL"
@@ -79,7 +79,7 @@ C                          ====
 !RT        This is a dirty fix for the hardcoding of the number of lines in the CARDS file.
 !RT        Now the number of lines is calculated automatically using the DATOM file.
 
-           CALL SYSTEM('grep LINE DATOM > temp.out')
+           CALL SYSTEM('grep LINE'//' '//datom_nlte//' '//'> temp.out')
 
            IND2 = NUM_OF_LINES('temp.out')
 

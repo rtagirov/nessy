@@ -28,6 +28,9 @@
 
       CHARACTER (LEN = 7),  PARAMETER :: NTW_FILE =          'NLTEWAV'
 
+      CHARACTER (LEN = 9),  PARAMETER :: datom_all =         'DATOM_ALL'
+      CHARACTER (LEN = 10), PARAMETER :: datom_nlte =        'DATOM_NLTE'
+
       PUBLIC
 
       CONTAINS

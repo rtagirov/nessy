@@ -85,6 +85,8 @@ C***  LINE BLANKETING TABLE
          LBLAON=1
       ENDIF
  
-      RETURN
-	END subroutine
+      return
+
+      end subroutine
+
       end module

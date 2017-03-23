@@ -84,13 +84,13 @@
       call TIC(timer)
 
 !     READ ATOMIC DATA FROM FILE DATOM
-      CALL DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      CALL DATOM(datom_all,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,NFDIM)
 
-!      call lte_mark(N)
+      call nlte_mark(N)
 
 !     DECODING INPUT DATA
       CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
@@ -356,50 +356,62 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       END FUNCTION EXTRAP_VEL_FIELD
 
-!      subroutine lte_mark(N)
-!
-!      use common_block
-!
-!      implicit none
-!
-!      integer, intent(in) :: N
-!
-!      integer :: i, ily, iln
-!
-!      character(len = 1), dimension(N) :: lte_flag
-!
-!      lte_flag(1 : 12) = 'n'
-!      lte_flag(13 : N) = 'y'
-!
-!      nly = 0
-!      nln = 0
-!
-!      do i = 1, N
-!
-!         if (lte_flag(i) .eq. 'y') nly = nly + 1
-!         if (lte_flag(i) .eq. 'n') nln = nln + 1
-!
+      subroutine nlte_mark(N)
+
+      use common_block
+      use vardatom
+
+      implicit none
+
+      integer, intent(in) :: N!, lastind
+
+      integer :: i, i_nlte!, ind, low, nup
+
+      allocate(nlte(N))
+
+!      nlte(1 : 12) = 1
+!      nlte(13 : N) = 0
+!      nlte(1 : N) = 1
+
+      n_nlte_lev = 0
+
+      do i = 1, N
+
+         if (nlte(i) .eq. 1) n_nlte_lev = n_nlte_lev + 1
+
+      enddo
+
+      allocate(idx_nlte_lev(n_nlte_lev))
+
+      i_nlte = 1
+
+      do i = 1, N
+
+         if (nlte(i) .eq. 1) then
+
+            idx_nlte_lev(i_nlte) = i
+
+            i_nlte = i_nlte + 1
+
+         endif
+
+      enddo
+
+!      n_nlte_lin = 0
+
+!      do ind = 1, lastind
+
+!         low = indlow(ind)
+!         nup = indnup(ind)
+
+!         if (nlte(low) .eq. 1 .and. nlte(nup) .eq. 1) then
+
+!            n_nlte_lin = n_nlte_lin + 1
+
+!         endif
+
 !      enddo
-!
-!      allocate(levyl(nly))
-!      allocate(levnl(nln))
-!
-!      ily = 1
-!      iln = 1
-!
-!      do i = 1, N
-!
-!         selectcase(lte_flag(i))
-!
-!             case('y'); lly(ily) = i; ily = ily + 1
-!             case('n'); lln(iln) = i; iln = iln + 1
-!
-!             case default; stop 'Array lte_flag has an unrecognized value. Abort.'
-!
-!         endselect
-!
-!      enddo
-!
-!      end subroutine
+
+      end subroutine
 
       END MODULE

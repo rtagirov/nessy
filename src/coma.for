@@ -18,48 +18,42 @@
       use MOD_COLLI
       use MOD_DLIOP
       use MOD_DCOOP
-      USE FILE_OPERATIONS
-      USE COMMON_BLOCK
 
-C*******************************************************************************
-C***  THIS ROUTINE SETS UP THE RATE COEFFICIENT MATRIX RATCO
-C***  AND ITS VECTOR DERIVATIVE DM (LINEARIZED MATRIX)
-C***  IF NODM IS TRUE, THE ROUTINE DOES NOT SET UP THE DM MATRIX
-C*** CALLED BY LINPOP
-C*** ENE:
-C*** RNE: RELATIVE ELECTRON DENSITY
-C***	ENTOTL: PARTICLE DENSITY AT DEPTH POINT L
-C*******************************************************************************
-C fflow ------------------ Flow chart ------------------------
-C 1     | -> STEAL, line 128 (steal.for, line 0)
-C :     :\
-C 2     | | -> LINPOP, line 212 (linpop.for, line 0)
-C :     : :\
-C 3     | | | -> COMA, line 208 (coma.for, line 0)
-C 4     | | | | -> COOPFRQ, line 65 (coopfrq.for, line 1)
-C 5     | | | | | -> GFFLOG, line 71 (<unknown>)
-C 4     | | | | -> SETXJL, line 83 (setxjl.for, line 1)
-C 5     | | | | | -> LIOP, line 30 (liop.for, line 1)
-C 5     | | | | | -> LIPO, line 43 (lipo.for, line 1)
-C 5     | | | | | -> XRUDI, line 45 (xrudi.for, line 1)
-C 4     | | | | -> COLLI, line 92 (colli.for, line 1)
-C 4     | | | | -> RADNET, line 98 (radnet.for, line 1)
-C 5     | | | | | -> XRUDI, line 49 (xrudi.for, line 1)
-C 4     | | | | -> DCOOP, line 152 (dcoop.for, line 0)
-C 5     | | | | | -> GFFLOG, line 97 (<unknown>)
-C 5     | | | | | -> GFFLOG, line 147 (<unknown>)
-C 4     | | | | -> DLIOP, line 156 (dliop.for, line 1)
-C 4     | | | | -> DERIV, line 163 (deriv.for, line 1)
-C :
-C :
-C 1     | -> STEAL, line 217 (steal.for, line 0)
-C :      :
-C 2     | | -> LINPOP, line 212 (linpop.for, line 0)
-C :	: :\
-C 3     | | | -> COMA, line 208 (coma.for, line 0)
-C       : : :
+      use file_operations
+      use common_block
 
-      IMPLICIT NONE
+!*******************************************************************************
+! THIS ROUTINE SETS UP THE RATE COEFFICIENT MATRIX RATCO
+! AND ITS VECTOR DERIVATIVE DM (LINEARIZED MATRIX)
+! IF NODM IS TRUE, THE ROUTINE DOES NOT SET UP THE DM MATRIX
+! CALLED BY LINPOP
+! ENE:    ABOLUTE ELECTRON DENSITY
+! RNE:    RELATIVE ELECTRON DENSITY
+! ENTOTL: PARTICLE DENSITY AT DEPTH POINT L
+!*******************************************************************************
+
+! ------------------ Flow chart ------------------------
+!       | -> STEAL
+!       | 
+!       | | -> LINPOP
+!       | | 
+!       | | | -> COMA
+!       | | | | -> COOPFRQ
+!       | | | | | -> GFFLOG
+!       | | | | -> SETXJL
+!       | | | | | -> LIOP
+!       | | | | | -> LIPO
+!       | | | | | -> XRUDI
+!       | | | | -> COLLI
+!       | | | | -> RADNET
+!       | | | | | -> XRUDI
+!       | | | | -> DCOOP
+!       | | | | | -> GFFLOG
+!       | | | | | -> GFFLOG
+!       | | | | -> DLIOP
+!       | | | | -> DERIV
+
+      implicit none
 
       integer,intent(in) ::  LASTIND, NATOM, NRANK,  N
       integer,intent(in) ::  KODAT(*), NOM(N)

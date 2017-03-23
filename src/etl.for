@@ -104,22 +104,58 @@
 
       real*8, allocatable, dimension(:) :: opal, etal
 
-      print*, 'entering etl... ' // writeTOC()
+      logical :: lte_line
+
+      print*, 'entered etl: ' // writeTOC()
       call tic(timer)
 
 !***  DECODING INPUT CARDS
       CALL DECETL(LSOPA,LSINT,VDOP,LINE,NLINE,LINEKEY,MAXIND,LBLANK)
 
+!      print*, 'etl: ', NLINE
+
+!      stop
+
       IF (NLINE .EQ. 0) THEN; WRITE(6, *) 'NO LINE OPTIONS DECODED'; GOTO 99; ENDIF
  
       CALL FLGRID(NFLDIM, NFL, PHI, PWEIGHT, DELTAX)
 
-!***  changes by Margit Haberreiter
-	CALL DATOM(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $         EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $         INDNUP,INDLOW,LASTIND,NATOM,
-     $         ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $         NLAST,WAVARR,SIGARR,NFDIM)
+!      call datom(datom_nlte,
+!     $           n_nlte,
+!     $           level_nlte,
+!     $           ncharg_nlte,
+!     $           weight_nlte,
+!     $           elevel_nlte,
+!     $           eion_nlte,
+!     $           mainqn_nlte,
+!     $           einst_nlte,
+!     $           alpha_nlte,
+!     $           sexpo_nlte,
+!     $           agaunt_nlte,
+!     $           coco_nlte,
+!     $           keycol_nlte,
+!     $           altesum_nlte,
+!     $           indnup_nlte,
+!     $           indlow_nlte,
+!     $           lastind_nlte,
+!     $           natom_nlte,
+!     $           element_nlte,
+!     $           symbol_nlte,
+!     $           nom_nlte,
+!     $           kodat_nlte,
+!     $           atmass_nlte,
+!     $           stage_nlte,
+!     $           nfirst_nlte,
+!     $           nlast_nlte,
+!     $           wavarr_nlte,
+!     $           sigarr_nlte,
+!     $           nfdim)
+
+      CALL DATOM(datom_all,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $           INDNUP,INDLOW,LASTIND,NATOM,
+     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+     $           NLAST,WAVARR,SIGARR,NFDIM)
 	
 !***  READING OF THE MODEL FILE
       IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'OLD')
@@ -137,7 +173,7 @@
       print *,'ETL: ND = ',ND,' NP = ',NP
       call assert(ND*NP>1,'ND*NP <= 1')
 
-!     LLO is declared in common_block.for
+!     LLO is declared in comblock.for
       IF (ALLOCATED(LLO))       DEALLOCATE(LLO)
       IF (ALLOCATED(tau_line))  DEALLOCATE(tau_line)
       IF (ALLOCATED(damp_line)) DEALLOCATE(damp_line)
@@ -151,6 +187,8 @@
       allocate(damp_line(ND, LASTIND))
 
       damp_line(1 : ND, 1 : LASTIND) = 'n'
+
+      llo(1 : ND, 1 : lastind) = 0.0d0
 
       IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
       PRINT *,'ETL: VDOP=',VDOP
@@ -185,7 +223,7 @@
 !     switch off LB       
       LBLANK=0
 
-      CALL REBLANK (LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
+      CALL REBLANK(LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
 
 !     INTRODUCING DIMENSIONLESS VELOCITY UNITS:
 !     ********************************************
@@ -244,35 +282,28 @@
 
       ALLOCATE(LO(ND))
 
-!      ALLOCATE(AW(NP, ND))
-
-!      ALLOCATE(OpticalDepthLine(ND))
-!      ALLOCATE(OpticalDepthLineCont(ND))
-
-
-!      OPEN(UNIT = 14, FILE = 'line_feautrier_matrix.out',     FORM = 'FORMATTED')
-!      OPEN(UNIT = 16, FILE = 'line_lambda_operator_diag.out', FORM = 'FORMATTED')
-
-!      WRITE(14, 10231)
-!      WRITE(16, 10233)
-
       SIGMAKI(1, 1) = -1.
 
       LineNumber = 1
 
       DO 7 NL = 1, NLINE
 
+      lte_line = .false.
+
       ETLKEY = LINEKEY(NL)
  
 !***  PREPARING SOME QUANTITIES FOR THE CONSIDERED LINE
 
-      CALL PRELINE(NUP,LOW,IND,N,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
+      CALL PRELINE(NUP,LOW,IND,N,LRUD,lte_line,XLAM,ND,NFL,LINE,BMHO,BMNO,
      $             BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,ELEVEL,NL,
-     $             NDIM,EINST,INDNUP,INDLOW,LASTIND)
+     $             EINST,INDNUP,INDLOW,LASTIND)
 
-      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0)) GOTO 7 ! THIS IS HOW WE GET 75 LINES OUT OF NLINE = 150
+      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0) .or. lte_line) GOTO 7
+!      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0)) GOTO 7
 
 !      print*, 'etl: NL = ', NL, ' out of ', NLINE
+
+      print*, 'etl: LN = ', LineNumber
  
 !***  COMPUTATION OF THE ETLA SOURCE FUNCTION COEFFICIENTS, ASF AND BSF
 !***  RATES AND POPNUMBERS ARE UPDATED !
@@ -406,6 +437,8 @@
     7 CONTINUE
 !     END OF LOOP FOR EACH LINE
 
+      stop
+
       DEALLOCATE(LO)
 
       CLOSE(ifl)
@@ -416,7 +449,7 @@
 !***  store the line radiation field in file RADIOL
       call writradl(XJL,XJLMEAN,EINST,NCHARG,NOM,ND,N,LASTIND,MODHEAD,JOBNUM)
 
-      IF (LSINT.GT.0) CALL PRIINTL(NDIM,N,LEVEL,WEIGHT,EINST,LASTIND,LINE,NLINE,
+      IF (LSINT.GT.0) CALL PRIINTL(N,LEVEL,WEIGHT,EINST,LASTIND,LINE,NLINE,
      $                             INDLOW,INDNUP,ELEVEL,ND,XJL,LSINT,JOBNUM,MODHEAD)
 
 !***  UPDATING THE MODEL HISTORY
