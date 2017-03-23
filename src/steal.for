@@ -135,8 +135,10 @@ c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dum
 
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $             NCHARG,EDDARR,EDDI,NOM,WCHARM,
-     $             N,lastind,EINST,MODHEAD,JOBNUM)
+     $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,
+     $             N_nlte,lastind_nlte,einst_nlte,MODHEAD,JOBNUM)
+
+      stop 'steal stop'
 
 c***  advance job-number counter
       JOBNUM = JOBNUM + 1
@@ -166,7 +168,7 @@ c***     the new blanketing table needs to be written to the model file
      $                WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $                XLAMBDA,FWEIGHT,XJCARR,NF,XJL,IFRRA,ITORA,ALPHA,
      $                SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
-     $                LASTIND,ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
+     $                ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
      $                KODAT,NFIRST,NLAST,WAVARR,SIGARR)
 
       ELSE

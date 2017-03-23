@@ -1,6 +1,6 @@
       module MOD_JSTART
       contains
-      SUBROUTINE JSTART (NF,XLAMBDA,ND,T,XJC,XJL,
+      SUBROUTINE JSTART (NF,NL,XLAMBDA,ND,T,XJC,XJL,
      $                   HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $                   NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,  ! renamed WRCHARM to WCHARM 
      $                   MODHEAD,JOBNUM,TEFF)
@@ -17,20 +17,22 @@ C******************************************************************************
       use MOD_BNUE,only:BNUE
       use MOD_ERROR,only:ERROR
       use MOD_FORMATS,only:FMT_KEY
-      !IMPLICIT REAL*8(A-H,O-Z)
+
       IMPLICIT NONE
+
       real*8,PARAMETER ::  ONE = 1.D+0, TWO = 2.D+0 
 
 C***  TRANSFER OF THE LTE-OPTION FROM SUBR. DECSTAR
-      real*8,  intent(inout),dimension(ND)  :: XJC,XJL ! Continuum and Line Radiation Field
-      integer, intent(in   ) :: NF, ND, N
-      integer, intent(in   ) :: NCHARG(N), NOM(N),JOBNUM
-      real*8,  intent(in   ) :: TOTIN, TOTOUT
-      real*8,  intent(in   ) :: ELEVEL(N),EINST(N,N),EDDI(3,ND)
-      real*8,  intent(in   ),dimension(ND)   :: T
-      real*8,  intent(in   ),dimension(NF)   :: XLAMBDA
-      real*8,  intent(in   ),dimension(ND,NF):: WCHARM
-      real*8,  intent(in   ),dimension(:)    :: HTOT, GTOT,XTOT, ETOT,EMFLUX
+      real*8,  intent(inout),dimension(ND)     :: XJC ! Continuum and Line Radiation Field
+      real*8,  intent(inout),dimension(ND, NL) :: XJL ! Continuum and Line Radiation Field
+      integer, intent(in) :: NF, ND, N, NL
+      integer, intent(in) :: NCHARG(N), NOM(N),JOBNUM
+      real*8,  intent(in) :: TOTIN, TOTOUT
+      real*8,  intent(in) :: ELEVEL(N),EINST(N,N),EDDI(3,ND)
+      real*8,  intent(in),dimension(ND)   :: T
+      real*8,  intent(in),dimension(NF)   :: XLAMBDA
+      real*8,  intent(in),dimension(ND,NF):: WCHARM
+      real*8,  intent(in),dimension(:)    :: HTOT, GTOT,XTOT, ETOT,EMFLUX
       character,intent(in  ) :: MODHEAD*104
       real*8  ::SQRT,XLAM, BTEFF, TEFF, W
       integer :: IFL,IERR, K, L, J, I,IND
@@ -103,17 +105,20 @@ C***  GEOMETRICAL DILUTION OF BLACKBODY FIELD
         DO L=1,ND
           IF (T(L) .LT. TEFF) THEN
             W=0.5_8
-            XJL(L)=BTEFF*W
+            XJL(L, 1 : NL)=BTEFF*W
           ELSE
-            XJL(L)=BNUE(XLAM,T(L))
+            XJL(L, 1 : NL)=BNUE(XLAM,T(L))
           ENDIF
         ENDDO
 
       WRITE(CNAME,FMT_KEY) 'XJL ',IND
-      CALL WRITMS (IFL,XJL,ND,CNAME,-1,IERR)
+      CALL WRITMS (IFL,XJL(1 : ND, IND),ND,CNAME,-1,IERR)
    99 CONTINUE
       close (IFL)
 C*****************************************************************************
+
       RETURN
+
       END subroutine
+
       end module

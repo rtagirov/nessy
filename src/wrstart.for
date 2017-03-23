@@ -88,9 +88,9 @@
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $           NLAST,WAVARR,SIGARR,NFDIM)
+     $           NLAST,WAVARR,SIGARR,NFDIM) ! NFDIM is known from params_array through varhminus module
 
-      call nlte_mark(N)
+      call mark_nlte(N)
 
 !     DECODING INPUT DATA
       CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
@@ -118,7 +118,7 @@
 
       allocate(XJC(ND))
       allocate(XJCARR(ND, NF))
-      allocate(XJL(ND, LASTIND))
+      allocate(XJL(ND, lastind_nlte))
       allocate(EDDI(3, ND))
       allocate(EDDARR(3, ND, NF))
       allocate(TAUROSS(ND))
@@ -135,6 +135,10 @@
       allocate(POP1(ND, N))
       allocate(POP2(ND, N))
       allocate(POP3(ND, N))
+
+!      print*, 'size = ', size(xjl(1, :))
+
+!      stop
 
       CALL mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, ND)
 
@@ -294,10 +298,13 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       EDDI(1 : 3, 1 : ND) = 0.0d0
 
-      CALL JSTART(NF,XLAMBDA(1 : NF),ND,T,XJC,XJL,
+      CALL JSTART(NF,lastind_nlte,XLAMBDA(1 : NF),ND,T,XJC,
+     $            XJL(1 : ND, 1 : lastind_nlte),
      $            HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $            NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,
+     $            ncharg_nlte,elevel_nlte,EDDI,WCHARM,nom_nlte,N_nlte,einst_nlte,
      $            MODHEAD,JOBNUM,TEFF)
+
+!      stop
 
       write(*,  *) 'WRSTART - ', fstring, ' run time: ', TOC(timer)
 
@@ -356,61 +363,86 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       END FUNCTION EXTRAP_VEL_FIELD
 
-      subroutine nlte_mark(N)
+      subroutine mark_nlte(N)
 
       use common_block
       use vardatom
+      use file_operations
+      use mod_datom
+      use params_array
 
       implicit none
 
       integer, intent(in) :: N!, lastind
 
-      integer :: i, i_nlte!, ind, low, nup
+      integer :: j, i, i_nlte!, ind, low, nup
 
       allocate(nlte(N))
 
-!      nlte(1 : 12) = 1
-!      nlte(13 : N) = 0
-!      nlte(1 : N) = 1
+      call datom(datom_nlte,
+     $           N_nlte,
+     $           level_nlte,
+     $           ncharg_nlte,
+     $           weight_nlte,
+     $           elevel_nlte,
+     $           eion_nlte,
+     $           mainqn_nlte,
+     $           einst_nlte,
+     $           alpha_nlte,
+     $           sexpo_nlte,
+     $           agaunt_nlte,
+     $           coco_nlte,
+     $           keycol_nlte,
+     $           altesum_nlte,
+     $           indnup_nlte,
+     $           indlow_nlte,
+     $           lastind_nlte,
+     $           natom_nlte,
+     $           element_nlte,
+     $           symbol_nlte,
+     $           nom_nlte,
+     $           kodat_nlte,
+     $           atmass_nlte,
+     $           stage_nlte,
+     $           nfirst_nlte,
+     $           nlast_nlte,
+     $           wavarr_nlte,
+     $           sigarr_nlte,
+     $           nfdim)
 
-      n_nlte_lev = 0
+      allocate(idx_nlte(N_nlte))
 
-      do i = 1, N
-
-         if (nlte(i) .eq. 1) n_nlte_lev = n_nlte_lev + 1
-
-      enddo
-
-      allocate(idx_nlte_lev(n_nlte_lev))
+      nlte(1 : N) = 0
 
       i_nlte = 1
 
       do i = 1, N
 
-         if (nlte(i) .eq. 1) then
+         do j = 1, N_nlte
 
-            idx_nlte_lev(i_nlte) = i
+            if (level_nlte(j) .eq. level(i)) then
 
-            i_nlte = i_nlte + 1
+                nlte(i) = 1
 
-         endif
+                idx_nlte(i_nlte) = i
+
+                i_nlte = i_nlte + 1
+
+                cycle
+
+            endif
+
+         enddo
 
       enddo
 
-!      n_nlte_lin = 0
+!      do i = 1, N
 
-!      do ind = 1, lastind
-
-!         low = indlow(ind)
-!         nup = indnup(ind)
-
-!         if (nlte(low) .eq. 1 .and. nlte(nup) .eq. 1) then
-
-!            n_nlte_lin = n_nlte_lin + 1
-
-!         endif
+!         print*, i, level(i), nlte(i)
 
 !      enddo
+
+!      stop
 
       end subroutine
 

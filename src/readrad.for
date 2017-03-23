@@ -30,7 +30,7 @@ C******************************************************************************
       Real*8,Dimension(NF)::EMFLUX
       Real*8,Dimension(ND):: HTOT,GTOT,XTOT,ETOT
       Integer JOBRead, NFREA
-      DIMENSION EINST(N,N),XJL(ND,lastind)
+      DIMENSION EINST(N,N), XJL(ND, lastind)
       DIMENSION NCHARG(N),NOM(N)
       CHARACTER CREAD*7, MODHEAD*104, MODREAD*104
 
@@ -151,7 +151,7 @@ C     (DEPTH VEKTOR FOR EACH LINE TRANSITION LABELLED WITH IND)
 
             CALL READMS(IFL,DUMMY,ND,cname8,IERR)
 
-            do L = 1, ND; XJL(L,IND) = DUMMY(L); enddo
+            do L = 1, ND; XJL(L, IND) = DUMMY(L); enddo
 
    99    enddo
 

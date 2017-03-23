@@ -66,8 +66,8 @@
 
       integer, dimension(:), allocatable :: nlte
 
-      integer :: n_nlte_lev!, n_nlte_lin
+      integer :: N_nlte, lastind_nlte, natom_nlte
 
-      real*8, dimension(:), allocatable :: idx_nlte_lev!, idx_nlte_lin
+      integer, dimension(:), allocatable :: idx_nlte!, idx_nlte_lin
 
       END MODULE COMMON_BLOCK

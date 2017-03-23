@@ -6,7 +6,7 @@
      $                   WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $                   XLAMBDA,FWEIGHT,XJC,NF,XJL,IFRRA,ITORA,ALPHA,
      $                   SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
-     $                   LASTIND,ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
+     $                   ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
      $                   KODAT,NFIRST,NLAST,WAVARR,SIGARR)
 
       !*******************************************************************************
