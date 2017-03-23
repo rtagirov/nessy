@@ -126,7 +126,7 @@ for RUN in $1; do
 
           process_message "Copying $HM_GENERIC_DIR -> $HM_DIR$RUN" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
 
-          if [ ! $COMPILATION ]; then copy $exes $HM_DIR$RUN; echo; fi
+          if [ ! $COMPILATION ]; then copy "$exes" "$HM_DIR$RUN"; echo; fi
 
           echo !!; echo
 
@@ -314,7 +314,7 @@ for RUN in $RUNS; do
 
  if [ $COMPILATION ] || [ $EXE_UPD ]; then
 
-    if [ "$ODF_IT" == "0" ] || [ $HM_RUN ] || [ $HMFI ]; then copy $exes $HM_DIR$RUN; echo; fi
+    if [ "$ODF_IT" == "0" ] || [ $HM_RUN ] || [ $HMFI ]; then copy "$exes" "$HM_DIR$RUN"; echo; fi
 
  fi
 
@@ -734,7 +734,7 @@ done; wait
 
 function hmfi_run
 {
-hm_bg_run "$1" "wrstart"
+hm_bg_run "$1" "$HM_JOB"
 
 prep_run_bg "fioss" "$1"
 
@@ -966,9 +966,9 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
    if [ $HM_RUN ]; then
 
-      check_hm_dirs "$1"
-
       exes=$HM_EXE
+
+      check_hm_dirs "$1"
 
       if [ "$MODE" == "bg" ]; then hm_bg_run "$1" "$HM_JOB"; elif [ "$MODE" == "xt" ]; then hm_xt_run "$1" "$HM_JOB"; else abort "$0: The MODE '$MODE' is not recognized."; fi
 
@@ -998,9 +998,9 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
    if [ $LODF ] || [ $NODF ] || [ $HMFI ]; then
 
-      check_hm_dirs "$1"
-
       exes=$HM_EXE' '$FI_EXE
+
+      check_hm_dirs "$1"
 
       if [ $LODF ]; then lte_odf  "$1"; fi
 

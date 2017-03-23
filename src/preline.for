@@ -3,7 +3,7 @@
 C**********  MODULNAME: PRELINE   ******* 06/08/87  19.58.27.******    58 KARTEN
       SUBROUTINE PRELINE (NUP,LOW,IND,N,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
      $                   BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,ELEVEL,NL,
-     $                   NDIM,EINST,INDNUP,INDLOW,LASTIND)
+     $                   EINST,INDNUP,INDLOW,LASTIND)
 C*******************************************************************************
 C***  PREPARING SOME QUANTITIES FOR THE CONSIDERED LINE TRANSITION
 C*******************************************************************************
@@ -11,7 +11,7 @@ C*******************************************************************************
      
 	parameter (zero=0.0d0)
 
-      DIMENSION EINST(NDIM,NDIM)
+      DIMENSION EINST(N, N)
       DIMENSION ELEVEL(N)
 c      DIMENSION LINE(NL)
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)

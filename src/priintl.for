@@ -1,7 +1,7 @@
       module MOD_PRIINTL
       contains
 C**********  MODULNAME: PRIINTL   ******* 06/08/87  19.58.32.******    60 KARTEN
-      SUBROUTINE PRIINTL (NDIM,N,LEVEL,WEIGHT,EINST,LASTIND,LINE,NLINE,
+      SUBROUTINE PRIINTL (N,LEVEL,WEIGHT,EINST,LASTIND,LINE,NLINE,
      $                   INDLOW,INDNUP,ELEVEL,ND,XJL,LSINT,JOBNUM,
      $                   MODHEAD)
 C***********************************************************************
@@ -11,11 +11,11 @@ C***********************************************************************
 
       IMPLICIT REAL*8(A-H,O-Z)
      
-      DIMENSION WEIGHT(NDIM),EINST(NDIM,NDIM),ELEVEL(NDIM)
+      DIMENSION WEIGHT(N),EINST(N, N),ELEVEL(N)
       DIMENSION XJL(ND,lastind)
 c      ,LINE(1)
       DIMENSION INDLOW(LASTIND),INDNUP(LASTIND)
-      CHARACTER MODHEAD*104,LEVEL(NDIM)*10
+      CHARACTER MODHEAD*104,LEVEL(N)*10
       character*7 LINE(LASTIND), name
      
       PRINT 4,MODHEAD,JOBNUM
