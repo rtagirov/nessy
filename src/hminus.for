@@ -196,7 +196,7 @@
         CASE('wrcont');            GOTO 1
         CASE('repeat', 'newline'); GOTO 10
         CASE('wrstart');           CONTINUE
-        CASE('lte_run')
+        CASE('lte')
 
              CALL HMINUS_LTE(); STOP
 

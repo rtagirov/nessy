@@ -27,7 +27,7 @@ LBKG_CONTROL_FILE=$LBKG_DIR/CARDS.LOPA
 
 TIME_BUFFER=20
 
-LTE_JOB=lte_run
+LTE_JOB=lte
 
 HM_LOG=hminus.log
 HM_LOG_LTE=hminus_lte.log
@@ -453,7 +453,7 @@ if [ $COMPILATION ] || [ $EXE_UPD ]; then cp -v $FI_EXE -t $job_dir; fi
 
 insert "cd $job_dir; echo -e DIRECTORY: $job_dir'\n'" "$XTERM_CMD_FILE" "r"
 
-xterm_cmd "./$FI_EXE_NAME | tee fioss_test.log; bash"
+xterm_cmd "./$FI_EXE_NAME | tee fioss_test.log"
 
 xterm $XTERM_SET_FRE -title "IT$ODF_IT/$RUN (fioss_test@$(hostname))" -e "bash --rcfile $XTERM_CMD_FILE -i" &
 }
@@ -745,7 +745,7 @@ fi_bg_run "$1" "uvi" "$UVI_GRID"
 
 function lte_odf
 {
-hm_bg_run "$1" "lte_run"
+hm_bg_run "$1" "lte"
 
 prep_run_bg "fioss" "$1"
 
