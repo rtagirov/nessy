@@ -1,7 +1,7 @@
       module PARAMS_ARRAY
 
       integer, parameter :: MAXATOM = 90  ! DEFINE ARRAY DIMENSIONS
-      integer, parameter :: NDIM =    200 ! NUMBER OF LEVELS
+      integer, parameter :: NDIM =    301 ! NUMBER OF LEVELS
       integer, parameter :: NDIMP2 =  NDIM + 2
       integer, parameter :: NFDIM =   2000
       integer, parameter :: NFLDIM =  79

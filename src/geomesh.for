@@ -90,11 +90,11 @@
       dT(ND) = extrap_to_boundary(ND, h, dT, ND - 2, ND - 1, ND)
       dn(ND) = extrap_to_boundary(ND, h, dn, ND - 2, ND - 1, ND)
 
-      dn = dn / maxval(abs(dn))
+!      dn = dn / maxval(abs(dn))
 
       gradT = dT / dh
 
-      gradn = dn / dr
+      gradn = dn * maxval(abs(dr)) / dr / maxval(abs(dn))
 
       fu = 1242; open(unit = fu, file = 'ATM_STR', action = 'write')
 
