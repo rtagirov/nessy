@@ -33,11 +33,11 @@
 
       selectcase(num_of_columns(atm_mod_file))
 
-          case(4); call read_mur_fmt_mod(rstar, height, radius, T, entot, ND) ! Atmosphere model in MURAM format
+          case(4); call read_mur_mod(rstar, height, radius, T, entot, ND) ! Atmosphere model in MURAM format
 
-          case(5); call read_fal_fmt_mod(rstar, height, radius, T, entot, ND) ! Atmosphere model in FAL format
+          case(5); call read_fal_mod(rstar, height, radius, T, entot, ND) ! Atmosphere model in FAL format
 
-          case(7); call read_kur_fmt_mod(amu, atmean, rstar, height, radius, T, entot, ND) ! Atmosphere model in Kurucz format
+          case(7); call read_kur_mod(amu, atmean, rstar, height, radius, T, entot, ND) ! Atmosphere model in Kurucz format
 
           case default; stop 'Function read_atm_file_col: col argument is not recognized. Abort.'
 
@@ -172,7 +172,7 @@
 
       end subroutine
 
-      subroutine read_mur_fmt_mod(rstar, h, r, T, n, ND)
+      subroutine read_mur_mod(rstar, h, r, T, n, ND)
 
       use phys
       use file_operations
@@ -207,7 +207,7 @@
 
       end subroutine
 
-      subroutine read_fal_fmt_mod(rstar, h, r, T, n, ND)
+      subroutine read_fal_mod(rstar, h, r, T, n, ND)
 
       use file_operations
 
@@ -232,7 +232,7 @@
 
       end subroutine
 
-      subroutine read_kur_fmt_mod(amu, atmean, rstar, height, radius, T, entot, ND)
+      subroutine read_kur_mod(amu, atmean, rstar, height, radius, T, entot, ND)
 
       use file_operations
 
