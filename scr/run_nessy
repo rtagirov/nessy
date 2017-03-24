@@ -27,7 +27,7 @@ LBKG_CONTROL_FILE=$LBKG_DIR/CARDS.LOPA
 
 TIME_BUFFER=20
 
-LTE_JOB=lte_run
+LTE_JOB=lte
 
 HM_LOG=hminus.log
 HM_LOG_LTE=hminus_lte.log
@@ -745,7 +745,7 @@ fi_bg_run "$1" "uvi" "$UVI_GRID"
 
 function lte_odf
 {
-hm_bg_run "$1" "lte_run"
+hm_bg_run "$1" "lte"
 
 prep_run_bg "fioss" "$1"
 

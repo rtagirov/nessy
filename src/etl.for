@@ -104,13 +104,13 @@
 
       real*8, allocatable, dimension(:) :: opal, etal
 
-      logical :: lte_line
+!      logical :: lte_line
 
       print*, 'entered etl: ' // writeTOC()
       call tic(timer)
 
 !***  DECODING INPUT CARDS
-      CALL DECETL(LSOPA,LSINT,VDOP,LINE,NLINE,LINEKEY,MAXIND,LBLANK)
+      CALL DECETL(LSOPA,LSINT,VDOP,LINE,NLINE,LINEKEY,lastind_nlte,LBLANK)
 
 !      print*, 'etl: ', NLINE
 
@@ -120,7 +120,7 @@
  
       CALL FLGRID(NFLDIM, NFL, PHI, PWEIGHT, DELTAX)
 
-      CALL DATOM(datom_all,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
@@ -149,15 +149,15 @@
 
       ALLOCATE(U(ND, NP))
 
-      ALLOCATE(LLO(ND, LASTIND))
+      ALLOCATE(LLO(ND, lastind_nlte))
 
-      allocate(tau_line(ND, LASTIND))
+      allocate(tau_line(ND, lastind_nlte))
 
-      allocate(damp_line(ND, LASTIND))
+      allocate(damp_line(ND, lastind_nlte))
 
-      damp_line(1 : ND, 1 : LASTIND) = 'n'
+      damp_line(1 : ND, 1 : lastind_nlte) = 'n'
 
-      llo(1 : ND, 1 : lastind) = 0.0d0
+      llo(1 : ND, 1 : lastind_nlte) = 0.0d0
 
       IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
       PRINT *,'ETL: VDOP=',VDOP
@@ -173,8 +173,8 @@
 !***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,lastind,
-     $             EINST,MODHEAD,JOBNUM)
+     $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,N_nlte,lastind_nlte,
+     $             einst_nlte,MODHEAD,JOBNUM)
 
       JOBNUM = JOBNUM + 1
 
@@ -257,18 +257,18 @@
 
       DO 7 NL = 1, NLINE
 
-      lte_line = .false.
+!      lte_line = .false.
 
       ETLKEY = LINEKEY(NL)
  
 !***  PREPARING SOME QUANTITIES FOR THE CONSIDERED LINE
 
-      CALL PRELINE(NUP,LOW,IND,N,LRUD,lte_line,XLAM,ND,NFL,LINE,BMHO,BMNO,
-     $             BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,ELEVEL,NL,
-     $             EINST,INDNUP,INDLOW,LASTIND)
+      CALL PRELINE(NUP,LOW,IND,N_nlte,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
+     $             BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,elevel_nlte,NL,
+     $             einst_nlte,indnup_nlte,indlow_nlte,lastind_nlte)
 
-      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0) .or. lte_line) GOTO 7
-!      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0)) GOTO 7
+!      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0) .or. lte_line) GOTO 7
+      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0)) GOTO 7
 
 !      print*, 'etl: NL = ', NL, ' out of ', NLINE
 
@@ -399,7 +399,7 @@
       lo(ND) = extrap_to_boundary(ND, height, lo, ND - 2, ND - 1, ND)
 
 !     XJLMEAN is stored in XJL, LO is stored for each line in LLO (which means Line Local Operator)
-      CALL STORXJL(XJL, XJLMEAN, ND, LASTIND, IND, llo, lo)
+      CALL STORXJL(XJL, XJLMEAN, ND, lastind_nlte, IND, llo, lo)
 
       LineNumber = LineNumber + 1
 
@@ -413,13 +413,13 @@
       CLOSE(ifl)
 
 !     perform the acceleration damping in case the density is too high at the outer edge of the atmosphere
-      if (damp_acc) call acc_damp(ND, lastind, tau_line, LLO, damp_line)
+      if (damp_acc) call acc_damp(ND, lastind_nlte, tau_line, LLO, damp_line)
 
 !***  store the line radiation field in file RADIOL
-      call writradl(XJL,XJLMEAN,EINST,NCHARG,NOM,ND,N,LASTIND,MODHEAD,JOBNUM)
+      call writradl(XJL,XJLMEAN,einst_nlte,ncharg_nlte,nom_nlte,ND,N_nlte,lastind_nlte,MODHEAD,JOBNUM)
 
-      IF (LSINT.GT.0) CALL PRIINTL(N,LEVEL,WEIGHT,EINST,LASTIND,LINE,NLINE,
-     $                             INDLOW,INDNUP,ELEVEL,ND,XJL,LSINT,JOBNUM,MODHEAD)
+      IF (LSINT.GT.0) CALL PRIINTL(N_nlte,level_nlte,weight_nlte,einst_nlte,lastind_nlte,LINE,NLINE,
+     $                             indlow_nlte,indnup_nlte,elevel_nlte,ND,XJL,LSINT,JOBNUM,MODHEAD)
 
 !***  UPDATING THE MODEL HISTORY
       CALL ETLHIST(NLINE,LINE,LINEKEY,JOBNUM,VDOP,VDOPOLD,LAST,LCARD)

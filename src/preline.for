@@ -2,7 +2,7 @@
 
       contains
 
-      SUBROUTINE PRELINE(NUP,LOW,IND,N,LRUD,lte_line,XLAM,ND,NFL,LINE,BMHO,BMNO,
+      SUBROUTINE PRELINE(NUP,LOW,IND,N,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
      $                   BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,ELEVEL,NL,
      $                   EINST,INDNUP,INDLOW,LASTIND)
 
@@ -23,7 +23,7 @@
       DIMENSION XJ(NFL,ND),XH(NFL,ND),XK(NFL,ND),XN(NFL,ND)
       character*7 name, line(nl)
 
-      logical :: lte_line
+!      logical :: lte_line
      
 !     LOOP OVER ALL POSSIBLE LINE INDICES IND
 
@@ -48,13 +48,13 @@ C***  FIND THE LEVEL INDICES NUP, LOW
       NUP = INDNUP(IND)
       LOW = INDLOW(IND)
 
-      if (nlte(nup) .eq. 0 .or. nlte(low) .eq. 0) then
+!      if (nlte(nup) .eq. 0 .or. nlte(low) .eq. 0) then
 
-          lte_line = .true.
+!          lte_line = .true.
 
-          return
+!          return
 
-      endif
+!      endif
 
 C***  RUDIMENTAL LINES (EINST(LOW,NUP)=-2.) WILL BE MARKED BY LRUD=0
       LRUD=1

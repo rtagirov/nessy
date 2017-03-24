@@ -82,7 +82,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 C***  READING THE ATOMIC DATA FROM FILE DATOM
 
-	CALL DATOM(datom_all,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+	CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $         EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $         INDNUP,INDLOW,LASTIND,NATOM,
      $         ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
@@ -138,7 +138,7 @@ c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dum
      $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,
      $             N_nlte,lastind_nlte,einst_nlte,MODHEAD,JOBNUM)
 
-      stop 'steal stop'
+!      stop 'steal stop'
 
 c***  advance job-number counter
       JOBNUM = JOBNUM + 1

@@ -2,7 +2,7 @@
 
       CONTAINS
 
-      SUBROUTINE DECETL(LSOPA, LSINT, VDOP, LINE, NLINE, LINEKEY, MAXIND, LBLANK)
+      SUBROUTINE DECETL(LSOPA, LSINT, VDOP, LINE, NLINE, LINEKEY, LASTIND, LBLANK)
 
       use file_operations
 
@@ -11,11 +11,11 @@
 !*******************************************************************************
 
       implicit none
-      integer,intent(in   ) :: MAXIND
+      integer,intent(in   ) :: LASTIND
       real*8, intent(  out) :: VDOP
       integer,intent(  out) :: LSOPA,LSINT,NLINE,LBLANK
-      logical,intent(inout) :: LINEKEY(MAXIND)
-      character*7,intent(inout) :: LINE(MAXIND)
+      logical,intent(inout) :: LINEKEY(LASTIND)
+      character*7,intent(inout) :: LINE(LASTIND)
       CHARACTER :: KARTE*80
       LOGICAL :: ETLKEY
       real*8  :: XL
@@ -111,9 +111,9 @@ C                          ====
 
           NLINE = NLINE + 1
 
-          IF (NLINE .GT. MAXIND) THEN
-            PRINT *,' ERROR STOP IN DECETL: NLINE .GT. MAXIND'
-            ! CALL REMARK ('NLINE .GT. MAXIND')
+          IF (NLINE .GT. LASTIND) THEN
+            PRINT *,' ERROR STOP IN DECETL: NLINE .GT. LASTIND'
+            ! CALL REMARK ('NLINE .GT. LASTIND')
             STOP 'ERROR'
           ENDIF
           write (LINE(NLINE),'(4HLINE,I3)') ind

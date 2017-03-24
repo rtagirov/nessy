@@ -94,7 +94,7 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       print*, 'Entering wrcont, JOB = '//JOB
 
-      CALL DATOM(datom_all,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
@@ -133,8 +133,8 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 !     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage) 
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $             NCHARG,EDDARR,EDDI,NOM,WCHARM,
-     $             N,lastind,EINST,MODHEAD,JOBNUM)
+     $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,
+     $             N_nlte,lastind_nlte,einst_nlte,MODHEAD,JOBNUM)
 
       JOBNUM = JOBNUM + 1
 
