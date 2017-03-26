@@ -1,9 +1,11 @@
       module MOD_DECOMO
+
       contains
-      SUBROUTINE DECOMO (LSOPA,LSINT,KONOPT,NCON,LBLANK)
-C*******************************************************************************
-C***  DECODING INPUT OPTIONS FOR PROGRAM "COMO"
-C*******************************************************************************
+
+      SUBROUTINE DECOMO(LSOPA, LSINT, KONOPT, NCON,  LBLANK)
+
+!     DECODING INPUT OPTIONS FOR PROGRAM "COMO"
+
       implicit real*8(a-h,o-z)
      
       CHARACTER KARTE*80, KONOPT(2)*80

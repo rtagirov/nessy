@@ -1107,24 +1107,29 @@
 
 
 
-      SUBROUTINE mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, ND)
-      use PARAMS_ARRAY
-      IMPLICIT NONE
-      integer ND
+      subroutine mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, NATOM, ND)
+
+      implicit none
+
+      integer, intent(in) :: ND, NATOM
+
       integer  i, j, nunit1
-      CHARACTER*2 SYMBOL(MAXATOM)
-      real*8 ABXYZ(MAXATOM), corr(MAXATOM), ENTOT(NDDIM), T(NDDIM)
-      real*8 ABXYZn(MAXATOM,NDDIM)
+      CHARACTER*2 SYMBOL(NATOM)
+      real*8 ABXYZ(NATOM), corr(NATOM), ENTOT(ND), T(ND)
+      real*8 ABXYZn(NATOM, ND)
       real*8 entot_nl, T_nl
       real*8 KnC2, KnCH, KnCN, KnCO, KnH2, KnNH, KnOH, KnO2     
       real*8 atcon(4), apnew(4)
       real*8 Nconc(Nmol, ND)
         
  
-      do i=1, ND
-      entot_nl=ENTOT(i)     
-      T_nl=T(i)
-      CALL chemeq (entot_nl, T_nl, ABXYZ, SYMBOL, apnew, atcon, corr)
+      do i = 1, ND
+
+      entot_nl = ENTOT(i)
+
+      T_nl = T(i)
+
+      call chemeq(entot_nl, T_nl, ABXYZ, SYMBOL, apnew, atcon, corr, NATOM)
  
       CALL Kmol(T_nl, 'C2', KnC2)
       CALL Kmol(T_nl, 'CH', KnCH)
@@ -1134,9 +1139,6 @@
       CALL Kmol(T_nl, 'NH', KnNH)
       CALL Kmol(T_nl, 'OH', KnOH)
  
-!     print*, '3', i, ND, T_nl
- 
-
       Nconc(1,i)=apnew(2)*apnew(2)/KnC2
       Nconc(2,i)=apnew(1)*apnew(2)/KnCH
       Nconc(3,i)=apnew(2)*apnew(3)/KnCN
@@ -1144,11 +1146,11 @@
       Nconc(5,i)=apnew(1)*apnew(1)/KnH2
       Nconc(6,i)=apnew(1)*apnew(3)/KnNH
       Nconc(7,i)=apnew(1)*apnew(4)/KnOH
-!      Nconc(8,i)=apnew(4)*apnew(4)/KnO2
  
-         do j=1, MAXATOM
- !        corr(j)=1.
-         ABXYZn(j,i)=ABXYZ(j)*corr(j) 
+         do j = 1, NATOM
+
+            ABXYZn(j, i) = ABXYZ(j) * corr(j) 
+
          enddo
 
       enddo
@@ -1179,47 +1181,36 @@
  250      format(4(e15.5,2x))
       enddo
 
- 
-
       close(nunit1)
 
-
-
-
-    
-
-!      stop 
       END SUBROUTINE
 
 
-      SUBROUTINE chemeq(entot_nl, T_nl, ABXYZ, SYMBOL, apnew, atcon, corr)
+      SUBROUTINE chemeq(entot_nl, T_nl, ABXYZ, SYMBOL, apnew, atcon, corr, NATOM)
   
-      use PARAMS_ARRAY
-!      use MOD_syseq
-      IMPLICIT NONE 
+      implicit none 
+
       integer nn
       PARAMETER (NN=4)
+
+      integer, intent(in) :: NATOM
+
       CHARACTER*2 atom(4), mol(4,4)
-      CHARACTER*2 SYMBOL(MAXATOM)
+      CHARACTER*2 SYMBOL(NATOM)
       INTEGER N, i, j, ntrial, nl, num(NN)
-      real*8 ABXYZ(MAXATOM), entot_nl, corr(MAXATOM)   
+      real*8 ABXYZ(NATOM), entot_nl, corr(NATOM)
 
       real*8 ap(4), apnew(4), atcon(4)
       real*8 tolx, tolf, T_nl
       PARAMETER(ntrial=10)
       
 
-      do i=1, MAXATOM
-      corr(i)=1.
-      enddo
-       
+      corr(1 : NATOM) = 1.
  
       CALL readmol(N, atom, mol)
 
-    
-
       do i=1, N
-       do j=1, MAXATOM
+       do j=1, NATOM
         if (atom(i) .eq. SYMBOL(j)) then
         ap(i)=ENTOT_nl*ABXYZ(j)
         num(i)=j
@@ -1232,20 +1223,16 @@
       tolx=0.        ! test
       tolf=0.        ! test
 
-!      print *, '1', ap(1)
-      CALL mnewt(ntrial, ap, N, tolx, tolf, T_nl, atcon, atom, mol)
-!      print *, '2', ap(1)
+      call mnewt(ntrial, ap, N, tolx, tolf, T_nl, atcon, atom, mol, NATOM)
    
 
    
       apnew(1:4)=ap(1:4)
 
-!     apnew(1:4)=atcon(1:4)
-
       do i=1, N
       j=num(i)
       corr(j)=apnew(i)/atcon(i)
-  !    corr(j)=1
+
       enddo
 
 
@@ -1254,15 +1241,17 @@
 
 
 
-      SUBROUTINE fvecjac(ap, N, fvec, fjac, T, atcon, atom, mol)
-      use PARAMS_ARRAY
+      SUBROUTINE fvecjac(ap, N, fvec, fjac, T, atcon, atom, mol, NATOM)
      
-      IMPLICIT NONE 
+      implicit none 
+
       integer nn
       PARAMETER (NN=4)
 
+      integer, intent(in) :: NATOM
+
       CHARACTER*2 atom(4), mol(4,4)
-      CHARACTER*2 SYMBOL(MAXATOM), molec
+      CHARACTER*2 SYMBOL(NATOM), molec
       INTEGER N, i, j, l
 
       real*8 ap(4), atcon(4)
@@ -1489,8 +1478,6 @@
 
       corr=loge*(DISS_T(2,number)-DISS(2,number))/(keV_K*T)
        
-   !   corr=1.0
-
       logK=logK+corr-DISS(2, number)*(10.**phiT)
 
       logK=logK+1.  ! conversion to CGS
@@ -1500,13 +1487,11 @@
 
       Kn=Kp/(k_CGS*T)
 
-    !  Kn=Kn*1.d20
-
       end subroutine
 
 
-      SUBROUTINE mnewt(ntrial,x,n,tolx,tolf, T_nl, atcon, atom, mol)
-!      use MOD_chemeq
+      SUBROUTINE mnewt(ntrial,x,n,tolx,tolf, T_nl, atcon, atom, mol, NATOM)
+
       INTEGER n,NN, ntrial,NP
       REAL*8 tolf,tolx
       PARAMETER (NP=4)
@@ -1519,13 +1504,13 @@ CU    USES lubksb,ludcmp,usrfun
       CHARACTER*2 atom(4), mol(4,4)
       REAL*8 d,errf,errx,T_nl,p(4)
       do 14  k=1,ntrial
-!        print *, k, x(1)
-        call fvecjac(x,n,fvec,fjac,  T_nl, atcon, atom, mol)
+
+        call fvecjac(x,n,fvec,fjac,  T_nl, atcon, atom, mol, NATOM)
         errf=0.
         do 11 i=1,n
           errf=errf+abs(fvec(i))
 11      continue
-!        print *, errf
+
         if(errf.le.tolf)return
         do 12 i=1,n
           p(i)=-fvec(i)

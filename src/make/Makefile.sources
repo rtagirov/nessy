@@ -3,7 +3,6 @@ FIOSS_PROG=${OUT}fioss.exe
 FIOSS_SRCS=\
 chemeq.for\
 abund.for\
-params_array.for\
 constants.for\
 varhminus.for\
 synthp_cont.for\
@@ -32,7 +31,6 @@ datom.for\
 decf_syn.for\
 diffus.for\
 elimin.for\
-exturay.for\
 gauntff.for\
 intplcs.for\
 intrfc.for\
@@ -75,7 +73,6 @@ HMINUS_PROG=$(OUT)/hminus.exe
 HMINUS_SRCS=\
 abund.for\
 chemeq.for \
-params_array.for \
 constants.for \
 varhminus.for \
 varsteal.for \
@@ -135,7 +132,6 @@ etl.for\
 etlhist.for\
 etlray.for\
 extrxjc.for\
-exturay.for\
 fgrid.for\
 flgrid.for\
 funsch.for\

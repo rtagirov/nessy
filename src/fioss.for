@@ -1,4 +1,3 @@
-
       PROGRAM FIOSS
 
       use MOD_COOP
@@ -11,7 +10,6 @@
       use MOD_DECF_SYN
       use MOD_DIFFUS
       use MOD_ELIMIN
-      use MOD_extUray
       use MOD_INTRFC
       use MOD_PRIDAT
       use MOD_WMOM0_F
@@ -27,14 +25,14 @@
       use OPINT
       use UTILS
       use CONSTANTS,only:CLIGHT_SI
-      use PARAMS_ARRAY
       use ABUNDANCES
 
+      use vardatom
+      use varhminus
       use common_block
       use file_operations
       use auxfioss
       use mod_synopa
-      use vardatom
       use geo_mesh
 
 !             intrfc passes new a AGAUNT !!
@@ -66,7 +64,6 @@
       implicit real*8(a-h,o-z)
       !***  Constant for thermal Gauss-Profile (= m(e)/(4k)) (cgs?)
       PARAMETER (GAUKONST = 1.649538d-12)
-      PARAMETER (NDDOUB   = 2*NDDIM)
 
       !*** in principle NFODIM should be equal to NFMAX in OPINT.FOR
       !        however since the routine XY likes to cut the number of
@@ -85,8 +82,6 @@
       real*8, allocatable, dimension(:) ::       VDU
 
       real*8, allocatable, dimension(:) ::       eta, opa, thomson, tauthom, dil
-
-      real*8, allocatable, dimension(:) ::       ZR
 
       real*8, allocatable, dimension(:) ::       XLAMBDA, FWEIGHT, EMFLUX, AKEY
 
@@ -118,6 +113,8 @@
 
       real*8, allocatable, dimension(:, :, :) :: EDDARR
 
+      real*8, allocatable, dimension(:) :: VERTVELO, VELOVAR
+
       integer :: NVD
 
       PARAMETER (NBLEND = 6)
@@ -127,7 +124,6 @@
       !MH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
       !MH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF	
 
-      DIMENSION VERTVELO(NDDIM),VELOVAR(NDDIM)
       COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2	
       INTEGER XLBKG1,XLBKG2
       LOGICAL LBKG,LOPA
@@ -141,8 +137,6 @@
       LOGICAL NORM,PLOT,TRANS,FIN,PROLIB,COROT,VAR,ADDVELO
       INTEGER LMAX
       LOGICAL EXLOOP
-
-!      INTEGER, ALLOCATABLE, DIMENSION(:) :: ELID, SWL, SWU, CHARGE
 
       LOGICAL :: NTF, NFE
 
@@ -162,10 +156,8 @@
       DATA NPHIP,LPSTI,LPSTA,LPENI,LPEND/45,0,1,0,1/
       DATA JFIRSI,JLASI/0,0/
 
-      real*8,allocatable :: dummy2(:,:) ! do not allocate - make sure noone uses it
+      real*8,allocatable :: dummy2(:, :) ! do not allocate - make sure noone uses it
 
-!      integer, allocatable, dimension(:) :: NFIRST, NLAST
-     
       REAL*8, ALLOCATABLE :: WAV_CLV(:), FLUX_CLV(:, :)
        
       real*8 dummy0
@@ -225,7 +217,7 @@
 
       allocate(xlambda(NF), fweight(NF), emflux(NF), akey(NF))
 
-      allocate(P(NP), ZR(ND), Z1D(ND * NP), Z(ND, NP))
+      allocate(P(NP), Z1D(ND * NP), Z(ND, NP))
 
       allocate(popnum(ND, N), pop1(ND, N), pop2(ND, N), pop3(ND, N))
 
@@ -246,6 +238,12 @@
       allocate(NFEDGE(N), LEVELPL(N))
 
       allocate(mainpro(ND), mainlev(ND))
+
+      allocate(abxyz(NATOM))
+
+      allocate(vertvelo(ND))
+
+      allocate(velovar(ND))
 
       IFL = 3; open(IFL, file = 'MODFILE', STATUS='OLD'); rewind IFL
 
@@ -410,7 +408,7 @@
 !***  Calculate the ionisation temperatures
       print *,' Tion-sel ', itionsel
       call SABOLT(ENTOT,RNE,POPNUM,T,ND,N,NCHARG,WEIGHT,ELEVEL,EION,
-     $            KODAT,NOM,MAXATOM,XTOT,HTOT,GTOT,R,MODHEAD,JOBNUM,
+     $            KODAT,NOM,NATOM,XTOT,HTOT,GTOT,R,MODHEAD,JOBNUM,
      $            Npot,Tion_pot,dil,teff,iTionsel)
 
 
@@ -774,9 +772,7 @@
             IRAY=ND*(JP-1)+1
             IF (NPHI.GT.1) PHI=PI*(LPHI-1)/(NPHI-1)
 
-            CALL EXTURAY(Z, ZR, nd, np, jp)
-
-            CALL PREPR_F(ZR,P,ND,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
+            CALL PREPR_F(Z(1 : ND, JP),P,ND,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
      $                   IRIND,IBACK,RRAY,ZRAY,XCMF,NDADDIM)
 
             CALL OBSINT(LTOT,CORE,BCORE,DBDR,P,
@@ -784,7 +780,7 @@
      $                  ND,NP,NVD,JP,NVOPA,VOPA0,DVOPA,
      $                  EMINT,XOBS0,DXOBS,NFOBS,XN,
      $                  ENTOT,RNE,SIGMAE,RSTAR,
-     $                  XJ,DINT,NDDOUB,RWLAE,DLAM)
+     $                  XJ,DINT,RWLAE,DLAM)
 
             !***  Compute the Line Intensity Field (Moment 0)
             !* add into array XJK

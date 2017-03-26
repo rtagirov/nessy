@@ -22,7 +22,6 @@
       use MOD_WRITMOD
       use MOD_WRITRADC
       use UTILS
-      use PARAMS_ARRAY ! NFDIM is known from here (see params_array.for)
       use ABUNDANCES
       USE MOD_BFCROSS
 
@@ -34,28 +33,21 @@
       use local_operator
       use file_operations
 
-      IMPLICIT NONE
+      implicit none
 
-      integer, parameter:: IPDIM = 25, NBDIM=99
-      
-      integer IFL, IPMAX
+      integer IFL
       integer JOBNUM
       integer K, KEYCON
-      integer LASTIND,LASTK,LBLANK,LBLAON,LSINT,LSOPA
+      integer LASTIND,LASTK,LBLANK,LSINT,LSOPA
 
       integer MAXVAL,MINVAL
-      integer N,NATOM,NBINW,NBMAX,NCON,ND
+      integer N,NATOM,NCON,ND
 
-      integer NF,NFCDIM,NP
-      real*8 A, ABSEVT, ABSFAC, ALMAX, ALMIN
-      real*8 B
-      real*8 C, CARD, CRATE, DM
-      real*8 HNU
+      integer NF, NP
+      real*8 CARD, CRATE, DM
       real*8 RSTAR
-      real*8 SCAEVT,SCAFAC,SCAGRI
       real*8 TEFF,TOTIN
-      real*8 TOTOUT,U,VDOP,VJL,VL
-      real*8 W
+      real*8 TOTOUT,VDOP
       real*8,allocatable:: DUMMY1(:)
       character*8,allocatable :: CDUMMY1(:)
       integer tdiff,tstart,tend
@@ -66,29 +58,16 @@
 !     CONTINUOUS RADIATION TRANSFER (MOMENT EQUATIONS) WITH GIVEN EDDI-FACTORS
 !     FORMAL SOLUTION FROM GIVEN POP NUMBERS
 
-      PARAMETER (NFCDIM = 40)
- 
-      COMMON // A(NPDIM),B(NPDIM,NPDIM),C(NPDIM),W(NPDIM)
-     $ ,U(NDDIM,NPDIM),VL(NPDIM),HNU(NDDIM),VJL(NPDIM,NDDIM)
-     $ ,KONOPT(NDIM),KEYCON(NFDIM)
-
-      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
-     $                                ABSEVT(IPDIM,NBDIM)
-      COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
-      COMMON /LIBLFAC/ SCAFAC(NDDIM,NFDIM),ABSFAC(NDDIM,NFDIM)
       COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2 
       CHARACTER MODHEAD*104, LCARD*100
 
-      CHARACTER*10 MAINPRO(NDDIM),MAINLEV(NDDIM)
-      character*80 konopt
+      character*80 konopt(2)
 
 CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       INTEGER XLBKG1,XLBKG2
       LOGICAL LBKG
-
-      print*, 'entering como...'
 
       tstart = time()
 
@@ -127,7 +106,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       allocate(damp_cont(ND, NF))
 
-      damp_cont(1 : ND, 1 : NF) = 'n'
+      damp_cont(1 : ND, 1 : NF) = .false.
 
       WCHARM(1 : ND, 1 : NF) = 0.0d0
 
@@ -199,7 +178,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 !        now extract XJC and EDDI for the frequency K
          call extrxjc(XJCARR,XJC,EDDARR,EDDI,nd,nf,K)
 
-         CALL MOMO(OPA,ETA,THOMSON,EDDI,RADIUS,XJC,A,B,C,W,ND)
+         CALL MOMO(OPA,ETA,THOMSON,EDDI,RADIUS,XJC,ND)
 
          IF (LSINT.GT.0) CALL PRIMINT(XJCARR,ND,XLAMBDA,NF,K,LSINT,EDDI,JOBNUM,MODHEAD)
 
@@ -209,8 +188,8 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
          tau_cont(1 : ND, K) = opt_dep(opa(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
 
-C***     UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
-c***     XJC and EDDI are stored for later write to file RADIOC
+!        UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
+!        XJC and EDDI are stored for later write to file RADIOC
 
          call storxjc(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
           
@@ -244,13 +223,13 @@ c***     XJC and EDDI are stored for later write to file RADIOC
 
       call print_clo(ND, NF, xlambda, T, tau_cont, wcharm, damp_cont)
 
-C***  ENDLOOP  ---------------------------------------------------------
+!     ENDLOOP  ---------------------------------------------------------
  
-C***  NOTE THAT THE POPNUMBERS ARE NOT UPDATED BY THIS PROGRAM  !!!!!
+!     NOTE THAT THE POPNUMBERS ARE NOT UPDATED BY THIS PROGRAM  !!!!!
       call writradc(xjcarr,xjc,eddarr,eddi,emflux,totin,totout,
      $              HTOT,GTOT,XTOT,ETOT,WCHARM,nd,nf,MODHEAD,JOBNUM)
  
-C***  UPDATING THE MODEL HISTORY
+!     UPDATING THE MODEL HISTORY
       open (7,file='MODHIST',status='old')
   8   read (7,'(A80)',end=11) card
       goto 8
@@ -281,7 +260,7 @@ C***  UPDATING THE MODEL HISTORY
 
       real*8, intent(in), dimension(nd, nf) :: tau, clo
 
-      character(len = 1), intent(in), dimension(nd, nf) :: damp
+      logical, intent(in), dimension(nd, nf) :: damp
 
       character(len = 1000) :: fmt_head, fmt_body
 
@@ -295,7 +274,7 @@ C***  UPDATING THE MODEL HISTORY
 
       fmt_head = '(1x,A,4x,A,8x,A,8x,A,6x,A,8x,A,12x,A,14x,A,8x,A,/)'
 
-      fmt_body = '(2(i5,2x),e15.7,2x,i3,2(3x,F9.2),2(2x,es15.7),4x,A1)'
+      fmt_body = '(2(i5,2x),e15.7,2x,i3,2(3x,F9.2),2(2x,es15.7),4x,L)'
       
       if ((each_ali .and. lambda_iter .eq. 0) .or. .not. each_ali) then
 

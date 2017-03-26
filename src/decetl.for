@@ -69,25 +69,16 @@ C                         =====
    11       FORMAT (5X,F10.0)
             GOTO 6
       ELSEIF ( KARTE(:4) .EQ. 'LINE' ) THEN
-C                          ====
+
         read (KARTE,'(4X,I3)') IND1
 
         IF (KARTE(9:10) .EQ. 'TO') THEN
-
-!          READ (KARTE,'(15X,I5)') IND2
-
-!RT        This is a dirty fix for the hardcoding of the number of lines in the CARDS file.
-!RT        Now the number of lines is calculated automatically using the DATOM file.
 
            CALL SYSTEM('grep LINE'//' '//datom_nlte//' '//'> temp.out')
 
            IND2 = NUM_OF_LINES('temp.out')
 
            CALL SYSTEM('rm temp.out')
-
-!           PRINT*, 'ACHTUNG: IND2 = ', IND2
-
-!           IF (IND2 .GT. 150) READ (KARTE,'(15X,I5)') IND2
 
         ELSE
 

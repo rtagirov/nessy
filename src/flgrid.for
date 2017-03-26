@@ -2,7 +2,7 @@
 
       CONTAINS
 
-      SUBROUTINE FLGRID(NFLDIM, NFL, PHI, PWEIGHT, DELTAX)
+      SUBROUTINE FLGRID(NFL, PHI, PWEIGHT, DELTAX)
 
 !     FREQUENCY SCALE ETC. FOR THE CMF LINE CALCULATIONS
 !     NFL          NUMBER OF FREQUENCY POINTS (ORIGINAL POINTS)
@@ -13,13 +13,18 @@
 
       IMPLICIT REAL*8(A - H, O - Z)
 
-      DIMENSION PHI(NFLDIM), PWEIGHT(NFLDIM)
+      real*8, allocatable, dimension(:), intent(out) :: phi, pweight
 
 !     WPI = SQRT(PI)
       DATA WPI /1.7724538509055D0/
      
       XMAX = 6.7D0
       NFL = 61
+
+      if (allocated(phi))     deallocate(phi)
+      if (allocated(pweight)) deallocate(pweight)
+
+      allocate(phi(nfl), pweight(nfl))
      
       IF (NFL .GT. NFLDIM) STOP "FLGRID: DIMENSION IS TOO SMALL"
 

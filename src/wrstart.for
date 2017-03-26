@@ -24,12 +24,12 @@
       use MOD_chemeq      
       use ABUNDANCES
 
+      use vardatom
+      use varhminus
       use geo_mesh
       use init_vel
       use common_block
       use file_operations
-      use vardatom
-      use varhminus
 
 !     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
 !     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
@@ -48,7 +48,6 @@
 
       COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM, NBDIM), ABSEVT(IPDIM, NBDIM)
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
-      COMMON /LIBLFAC/ SCAFAC(NDDIM, NFDIM), ABSFAC(NDDIM, NFDIM)
       COMMON /VELPAR/  VFINAL, VMIN, BETA, VPAR1, VPAR2, RCON, HSCALE
       COMMON /COMTEFF/ TEFF, TMIN, TMODIFY, SPHERIC
       COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
@@ -88,7 +87,7 @@
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $           NLAST,WAVARR,SIGARR,NFDIM) ! NFDIM is known from params_array through varhminus module
+     $           NLAST,WAVARR,SIGARR,NFDIM) ! NFDIM is known from varhminus module
 
       call mark_nlte(N)
 
@@ -136,26 +135,25 @@
       allocate(POP2(ND, N))
       allocate(POP3(ND, N))
 
-!      print*, 'size = ', size(xjl(1, :))
+      allocate(scafac(ND, NF))
+      allocate(absfac(ND, NF))
 
-!      stop
+      allocate(ABXYZ_small(NATOM))
+      allocate(ABXYZn_small(NATOM, ND))
 
-      CALL mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, ND)
+      allocate(U(ND, NP))
+      allocate(VJL(NP, ND))
+      allocate(VL(NP))
+      allocate(HNU(ND))
 
-      IF(.NOT. ALLOCATED(ABXYZ_small))  allocate(ABXYZ_small(NATOM))
-      IF(.NOT. ALLOCATED(ABXYZn_small)) allocate(ABXYZn_small(NATOM, ND))
+      allocate(mainpro(ND))
+      allocate(mainlev(ND))
 
-      ABXYZ_small(1:NATOM)=ABXYZ(1:NATOM)
+      call mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, NATOM, ND)
 
-      do i = 1, ND
+      ABXYZ_small(1 : NATOM) = ABXYZ(1 : NATOM)
 
-         do j = 1, NATOM
-
-            ABXYZn_small(j,i) = ABXYZn(j,i)
-
-         enddo
-
-      enddo
+      ABXYZn_small(1 : NATOM, 1 : ND) = ABXYZn(1 : NATOM, 1 : ND)
 
 !     RINAT TAGIROV:
 !     Calculation or read-out of the velocity field.
@@ -365,19 +363,17 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       subroutine mark_nlte(N)
 
-      use common_block
       use vardatom
+      use varhminus
+      use common_block
       use file_operations
       use mod_datom
-      use params_array
 
       implicit none
 
       integer, intent(in) :: N!, lastind
 
       integer :: j, i, i_nlte!, ind, low, nup
-
-      allocate(nlte(N))
 
       call datom(datom_nlte,
      $           N_nlte,
@@ -408,11 +404,11 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
      $           nlast_nlte,
      $           wavarr_nlte,
      $           sigarr_nlte,
-     $           nfdim)
+     $           nfdim) ! NFDIM is known from varhminus module
 
-      allocate(idx_nlte(N_nlte))
+      allocate(nlte(N)); allocate(idx_nlte(N_nlte))
 
-      nlte(1 : N) = 0
+      nlte(1 : N) = .false.
 
       i_nlte = 1
 
@@ -422,7 +418,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
             if (level_nlte(j) .eq. level(i)) then
 
-                nlte(i) = 1
+                nlte(i) = .true.
 
                 idx_nlte(i_nlte) = i
 

@@ -24,7 +24,7 @@
 
       real*8, dimension(:, :), allocatable ::    tau_line, tau_cont
 
-      character (len = 1), dimension(:, :), allocatable :: damp_line, damp_cont
+      logical, dimension(:, :), allocatable ::   damp_line, damp_cont
 
 !      logical ::                                 damp_acc = .true.
       logical ::                                 damp_acc = .false.
@@ -64,7 +64,7 @@
 
 !      REAL*8,  ALLOCATABLE, DIMENSION(:) ::      NLTE_ABS, NLTE_EMI
 
-      integer, dimension(:), allocatable :: nlte
+      logical, dimension(:), allocatable :: nlte
 
       integer :: N_nlte, lastind_nlte, natom_nlte
 

@@ -4064,7 +4064,6 @@ C
 C     ABAD  - absorption coefficient (at frequency point IJ and depth ID)
 C     EMAD  - emission coefficient (at frequency point IJ and depth ID)
 C     SCAD  - scattering coefficient (at frequency point IJ and depth ID)
-C	NDIM  - NUMBER OF LEVELS
 C**********************************************************
 CMH      INCLUDE 'PARAMS.FOR'
 CMH      INCLUDE 'MODELP.FOR'
@@ -5651,7 +5650,6 @@ C     from the Schoening and Butler or Lemke tables
 C
       use MOD_HYDTAB, only: PRF,WLINE,ILIN0,WL,XT,XNE,NWLH,NTH,NEH
       use MOD_HYDTAB, only: MLINH,MHWL,MHE,MHT
-      use PARAMS_ARRAY,only:NDDIM
       implicit none
       INCLUDE '../inc/PARAMS.FOR'
       !*** MODELP: TEMP,VTURB,ELEC

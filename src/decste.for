@@ -4,10 +4,11 @@
 
       SUBROUTINE DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,IFRRA,ITORA,LSEXPO,
      $                  IFLUX,IDAT,LEVELPL,N,IPLOTF,NEWWRC,
-     $                  NGAMR,NGAML,AGAMR,AGAML,DELTAC,LINE,MAXIND,
+     $                  NGAMR,NGAML,AGAMR,AGAML,DELTAC,LINE,LASTIND,
      $                  TPLOT,Y0,TEFFE,GRAD,ALDMDT,VINF,BET,PROLIB,LBLANK)
 
-      USE COMMON_BLOCK
+      use common_block
+      use file_operations
 
 !     DECODING INPUT OPTIONS FOR STEAL.FOR
 
@@ -17,7 +18,7 @@
       DIMENSION LEVELPL(N)
       INTEGER   NGAMR(10),NGAML(10)
       DIMENSION AGAMR(10),AGAML(10)
-      LOGICAL   LINE (MAXIND),PROLIB,NOTEMP,TPLOT
+      LOGICAL   LINE(LASTIND),PROLIB,NOTEMP,TPLOT
 C***  COMMON / COMPLOT / TRANSFERS THE MAXIMUM OF THE Y-AXIS TO SUBR. PLOTT
       COMMON / COMPLOT / YMAX
      
@@ -65,7 +66,7 @@ C***  NO SCHARMER AMPLIFICATION OF CORRECTIONS
 C***  LINES THAT HAVE NOT BEEN TREATED IN THE RADIATION TRANSFER CALCULATIONS,
 C***  I.E. WHICH ARE NOT QUOTED IN A 'LINE' OPTION CARD, ARE NOT SCHARMER-
 C*** AMPLIFIED.
-      DO 32 IN=1,MAXIND
+      DO 32 IN=1, LASTIND
       LINE(IN)=.FALSE.
    32 CONTINUE
 C***  DISTANCE MODULUS (DEFAULT VALUE)
@@ -235,13 +236,13 @@ C                         ======
             AGAML(MGL)=GAMMA
             GOTO 8
             ENDIF
-C      IF (KARTE(:6) .EQ. 'GAMMAC' ) THEN
-C                         ======
-C            MGC=MGC+1
-C            IF (MGC .GT. 10) STOP 'ERROR'
-C            DECODE (80,6,KARTE) GAMMAC,ANGC
-C            GOTO 8
-C            ENDIF
+
+
+
+
+
+
+
     6       FORMAT (7X,F10.0,9X,F10.0)
       IF (KARTE(:6) .EQ. 'GAMMAR' ) THEN
 C                         ======
@@ -271,21 +272,33 @@ C                         ======
 C                          ====
             DECODE (80,41,KARTE) IND1
    41       FORMAT(4X,I3)
+
             IF (KARTE(9:10) .EQ. 'TO') THEN
-                  DECODE (80,43,KARTE) IND2
-   43             FORMAT(15X,I3)
-                  ELSE
-                  IND2=IND1
-                  ENDIF
+
+               CALL SYSTEM('grep LINE'//' '//datom_nlte//' '//'> temp.out')
+
+               IND2 = NUM_OF_LINES('temp.out')
+
+               CALL SYSTEM('rm temp.out')
+
+!                  DECODE (80,43,KARTE) IND2
+!   43             FORMAT(15X,I3)
+
+            ELSE
+
+                  IND2 = IND1
+
+            ENDIF
+
             IF (IND2 .GE. IND1) THEN
                   INC=1
                   ELSE
                   INC=-1
                   ENDIF
             DO 45 IND=IND1,IND2,INC
-            IF (IND .GT. MAXIND) THEN
-               PRINT *,' ERROR STOP IN DECSTE:  IND  .GT. MAXIND'
-               write (6,*) (' IND  .GT. MAXIND')
+            IF (IND .GT. LASTIND) THEN
+               PRINT *,' ERROR STOP IN DECSTE:  IND  .GT. LASTIND'
+               write (6,*) (' IND  .GT. LASTIND')
                STOP 'ERROR'
                ENDIF
             LINE(IND)=.TRUE.

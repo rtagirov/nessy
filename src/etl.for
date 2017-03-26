@@ -16,7 +16,6 @@
       use MOD_DATOM
       use MOD_READRAD
       use MOD_ETLRAY
-      use MOD_extUray
       use MOD_DIFFUS
       use MOD_ELIMIN
       use MOD_PRIINTL
@@ -32,15 +31,14 @@
       use MOD_FORMATS
       use MOD_ERROR
       use MOD_TICTOC
-      use PARAMS_ARRAY
       use ABUNDANCES
       USE CONSTANTS
 
-      use common_block
-      use file_operations
       use vardatom
       use varhminus
       use varsteal
+      use common_block
+      use file_operations
       use math
       use phys
       use local_operator
@@ -51,12 +49,12 @@
       integer :: timer
       integer :: NDUMMY0
       
-      real*8, allocatable :: DUMMY2(:,:)
+      real*8, allocatable :: DUMMY2(:, :)
       real*8 :: DUMMY0
 
-      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2
+      COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
 
-      INTEGER XLBKG1,XLBKG2
+      INTEGER XLBKG1, XLBKG2
 
       LOGICAL LBKG
 
@@ -67,58 +65,37 @@
 !     "Solution of the comoving-frame equation of transfer in spherically symmetric flows.
 !     I.Computational method for equivalent-two-level-atom source functions"
 
-      COMMON // ASF(NDDIM),BSF(NDDIM),PP(NDDIM)
-     $ ,XJLMEAN(NDDIM),HBLUWI(NDDIM)
-     $ ,TA(NDDIM),TB(NDDIM),TC(NDDIM),UB(NDDIM),GA(NDDIM),H(NDDIM)
-     $ ,QQ(NDDIM),S(NDDIM),V(NDDIM),VA(NDDIM),VB(NDDIM),Uray(NDDIM)
-     $ ,AF(NFLDIM,NFLDIM),BF(NFLDIM,NFLDIM)
-     $ ,XJ(NFLDIM,NDDIM),XH(NFLDIM,NDDIM),XK(NFLDIM,NDDIM)
-     $ ,XN(NFLDIM,NDDIM),W0(NDDIM),W1(NDDIM),W2(NDDIM),W3(NDDIM)
-     $ ,BMHO(NFLDIM),BMNO(NFLDIM),BMHI(NFLDIM),BMNI(NFLDIM)
-
-      COMMON /COMELI/ XJCIND(NDDIM)
-
-      LOGICAL :: PR_COND
-
-      REAL*8, ALLOCATABLE :: U(:, :)
-
 !     the Local approximate lambda-Operator for a given line
       REAL*8, ALLOCATABLE :: LO(:)
 
-      parameter(IPDIM = 25, NBDIM = 99)
-
-      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
-     $                                ABSEVT(IPDIM,NBDIM)
-      COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
-      COMMON /LIBLFAC/ SCAFAC(NDDIM,NFDIM),ABSFAC(NDDIM,NFDIM)
-
       CHARACTER MODHEAD*104,MODHOLD*104, CARD*80, LCARD*420
       CHARACTER CNAME*10, CREAD*10
-      CHARACTER*10 MAINPRO(NDDIM),MAINLEV(NDDIM)
       CHARACTER*10 NAMEU, NAMEJ
       CHARACTER*7 JOB
-      character*7 LINE(MAXIND)
-      LOGICAL ETLKEY,LINEKEY(maxind)
+      character*7 LINE(lastind_nlte)
+      LOGICAL ETLKEY, LINEKEY(lastind_nlte)
       integer,external :: time
       logical :: ierr9
 
-      real*8, allocatable, dimension(:) :: opal, etal
+      real*8, allocatable, dimension(:) ::    opal, etal
 
-!      logical :: lte_line
+      real*8, allocatable, dimension(:) ::    xjcind, xjlmean
+
+      real*8, allocatable, dimension(:, :) :: xj, xh, xk, xn
+
+      real*8, allocatable, dimension(:) ::    bmho, bmno, bmhi, bmni
+
+      real*8, allocatable, dimension(:) ::    w0, w1, w2, w3
 
       print*, 'entered etl: ' // writeTOC()
       call tic(timer)
 
-!***  DECODING INPUT CARDS
+!     DECODING INPUT CARDS
       CALL DECETL(LSOPA,LSINT,VDOP,LINE,NLINE,LINEKEY,lastind_nlte,LBLANK)
-
-!      print*, 'etl: ', NLINE
-
-!      stop
 
       IF (NLINE .EQ. 0) THEN; WRITE(6, *) 'NO LINE OPTIONS DECODED'; GOTO 99; ENDIF
  
-      CALL FLGRID(NFLDIM, NFL, PHI, PWEIGHT, DELTAX)
+      CALL FLGRID(NFL, PHI, PWEIGHT, DELTAX)
 
       CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
@@ -136,35 +113,39 @@
 
       close(IFL)
 
-      if (allocated(opal)) deallocate(opal); allocate(opal(ND))
-      if (allocated(etal)) deallocate(etal); allocate(etal(ND))
+      call assert(ND > 1, 'ND <= 1'); call assert(NP > 1, 'NP <= 1')
 
-      print *,'ETL: ND = ',ND,' NP = ',NP
-      call assert(ND*NP>1,'ND*NP <= 1')
+      if (allocated(llo))       deallocate(llo);       allocate(llo(ND, lastind_nlte))
+      if (allocated(tau_line))  deallocate(tau_line);  allocate(tau_line(ND, lastind_nlte))
+      if (allocated(damp_line)) deallocate(damp_line); allocate(damp_line(ND, lastind_nlte))
 
-!     LLO is declared in comblock.for
-      IF (ALLOCATED(LLO))       DEALLOCATE(LLO)
-      IF (ALLOCATED(tau_line))  DEALLOCATE(tau_line)
-      IF (ALLOCATED(damp_line)) DEALLOCATE(damp_line)
+      if (allocated(opal))      deallocate(opal);      allocate(opal(ND))
+      if (allocated(etal))      deallocate(etal);      allocate(etal(ND))
 
-      ALLOCATE(U(ND, NP))
+      if (allocated(xjcind))    deallocate(xjcind);    allocate(xjcind(ND))
+      if (allocated(xjlmean))   deallocate(xjlmean);   allocate(xjlmean(ND))
+      if (allocated(xj))        deallocate(xj);        allocate(xj(NFL, ND))
+      if (allocated(xh))        deallocate(xh);        allocate(xh(NFL, ND))
+      if (allocated(xk))        deallocate(xk);        allocate(xk(NFL, ND))
+      if (allocated(xn))        deallocate(xn);        allocate(xn(NFL, ND))
 
-      ALLOCATE(LLO(ND, lastind_nlte))
+      if (allocated(bmho))      deallocate(bmho);      allocate(bmho(nfl))
+      if (allocated(bmno))      deallocate(bmno);      allocate(bmno(nfl))
+      if (allocated(bmhi))      deallocate(bmhi);      allocate(bmhi(nfl))
+      if (allocated(bmni))      deallocate(bmni);      allocate(bmni(nfl))
 
-      allocate(tau_line(ND, lastind_nlte))
+      if (allocated(w0))        deallocate(w0);        allocate(w0(nd))
+      if (allocated(w1))        deallocate(w1);        allocate(w1(nd))
+      if (allocated(w2))        deallocate(w2);        allocate(w2(nd))
+      if (allocated(w3))        deallocate(w3);        allocate(w3(nd))
 
-      allocate(damp_line(ND, lastind_nlte))
-
-      damp_line(1 : ND, 1 : lastind_nlte) = 'n'
+      damp_line(1 : ND, 1 : lastind_nlte) = .false.
 
       llo(1 : ND, 1 : lastind_nlte) = 0.0d0
 
-      IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
-      PRINT *,'ETL: VDOP=',VDOP
-      If (vdop.le.0.) vdop=vdopold
+      If (vdop .le. 0.) vdop = vdopold
 
-      IFL=3
-      open (IFL,file='POPNUM',STATUS='OLD')
+      IFL = 3; open(IFL, file = 'POPNUM', STATUS = 'OLD')
 
       call readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
 
@@ -264,7 +245,7 @@
 !***  PREPARING SOME QUANTITIES FOR THE CONSIDERED LINE
 
       CALL PRELINE(NUP,LOW,IND,N_nlte,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
-     $             BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,elevel_nlte,NL,
+     $             BMHI,BMNI,XJLMEAN,XJ,XH,XK,XN,elevel_nlte,NL,
      $             einst_nlte,indnup_nlte,indlow_nlte,lastind_nlte)
 
 !      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0) .or. lte_line) GOTO 7
@@ -274,7 +255,6 @@
 
       print*, 'etl: LN = ', LineNumber
  
-!***  COMPUTATION OF THE ETLA SOURCE FUNCTION COEFFICIENTS, ASF AND BSF
 !***  RATES AND POPNUMBERS ARE UPDATED !
 !***  THIS ROUTINE IS SKIPPED FOR SUBSEQUENT "FORMAL" LINES
 !***  EXCEPT OF THE FIRST FORMAL LINE WHICH FOLLOWS AN ETL LINE
@@ -306,7 +286,7 @@
       write (NAMEJ,FMT_KEY) 'XJC ',IND
       if (ierr9) then
 
-        !*** READ U AND XJC FROM FILE 9
+!     READ U AND XJC FROM FILE 9
       IERR=1
       CALL READMS (ifl,U,ND*NP,NAMEU,IERR)
       call assert(ierr==0,'Error reading U from File')
@@ -348,22 +328,17 @@
 
       LMAX = MIN0(NP + 1 - JP, ND)
 
-      CALL EXTURAY(U, URAY, ND, NP, JP)
-
-      CALL ETLRAY(URAY,Z,OPA,OPAL,ETA,ETAL,XJLMEAN,RADIUS,ND,NP,JP,P,
-     $            UB,GA,H,QQ,S,V,VA,VB,VELO,GRADI,PP,
-     $            BMHO,BMNO,BMHI,BMNI,BCORE,DBDR,
-     $            XJCIND,ELEVEL,LOW,
-     $            PHI,PWEIGHT,NFL,DELTAX,XJ,XH,XK,XN,W0,W1,W2,W3,
-     $            NL, XLAM, LO)
+      CALL ETLRAY(U(1 : ND, JP),Z,OPA,OPAL,ETA,ETAL,XJLMEAN,RADIUS,ND,NP,JP,P,
+     $            VELO,GRADI,BMHO,BMNO,BMHI,BMNI,BCORE,DBDR,
+     $            PHI,PWEIGHT,NFL,DELTAX,XJ,XH,XK,XN,W0,W1,W2,W3,LO)
 
    13 CONTINUE
 
       LSOPAP = 1
 
       IF (LSOPA.GT.0 .and. nl.eq.LSOPA)
-     $      CALL PRIETL (IND,XLAM,ND,OPA,OPAL,ETA,ETAL,RADIUS,
-     $      JOBNUM,LSOPAP,XJLMEAN,MODHEAD,ASF,BSF,T,ETLKEY)
+     $      CALL PRIETL(IND,XLAM,ND,OPA,OPAL,ETA,ETAL,RADIUS,
+     $      JOBNUM,LSOPAP,XJLMEAN,MODHEAD,T,ETLKEY)
       IF (.NOT.ETLKEY) GOTO 20
          print *,' ETLA option is not active'
          write (6,*) ' ETLA option is not active'
@@ -406,11 +381,16 @@
     7 CONTINUE
 !     END OF LOOP FOR EACH LINE
 
-      stop
+!      stop
 
-      DEALLOCATE(LO)
+      deallocate(lo)
+      deallocate(xjcind)
+      deallocate(xjlmean)
+      deallocate(xj, xh, xk, xn)
+      deallocate(bmho, bmno, bmhi, bmni)
+      deallocate(w0, w1, w2, w3)
 
-      CLOSE(ifl)
+      close(ifl)
 
 !     perform the acceleration damping in case the density is too high at the outer edge of the atmosphere
       if (damp_acc) call acc_damp(ND, lastind_nlte, tau_line, LLO, damp_line)

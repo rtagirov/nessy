@@ -31,25 +31,20 @@
 
       use MOD_TICTOC
       use UTILS,only: cp
-      use PARAMS_ARRAY
 
-      USE FILE_OPERATIONS
+      use file_operations
 
       IMPLICIT NONE
 
-      integer ipdim,    nbdim, itemp
+      integer itemp
       integer itsw
       integer lblaon,   inew,   ipmax,   nbmax
       integer timer,timer2
       integer nbinw, it
       real*8  almin, almax
-      real*8  scaevt, absevt, scafac, absfac, scagri
 
-      parameter (IPDIM=25,NBDIM=99)
-      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
-     $                                ABSEVT(IPDIM,NBDIM)
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
-      COMMON /LIBLFAC/ SCAFAC(NDDIM,NFDIM),ABSFAC(NDDIM,NFDIM)
+
       character*7 :: JOB
 
       CALL SYSTEM("echo '\n'START OF LTE RUN - $(date)'\n'")
@@ -136,25 +131,20 @@
       use MOD_TICTOC
       use UTILS, only: cp
       use MOD_HMINUS
-      use PARAMS_ARRAY
-      USE COMMON_BLOCK
-      USE FILE_OPERATIONS
+
+      use common_block
+      use file_operations
 
       IMPLICIT NONE
 
-      integer ipdim,  nbdim, itemp
+      integer itemp
       integer itsw
       integer lblaon, inew, ipmax, nbmax
       integer timer,timer2
       integer nbinw
       real*8  almin, almax
-      real*8  scaevt, absevt, scafac, absfac, scagri
 
-      parameter(IPDIM = 25, NBDIM = 99)
-      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM, NBDIM), ABSEVT(IPDIM,NBDIM)
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
-
-      COMMON /LIBLFAC/ SCAFAC(NDDIM, NFDIM),ABSFAC(NDDIM, NFDIM)
 
       character*7 :: JOB
 

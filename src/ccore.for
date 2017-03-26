@@ -6,7 +6,7 @@
      $                 SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
      $                 OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $                 N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
-     $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,NFDIM)
+     $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
 
 C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
 
@@ -16,7 +16,7 @@ C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
 
       ! GLOBAL Variables intent(out)
       integer,intent(in) :: JOBNUM
-      integer :: NFDIM, N
+      integer :: N
       integer :: NOM(N)
       integer :: ND, NF	! Number of depth- & frequency-points
 	

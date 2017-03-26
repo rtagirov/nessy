@@ -1,8 +1,8 @@
       module varhminus
 
-      use params_array
-
 !     variables shared between wrstart, steal, wrcont, como and etl
+
+      integer, parameter                      :: NFDIM =   2000
 
       real*8, dimension(NFDIM)                :: XLAMBDA, AKEY, FWEIGHT
       
@@ -27,5 +27,13 @@
       real*8, allocatable, dimension(:)       :: ENLTE, RNE
       real*8, allocatable, dimension(:, :)    :: POPNUM, POP1, POP2, POP3
       real*8, allocatable, dimension(:, :)    :: WCHARM
+
+      real*8, allocatable, dimension(:, :)    :: scafac, absfac
+
+      real*8, allocatable, dimension(:, :)    :: U, VJL
+
+      real*8, allocatable, dimension(:)       :: VL, HNU
+
+      character*10, allocatable, dimension(:) :: mainpro, mainlev
 
       end module

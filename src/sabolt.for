@@ -25,7 +25,7 @@
       ! SAha BOLtzmann equation
       SUBROUTINE SABOLT (ENTOT,RNE,POPNUM,T,ND,
      $ N,NCHARG,WEIGHT,ELEVEL,EION,
-     $ KODAT,NOM,MAXATOM,XTOT,HTOT,GTOT,
+     $ KODAT,NOM,NATOM,XTOT,HTOT,GTOT,
      $ RADIUS,MODHEAD,JOBNUM,
      $ Npot,Tion_pot,dil,teff,iTionsel)
 
@@ -39,7 +39,7 @@
       real*8, intent(  out) :: TEFF,dil(nd),Tion_pot(ND,3)
       real*8, intent(in   ) :: ENTOT,RNE, POPNUM, T,WEIGHT,ELEVEL,EION
       real*8, intent(in   ) :: XTOT,HTOT,GTOT,RADIUS
-      integer,intent(in   ) :: ND,N,NCHARG,KODAT,NOM,MAXATOM
+      integer,intent(in   ) :: ND,N,NCHARG,KODAT,NOM,NATOM
       integer,intent(in   ) :: JOBNUM,iTionsel
       character,intent(in ) :: modhead*104
       character :: head*65, flname*12
@@ -47,7 +47,7 @@
       DIMENSION NCHARG(N)       ! The electron charge
       DIMENSION WEIGHT(N),ELEVEL(N),EION(N)
       DIMENSION nom(n)
-      DIMENSION KODAT(MAXATOM)
+      DIMENSION KODAT(NATOM)
       DIMENSION ENTOT(ND),RNE(ND),T(ND),POPNUM(ND,N)
      $ ,XTOT(ND),HTOT(ND),GTOT(ND)
      $ ,radius(nd)

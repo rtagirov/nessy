@@ -127,13 +127,13 @@
       subroutine acc_damp(nd, nf, tau, lo, damp)
 
 !     Rinat Tagirov:
-!     if the density is too high at the outer edge of the atmoshere in question the local operator is too close to one there.
+!     If the density is too high at the outer edge of the atmoshere in question the local operator is too close to one there.
 !     Thus it stops working and the convergence is lost.
 !     Therefore, in this case the local acceleration has to be damped.
-!     Here, I damp it if 1 - Lambda^* < exp(-tau).
-!     My reasoning is that exp(-tau) is the lower limit for the escape probability.
+!     Here, it is damped if 1 - Lambda^* < exp(-tau).
+!     The reasoning is that exp(-tau) is the lower limit for the escape probability.
 !     Therefore 1 - Lambda^* (which is an estimate of the escape probability) has to be greater than exp(-tau).
-!     Since the problem is encountered at the outer edge only I apply this damping in the optically thin regime (tau <= 1).
+!     Since the problem is encountered at the outer edge only this damping is applied in the optically thin regime (tau <= 1).
 
       integer, intent(in) :: nd, nf
 
@@ -141,7 +141,7 @@
 
       real*8, intent(inout), dimension(nd, nf) :: lo
 
-      character (len = 1), intent(inout), dimension(nd, nf) :: damp ! damping flag ('y' - acceleration is damped, 'n' - otherwise)
+      logical, intent(inout), dimension(nd, nf) :: damp ! damping flag ('.true.' - acceleration is damped, '.false.' - otherwise)
 
       real*8 :: ep ! Escape Probability
 
@@ -155,7 +155,7 @@
 
                lo(l, k) = 1.0D0 - ep
 
-               damp(l, k) = 'y'
+               damp(l, k) = .true.
 
             endif
 

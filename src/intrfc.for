@@ -372,41 +372,40 @@ C***********************************
   613 FORMAT(1H0//' EXPLICIT IONS INCLUDED'/
      *            ' ----------------------'//
      *  ' ION     N0    N1    NK    IZ  IUPSUM ICUP       FF'/)
-c  614 FORMAT(1H ,A4,6I6,1PD15.3)
+
   614 format(5i4)
   616 FORMAT(1H ,i3,1PD15.7,0PF5.2,4I3,i5,1x,1p4e9.2)
       return
       end subroutine
-c
-c
-C
-      subroutine quant (nddim,n,t,rne,entot,popnum,vdop,vdopp,
-     $                  nvopa,xlam,Npot,Tion_pot,dil,teff,xjc)
+
+
+
+      subroutine quant(nd,n,t,rne,entot,popnum,vdop,vdopp,
+     $                 nvopa,xlam,Npot,Tion_pot,dil,teff,xjc)
       use UTILS
       use OPINT,only: VOPA
       use SYNTHP_CONT,only:FREQC,ABSOC,EMISC,NFCONT,setNFCONT!,SCATC
       use SYNTHP_CONT,only:SYNTHP_CONT_INIT
 
-c called by 
-c setup model quantities for Ivan's routines
-c 
+!     setup model quantities for Ivan's routines
+
       implicit none
-      integer,intent(in   ) :: nddim,n,
+      integer,intent(in   ) :: nd,n,
      $                  nvopa,Npot
       real*8, intent(in   ) :: t,rne,entot,popnum,vdop,vdopp,
      $                  xlam,
-     $                  Tion_pot,dil,teff,xjc(:) !XJC(NDDIM)
-      !integer,intent(inout) ::
-      !real*8, intent(inout) ::
+     $                  Tion_pot,dil,teff,xjc(:)
+
+
       real*8  :: WW,XX,YY,ZZ, TURB,VELORMS, cl8,clkm,VEL
       integer :: I,L,LEV,KOPA
       integer :: nfcont_
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
       INCLUDE '../inc/MODELP.FOR'
-      DIMENSION POPNUM(nddim,N),ENTOT(nddim),rne(nddim),t(nddim)
-     $         ,Tion_pot(nddim,Npot),dil(nddim)
-      DIMENSION VELORMS(NDDIM),TURB(NDDIM)
+      DIMENSION POPNUM(nd, N), ENTOT(nd),rne(nd),t(nd)
+     $         ,Tion_pot(nd, Npot), dil(nd)
+      DIMENSION VELORMS(ND), TURB(ND)
       LOGICAL ::  ADDASPL,ADDTURB
 CMH   ADDASPL = .TRUE. THEN THE TURBULENT VELOCITY FROM
 CMH   ASPLUND, ET AL. 2000, A&A, 359, P. 729 IS ICLUDED
@@ -417,10 +416,10 @@ c     ADDASPL = .TRUE.
       ADDTURB = .FALSE.
 c     ADDTURB = .TRUE.
 
-      DO L=1,NDDIM
+      DO L=1, ND
         TURB(L)=0.
       ENDDO
-      if (nddim.gt.MDEPTH) then
+      if (nd .gt. MDEPTH) then
          print *,' MDEPTH .lt. nd'
          stop ' adjust grid dimensions - nd'
       endif
@@ -436,7 +435,7 @@ cendif
 C***  READING VELOCITY ASPLUND 2000, A&A 359, 729
       IF (ADDASPL) THEN
       open (unit=9999,file='VELO',STATUS='OLD')
-      DO 9999 L=1,NDDIM
+      DO 9999 L = 1, ND
         velorms(l)=0.
         READ (UNIT=9999, fmt=*), XX,yy,VELORMS(L)
         write(6,*) L,'quant: VELORMS= ',velorms(L)
@@ -447,7 +446,7 @@ C***  READING VELOCITY ASPLUND 2000, A&A 359, 729
 CMH   IF ADDTURB TRUE THEN READ THE TURBULENCE BROADENING FROM ATM_MOD
       IF (ADDTURB) THEN
       open (UNIT=9999,file='ATM_MOD',STATUS='OLD')
-      DO L=1,NDDIM
+      DO L=1, ND
         READ (UNIT=9999, fmt=*),WW, XX,YY,ZZ,TURB(L)
         PRINT *, L,'FIOSS: TURB= ',TURB(L)
         write (6,*) L,'FIOSS: TURB= ',TURB(L)
@@ -456,7 +455,7 @@ CMH   IF ADDTURB TRUE THEN READ THE TURBULENCE BROADENING FROM ATM_MOD
       CLOSE (9999)
       ENDIF
 C**********************************************************************
-      do l=1,nddim
+      do l=1, nd
          temp(l)   = t(l)
          elec(l)   = rne(l)*entot(l)
 C***************************************************************************
@@ -511,7 +510,7 @@ c         write (90,*) nvopa-kopa+1,wlam(nvopa-kopa+1)
 
       !*** Prepare Continous frequency array
       nfreq=nvopa
-      nd=nddim
+
       nfcont_=max(2,(nfreq/50)+1)
       if( (nfreq/(nfcont_-1))*(nfcont_-1)==nfreq) nfcont_=nfcont_-1
       call SYNTHP_CONT_INIT(NFCONT_)

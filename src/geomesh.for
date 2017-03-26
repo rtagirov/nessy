@@ -90,8 +90,6 @@
       dT(ND) = extrap_to_boundary(ND, h, dT, ND - 2, ND - 1, ND)
       dn(ND) = extrap_to_boundary(ND, h, dn, ND - 2, ND - 1, ND)
 
-!      dn = dn / maxval(abs(dn))
-
       gradT = dT / dh
 
       gradn = dn * maxval(abs(dr)) / dr / maxval(abs(dn))

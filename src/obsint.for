@@ -7,7 +7,7 @@
      $                  ND,NP,NVD,JP,NVOPA,VOPA0,DVOPA,
      $                  EMINT,XOBS0,DXOBS,NFOBR,XN,
      $                  ENTOT,RNE,SIGMAE,RSTAR,
-     $                  XJ,DINT,NDDOUB,RWLAE,DLAM)
+     $                  XJ,DINT,RWLAE,DLAM)
 
 !***  FORMAL INTEGRATION ALONG A RAY AT IMPACT PARAMETER JP
 ! ==> test version: see for "cpr" for opcity prints...

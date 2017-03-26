@@ -3,7 +3,7 @@
       contains
 
       SUBROUTINE PRELINE(NUP,LOW,IND,N,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
-     $                   BMHI,BMNI,XJLMEAN,HBLUWI,XJ,XH,XK,XN,ELEVEL,NL,
+     $                   BMHI,BMNI,XJLMEAN,XJ,XH,XK,XN,ELEVEL,NL,
      $                   EINST,INDNUP,INDLOW,LASTIND)
 
       use common_block
@@ -19,7 +19,7 @@
 
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)
       DIMENSION BMHO(NFL),BMNO(NFL),BMHI(NFL),BMNI(NFL)
-      DIMENSION XJLMEAN(ND),HBLUWI(ND)
+      DIMENSION XJLMEAN(ND)
       DIMENSION XJ(NFL,ND),XH(NFL,ND),XK(NFL,ND),XN(NFL,ND)
       character*7 name, line(nl)
 
@@ -48,14 +48,6 @@ C***  FIND THE LEVEL INDICES NUP, LOW
       NUP = INDNUP(IND)
       LOW = INDLOW(IND)
 
-!      if (nlte(nup) .eq. 0 .or. nlte(low) .eq. 0) then
-
-!          lte_line = .true.
-
-!          return
-
-!      endif
-
 C***  RUDIMENTAL LINES (EINST(LOW,NUP)=-2.) WILL BE MARKED BY LRUD=0
       LRUD=1
 
@@ -75,7 +67,6 @@ C***  INITIALIZE ALL ARRAYS FOR THE INTEGRATION OF MOMENTS
    11 BMNI(KL)=zero
       DO 12 L=1,ND
       XJLMEAN(L)=zero
-      HBLUWI(L)=zero
       DO 12 KL=1,NFL
       XJ(KL,L)=zero
       XH(KL,L)=zero

@@ -7,10 +7,10 @@
      $                  XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,EPSILON,NODM,
      $                  DELTAC,MODHEAD,JOBNUM,IFRRA,ITORA,
      $                  RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
-     $                  VELO,GRADI,VDOP,PHI,PWEIGHT,INDNUP,INDLOW,LASTIND,
+     $                  VELO,GRADI,VDOP,INDNUP,INDLOW,LASTIND,
      $                  OPAC,DOPA,DETA,SIGMAKI,
      $                  ND,LSRAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
-     $                  LINE,ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
+     $                  ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
      $                  NLAST,WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,JOBMAX)
 
 !     see Koesterke et al 1992 A&A 255, 490
@@ -97,8 +97,10 @@
 
       REAL*8 :: POPHIIL, POPHML, POPHIL
 
-      real*8  PHI(*), PWEIGHT(*), WEIGHT(*)
-      logical LINE(*), LBKG
+      real*8, allocatable, dimension(:) :: phi, pweight
+
+      real*8  WEIGHT(*)
+      logical LBKG
       integer XLBKG1,  XLBKG2, iii
 
       character*10, dimension(*) :: MAINPRO,MAINLEV
@@ -245,10 +247,11 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
      $           SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
      $           OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $           N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
-     $           WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,NF)
+     $           WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
 
 !     GENERATE LINE FREQUENCY GRID AND INTEGRATION WEIGHTS
-      CALL FLGRID(NFLDIM, NFL, PHI, PWEIGHT, DELTAX)
+      CALL FLGRID(NFL, PHI, PWEIGHT, DELTAX)
+
       XMAX = DELTAX * FLOAT(NFL - 1) * .5
       ERXMIN = ERF_INF(-XMAX)
 
@@ -957,7 +960,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       fmt_head = '(A,9x,A,9x,A,4x,A,7x,A,8x,A,12x,A,18x,A,12x,A,8x,A,10(14x,A),/)'
 
-      fmt_body = '(i3,2x,es15.7,2(2x,i5),2(3x,F9.2),2x,es15.7,2x,es23.15,4x,A1,11(2x,es15.7))'
+      fmt_body = '(i3,2x,es15.7,2(2x,i5),2(3x,F9.2),2x,es15.7,2x,es23.15,4x,L,11(2x,es15.7))'
 
       llev = rm_char(rm_char(ll, ' '), '.')
 

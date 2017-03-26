@@ -1,10 +1,8 @@
       module varsteal
 
-      use params_array
-
 !     variables shared between steal, como and etl
 
-      real*8,  dimension(NFLDIM)            ::  phi, pweight
+      real*8,  allocatable, dimension(:)    ::  phi, pweight
 
       integer, allocatable, dimension(:)    ::  levelpl, nfedge, itne, iwarn
 
