@@ -172,6 +172,8 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
          lastk = K
 
+         print*, 'keycon(k) = ', KEYCON(K) .EQ. 4HETLA
+
 !     ONLY FREQUENCIES WHICH ARE NOT YET TREATED BY ETLA
 !     IF "PRINT OPA" OPTION IS GIVEN, THE JUMP IS AFTER "CALL PRIOPA"
          IF (KEYCON(K).EQ.4HETLA .AND. LSOPA.LE.0 ) GOTO 6
@@ -212,6 +214,8 @@ c***     XJC and EDDI are stored for later write to file RADIOC
 !         IF (LTE_RUN) CALL PRINT_LTE_CONT(XLAMBDA(K), K, XJC_LTE(1 : ND, K))
 
       ENDDO
+
+!      stop
 
       call assert(.not.any(isnan(WCHARM)),'COMO: WCHARM is NaN')
 

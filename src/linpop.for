@@ -143,7 +143,7 @@
 
       INTEGER :: IND, LOW, NUP
 
-      CHARACTER(:), ALLOCATABLE :: CONV_FILE
+      CHARACTER(len = 8) :: CONV_FILE
 
       LOGICAL :: NRRM_FILE_EXISTS, NCRM_FILE_EXISTS, NTRM_FILE_EXISTS, CONV_FILE_EXISTS
 
@@ -167,6 +167,7 @@ C***  C1 = H * C / K (CM * KELVIN)
       JNEW(1 : ND, 1 : LASTIND) = 0.0D0
 
       ElecConc(1 : ND) = 0.0D0
+
       ElecConcLTE(1 : ND) = 0.0D0
 
       ELEC_CONC_OLD(1 : ND) = 0.0D0
@@ -897,7 +898,9 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       REAL*8, DIMENSION(DPN), INTENT(IN) :: LevPop, LevPopLTE, DepartZwaan
 
-      CHARACTER(:), ALLOCATABLE ::          FILE_NAME, LevName
+      CHARACTER(len = 10) ::                LevName
+
+      CHARACTER(len = 19) ::                FILE_NAME
 
       REAL*8 ::                             RAND
 
@@ -982,7 +985,11 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       REAL*8, DIMENSION(DPN), INTENT(IN) :: RadUpLow, RadLowUp, ColUpLow, ColLowUp
 
-      CHARACTER(:), ALLOCATABLE ::          FILE_NAME, TRAN_NAME, LowLev, UpLev
+      CHARACTER(len = 10) ::                LowLev, UpLev
+
+      CHARACTER(len = 21) ::                TRAN_NAME
+
+      CHARACTER(len = 30) ::                FILE_NAME
 
       INTEGER ::                            FILE_UNIT
 
@@ -994,7 +1001,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       UpLev = RM_CHAR(RM_CHAR(UpLevel, ' '), '.')
 
-      TRAN_NAME = LowLev//'_'//UpLev
+      TRAN_NAME = trim(adjustl(LowLev))//'_'//trim(adjustl(UpLev))
 
       FILE_NAME = TRIM(ADJUSTL(NLTE_DIR_2//TRAN_NAME))
 
@@ -1071,7 +1078,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       CLOSE(FILE_UNIT)
 
-      END SUBROUTINE PRINT_HYD_NLTE_TRA
+      END SUBROUTINE
 
 
       SUBROUTINE PRINT_NLTETRAPOP(PopLow, PopUp, DEPLOW, DEPUP)

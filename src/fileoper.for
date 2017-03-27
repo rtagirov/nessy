@@ -39,11 +39,12 @@
 
       CHARACTER (LEN = *), INTENT(IN) :: DIR
 
-      CHARACTER(:), ALLOCATABLE :: DIRECTORY
+!      CHARACTER(:), ALLOCATABLE :: DIRECTORY
 
-      DIRECTORY = TRIM(ADJUSTL(DIR))
+!      DIRECTORY = TRIM(ADJUSTL(DIR))
 
-      CALL SYSTEM('rm -vrf'//' '//DIRECTORY//'*')
+!      CALL SYSTEM('rm -vrf'//' '//DIRECTORY//'*')
+      CALL SYSTEM('rm -vrf'//' '//DIR//'*')
 
       END SUBROUTINE
 
@@ -52,11 +53,12 @@
 
       CHARACTER (LEN = *), INTENT(IN) :: DIR
 
-      CHARACTER(:), ALLOCATABLE :: DIRECTORY
+!      CHARACTER(:), ALLOCATABLE :: DIRECTORY
 
-      DIRECTORY = TRIM(ADJUSTL(DIR))
+!      DIRECTORY = TRIM(ADJUSTL(DIR))
 
-      CALL SYSTEM('mkdir -vp'//' '//DIRECTORY)
+!      CALL SYSTEM('mkdir -vp'//' '//DIRECTORY)
+      CALL SYSTEM('mkdir -vp'//' '//DIR)
 
       END SUBROUTINE
 
@@ -67,11 +69,11 @@
 
       CHARACTER (LEN = *), INTENT(IN), OPTIONAL :: OPTIONS
 
-      CHARACTER(:), ALLOCATABLE ::                 FILENAME
+!      CHARACTER(:), ALLOCATABLE ::                 FILENAME
 
-      FILENAME = TRIM(ADJUSTL(FILE_NAME))
+!      FILENAME = TRIM(ADJUSTL(FILE_NAME))
 
-      CALL SYSTEM('rm '//OPTIONS//' '//FILENAME)
+      CALL SYSTEM('rm '//OPTIONS//' '//FILE_NAME)
 
       END SUBROUTINE
 
