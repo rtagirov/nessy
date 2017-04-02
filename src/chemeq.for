@@ -952,9 +952,11 @@
 
 
       SUBROUTINE calcmolopac(NFREQ,freq, TL, ID)
+
       use constants
-      use MOD_BNUE
-      IMPLICIT NONE
+
+      implicit none
+
       integer i, j,  NFREQ, ID, mn
       real*8 freq(NFREQ), lambdap(NFREQ)
       real*8 lambdal, Delta, Deltasel
@@ -965,7 +967,7 @@
 
       Delta=0.2 ! in A
       Deltasel=1.
- !     call readmollines
+
 
       lambdamin=min(clight_cgs/freq(1)*1.d8, clight_cgs/freq(NFREQ)
      *    *1.d8)-Deltasel       
@@ -976,7 +978,7 @@
 
       do mn=1, Nmol
 
- !     print*, mn
+
     
       call PARTFmol(mn, TL, PF)
  
@@ -1064,27 +1066,12 @@
           alpha0(mn,j)=alpha0(mn,j)*0.5
           endif
           lambdal=1.d8/Mollines(mn)%Etran(j)
- !       print*, 'lambdal', lambdal
+
 
        if ((mn .eq. 2) .and.  (lambdal .gt. 4000.) .and. 
      * (lambdal .lt. 4900))  then 
        alpha0(mn,j)=alpha0(mn,j)*0.5
        endif
-
-    
-
-
-
-
-
-!         if (mn .eq. 6) then 
-   !      print*, alpha0(mn,j)
-!         alpha0(mn,j)=alpha0(mn,j)
- !        endif
-
-
-
-
 
 
 

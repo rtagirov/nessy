@@ -10,9 +10,8 @@
      $                ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,
      $                LBKG,XLBKG1,XLBKG2,NF)
 
-      use MOD_BNUE
-
       use file_operations
+      use phys
 
 !***  NON-LTE CONTINUOUS OPACITY AT GIVEN FREQUENCY POINT K (XLAM)
 !***  OPACITY AT DEPTH POINT L: OPAL

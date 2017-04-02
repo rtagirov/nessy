@@ -3,7 +3,7 @@
       SUBROUTINE PREF_SYN (KARTE,N,ELEVEL,LINE,INDLOW,INDNUP,LASTIND,
      $                      VDOP,FMAX,FMIN,XMAX,VMAX,VSIDU,esca_wd,
      $                      DXOBS,NFOBS,XLAM,FREMAX,
-     $                      NF,EMFLUX,XLAMBDA,FNUEC)
+     $                      NF,FNUEC)
 C*******************************************************************************
 C***  CALLED FROM FORMAL FOR DECODING LINE OPTION CARDS
 C***  CALCULATES LINE QUANTITIES FOR DETECTED LINE
@@ -14,7 +14,6 @@ C*******************************************************************************
      
       DIMENSION ELEVEL(N)
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)
-      DIMENSION XLAMBDA(NF),EMFLUX(NF)
       DIMENSION INDLAP(6),XLAMLAP(6),DELXLAP(6)
       CHARACTER*7 KARBL(5)
       CHARACTER KARTE*80
@@ -63,7 +62,6 @@ c*** test for number of frequency points
             stop 'error PREF_SYN'
             endif
 
-!       print*, Fmin, Fmax
 C***     DEFINING THE FREQUENCY BAND
       IF (FMAX .LE. 0.0) FMAX=VMAX+XMAX+VSIDU+esca_wd
 c-       IF (FMIN .EQ. 0.0) FMIN=VMAX*SQRT(1.-1./RMAX/RMAX)+XMAX+VSIDU
@@ -78,11 +76,8 @@ C***     DEFINING INCREMENT OF THE OBSERVER'S FRAME FREQUENCY
 
 C***  EMERGENT FLUX (FNUEC) IS OBTAINED BY INTERPOLATION AT THE LINE FREQUENCY
  
-!      print*, emflux
-!      print*, '*************'
-!      print*, xlam, xlambda, nf
-!      CALL LIPO (FNUEC,XLAM,EMFLUX,XLAMBDA,NF)
-     
-      RETURN
-      END subroutine
+      return
+
+      end subroutine
+
       end module

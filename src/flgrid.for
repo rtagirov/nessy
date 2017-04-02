@@ -26,8 +26,6 @@
 
       allocate(phi(nfl), pweight(nfl))
      
-      IF (NFL .GT. NFLDIM) STOP "FLGRID: DIMENSION IS TOO SMALL"
-
       DELTAX = 2.D0 * XMAX / FLOAT(NFL - 1)
       WS = 0.0D0
 

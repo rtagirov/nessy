@@ -1,9 +1,10 @@
       module MOD_PRIETL
+
       contains
-C**********  MODULNAME: PRIETL    ******* 24/03/87  19.46.17.******    78 KARTEN
+
       SUBROUTINE PRIETL (IND,XLAM,ND,OPA,OPAL,ETA,ETAL,RADIUS,JOBNUM,
      $      LSOPA,XJLMEAN,MODHEAD,T,ETLKEY)
-      use MOD_BNUE
+
       use MOD_TRADFUN
 
       implicit real*8(a-h,o-z)

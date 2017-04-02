@@ -58,6 +58,42 @@
 
       END FUNCTION PLANCK_FUNC
 
+      pure function BNUE(XLAMBDA, T)
+
+!     PLANCK FUNCTION, LAMBDA IN ANGSTROEM, T IN KELVIN
+!     BNUE IN CGS UNITS: ERG PER CM**2, PER SEC AND PER HERTZ
+!     CONSTANTS : C1 = H * C / K (DIMENSION ANGSTROEM * KELVIN )
+!                 C2 = 2 * H * C (DIMENSION ANGSTROEM**3 * ERG/SEC/HZ/CM**2)
+
+      implicit none
+
+      real*8 :: BNUE, cxt
+      real*8, intent(in) :: XLAMBDA, T
+      real*8, parameter  :: C1 = 1.438831D8
+      real*8, parameter  :: C2 = 3.972967D+8
+  
+      if (T .le. 0.0d0) then
+
+         BNUE = 0.0d0
+
+      else
+
+         CXT = C1 / XLAMBDA / T
+
+        if (CXT .gt. 500.0d0) then
+
+           BNUE = 0.0
+
+        else
+
+           BNUE = C2 / (EXP(CXT) - 1d0) / XLAMBDA**3
+
+        endif
+
+      endif
+
+      end function
+
       function opt_dep(opac, h, ND) result(tau)
 
 !     Calculate optical depth (tau) from a given 

@@ -1,17 +1,19 @@
       module MOD_PRIFLUX
+
       contains
-C**********  MODULNAME: PRIFLUX   ******* 06/08/87  20.14.39.******   104 KARTEN
+
       SUBROUTINE PRIFLUX (NF,XLAMBDA,EMFLUX,TOTIN,TOTOUT,RSTAR,JOBNUM,
      $                    FWEIGHT,MODHEAD,AKEY )
-C***********************************************************************
-C***   PRINTOUT OF THE EMERGENT CONTINUUM FLUX
-C***   called by 
-C***********************************************************************
+
+!     PRINTOUT OF THE EMERGENT CONTINUUM FLUX
+
       use MOD_TRADFUN
-      use MOD_BNUE
       use MOD_TCOLOR
       use MOD_PRICOLR
       use CONSTANTS,only:CLIGHT_CGS,PI
+
+      use phys
+
       implicit real*8(a-h,o-z)
 
       DIMENSION XLAMBDA(NF),EMFLUX(NF),FWEIGHT(NF),AKEY(NF)

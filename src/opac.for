@@ -50,7 +50,6 @@ C
       use constants, only:   CLIGHT_SI, CLIGHT_CGS, BoltzmannConstantEV,
      $                       PlanckConstantEV
       use MOD_chemeq
-      use MOD_BNUE
 
       use mod_gff_temp
 
@@ -417,7 +416,7 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         write (200,FMT_LOPA) ablin(i)
         IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
           PRINT '(i0,X,i0," ",$)',I,ID
-          PRINT '("inibl: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
+          PRINT '("opac: NEGATIVE OPACITY,'//
      &             ' EMISSIVITY : ",$)' ! WARNING!!!
           PRINT *,I, ABLIN(I),EMLIN(I)
         ENDIF

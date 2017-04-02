@@ -75,7 +75,8 @@ rm_dir $OUTPUT_DIR; create_dir $OUTPUT_DIR; change_dir $OUTPUT_DIR
 $CP ${ORIG_COSI}/ATM_MOD     ./
 $CP ${ORIG_COSI}/MODFILE    ./
 $CP ${ORIG_COSI}/FGRID	    ./
-$CP ${ORIG_COSI}/DATOM	    ./
+$CP ${ORIG_COSI}/DATOM_LTE  ./
+$CP ${ORIG_COSI}/DATOM_NLTE	./
 $CP ${ORIG_COSI}/RADIOC     ./
 $CP ${ORIG_COSI}/RADIOL     ./
 $CP ${ORIG_COSI}/POPNUM     ./

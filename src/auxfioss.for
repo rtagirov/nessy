@@ -283,9 +283,11 @@ c version with fraction of integral
         getContIdx=i
         return
       endif
-      print *,'inibl:getContIdx:ERROR:',
-     &                    idxFreq,NFCONT(),FRXIDX(NFCONT())
+
+      print *,'getContIdx:',idxFreq,NFCONT(),FRXIDX(NFCONT())
+
       call error('Could not find FrxIdx')
+
       end function getContIdx
 
       end module

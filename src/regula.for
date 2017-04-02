@@ -1,13 +1,13 @@
       module MOD_REGULA
+
       contains
-C**********  MODULNAME: REGULA    ******* 24/03/87  22.00.45.******    46 KARTEN
+
       SUBROUTINE REGULA(F,X,Y,X1,X2,EPS)
-C***********************************************************************
-C***  THIS ROUTINE CALCULATES THE SOLUTION X OF F(X)=Y IN THE INTERVAL
-C***  (X1,X2) | METHOD:
-C***  -------- REGULA FALSI --------
-C***  USING BISECTION STEPS TO GUARANTEE CONVERGENCE, PRECISION IN X: EPS
-C***********************************************************************
+
+!     THIS ROUTINE CALCULATES THE SOLUTION X OF F(X)=Y IN THE INTERVAL
+!     (X1,X2) | METHOD:
+!     -------- REGULA FALSI --------
+!     USING BISECTION STEPS TO GUARANTEE CONVERGENCE, PRECISION IN X: EPS
 
       IMPLICIT REAL*8(A-H,O-Z)
  

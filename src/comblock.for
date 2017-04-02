@@ -29,8 +29,8 @@
 !      logical ::                                 damp_acc = .true.
       logical ::                                 damp_acc = .false.
 
-      logical ::                                 rayleigh = .true.
-!      logical ::                                 rayleigh = .false.
+!      logical ::                                 rayleigh = .true.
+      logical ::                                 rayleigh = .false.
 
       INTEGER ::                                 LAMBDA_ITER
 

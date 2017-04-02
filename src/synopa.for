@@ -44,10 +44,7 @@ CMH   ETATOT: NEW ARRAY FOR EMISSIVITY for each frequency nfreq and depth point 
 !        loop over frequency points
          do ij = 1, nfreq
 
-            print*, 'freq = ', freq(ij)
-
 cws May-24-96: Ivan's routine calculated low to high freqency
-c         it is (in QUANT): 
 c         wlam(nvopa-kopa+1) = xlam * (1. - vel*clkm)
 c         freq(nvopa-kopa+1) = cl8/wlam(nvopa-kopa+1)
             opatot(nfreq-ij+1,id)=abso(ij)

@@ -2,9 +2,8 @@
 
       contains
 
-      SUBROUTINE PRELINE(NUP,LOW,IND,N,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
-     $                   BMHI,BMNI,XJLMEAN,XJ,XH,XK,XN,ELEVEL,NL,
-     $                   EINST,INDNUP,INDLOW,LASTIND)
+      SUBROUTINE PRELINE(NUP,LOW,IND,N,LRUD,XLAM,ND,NFL,LINE,
+     $                   XJLMEAN,ELEVEL,NL,EINST,INDNUP,INDLOW,LASTIND)
 
       use common_block
 
@@ -18,9 +17,9 @@
       DIMENSION ELEVEL(N)
 
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)
-      DIMENSION BMHO(NFL),BMNO(NFL),BMHI(NFL),BMNI(NFL)
+!      DIMENSION BMHO(NFL),BMNO(NFL),BMHI(NFL),BMNI(NFL)
       DIMENSION XJLMEAN(ND)
-      DIMENSION XJ(NFL,ND),XH(NFL,ND),XK(NFL,ND),XN(NFL,ND)
+!      DIMENSION XJ(NFL,ND),XH(NFL,ND),XK(NFL,ND),XN(NFL,ND)
       character*7 name, line(nl)
 
 !      logical :: lte_line
@@ -60,18 +59,17 @@ C***  RUDIMENTAL LINES (EINST(LOW,NUP)=-2.) WILL BE MARKED BY LRUD=0
       XLAM=1.d8/(ELEVEL(NUP)-ELEVEL(LOW))
      
 C***  INITIALIZE ALL ARRAYS FOR THE INTEGRATION OF MOMENTS
-      DO 11 KL=1,NFL
-      BMHO(KL)=zero
-      BMNO(KL)=zero
-      BMHI(KL)=zero
-   11 BMNI(KL)=zero
-      DO 12 L=1,ND
-      XJLMEAN(L)=zero
-      DO 12 KL=1,NFL
-      XJ(KL,L)=zero
-      XH(KL,L)=zero
-      XK(KL,L)=zero
-   12 XN(KL,L)=zero
+!      DO 11 KL=1,NFL
+!      BMHO(KL)=zero
+!      BMNO(KL)=zero
+!      BMHI(KL)=zero
+!   11 BMNI(KL)=zero
+      do L = 1, ND; XJLMEAN(L) = zero; enddo
+!      DO 12 KL=1,NFL
+!      XJ(KL,L)=zero
+!      XH(KL,L)=zero
+!      XK(KL,L)=zero
+!   12 XN(KL,L)=zero
      
       return
 

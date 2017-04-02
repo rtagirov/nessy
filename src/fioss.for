@@ -33,6 +33,7 @@
       use file_operations
       use auxfioss
       use mod_synopa
+      use mod_quant
       use geo_mesh
 
 !             intrfc passes new a AGAUNT !!
@@ -61,7 +62,7 @@
 !
 !MH*	XLAM: WAVELENGTH IN VACUUM
 !*******************************************************************************
-      implicit real*8(a-h,o-z)
+      IMPLICIT REAL*8(a - h, o - z)
       !***  Constant for thermal Gauss-Profile (= m(e)/(4k)) (cgs?)
       PARAMETER (GAUKONST = 1.649538d-12)
 
@@ -71,21 +72,21 @@
       !        good idea to make NFODIM quite a bit larger
 
       real*8, allocatable, dimension(:) ::       R
-      real*8, allocatable, dimension(:) ::       entot, enlte
-      real*8, allocatable, dimension(:) ::       T
-      real*8, allocatable, dimension(:) ::       XJC
-      real*8, allocatable, dimension(:) ::       TAUROSS
-      real*8, allocatable, dimension(:) ::       RNE
-      real*8, allocatable, dimension(:) ::       VELO, GRADI
-      real*8, allocatable, dimension(:) ::       HTOT, GTOT, XTOT, ETOT
+!      real*8, allocatable, dimension(:) ::       entot, enlte
+!      real*8, allocatable, dimension(:) ::       T
+!      real*8, allocatable, dimension(:) ::       XJC
+!      real*8, allocatable, dimension(:) ::       TAUROSS
+!      real*8, allocatable, dimension(:) ::       RNE
+!      real*8, allocatable, dimension(:) ::       VELO, GRADI
+!      real*8, allocatable, dimension(:) ::       HTOT, GTOT, XTOT, ETOT
 
       real*8, allocatable, dimension(:) ::       VDU
 
       real*8, allocatable, dimension(:) ::       eta, opa, thomson, tauthom, dil
 
-      real*8, allocatable, dimension(:) ::       XLAMBDA, FWEIGHT, EMFLUX, AKEY
+      real*8, allocatable, dimension(:) ::       dummy1_nf, dummy2_nf, dummy3_nf, dummy4_nf
 
-      real*8, allocatable, dimension(:) ::       P, ZRAY, RRAY
+      real*8, allocatable, dimension(:) ::       ZRAY, RRAY
 
       real*8, allocatable, dimension(:) ::       XCMF
 
@@ -93,25 +94,25 @@
 
       integer, allocatable, dimension(:, :) ::   iback
 
-      CHARACTER*10, allocatable, dimension(:) :: MAINPRO, MAINLEV
+!      CHARACTER*10, allocatable, dimension(:) :: MAINPRO, MAINLEV
 
       real*8, allocatable, dimension(:, :) ::    WLK
 
-      real*8, allocatable, dimension(:, :) ::    Z
+      real*8, allocatable, dimension(:, :) ::    Z2D
 
       real*8, allocatable, dimension(:) ::       Z1D
 
-      real*8, allocatable, dimension(:, :) ::    POPNUM, POP1, POP2, POP3
+!      real*8, allocatable, dimension(:, :) ::    POPNUM, POP1, POP2, POP3
 
       real*8, allocatable, dimension(:, :) ::    Tion_pot
 
-      real*8, allocatable, dimension(:, :) ::    XJCARR
-      real*8, allocatable, dimension(:, :) ::    XJL
-      real*8, allocatable, dimension(:, :) ::    WCHARM
+!      real*8, allocatable, dimension(:, :) ::    XJCARR
+!      real*8, allocatable, dimension(:, :) ::    XJL
+!      real*8, allocatable, dimension(:, :) ::    WCHARM
 
-      real*8, allocatable, dimension(:, :) ::    EDDI, U
+!      real*8, allocatable, dimension(:, :) ::    EDDI, U
 
-      real*8, allocatable, dimension(:, :, :) :: EDDARR
+!      real*8, allocatable, dimension(:, :, :) :: EDDARR
 
       real*8, allocatable, dimension(:) :: VERTVELO, VELOVAR
 
@@ -215,9 +216,9 @@
 
       allocate(eddi(3, ND), eddarr(3, ND, NF))
 
-      allocate(xlambda(NF), fweight(NF), emflux(NF), akey(NF))
+      allocate(dummy1_nf(NF), dummy2_nf(NF), dummy3_nf(NF), dummy4_nf(NF))
 
-      allocate(P(NP), Z1D(ND * NP), Z(ND, NP))
+      allocate(P(NP), Z1D(ND * NP), Z2D(ND, NP))
 
       allocate(popnum(ND, N), pop1(ND, N), pop2(ND, N), pop3(ND, N))
 
@@ -250,7 +251,7 @@
       lblank=0
 
       CALL READMOD(IFL,N,ND,TEFF,R,NP,P,Z1D,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
-     $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
+     $             dummy1_nf(1 : NF),dummy2_nf(1 : NF),dummy3_nf(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
       close(IFL)
@@ -263,7 +264,7 @@
 !     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
 
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
-     $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
+     $             HTOT,GTOT,XTOT,ETOT,dummy4_nf,TOTIN,TOTOUT,
      $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,lastind,
      $             EINST,MODHEAD,JOBNUM)
 
@@ -292,22 +293,17 @@
         close (IFL)
       ENDIF
 
-      call ZGRID(R, P, Z1D, ND, NP) ! calculate the Z grid
+      call ZGRID(R, P, Z1D, ND, NP) ! calculate the Z1D grid
 
-      Z = RESHAPE(Z1D, (/ND, NP/))
+      Z2D = RESHAPE(Z1D, (/ND, NP/))
 
-      !***  PRINTOUT OF THE ATOMIC DATA
-      AKEY(1:NF)=8H             
-
-
-      idat=1
-      IF (IDAT.EQ.1)
-     $  call PRIDAT(N,LEVEL,NCHARG, WEIGHT,ELEVEL,EION,EINST,
-     $              KODAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $              NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
+!     PRINTOUT OF THE ATOMIC DATA
+      call PRIDAT(N,LEVEL,NCHARG, WEIGHT,ELEVEL,EION,EINST,
+     $            KODAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+     $            NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
 
       !***  ADDITIONAL CALCULATION FOR SUBROUTINE PRIPRO
-      RSTAR2=RSTAR*RSTAR
+      RSTAR2 = RSTAR * RSTAR
 
       !***  DECODING INPUT CARDS
       JFIRST=1
@@ -495,7 +491,7 @@
       CALL PREF_SYN(KARTE,N,ELEVEL,LINE,INDLOW,INDNUP,LASTIND,
      $              VDOP,FMAX,FMIN,XMAX,VDU(1),VSIDU,esca_wd,
      $              DXOBS,NFOBS,XLAM,FREMAX,
-     $              NF,EMFLUX,XLAMBDA,FNUEC)
+     $              NF,FNUEC)
 
       IF (LINE .EQ. 0) cycle MAIN_LOOP       ! go back to DECF_SYN
 !***  replace the wavelength XLAM by the reference RWLAE
@@ -517,7 +513,7 @@
      $          LBKG,XLBKG1,XLBKG2,NF)
 
 !     CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
-      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z2D,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
       print *,' Continuum Flux interpolated from the model: ',FNUEC
       print *,'      "      "  from ELIMIN ',FNUCONT,
@@ -587,11 +583,7 @@
       dstep=abs(dvopa*vdop*1.e5)
       print *, ' vdop ',vdop,' dstep ',dstep
 
-      if (maxiter.gt.1) then
-
-         CALL CWGAUSS9(CWK,XNU,ND,NVOPA,T,xjc,dstep)
-
-      endif
+      if (maxiter.gt.1) CALL CWGAUSS9(CWK,XNU,ND,NVOPA,T,xjc,dstep)
 
       if(any(isnan(XJC))) stop 'fioss: NAN XJC'
       if(any(isnan(CWK))) stop 'fioss: NAN XJC'
@@ -772,7 +764,7 @@
             IRAY=ND*(JP-1)+1
             IF (NPHI.GT.1) PHI=PI*(LPHI-1)/(NPHI-1)
 
-            CALL PREPR_F(Z(1 : ND, JP),P,ND,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
+            CALL PREPR_F(Z2D(1 : ND, JP),P,ND,NP,JP,LTOT,LMAX,WE,CORE,VDU,R,
      $                   IRIND,IBACK,RRAY,ZRAY,XCMF,NDADDIM)
 
             CALL OBSINT(LTOT,CORE,BCORE,DBDR,P,
@@ -846,8 +838,6 @@
           ENDIF
 
         ENDDO ! LOOP OVER JP (IMPACT PARAMETERS)
-
-        print*, 'after JP loop'
 
         close(250)
 

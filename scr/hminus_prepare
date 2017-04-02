@@ -17,7 +17,8 @@ PREV_RUN_DIR=$INIT_DIR/hminus/IT$PREV_ODF_IT/$RUN
 
 ORIG_SRC=$src
 ORIG_EXE_FILE=$PREV_RUN_DIR/hminus.exe
-DATOM_FILE=$PREV_RUN_DIR/DATOM
+DATOM_LTE=$PREV_RUN_DIR/DATOM_LTE
+DATOM_NLTE=$PREV_RUN_DIR/DATOM_NLTE
 FGRID_FILE=$inp/fgr/fgridHZN.dat
 FALVD_FILE=$PREV_RUN_DIR/ATM_MOD
 CROSS_SECTION_FILES=$inp/crs/002
@@ -64,7 +65,8 @@ change_dir $INIT_DIR
 
 THIS_SCRIPT=$0
 echo "===================================================================================================
-DATOM_FILE =          $DATOM_FILE
+DATOM_LTE =           $DATOM_LTE
+DATOM_NLTE =          $DATOM_NLTE
 FGRID_FILE =          $FGRID_FILE
 CROSS_SECTION_FILES = $CROSS_SECTION_FILES
 PREV_RUN_DIR =        $PREV_RUN_DIR
@@ -76,7 +78,7 @@ ORIG_SRC =            $ORIG_SRC
 LBKG =                $LBKG
 ==================================================================================================="; echo
 
-error_ifunset CROSS_SECTION_FILES DATOM_FILE FGRID_FILE FALVD_FILE RUN_DIR ORIG_SRC 
+error_ifunset CROSS_SECTION_FILES DATOM_LTE DATOM_NLTE FGRID_FILE FALVD_FILE RUN_DIR ORIG_SRC 
 
 pushd . &> /dev/null
 cd        $ORIG_SRC
@@ -85,7 +87,8 @@ popd &> /dev/null
 
 rm_dir $RUN_DIR; create_dir $RUN_DIR; change_dir ${RUN_DIR}
 
-cp -v ${DATOM_FILE}            ./DATOM
+cp -v ${DATOM_LTE}             ./DATOM_LTE
+cp -v ${DATOM_NLTE}            ./DATOM_NLTE
 cp -v ${FGRID_FILE}            ./FGRID
 cp -v ${FALVD_FILE}            ./ATM_MOD
 cp -v ${CROSS_SECTION_FILES}/* ./

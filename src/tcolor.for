@@ -1,22 +1,26 @@
       module MOD_TCOLOR
+
       contains
-C**********  MODULNAME: TCOLOR    ******* 24/03/87  22.14.03.******    28 KARTEN
+
       SUBROUTINE TCOLOR (XL1,XL2,EM1,EM2,ITCOL)
-C***********************************************************************
-C***  CALCULATION OF TCOLOR FROM THE SLOPE OF EMFLUX BETWEEN XLAM1 AND XLAM2
-C***********************************************************************
-      use MOD_BNUE
-      use MOD_DELPLA
+
+!     CALCULATION OF TCOLOR FROM THE SLOPE OF EMFLUX BETWEEN XLAM1 AND XLAM2
+
       use MOD_REGULA
+
+      use phys
+
       implicit real*8(a-h,o-z)
       character itcol*8
-C***  COMMON /COMDPL / IS USED BY FUNCTION DELPLA (RATIO OF PLANCK FUNCTIONS)
+
       COMMON / COMDPL / XLAM1, XLAM2
-C*** FUNCTION DELPLA IS FORMAL PARAMETER IN SUBR. REGULA
-C***  TCOL1,TCOL2 = MIN AND MAX COLOUR TEMPERATURE TO BE DETERMINED
-C***  EPS = ACCURACY OF TCOLOR DETERMINATION
-CMH      DATA TCOL1,TCOL2,EPS/1000.d0,500000.d0,50.d0/
-CMH	TCOL2 INCREASED TO 1000000
+
+!     FUNCTION DELPLA IS FORMAL PARAMETER IN SUBR. REGULA
+!     TCOL1,TCOL2 = MIN AND MAX COLOUR TEMPERATURE TO BE DETERMINED
+!     EPS = ACCURACY OF TCOLOR DETERMINATION
+!     DATA TCOL1,TCOL2,EPS/1000.d0,500000.d0,50.d0/
+!  	  TCOL2 INCREASED TO 1000000
+
       DATA TCOL1,TCOL2,EPS/1000.d0,1000000.d0,50.d0/
       XLAM1=XL1
       XLAM2=XL2
@@ -32,6 +36,25 @@ CMH	TCOL2 INCREASED TO 1000000
    10          FORMAT (F8.0)
              ENDIF
           ENDIF
-      RETURN
-      END subroutine
+      return
+
+      end subroutine
+
+      FUNCTION DELPLA(T)
+
+      use phys
+
+!     THIS FUNCTION IS USED BY SUBR. PRIFLUX FOR THE ESTIMATE OF TCOLOR
+!     AND CALCULATES THE RATIO B-NUE(XLAM1,T) /  B-NUE(XLAM2,T)
+
+      implicit real*8(a - h, o - z)
+
+      COMMON / COMDPL / XLAM1, XLAM2
+
+      DELPLA = BNUE(XLAM1, T) / BNUE(XLAM2, T)
+
+      return
+
+      end function
+
       end module

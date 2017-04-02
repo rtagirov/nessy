@@ -15,7 +15,7 @@
 
        use mod_opac
 
-C     AUXILIARY INITIALIZATION PROCEDURE
+!     auxiliary initialization procedure
 
       implicit none
 

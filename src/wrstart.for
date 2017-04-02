@@ -21,9 +21,9 @@
       use MOD_WRITMOD
       use MOD_TICTOC
       use MOD_ERROR
-      use MOD_chemeq      
-      use ABUNDANCES
+      use MOD_chemeq
 
+      use abundances
       use vardatom
       use varhminus
       use geo_mesh
@@ -43,11 +43,6 @@
 
       IMPLICIT REAL*8(A - H, O - Z)
 
-      INTEGER :: IPDIM, NBDIM
-      parameter(IPDIM = 25, NBDIM = 99)
-
-      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM, NBDIM), ABSEVT(IPDIM, NBDIM)
-      COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
       COMMON /VELPAR/  VFINAL, VMIN, BETA, VPAR1, VPAR2, RCON, HSCALE
       COMMON /COMTEFF/ TEFF, TMIN, TMODIFY, SPHERIC
       COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
@@ -92,8 +87,9 @@
       call mark_nlte(N)
 
 !     DECODING INPUT DATA
+      allocate(ABXYZ(NATOM))
       CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
-     $             TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN, AMU)
+     $             TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN,AMU)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
@@ -107,7 +103,6 @@
      $             INDLOW,INDNUP)
 
 !     GENERATION OF THE CONTINUOUS FREQUENCY GRID
-
       CALL FGRID(NFDIM,NF,XLAMBDA,FWEIGHT,AKEY,NOM,SYMBOL,NATOM,N,NCHARG,ELEVEL,EION,EINST)
 
       CALL GEOMESH(RADIUS, ENTOT, T, P, Z, RSTAR, AMU, ATMEAN, ND, NP)
@@ -138,6 +133,7 @@
       allocate(scafac(ND, NF))
       allocate(absfac(ND, NF))
 
+      allocate(ABXYZn(NATOM, ND))
       allocate(ABXYZ_small(NATOM))
       allocate(ABXYZn_small(NATOM, ND))
 

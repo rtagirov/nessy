@@ -74,18 +74,11 @@
       CHARACTER*7 JOB
       character*7 LINE(lastind_nlte)
       LOGICAL ETLKEY, LINEKEY(lastind_nlte)
-      integer,external :: time
       logical :: ierr9
 
       real*8, allocatable, dimension(:) ::    opal, etal
 
       real*8, allocatable, dimension(:) ::    xjcind, xjlmean
-
-      real*8, allocatable, dimension(:, :) :: xj, xh, xk, xn
-
-      real*8, allocatable, dimension(:) ::    bmho, bmno, bmhi, bmni
-
-      real*8, allocatable, dimension(:) ::    w0, w1, w2, w3
 
       print*, 'entered etl: ' // writeTOC()
       call tic(timer)
@@ -124,20 +117,6 @@
 
       if (allocated(xjcind))    deallocate(xjcind);    allocate(xjcind(ND))
       if (allocated(xjlmean))   deallocate(xjlmean);   allocate(xjlmean(ND))
-      if (allocated(xj))        deallocate(xj);        allocate(xj(NFL, ND))
-      if (allocated(xh))        deallocate(xh);        allocate(xh(NFL, ND))
-      if (allocated(xk))        deallocate(xk);        allocate(xk(NFL, ND))
-      if (allocated(xn))        deallocate(xn);        allocate(xn(NFL, ND))
-
-      if (allocated(bmho))      deallocate(bmho);      allocate(bmho(nfl))
-      if (allocated(bmno))      deallocate(bmno);      allocate(bmno(nfl))
-      if (allocated(bmhi))      deallocate(bmhi);      allocate(bmhi(nfl))
-      if (allocated(bmni))      deallocate(bmni);      allocate(bmni(nfl))
-
-      if (allocated(w0))        deallocate(w0);        allocate(w0(nd))
-      if (allocated(w1))        deallocate(w1);        allocate(w1(nd))
-      if (allocated(w2))        deallocate(w2);        allocate(w2(nd))
-      if (allocated(w3))        deallocate(w3);        allocate(w3(nd))
 
       damp_line(1 : ND, 1 : lastind_nlte) = .false.
 
@@ -244,9 +223,9 @@
  
 !***  PREPARING SOME QUANTITIES FOR THE CONSIDERED LINE
 
-      CALL PRELINE(NUP,LOW,IND,N_nlte,LRUD,XLAM,ND,NFL,LINE,BMHO,BMNO,
-     $             BMHI,BMNI,XJLMEAN,XJ,XH,XK,XN,elevel_nlte,NL,
-     $             einst_nlte,indnup_nlte,indlow_nlte,lastind_nlte)
+      CALL PRELINE(NUP,LOW,IND,N_nlte,LRUD,XLAM,ND,NFL,LINE,
+     $             XJLMEAN,elevel_nlte,NL,einst_nlte,
+     $             indnup_nlte,indlow_nlte,lastind_nlte)
 
 !      IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0) .or. lte_line) GOTO 7
       IF ((NUP .EQ. 0) .OR. (LRUD .EQ. 0)) GOTO 7
@@ -329,8 +308,7 @@
       LMAX = MIN0(NP + 1 - JP, ND)
 
       CALL ETLRAY(U(1 : ND, JP),Z,OPA,OPAL,ETA,ETAL,XJLMEAN,RADIUS,ND,NP,JP,P,
-     $            VELO,GRADI,BMHO,BMNO,BMHI,BMNI,BCORE,DBDR,
-     $            PHI,PWEIGHT,NFL,DELTAX,XJ,XH,XK,XN,W0,W1,W2,W3,LO)
+     $            VELO,GRADI,BCORE,DBDR,PHI,PWEIGHT,NFL,DELTAX,LO)
 
    13 CONTINUE
 
@@ -385,10 +363,6 @@
 
       deallocate(lo)
       deallocate(xjcind)
-      deallocate(xjlmean)
-      deallocate(xj, xh, xk, xn)
-      deallocate(bmho, bmno, bmhi, bmni)
-      deallocate(w0, w1, w2, w3)
 
       close(ifl)
 
@@ -397,6 +371,8 @@
 
 !***  store the line radiation field in file RADIOL
       call writradl(XJL,XJLMEAN,einst_nlte,ncharg_nlte,nom_nlte,ND,N_nlte,lastind_nlte,MODHEAD,JOBNUM)
+
+      deallocate(xjlmean)
 
       IF (LSINT.GT.0) CALL PRIINTL(N_nlte,level_nlte,weight_nlte,einst_nlte,lastind_nlte,LINE,NLINE,
      $                             indlow_nlte,indnup_nlte,elevel_nlte,ND,XJL,LSINT,JOBNUM,MODHEAD)
