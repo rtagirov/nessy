@@ -307,14 +307,6 @@ C***  FIRST TERMS : THE ORIGINAL MATRIX RATCO
 
       if (any(isnan(ratco))) stop 'coma: ratco NaN'
 
-!      do k = 1, NF
-
-!         print*, 'coma expfac: ', k, expfac(k)
-
-!      enddo
-
-!      stop
-
       DO 10 I = 1, NPLUS1
 
 C***  CONSTRUCT DERIVATIVE VECTORS DOPA, DETA WITH RESPECT TO EN(I)

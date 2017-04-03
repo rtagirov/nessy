@@ -36,8 +36,6 @@
 
       LOGICAL, DIMENSION(:), ALLOCATABLE ::      NOFILE
 
-      LOGICAL ::                                 CONST_ELEC = .FALSE.
-
       logical ::                                 each_ali = .false.
 
       LOGICAL ::                                 VEL_FIELD_FROM_FILE

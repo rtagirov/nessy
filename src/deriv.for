@@ -10,12 +10,10 @@
      $                 N,NCHARG,WEIGHT,ELEVEL,NOM,EINST,SIGMAKI,LASTIND,
      $                 XJL, AccFact, SLOLD)
 
-C*******************************************************************************
-C***  DERIVATIVE OF RATE EQ. COEFFICIENTS :
-C***  D(I,M,J):= N(M) * D(RATCO(M,J))/DN(I) - N(J) * D(RATCO(J,M))/DN(I)
-C*******************************************************************************
+!     DERIVATIVE OF RATE EQ. COEFFICIENTS:
+!     D(I,M,J) := N(M) * D(RATCO(M,J))/DN(I) - N(J) * D(RATCO(J,M))/DN(I)
 
-      USE COMMON_BLOCK
+      use common_block
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -65,8 +63,6 @@ C***  DERIVATIVE WITH RESPECT TO ELECTRON DENSITY
       IF (I .EQ. NPLUS1) THEN
 
          DLOWUP = - (EN(LOW) * CRATE(LOW, NUP) - EN(NUP) * (2.d0 * CRATE(NUP, LOW) + RRATE(NUP, LOW))) / EN(NPLUS1)
-
-         IF (CONST_ELEC) DLOWUP = 0.0D0 ! PRE-SET ELECTRON CONCENTRATION
 
       ENDIF
 
@@ -144,8 +140,6 @@ C***  DERIVATIVE WITH RESPECT TO ELECTRON DENSITY
 
           DLOWUP = EN(NUP) * CRATE(NUP, LOW) * (1.0D0 - CRRatio) / EN(NPLUS1)
 !         DLOWUP = (EN(NUP) * CRATE(NUP, LOW) - EN(LOW) * CRATE(LOW, NUP)) / EN(NPLUS1)
-
-         IF (CONST_ELEC) DLOWUP = 0.0D0 ! PRE-SET ELECTRON CONCENTRATION
 
           RETURN
 

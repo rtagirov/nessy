@@ -237,7 +237,6 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
 !     GENERATE ONCE FOR ALL PHOTOCROSSSECTIONS AT ALL FREQUENCIES
 !     SIGMAKI(K,LOW) IN CM**2
-
       CALL BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
      $             XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,
      $             WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
@@ -426,8 +425,7 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
       POPHML  = POPNUM(L, 1) *        ENTOT(L)
       POPHIL =  POPNUM(L, 2) *        ENTOT(L)
 
-!     LLO is declared in comblock.for along with its description
-
+!     LLO is declared in comblock.for
       CALL COMA(CRATE,RRATE,RATCO,DM,N,NRANK,V1,ABXYZ_new,
      $          ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,EION,WEIGHT,ALTESUM,
      $          XLAMBDA,FWEIGHT,XJC,NF, L, XJL(L, 1 : LASTIND), ND, XJLAPP,
@@ -519,33 +517,6 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
       DO J = 1, NPLUS1; STRONG_CONV = STRONG_CONV .AND. (ABS(ENDELTA(J) / EN(J)) .LT. EPSDN .OR. ABS(EN(J)) .LT. 1.0D-15); ENDDO
 
-!      print*, 'flag4'
-
-!      iii = 1
-
-!      do while (iii .le. NPLUS1)
-
-!         print*, 'flag5'
-
-!         part1 = ABS(ENDELTA(iii) / EN(iii))
-
-!         print*, 'flag6'
-
-!         part2 = ABS(EN(iii))
-
-!         print*, 'flag7'
-
-!         print*, iii, ABS(ENDELTA(iii) / EN(iii)), epsdn, ABS(EN(iii))
-
-!         print*, 'flag8'
-
-!         iii = iii + 1
-
-!      enddo
-
-!      print*, 'flag9'
-!      print*, 'strong_conv = ', strong_conv; stop 'linpop stop'
-
       IF (.NOT. STRONG_CONV .AND. ITNE(L) .LT. ITMAX) THEN
 
          GOTO 10
@@ -603,22 +574,13 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
 
       CALL DBSAVE(DB, L, NRANK)
 
-!     UPDATING ARRAY POPNUM AND CALCULATING THE DEPARTURE COEFFICIENTS:
-!     RINAT TAGIROV:
-!     THE MOST ACCURATE WAY TO DO THIS IS TO UPDATE THE LTE POPULATIONS HERE BECAUSE UPON THE LAST
-!     CALL OF THE LTEPOP PROCEDURE THE ELECTRON CONCENTRATION HAD NOT
-!     YET CONVERGED, I.E. IF WE DON'T DO THAT HERE THE LTE POPULATIONS WILL
-!     CORRESPOND TO THE PENULTIMATE BROYDEN/NEWTON ITERATION
+!     updating array popnum and calculating the departure coefficients:
+!     Rinat Tagirov:
+!     the most accurate way to do this is to update the lte populations here because upon the last
+!     call of the ltepop procedure the electron concentration has not
+!     yet converged, i.e. if we don't do that here the lte populations will
+!     correspond to the penultimate broyden/newton iteration
 !*******************************************************************************************
-
-      IF (CONST_ELEC) THEN ! PRE-SET ELECTRON CONCENTRATION
-
-          ELEC_CONC =       read_atm_file_col(3)
-          HEAVY_ELEM_CONC = read_atm_file_col(4)
-
-          EN(NPLUS1) = ELEC_CONC(L) / HEAVY_ELEM_CONC(L)
-
-      ENDIF
 
       ENE = EN(NPLUS1) * ENTOT(L)
 
@@ -750,57 +712,6 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       ENDIF
 
-!      WRITE(*, '(/,A)') '******** REFINEMENT PROTONS **********'
-
-!      DO L = 1, ND
-
-!         IF (L .LE. 49 .AND. L .GE. 42) THEN
-
-!            ONE_PRO = 0.0D0
-!            ONE_PRO = POPNUM(L, 2) * ACR(L, 2, 12) - POPNUM(L, 12) * ACR(L, 12, 2)
-!            ONE_PRO = ONE_PRO - POPNUM(L, 12) * RBR(L, 12, 2)
-            
-!            TWO_PRO = -1.0D0 * POPNUM(L, 12) * RBR(L, 12, 3)
-!            TWO_PRO = TWO_PRO + POPNUM(L, 3) * ACR(L, 3, 12) - POPNUM(L, 12) * ACR(L, 12, 3)
-
-!            PRO_LEV = 0.0D0
-
-!            DO I = 4, 8; PRO_LEV = PRO_LEV + POPNUM(L, 12) * RBR(L, 12, I); ENDDO
-
-!            DO I = 4, 11
-!
-!               PRO_LEV = PRO_LEV + POPNUM(L, 12) * RBR(L, 12, I) +
-!     $                             POPNUM(L, 12) * ACR(L, 12, I) -
-!     $                             POPNUM(L, I) *  ACR(L, I, 12)
-
-!            ENDDO
-
-!            WRITE(*, '(I3,2(1x,E15.7))') L, ONE_PRO, PRO_LEV * (1.0D0 - TWO_PRO / PRO_LEV)
-!
-!         ENDIF
-!
-!      ENDDO
-
-!      WRITE(*, '(/,A)') '******** REFINEMENT 2ND **********'
-!
-!      DO L = 1, ND
-!
-!         IF (L .LE. 49 .AND. L .GE. 42) THEN
-!
-!            LEV_TWO = POPNUM(L, 4) * RBR(L, 4, 3) + POPNUM(L, 5) * RBR(L, 5, 3)
-!            
-!            TWO_PRO = -1.0D0 * POPNUM(L, 3) * RBR(L, 12, 3)
-!
-!            TWO_ONE = POPNUM(L, 3) * ACR(L, 3, 2) - POPNUM(L, 2) * ACR(L, 2, 3)
-!
-!            WRITE(*, '(I3,5(1x,E15.7))') L, LEV_TWO - TWO_PRO - TWO_ONE, TWO_ONE, LEV_TWO - TWO_PRO, LEV_TWO, TWO_PRO
-!
-!         ENDIF
-!
-!      ENDDO
-
-!      WRITE(*, '(A,/)') '**********************************'
-
       IF (PRINT_LTE_ARR) THEN
 
          DO K = 1, NFEDGE(1); XJC_EDG(1 : ND) = XJC_EDG(1 : ND) + XJC_LTE(1 : ND, K) * FWEIGHT(K); ENDDO
@@ -867,7 +778,7 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       IF (.NOT. LTE_RUN) RETURN
 
-      END SUBROUTINE LINPOP
+      end subroutine
 
       subroutine print_nlte_lev(Level, LevPopLTE, LevPop, DepartZwaan)
 
