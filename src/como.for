@@ -22,11 +22,11 @@
       use MOD_WRITMOD
       use MOD_WRITRADC
       use UTILS
-      use ABUNDANCES
       USE MOD_BFCROSS
 
       use common_block
-      use vardatom
+      use vardatom_lte
+      use vardatom_nlte
       use varhminus
       use varsteal
       use phys

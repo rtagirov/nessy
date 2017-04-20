@@ -2,9 +2,9 @@
 
       contains
 
-      SUBROUTINE CCORE(NF,DELTAC,MODHEAD,JOBNUM,
+      SUBROUTINE CCORE(NF,MODHEAD,JOBNUM,
      $                 SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
-     $                 OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $                 IWARN,MAINPRO,MAINLEV,NOM,
      $                 N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
      $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
 
@@ -33,7 +33,7 @@ C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
 	real*8,dimension(N,NF) :: WAVARR,SIGARR
 	real*8,dimension(NF)    :: XLAMBDA	     ! Array of Wavelength
 	logical :: LBKG	
-	real*8 :: DELTAC, RSTAR
+	real*8 ::  RSTAR
 	
 	! local variables
 	real*8 :: OPAL	! OPAL =(OPA*(1-THOMSON))(L)

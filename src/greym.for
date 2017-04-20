@@ -1,11 +1,13 @@
       module MOD_GREYM
+
       contains
-C**********  MODULNAME: GREY      ******* 06/08/87  20.46.41.******   233 KARTEN
+
       SUBROUTINE GREYM(ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,ENTOT,RNE,RSTAR, 
      $                 ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,
      $                 LBKG,XLBKG1,XLBKG2,N, 
-     $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,ENLTE,KODAT, 
+     $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,KODAT, 
      $                 NOM,NFIRST,NLAST,NATOM,WAVARR,SIGARR)
+
 C***  CALLED BY WRSTART 
 C*********************************************************************** 
 C***  COMPUTATION OF THE TEMPERATURE STRUCTURE 
@@ -33,6 +35,7 @@ C***  BELOW TMIN.
 C***  FOR THE CALCULATION OF THE LTE IONIZATION STRUCTURE A MINIMUM 
 C***  TEMPERATURE OF Teff*0.8112 IS USED
 C*********************************************************************** 
+
       use MOD_LIPO
       use MOD_OPAROSS
       use MOD_LTEPOP
@@ -40,7 +43,9 @@ C***********************************************************************
       use MOD_DTDR
       use MOD_ODEINT
       use MOD_ERROR
-      use ABUNDANCES
+
+      use common_block
+
       IMPLICIT REAL*8(A-H,O-Z)
       COMMON /COMDTDR/ OPAMEAN,R23COM,R1COM,R13COM
       COMMON /COMTEFF/ TEFF,TMIN,TMODIFY,SPHERIC 
@@ -80,12 +85,11 @@ C*****************************************************************************
 
             ABHE=0. 
             ABH=0. 
-            IF (KODAT(1) .GT. 0) ABHE=ABXYZ_small(KODAT(1)) 
-            IF (KODAT(2) .GT. 0) ABH=ABXYZ_small(KODAT(2))
+            IF (KODAT(1) .GT. 0) ABHE = ABXYZ(KODAT(1)) 
+            IF (KODAT(2) .GT. 0) ABH =  ABXYZ(KODAT(2))
 
 !**********************************************************
 !RT
-!            PRINT*, 'ACHTUNG: ABHE = ', ABHE, KODAT(1), ABXYZ_small(KODAT(1))
              ABHE = 1.0D0 - 9.11E-01 - 2.57E-05
 
 !*********************************************************

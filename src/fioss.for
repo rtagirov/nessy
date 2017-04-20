@@ -25,9 +25,8 @@
       use OPINT
       use UTILS
       use CONSTANTS,only:CLIGHT_SI
-      use ABUNDANCES
 
-      use vardatom
+      use vardatom_lte
       use varhminus
       use common_block
       use file_operations
@@ -72,7 +71,6 @@
       !        good idea to make NFODIM quite a bit larger
 
       real*8, allocatable, dimension(:) ::       R
-!      real*8, allocatable, dimension(:) ::       entot, enlte
 !      real*8, allocatable, dimension(:) ::       T
 !      real*8, allocatable, dimension(:) ::       XJC
 !      real*8, allocatable, dimension(:) ::       TAUROSS
@@ -82,7 +80,7 @@
 
       real*8, allocatable, dimension(:) ::       VDU
 
-      real*8, allocatable, dimension(:) ::       eta, opa, thomson, tauthom, dil
+      real*8, allocatable, dimension(:) ::       eta, opa, thomson, dil
 
       real*8, allocatable, dimension(:) ::       dummy1_nf, dummy2_nf, dummy3_nf, dummy4_nf
 
@@ -206,7 +204,7 @@
 
       ndaddim = 2 * ND + 12
 
-      allocate(entot(ND), enlte(N))
+      allocate(entot(ND))
       allocate(T(ND), RNE(ND))
       allocate(XJC(ND), XJCARR(ND, NF), WCHARM(ND, NF), XJL(ND, LASTIND))
       allocate(R(ND), TAUROSS(ND))
@@ -224,7 +222,7 @@
 
       allocate(eta(ND), opa(ND))
 
-      allocate(thomson(ND), tauthom(ND))
+      allocate(thomson(ND))
 
       allocate(U(ND, NP), WLK(ND, NP))
 

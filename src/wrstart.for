@@ -23,8 +23,8 @@
       use MOD_ERROR
       use MOD_chemeq
 
-      use abundances
-      use vardatom
+      use vardatom_lte
+      use vardatom_nlte
       use varhminus
       use geo_mesh
       use init_vel
@@ -84,12 +84,12 @@
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,NFDIM) ! NFDIM is known from varhminus module
 
-      call mark_nlte(N)
-
 !     DECODING INPUT DATA
       allocate(ABXYZ(NATOM))
       CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
      $             TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN,AMU)
+
+      call mark_nlte(N, NATOM)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
@@ -120,7 +120,6 @@
       allocate(VELO(ND))
       allocate(GRADI(ND))
       allocate(EMFLUX(NF))
-      allocate(ENLTE(N))
       allocate(POPNUM(ND, N))
       allocate(HTOT(ND))
       allocate(GTOT(ND))
@@ -134,8 +133,6 @@
       allocate(absfac(ND, NF))
 
       allocate(ABXYZn(NATOM, ND))
-      allocate(ABXYZ_small(NATOM))
-      allocate(ABXYZn_small(NATOM, ND))
 
       allocate(U(ND, NP))
       allocate(VJL(NP, ND))
@@ -146,10 +143,6 @@
       allocate(mainlev(ND))
 
       call mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, NATOM, ND)
-
-      ABXYZ_small(1 : NATOM) = ABXYZ(1 : NATOM)
-
-      ABXYZn_small(1 : NATOM, 1 : ND) = ABXYZn(1 : NATOM, 1 : ND)
 
 !     RINAT TAGIROV:
 !     Calculation or read-out of the velocity field.
@@ -224,7 +217,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
       CALL GREYM(ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,ENTOT,RNE,RSTAR,
      $           ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,
      $           LBKG,XLBKG1,XLBKG2,N,
-     $           LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,ENLTE,KODAT,
+     $           LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,KODAT,
      $           NOM,NFIRST,NLAST,NATOM,WAVARR,SIGARR)
 
       CALL PRIMOD(ND,RADIUS,RSTAR,ENTOT,T,VELO,GRADI,NP,MODHEAD,JOBNUM,TTABLE,TAUROSS,R23)
@@ -356,9 +349,10 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       END FUNCTION EXTRAP_VEL_FIELD
 
-      subroutine mark_nlte(N)
+      subroutine mark_nlte(N, NATOM)
 
-      use vardatom
+      use vardatom_lte
+      use vardatom_nlte
       use varhminus
       use common_block
       use file_operations
@@ -366,9 +360,9 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       implicit none
 
-      integer, intent(in) :: N!, lastind
+      integer, intent(in) :: N, NATOM
 
-      integer :: j, i, i_nlte!, ind, low, nup
+      integer :: i, j
 
       call datom(datom_nlte,
      $           N_nlte,
@@ -401,11 +395,15 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
      $           sigarr_nlte,
      $           nfdim) ! NFDIM is known from varhminus module
 
-      allocate(nlte(N)); allocate(idx_nlte(N_nlte))
+      allocate(nlte_lev(N)); allocate(idx_nlte(N_nlte))
 
-      nlte(1 : N) = .false.
+      allocate(nlte_ele(NATOM)); allocate(abxyz_nlte(natom_nlte))
 
-      i_nlte = 1
+      nlte_lev(1 : N) = .false.
+
+      nlte_ele(1 : NATOM) = .false.
+
+!      i_nlte = 1
 
       do i = 1, N
 
@@ -413,11 +411,11 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
             if (level_nlte(j) .eq. level(i)) then
 
-                nlte(i) = .true.
+                nlte_lev(i) = .true.
 
-                idx_nlte(i_nlte) = i
+                idx_nlte(j) = i
 
-                i_nlte = i_nlte + 1
+!                i_nlte = i_nlte + 1
 
                 cycle
 
@@ -427,14 +425,54 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       enddo
 
-!      do i = 1, N
+!      i_nlte = 1
 
-!         print*, i, level(i), nlte(i)
+      do i = 1, NATOM
 
-!      enddo
+         do j = 1, natom_nlte
 
-!      stop
+            if (element_nlte(j) .eq. element(i)) then
+
+                nlte_ele(i) = .true.
+
+                abxyz_nlte(j) = abxyz(i)
+
+!                i_nlte = i_nlte + 1
+
+                cycle
+
+            endif
+
+         enddo
+
+      enddo
+
+      do i = 1, N
+
+         write(*, '(A,2x,i4,2x,A,2x,L)') 'mark_nlte, levels:', i, level(i), nlte_lev(i)
+
+      enddo
+
+      j = 1
+
+      do i = 1, NATOM
+
+         if (.not. nlte_ele(i)) write(*, '(A,2x,i4,2x,A,2x,L,2x,ES9.3)')
+     $                          'mark_nlte, abundances:', i, element(i), nlte_ele(i), ABXYZ(i)
+
+         if (nlte_ele(i)) then 
+
+            write(*, '(A,2x,i4,2x,A,2x,L,2(2x,ES9.3))')
+     $      'mark_nlte, abundances:', i, element(i), nlte_ele(i), ABXYZ(i), abxyz_nlte(j)
+
+            j = j + 1
+
+         endif
+
+      enddo
+
+      stop
 
       end subroutine
 
-      END MODULE
+      end module

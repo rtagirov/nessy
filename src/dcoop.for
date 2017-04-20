@@ -1,5 +1,7 @@
       module MOD_DCOOP
+
       contains
+
       SUBROUTINE DCOOP (I,DOPA,DETA,XLAMBDA,NF,TL,RNEL,ENTOTL,EN,RSTAR,
      $                  WCHARM,ND,L,NFEDGE,EXPFAC,N,NCHARG,WEIGHT,
      $                  ELEVEL,EION,NOM,EINST,SIGMAKI)

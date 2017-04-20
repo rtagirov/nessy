@@ -29,12 +29,12 @@
       use MOD_TICTOC
       use MOD_WRITMOD
       use MOD_WRITRADC
-      use ABUNDANCES
       USE CONSTANTS
 
       use common_block
       use file_operations
-      use vardatom
+      use vardatom_lte
+      use vardatom_nlte
       use varhminus
       use varsteal
       use local_operator

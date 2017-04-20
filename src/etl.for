@@ -31,10 +31,10 @@
       use MOD_FORMATS
       use MOD_ERROR
       use MOD_TICTOC
-      use ABUNDANCES
       USE CONSTANTS
 
-      use vardatom
+      use vardatom_lte
+      use vardatom_nlte
       use varhminus
       use varsteal
       use common_block

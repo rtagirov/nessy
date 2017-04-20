@@ -1,22 +1,6 @@
-      module vardatom
+      module vardatom_nlte
 
-!     DATOM file variables (both for fioss and hminus)
-
-      integer, allocatable, dimension(:)        :: KODAT, NOM, NFIRST, NLAST, INDLOW, INDNUP, NCHARG, MAINQN
-
-      real*8,  allocatable, dimension(:)        :: ATMASS, ALPHA, EION, ELEVEL, SEXPO, WEIGHT, STAGE
-
-      real*8,  allocatable, dimension(:, :)     :: ALTESUM, EINST, SIGARR, WAVARR
-
-      real*8,  allocatable, dimension(:, :, :)  :: COCO
-
-      character*2, allocatable, dimension(:)    :: symbol
-
-      character*4, allocatable, dimension(:, :) :: keycol
-
-      character*8, allocatable, dimension(:)    :: agaunt
-
-      character*10, allocatable, dimension(:)   :: level, element
+!     datom_NLTE file variables (both for fioss and hminus)
 
       integer, allocatable, dimension(:)        :: kodat_nlte, nom_nlte, nfirst_nlte, nlast_nlte,
      $                                             indlow_nlte, indnup_nlte, ncharg_nlte, mainqn_nlte
@@ -36,4 +20,4 @@
 
       character*10, allocatable, dimension(:)   :: level_nlte, element_nlte
 
-      end module vardatom
+      end module vardatom_nlte

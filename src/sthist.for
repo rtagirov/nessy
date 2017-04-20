@@ -2,7 +2,7 @@
 
       CONTAINS
 
-      SUBROUTINE STHIST(LINE,GAMMAL,GAMMAR,DELTAC,MODHEAD,JOBNUM,CORMAX,REDUCE,MODHOLD,tdiff)
+      SUBROUTINE STHIST(LINE,GAMMAL,GAMMAR,MODHEAD,JOBNUM,CORMAX,REDUCE,MODHOLD,tdiff)
 
 !     UPDATING THE MODEL HISTORY FOR MAIN PROGRAM STEAL
 
@@ -24,9 +24,8 @@
          ENDIF
       ENDIF
       IF (GAMMAL .NE. .0) THEN
-	   write (LINE,2) jobnum,
-     $          DELTAC,GAMMAL,GAMMAR,MAXCOR
-    2    FORMAT (1H/,I3,'. STEAL                DELTAC=',F5.1,
+	   write (LINE,2) jobnum,GAMMAL,GAMMAR,MAXCOR
+    2    FORMAT (1H/,I3,'. STEAL                ',
      $            ' GAMMAL=',F8.1,' GAMMAR=',F8.1,' COR.=',A8 )
 c            LAST=LAST+11
       ELSE

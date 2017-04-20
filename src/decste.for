@@ -4,7 +4,7 @@
 
       SUBROUTINE DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,IFRRA,ITORA,LSEXPO,
      $                  IFLUX,IDAT,LEVELPL,N,IPLOTF,NEWWRC,
-     $                  NGAMR,NGAML,AGAMR,AGAML,DELTAC,LINE,LASTIND,
+     $                  NGAMR,NGAML,AGAMR,AGAML,LINE,LASTIND,
      $                  TPLOT,Y0,TEFFE,GRAD,ALDMDT,VINF,BET,PROLIB,LBLANK)
 
       use common_block
@@ -60,7 +60,6 @@ C***  NO SCHARMER AMPLIFICATION OF CORRECTIONS
       MGC=1
       MGR=1
       MGL=1
-      DELTAC=1.0
       IPRICC=0
       IPRILC=0
 C***  LINES THAT HAVE NOT BEEN TREATED IN THE RADIATION TRANSFER CALCULATIONS,
@@ -260,12 +259,6 @@ C                         ======
             DECODE (80,6,KARTE) GAMMAL,ANGL
             NGAML(MGL)=ANGL
             AGAML(MGL)=GAMMAL
-            GOTO 8
-            ENDIF
-      IF (KARTE(:6) .EQ. 'DELTAC') THEN
-C                         ======
-            DECODE (80,10,KARTE) DELTAC
-   10       FORMAT (7X,F10.0)
             GOTO 8
             ENDIF
       IF ( KARTE(:4) .EQ. 'LINE' ) THEN

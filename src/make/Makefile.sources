@@ -2,7 +2,6 @@
 FIOSS_PROG=${OUT}fioss.exe
 FIOSS_SRCS=\
 chemeq.for\
-abund.for\
 constants.for\
 varhminus.for\
 synthp_cont.for\
@@ -10,7 +9,6 @@ opint.for\
 balini.for\
 utils.for\
 formats.for\
-interpolation.for\
 inibl.for\
 moments.for\
 hydtab.for\
@@ -61,7 +59,7 @@ math.for\
 phys.for\
 comblock.for\
 fileoper.for\
-vardatom.for\
+vardatom_lte.for\
 geomesh.for\
 opac.for\
 synopa.for\
@@ -71,7 +69,6 @@ fioss.for
 
 HMINUS_PROG=$(OUT)/hminus.exe
 HMINUS_SRCS=\
-abund.for\
 chemeq.for \
 constants.for \
 varhminus.for \
@@ -219,5 +216,6 @@ phys.for\
 math.for\
 fileoper.for\
 stroper.for\
-vardatom.for\
+vardatom_lte.for\
+vardatom_nlte.for\
 comblock.for

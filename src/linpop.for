@@ -3,14 +3,13 @@
       contains
 
       SUBROUTINE LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART_ZWAAN,POP1,
-     $                  N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
+     $                  N,WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $                  XLAMBDA,FWEIGHT,XJC,NF,XJL,WCHARM,EPSILON,NODM,
-     $                  DELTAC,MODHEAD,JOBNUM,IFRRA,ITORA,
-     $                  RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
-     $                  VELO,GRADI,VDOP,INDNUP,INDLOW,LASTIND,
-     $                  OPAC,DOPA,DETA,SIGMAKI,
+     $                  MODHEAD,JOBNUM,IFRRA,ITORA,
+     $                  RADIUS,RSTAR,IWARN,MAINPRO,MAINLEV,
+     $                  VDOP,INDNUP,INDLOW,LASTIND,SIGMAKI,
      $                  ND,LSRAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
-     $                  ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
+     $                  ALTESUM,NFEDGE,NOM,NATOM,KODAT,NFIRST,
      $                  NLAST,WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,JOBMAX)
 
 !     see Koesterke et al 1992 A&A 255, 490
@@ -41,9 +40,9 @@
       USE MOD_XRUDI
       use MOD_CCORE
       use MOD_COMA
-      use ABUNDANCES
       use MOD_LIOP
 
+      use vardatom_nlte
       use file_operations
       use common_block
       use matoper
@@ -77,7 +76,7 @@
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)
       DIMENSION SCOLD(NF, ND)
       DIMENSION NFIRST(NATOM),NLAST(NATOM)
-      REAL*8 SIGMAKI(NF), ALPHA(N), SEXPO(N)
+      REAL*8    SIGMAKI(NF), ALPHA(N), SEXPO(N)
 
       real*8, allocatable, dimension(:, :) :: RATCO
 
@@ -87,41 +86,35 @@
 
       LOGICAL NODM, NEWRAP, STRONG_CONV, WEAK_CONV
 
-      real*8 :: part1, part2, epsdn
+      real*8 :: epsdn
 
       COMMON / COMNEGI / NEGINTL
       CHARACTER modhead*104
       CHARACTER LEVEL(N)*10
-      CHARACTER*4 KEYCOL(N,N)
-      DIMENSION WAVARR(N,NF),SIGARR(N,NF)
+      CHARACTER*4 KEYCOL(N, N)
+      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
 
       REAL*8 :: POPHIIL, POPHML, POPHIL
 
       real*8, allocatable, dimension(:) :: phi, pweight
 
-      real*8  WEIGHT(*)
+      real*8  WEIGHT(N)
       logical LBKG
-      integer XLBKG1,  XLBKG2, iii
+      integer XLBKG1, XLBKG2
 
-      character*10, dimension(*) :: MAINPRO,MAINLEV
-      integer,      dimension(*) :: IWARN
+      character*10, dimension(ND) :: MAINPRO, MAINLEV
+      integer,      dimension(ND) :: IWARN
 
       integer,      dimension(NATOM) :: KODAT
 
       real*8,       dimension(ND, NF) :: WCHARM
       real*8,       dimension(NF) ::     FWEIGHT
 
-      real*8,       dimension(*) :: DETA, DOPA
-
       real*8,       dimension(LASTIND) :: DETAL, DOPAL
-
-      real*8,       dimension(*) :: ETA, ETAC, GRADI
-      real*8,       dimension(*) :: OPA, OPAC
-      real*8,       dimension(*) :: THOMSON
 
       real*8,       dimension(N, N, 4) :: COCO
       real*8,       dimension(4, N) ::    ALTESUM
-      real*8,       dimension(ND) ::      RADIUS, VELO
+      real*8,       dimension(ND) ::      RADIUS
 
       REAL*8, DIMENSION(ND, LASTIND) :: XJL, JNEW
       REAL*8, DIMENSION(ND, NF) ::      XJC
@@ -242,9 +235,9 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
      $             WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
 
 !     DETERMINE SCOLD AT ALL DEPTH POINTS
-      CALL CCORE(NF,DELTAC,MODHEAD,JOBNUM,
+      CALL CCORE(NF,MODHEAD,JOBNUM,
      $           SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
-     $           OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
+     $           IWARN,MAINPRO,MAINLEV,NOM,
      $           N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
      $           WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
 
@@ -431,8 +424,8 @@ C***  REMOVE NEGATIVE LINE INTENSITIES
      $          XLAMBDA,FWEIGHT,XJC,NF, L, XJL(L, 1 : LASTIND), ND, XJLAPP,
      $          SLOLD(L, 1 : LASTIND), LASTIND, INDLOW,
      $          INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
-     $          NFL,OPAC,DOPA,DETA,OPAL,SLNEW(L, 1 : LASTIND),
-     $          DOPAL, DETAL, SIGMAKI,ETAC,NFEDGE,EXPFAC,NODM,
+     $          NFL,OPAL,SLNEW(L, 1 : LASTIND),
+     $          DOPAL, DETAL, SIGMAKI,NFEDGE,EXPFAC,NODM,
      $          WCHARM,EN,RSTAR,SCOLD,VDOP,COCO,KEYCOL,
      $          POPHIIL,POPHML, POPHIL, LLO(L, 1 : LASTIND), ITNE(L),
      $          LEVEL, JOBNUM, IRESTA)
@@ -623,17 +616,10 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 
       IF (.NOT. LTE_RUN) THEN
 
-!         CALL PRINT_NLTE_LEV('H MINUS..1', NFIRST(1), POPNUM_LTE(1 : ND, NFIRST(1)),
-!     $                       POPNUM(1 : ND, NFIRST(1)), DEPART_ZWAAN(1 : ND, NFIRST(1)), ONE)
-
          DO J = 1, N; CALL PRINT_NLTE_LEV(LEVEL(J), POPNUM_LTE(1 : ND, J),
      $                                    POPNUM(1 : ND, J), DEPART_ZWAAN(1 : ND, J)); ENDDO
 
-!         CALL PRINT_NLTE_LEV('H II......', NLAST(1), POPNUM_LTE(1 : ND, NLAST(1)),
-!     $                       POPNUM(1 : ND, NLAST(1)), DEPART_ZWAAN(1 : ND, NLAST(1)), ONE)
-
-         CALL PRINT_NLTE_LEV('ELECTRONS ', ElecConcLTE(1 : ND),
-     $                        ElecConc(1 : ND), ElecConcDep(1 : ND))
+         CALL PRINT_NLTE_LEV('ELECTRONS ', ElecConcLTE(1 : ND), ElecConc(1 : ND), ElecConcDep(1 : ND))
 
          CALL PRINT_HYD_NLTE_TRA('H MINUS..1', 'H I......1', 0, 0.0D0, T,
      $                           Z, Z, Z, Z, Z,

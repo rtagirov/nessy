@@ -1,0 +1,29 @@
+LEVEL       H MINUS..1 -1    1      0.00   6090.5
+LEVEL       H I......1  0    2      0.00 109677.38
+LEVEL       H I......2  0    8                      2
+LEVEL       H I......3  0   18                      3
+LEVEL       H I......4  0   32                      4
+LEVEL       H I......5  0   50                      5
+LEVEL       H I......6  0   72                      6
+LEVEL       H I......7  0   98                      7
+LEVEL       H I......8  0  128                      8
+LEVEL       H I......9  0  162                      9
+LEVEL       H I.....10  0  200                     10
+LEVEL       H II......  1    1
+LEVEL       MgI------1  0    1      0.00  61671.02
+LEVEL       MgI------2  0    9  21877.30
+LEVEL       MgI------3  0    3  35051.26 
+LEVEL       MgII-----1  1    2
+LEVEL       SiI------1  0    9    149.68 65747.76
+LEVEL       SiI------2  0    5   6298.85
+LEVEL       SiI------3  0    1  15394.37
+LEVEL       SiI------4  0    5  33326.04
+LEVEL       SiI------5  0    9  39799.50
+LEVEL       SiI------6  0    3  40991.88
+LEVEL       SiII-----1  1    6
+LEVEL       FeI------1  0   25    402.96  63737.
+LEVEL       FeI------2  0   35   7457.82
+LEVEL       FeI------3  0   21  12408.10
+LEVEL       FeI------4  0   15  17761.40
+LEVEL       FeI------5  0    9  19232.20
+LEVEL       FeII-----1  1   30

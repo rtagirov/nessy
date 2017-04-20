@@ -30,11 +30,11 @@
       use MOD_PRIFLUX
       use MOD_REBLANK
       use MOD_WRITMOD
-      use ABUNDANCES
 
       use file_operations
       use common_block
-      use vardatom
+      use vardatom_lte
+      use vardatom_nlte
       use varhminus
       use varsteal
 
@@ -89,7 +89,7 @@ C***  READING THE ATOMIC DATA FROM FILE DATOM
 C***  DECODING INPUT DATA ******************************************
       CALL DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,IFRRA,ITORA,LSEXPO,
      $            IFLUX,IDAT,LEVELPL,N,IPLOTF,NEWWRC,
-     $            NGAMR,NGAML,AGAMR,AGAML,DELTAC,LINE,lastind_nlte,TPLOT,
+     $            NGAMR,NGAML,AGAMR,AGAML,LINE,lastind_nlte,TPLOT,
      $            Y0,TEFFE,GRAD,ALDMDT,VINF,BET,PROLIB,LBLANK)
 
 C***  READING OF THE MODEL FILE ----------------------------------------
@@ -101,19 +101,8 @@ C***  READING OF THE MODEL FILE ----------------------------------------
 
       close(IFL)
 
-      if (allocated(opa))     deallocate(opa);     allocate(opa(ND))
-      if (allocated(eta))     deallocate(eta);     allocate(eta(ND))
-
-      if (allocated(thomson)) deallocate(thomson); allocate(thomson(ND))
-      if (allocated(tauthom)) deallocate(tauthom); allocate(tauthom(ND))
       if (allocated(itne))    deallocate(itne);    allocate(itne(ND))
       if (allocated(iwarn))   deallocate(iwarn);   allocate(iwarn(ND))
-
-      if (allocated(opac))    deallocate(opac);    allocate(opac(NF))
-      if (allocated(etac))    deallocate(etac);    allocate(etac(NF))
-      if (allocated(dopa))    deallocate(dopa);    allocate(dopa(NF))
-      if (allocated(deta))    deallocate(deta);    allocate(deta(NF))
-      if (allocated(expfac))  deallocate(expfac);  allocate(expfac(NF))
 
       if (allocated(sigmaki)) deallocate(sigmaki); allocate(sigmaki(NF, N))
 
@@ -159,7 +148,7 @@ c***     the new blanketing table needs to be written to the model file
  
       IF (JOBNUM .LE. 1) THEN
 
-         CALL POPZERO(T,RNE,POPNUM,DEPART,ENTOT,ITNE,N,ENLTE,
+         CALL POPZERO(T,RNE,POPNUM,DEPART,ENTOT,ITNE,N,
      $                WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $                XLAMBDA,FWEIGHT,XJCARR,NF,XJL,IFRRA,ITORA,ALPHA,
      $                SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
@@ -173,13 +162,13 @@ c***     the new blanketing table needs to be written to the model file
 !     CALCULATION OF NEW POPULATION NUMBERS, EL. DENSITY AND DEPARTURE COEFF.
 
          CALL LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART,POP1,
-     $               N,ENLTE,WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
+     $               N,WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
      $               XLAMBDA,FWEIGHT(1 : NF),XJCARR,NF,XJL,WCHARM,
-     $               EPSILON,NODM,DELTAC,MODHEAD,JOBNUM,IFRRA,ITORA,
-     $               RADIUS,RSTAR,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,
-     $               VELO,GRADI,VDOP,INDNUP,INDLOW,LASTIND,
-     $               OPAC,DOPA,DETA,SIGMAKI,ND,LSRAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
-     $               ALTESUM,ETAC,NFEDGE,EXPFAC,NOM,NATOM,KODAT,NFIRST,
+     $               EPSILON,NODM,MODHEAD,JOBNUM,IFRRA,ITORA,
+     $               RADIUS,RSTAR,IWARN,MAINPRO,MAINLEV,
+     $               VDOP,INDNUP,INDLOW,LASTIND,
+     $               SIGMAKI,ND,LSRAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
+     $               ALTESUM,NFEDGE,NOM,NATOM,KODAT,NFIRST,
      $               NLAST,WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,JOBMAX)
 
       ENDIF
@@ -191,7 +180,7 @@ C***  REDUCED CORRECTIONS, IF OPTION IS SET
  
       IF (JOBNUM .GT. 1) CALL PRICORR(POPNUM,POP1,LEVEL,N,ND,MODHEAD,LSPOP,CORMAX,
      $                                NCHARG,RNE,JOBNUM,REDUCE,GAMMAL,GAMMAR,
-     $                                T,DELTAC,ELEMENT,NATOM,NFIRST,NLAST)
+     $                                T,ELEMENT,NATOM,NFIRST,NLAST)
 
       IF (LSEXPO .GT. 0.AND.JOBNUM.GT.3) CALL PRIEXPO(POPNUM,POP1,POP2,LEVEL,N,ND,MODHEAD,JOBNUM,LSEXPO)
  
@@ -222,7 +211,7 @@ C***  FIND LASTWRC = JOBNUMBER OF LAST WRCONT JOB
 	goto 8
  11   continue
 C***  UPDATING THE MODEL HISTORY
-      CALL STHIST(LCARD,GAMMAL,GAMMAR,DELTAC,MODHEAD,JOBNUM,CORMAX,REDUCE,MODHOLD,time()-tstart)
+      CALL STHIST(LCARD,GAMMAL,GAMMAR,MODHEAD,JOBNUM,CORMAX,REDUCE,MODHOLD,time()-tstart)
       write (79,'(A120)') LCARD
       close (79)
 
@@ -253,7 +242,7 @@ C***  UPDATING THE MODEL HISTORY
             CALL PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
      $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,
      $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
-     $                  FWEIGHT,TAUTHOM,TAUROSS,WAVARR,SIGARR,NF)
+     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR,NF)
 
             CALL PRIH(LPRIH,ND,RADIUS,HTOT,TEFFE,T,TAUROSS,JOBNUM,MODHEAD)
             GOTO 20

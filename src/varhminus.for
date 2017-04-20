@@ -24,7 +24,7 @@
       real*8, allocatable, dimension(:, :)    :: EDDI
       real*8, allocatable, dimension(:, :, :) :: EDDARR
 
-      real*8, allocatable, dimension(:)       :: ENLTE, RNE
+      real*8, allocatable, dimension(:)       :: RNE
       real*8, allocatable, dimension(:, :)    :: POPNUM, POP1, POP2, POP3
       real*8, allocatable, dimension(:, :)    :: WCHARM
 

@@ -34,9 +34,8 @@
       USE MOD_BFCROSS
       use MOD_LTEPOP
       use MOD_PRIRAT
-      use ABUNDANCES
 
-      USE COMMON_BLOCK
+      use common_block
 
       IMPLICIT REAL*8(A - H, O - Z)
 

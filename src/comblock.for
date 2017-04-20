@@ -60,12 +60,12 @@
 
       REAL*8,  ALLOCATABLE, DIMENSION(:, :) ::   NTPL, NTPU, NTDL, NTDU
 
-!      REAL*8,  ALLOCATABLE, DIMENSION(:) ::      NLTE_ABS, NLTE_EMI
+      logical, dimension(:), allocatable ::      nlte_lev, nlte_ele
 
-      logical, dimension(:), allocatable :: nlte
+      integer ::                                 N_nlte, lastind_nlte, natom_nlte
 
-      integer :: N_nlte, lastind_nlte, natom_nlte
+      integer, dimension(:), allocatable ::      idx_nlte
 
-      integer, dimension(:), allocatable :: idx_nlte!, idx_nlte_lin
+      real*8, allocatable ::                     ABXYZ(:), ABXYZn(:, :), abxyz_nlte(:)
 
-      END MODULE COMMON_BLOCK
+      end module
