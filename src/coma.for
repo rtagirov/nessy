@@ -1,15 +1,14 @@
-      MODULE MOD_COMA
+      module MOD_COMA
 
-      CONTAINS
+      contains
 
-      SUBROUTINE COMA(CRATE,RRATE,RATCO,DM,N,NRANK,V1,ABXYZ,
-     $                ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,EION,WEIGHT,ALTESUM,
-     $                XLAMBDA,FWEIGHT,XJC,NF,L,XJL,ND,XJLAPP,SLOLD,LASTIND,INDLOW,
-     $                INDNUP,NOM,NATOM,KODAT,NFIRST,NLAST,PHI,PWEIGHT,DELTAX,XMAX,
-     $                NFL,OPAL,SLNEW,DOPAL,DETAL,SIGMAKI,
-     $                NFEDGE,EXPFAC,NODM,
-     $                WCHARM,EN,RSTAR,SCOLD,VDOP,COCO,KEYCOL,
-     $                POPHIIL,POPHML,POPHIL,LOE,ITNEL,LEVEL,JOBNUM,IRESTA)
+      subroutine COMA(CRATE, RRATE, RATCO, DM, N, NRANK, V1, ABUND,
+     $                ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, EION, WEIGHT, ALTESUM,
+     $                XLAMBDA, FWEIGHT, XJC, NF, L, XJL, ND, XJLAPP, SLOLD, LASTIND, INDLOW,
+     $                INDNUP, NOM, NATOM, KODAT, NFIRST, NLAST, SLNEW, SIGMAKI, NFEDGE, EXPFAC, NODM,
+     $                WCHARM, EN, RSTAR, SCOLD, VDOP, COCO, KEYCOL,
+     $                POPHIIL, POPHML, POPHIL, LOE, ITNEL, LEVEL, JOBNUM, IRESTA,
+     $                N_full, ncharg_full, weight_full, elevel_full, eion_full, en_full, nom_full)
 
       use MOD_DERIV
       use MOD_COOPFRQ
@@ -33,65 +32,74 @@
 !*******************************************************************************
 
 ! ------------------ Flow chart ------------------------
-!       | -> STEAL
-!       | 
-!       | | -> LINPOP
-!       | | 
-!       | | | -> COMA
-!       | | | | -> COOPFRQ
-!       | | | | | -> GFFLOG
-!       | | | | -> SETXJL
-!       | | | | | -> LIOP
-!       | | | | | -> LIPO
-!       | | | | | -> XRUDI
-!       | | | | -> COLLI
-!       | | | | -> RADNET
-!       | | | | | -> XRUDI
-!       | | | | -> DCOOP
-!       | | | | | -> GFFLOG
-!       | | | | | -> GFFLOG
-!       | | | | -> DLIOP
-!       | | | | -> DERIV
+!     | -> STEAL
+!     | 
+!     | | -> LINPOP
+!     | | 
+!     | | | -> COMA
+!     | | | | -> COOPFRQ
+!     | | | | | -> GFFLOG
+!     | | | | -> SETXJL
+!     | | | | | -> LIOP
+!     | | | | | -> LIPO
+!     | | | | | -> XRUDI
+!     | | | | -> COLLI
+!     | | | | -> RADNET
+!     | | | | | -> XRUDI
+!     | | | | -> DCOOP
+!     | | | | | -> GFFLOG
+!     | | | | | -> GFFLOG
+!     | | | | -> DLIOP
+!     | | | | -> DERIV
 
       implicit none
 
-      integer,intent(in) ::  LASTIND, NATOM, NRANK,  N
-      integer,intent(in) ::  KODAT(*), NOM(N)
-      integer,dimension(*):: INDNUP, INDLOW
-      integer,intent(in) ::  ND, NF,  NFL
-      integer, dimension(N)  ::  NCHARG
-      integer, dimension(NATOM) ::  NFIRST,NLAST
-      real*8, dimension(NRANK),intent(inout) ::  V1
-      real*8             :: TL, RSTAR
-      real*8             :: COCO(N,N,4), VDOP
-      real*8             :: EINST(N,N), ENE,DELTAX
-      real*8             :: ALTESUM(4,*), XMAX
+      integer, intent(in) :: L
 
-      real*8, dimension(lastind) :: opal
+      integer, intent(in) :: LASTIND, NATOM, NRANK, N, N_full
 
-      integer, dimension(*)      :: NFEDGE
-      real*8,  dimension(*)      :: PHI
-      real*8,  dimension(*)      :: ELEVEL,EION,WEIGHT
-      real*8,  dimension(*)      :: XLAMBDA,PWEIGHT,DETAL
-      real*8,  dimension(*)      :: EXPFAC,DOPAL,FWEIGHT
-      real*8,  dimension(NF, N)  :: SIGMAKI
-      real*8,  dimension(NF)     :: ETAC,DETA
-      real*8,  dimension(NF)     :: OPAC,DOPA
-      real*8,  allocatable       :: ABXYZ(:)
-      real*8,  dimension(ND, NF) :: XJC, WCHARM
-      real*8,  dimension(NF, ND) :: SCOLD
+      integer, dimension(N_full) :: NCHARG_full, nom_full
 
-      real*8, dimension(N) :: ENLTE
-      real*8, dimension(N + 1) :: EN
+      real*8,  dimension(N_full) :: weight_full, elevel_full, eion_full
 
-      REAL*8, DIMENSION(LASTIND), INTENT(OUT) :: XJLAPP
+      real*8,  dimension(N_full) :: en_full
 
-      REAL*8, DIMENSION(N,  N),        INTENT(INOUT) :: CRATE, RRATE
-      REAL*8, DIMENSION(NRANK, NRANK), INTENT(INOUT) :: RATCO
+      integer, dimension(lastind) :: INDNUP, INDLOW
 
-      INTEGER, INTENT(IN) :: L
+      integer, intent(in) ::       KODAT(NATOM), NOM(N)
+      integer, intent(in) ::       ND, NF
+      integer, dimension(N) ::     NCHARG
+      integer, dimension(NATOM) :: NFIRST, NLAST
 
-      REAL*8, DIMENSION(LASTIND), INTENT(IN) :: SLOLD
+      real*8 :: TL, RSTAR
+      real*8 :: COCO(N, N, 4), VDOP
+      real*8 :: EINST(N, N), ENE
+      real*8 :: ALTESUM(4, N)
+
+      real*8, dimension(lastind) :: opal, detal, dopal
+
+      integer, dimension(N)   :: NFEDGE
+      real*8,  dimension(N)   :: ELEVEL, EION, WEIGHT
+      real*8,  dimension(NF)  :: XLAMBDA, EXPFAC, FWEIGHT
+
+      real*8,  dimension(NF)                         :: ETAC, DETA
+      real*8,  dimension(NF)                         :: OPAC, DOPA
+      real*8,  dimension(NATOM)                      :: ABUND
+      real*8,  dimension(NF, N)                      :: SIGMAKI
+      real*8,  dimension(ND, NF)                     :: XJC, WCHARM
+      real*8,  dimension(NF, ND)                     :: SCOLD
+
+      real*8, dimension(N)                           :: ENLTE
+      real*8, dimension(N + 1)                       :: EN
+
+      real*8, dimension(LASTIND),      intent(in)    :: SLOLD
+
+      real*8, dimension(LASTIND),      intent(out)   :: XJLAPP
+
+      real*8, dimension(N,  N),        intent(inout) :: CRATE, RRATE
+      real*8, dimension(NRANK),        intent(inout) :: V1
+      real*8, dimension(NRANK, NRANK), intent(inout) :: RATCO
+      real*8, dimension(NRANK, NRANK), intent(inout) :: DM
 
 !     the Local approximate lambda-Operator Element corresponding to depth L for all lines
       REAL*8, DIMENSION(LASTIND) :: LOE
@@ -102,13 +110,10 @@
 
       LOGICAL NODM, DEPTH_PR_COND, JOBNUM_PR_COND, ITNEL_COND, PR_COND
 
-      integer :: NFIRNA, NA, I, J, K, NPLUS1, NUP, IND, LOW
-      integer :: NLANA
+      integer :: NFIRNA, NLANA, NA, I, J, K, NPLUS1, NUP, IND, LOW
       REAL*8  :: ENTOTL, RNEL, DLOWUP
 
       real*8, dimension(NF) :: SCNEW, XJCAPP
-
-      REAL*8, DIMENSION(NRANK, NRANK), INTENT(INOUT) :: DM
 
       REAL*8 :: CP
 
@@ -130,17 +135,19 @@
 
       NPLUS1 = N + 1
 
-C***  CALCULATE CONTINUUM OPACITIES AND EMISSIVITIES FROM CURRENT POPNUMBERS.
-C***  ONLY TRUE OPACITIES ARE ACCOUNTED FOR.
+!     CALCULATE CONTINUUM OPACITIES AND EMISSIVITIES FROM CURRENT POPNUMBERS
+!     ONLY TRUE OPACITIES ARE ACCOUNTED FOR
 
       RNEL = EN(NPLUS1)
 
       ENTOTL = ENE / RNEL
 
-      CALL COOPFRQ(NF,OPAC,ETAC,XLAMBDA,EXPFAC,SIGMAKI,N,NCHARG,
-     $             WEIGHT,ELEVEL,EION,NFEDGE,EN(1 : N),NOM,RSTAR,ENTOTL,RNEL,TL)
-C***  CALCULATE NEW SOURCE FUNCTION AND SCHARMER'S RADIATION FIELD
-C***  LOOP OVER ALL CONT. FRQUENCIES  ----------------------------------
+      CALL COOPFRQ(NF, OPAC, ETAC, XLAMBDA, EXPFAC, SIGMAKI, N_full, NCHARG_full,
+     $             WEIGHT_full, ELEVEL_full, EION_full, NFEDGE, EN_full,
+     $             NOM_full, RSTAR, ENTOTL, RNEL, TL)
+
+!     CALCULATE NEW SOURCE FUNCTION AND SCHARMER'S RADIATION FIELD
+!     LOOP OVER ALL CONT. FRQUENCIES  ----------------------------------
 
       DO K = 1, NF
 
@@ -148,7 +155,7 @@ C***  LOOP OVER ALL CONT. FRQUENCIES  ----------------------------------
 
          IF (OPAC(K) .GT. 0.0d0) THEN
 
-!       OPAC can not be < 0 because of laser security check in ccore
+!           OPAC can not be < 0 because of laser security check in ccore
 
             SCNEW(K) = ETAC(K) / OPAC(K)
 
@@ -162,7 +169,7 @@ C***  LOOP OVER ALL CONT. FRQUENCIES  ----------------------------------
 
       ENDDO
 
-C***  ENDLOOP  ---------------------------------------------------------
+!     ENDLOOP ---------------------------------------------------------
 
       ITNEL_COND = ITNEL .GT. 1
 
@@ -236,30 +243,29 @@ C***  ENDLOOP  ---------------------------------------------------------
 !**********************************************************************************************************************
 
  
-C***  SETUP THE COLLISIONAL AND RADIATIVE RATE COEFFICIENTS
+!     SETUP THE COLLISIONAL AND RADIATIVE RATE COEFFICIENTS
 CMH - new: POPHIIL: population numbers of HII at depthpoint L
 CMH - new: needed to calculate new collision cross sections for Hminus
 
-      CALL COLLI(N,ENLTE,TL,ENE,NCHARG,ELEVEL,EINST,CRATE,
-     $           EION,COCO,KEYCOL,WEIGHT,ALTESUM,NATOM,NOM,KODAT,
+      CALL COLLI(N, ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
+     $           EION, COCO, KEYCOL, WEIGHT, ALTESUM, NATOM, NOM, KODAT,
      $           POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, L)
 
 !     CALCULATE LINE RADIATION FIELD WITH APPROXIMATE LAMBDA OPERATOR TERMS
 
       CALL SETXJL(LASTIND, INDLOW, INDNUP, SLNEW(1 : LASTIND),
      $            SLOLD(1 : LASTIND), OPAL, XJLAPP(1 : LASTIND),
-     $            NF, XLAMBDA, SCNEW, OPAC,
-     $            NFL, PHI, PWEIGHT, N, EINST, ELEVEL, EN(1 : N), WEIGHT,
-     $            ND, XJL(1 : LASTIND), ENTOTL, RSTAR, VDOP, DELTAX, XMAX, L,
+     $            NF, XLAMBDA, OPAC, N, EINST, ELEVEL, EN(1 : N), WEIGHT,
+     $            ND, XJL(1 : LASTIND), ENTOTL, RSTAR, VDOP, L,
      $            LOE(1 : LASTIND), AccFact(1 : LASTIND),
      $            NODM, LEVEL, NFIRST, NLAST, NATOM, ENLTE, ITNEL)
 
 !     RADIATIVE RATES ARE CALCULATED WITH THE MODIFIED RADIATION FIELD
 
-      CALL RADNET(N, ENLTE, TL, WEIGHT, NCHARG ,EION, ELEVEL, EINST,
+      CALL RADNET(N, ENLTE, TL, WEIGHT, NCHARG, EION, ELEVEL, EINST,
      $            SLNEW(1 : LASTIND), EN(1 : N), NOM, RRATE, XLAMBDA, FWEIGHT,
      $            XJCAPP(1 : NF), NF, XJLAPP(1 : LASTIND), SIGMAKI, LASTIND,
-     $            LEVEL, L, JOBNUM, ITNEL)
+     $            LEVEL, L, ITNEL)
 
 !     ADD RADIATIVE AND COLLISIONAL TERMS INTO RATE COEFFICIENT MATRIX RATCO
 
@@ -269,11 +275,7 @@ CMH - new: needed to calculate new collision cross sections for Hminus
 
 C***  DIAGONAL ELEMENTS: -SUM OF THE ROW (I.E. OVER COLUMN INDEX)
 
-      FORALL(I = 1 : N)
-
-        RATCO(I, I) = -SUM(RATCO(I, 1 : N))
-
-      END FORALL
+      FORALL(I = 1 : N); RATCO(I, I) = -SUM(RATCO(I, 1 : N)); END FORALL
 
 C***  COLUMN NLAST(NA): NUMBER CONSERVATION FOR EACH ELEMENT (NA)
 C***  REMARK: TOTAL NUMBER CONSERVATION IS IMPLICITLY ENSURED
@@ -328,8 +330,7 @@ C***  CONSTRUCT DERIVATIVE VECTORS DOPAL, DETAL (LINES) WITH RESPECT TO EN(I)
 C***  COMPUTE ELEMENT (LOW,NUP) OF MATRIX DM (DERIVATIVE WITH RESPECT TO EN(I))
       CALL DERIV(DLOWUP,I,NUP,LOW,IND,
      $           NPLUS1,EN(1 : N + 1),CRATE,RRATE,EXPFAC,NFEDGE,
-     $           WCHARM,ND,L,TL,ENLTE,PHI,PWEIGHT,NFL,DELTAX,XMAX,
-     $           DETAL,DOPAL,SLNEW(1 : LASTIND),OPAL,XJLAPP,XJCAPP,
+     $           WCHARM,ND,L,TL,ENLTE,DETAL,DOPAL,SLNEW(1 : LASTIND),OPAL,XJLAPP,XJCAPP,
      $           FWEIGHT,DOPA,DETA,OPAC,SCNEW,XLAMBDA,NF,
      $           N,NCHARG,WEIGHT,ELEVEL,NOM,EINST,SIGMAKI,LASTIND,
      $           XJL(1 : LASTIND), AccFact(1 : LASTIND), SLOLD(1 : LASTIND))
@@ -363,13 +364,13 @@ C***  V1 = RIGHT-HAND SIDE VECTOR (INHOMOGENEITY)
 
       V1(1 : NPLUS1) = 0.0D0
 
-C***          NLAST(NA)-TH ELEMENT = ABXYZ(NA)  (NUMBER CONSERVATION)
+C***          NLAST(NA)-TH ELEMENT = ABUND(NA)  (NUMBER CONSERVATION)
 
       DO NA = 1, NATOM
 
         NLANA = NLAST(NA)
 
-        V1(NLANA) = ABXYZ(NA)
+        V1(NLANA) = ABUND(NA)
 
       ENDDO
 

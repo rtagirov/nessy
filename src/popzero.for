@@ -2,12 +2,44 @@
 
       CONTAINS
 
-      SUBROUTINE POPZERO(T,RNE,POPNUM,DEPART,ENTOT,ITNE,N,ENLTE,
-     $                   WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
-     $                   XLAMBDA,FWEIGHT,XJC,NF,XJL,IFRRA,ITORA,ALPHA,
-     $                   SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
-     $                   ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
-     $                   KODAT,NFIRST,NLAST,WAVARR,SIGARR)
+      SUBROUTINE POPZERO(T,
+     $                   RNE,
+     $                   POPNUM,
+     $                   DEPART,
+     $                   ENTOT,
+     $                   ITNE,
+     $                   N,
+     $                   WEIGHT,
+     $                   NCHARG,
+     $                   EION,
+     $                   ELEVEL,
+     $                   EINST,
+     $                   LEVEL,
+     $                   XLAMBDA,
+     $                   FWEIGHT,
+     $                   XJC,
+     $                   NF,
+     $                   XJL,
+     $                   IFRRA,
+     $                   ITORA,
+     $                   ALPHA,
+     $                   SEXPO,
+     $                   AGAUNT,
+     $                   MODHEAD,
+     $                   MODHOLD,
+     $                   JOBNUM,
+     $                   ND,
+     $                   LSRAT,
+     $                   ALTESUM,
+     $                   COCO,
+     $                   KEYCOL,
+     $                   NOM,
+     $                   NATOM,
+     $                   KODAT,
+     $                   NFIRST,
+     $                   NLAST,
+     $                   WAVARR,
+     $                   SIGARR)
 
       !*******************************************************************************
       !***  IN CASE OF "STARTJOB" (JOB.EQ.'WRSTART'):
@@ -31,7 +63,6 @@
       !MH   EN:     POPNUM of level at depth point L
       !*******************************************************************************
 
-      USE MOD_BFCROSS
       use MOD_LTEPOP
       use MOD_PRIRAT
 
@@ -39,11 +70,13 @@
 
       IMPLICIT REAL*8(A - H, O - Z)
 
-      integer,intent(in) :: JOBNUM
+      integer, intent(in) :: JOBNUM
 
-      DIMENSION T(ND),ENTOT(ND),RNE(ND),POPNUM(ND, N),ITNE(ND)
+      integer, intent(in), dimension(N) :: ncharg
+
+      DIMENSION T(ND), ENTOT(ND), RNE(ND), POPNUM(ND, N), ITNE(ND)
       DIMENSION DEPART(ND, N)
-      DIMENSION NCHARG(N), EN(N), ENLTE(N)
+      DIMENSION EN(N), ENLTE(N)
       DIMENSION NOM(N)
       DIMENSION KODAT(NATOM), NFIRST(NATOM), NLAST(NATOM)
   
@@ -59,11 +92,11 @@
       real*8, dimension(N, N) :: CRATE, RRATE, ratco
 
       real*8,dimension(*) :: WEIGHT,XJC,XJL
-      real*8 SIGMAKI(NF,N), ELEVEL(N), EION(N), EINST(N, N)
+      real*8 ELEVEL(N), EION(N), EINST(N, N)
       real*8 XLAMBDA(NF), ALPHA(*),SEXPO(*)
       character*8 :: agaunt(N)
       COMMON /GIIIERR/  NTUP,NTLOW,NFUP,NFLOW,NHELP
-      COMMON / COMNEGI / NEGINTL
+
       real*8, allocatable::ABXYZ_new(:)
 
       LOGICAL :: JOB_COND
@@ -195,10 +228,6 @@
         EPSNE=0.001
         !***  MAX. NUMBER OF ITERATIONS
         ITMAX=120
-        !***  GENERATE ONCE FOR ALL PHOTOCROSSSECTIONS AT ALL FREQUENCIES
-        !***  SIGMAKI(K,LOW) IN CM**2
-        CALL  BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,
-     $                XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
 
         !*** LOOP OVER ALL DEPTH POINTS --------------------------------------
         DO 1 L = 1, ND

@@ -14,7 +14,7 @@ C***  DECODES INPUT CARDS, CALLED FROM WRSTART
 C***********************************************************************
 
       use file_operations
-      use common_block
+!      use common_block
  
       IMPLICIT REAL*8(A-H,O-Z)
 
@@ -36,7 +36,7 @@ C***             AND TO MAIN PROGRAM WRSTART !!!!!!!!!!!!!!!
 
 C***  COMMON / COMPLOT / TRANSFERS THE MAXIMUM OF THE Y-AXIS TO SUBR. PLOTT
       COMMON / COMPLOT / YMAX
-      DIMENSION ABXYZ(NATOM),KODAT(NATOM)
+      DIMENSION KODAT(NATOM), ABXYZ(NATOM)
       LOGICAL TTABLE, SPHERIC, TPLOT, FAL, LBKG
 CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
@@ -232,7 +232,7 @@ C                       =====
 
 
 
-                       ! Set the given abundance at the given index
+             ! Set the given abundance at the given index
              ABXYZ(KODAT(Abundance(I)%Index))=ABNDNC
 
            ENDIF

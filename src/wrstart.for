@@ -56,8 +56,8 @@
 
       CHARACTER MODHEAD*104
 
-      CHARACTER   NAME*10, fstring*24
-      integer timer
+      CHARACTER NAME*10, fstring*24
+      integer   timer
 
       real*8 ATMEAN, AMU
 
@@ -84,12 +84,11 @@
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,NFDIM) ! NFDIM is known from varhminus module
 
-!     DECODING INPUT DATA
       allocate(ABXYZ(NATOM))
+
+!     DECODING INPUT DATA
       CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
      $             TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN,AMU)
-
-      call mark_nlte(N, NATOM)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
@@ -143,6 +142,8 @@
       allocate(mainlev(ND))
 
       call mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, NATOM, ND)
+
+      call mark_nlte(N, NATOM, ND)
 
 !     RINAT TAGIROV:
 !     Calculation or read-out of the velocity field.
@@ -349,7 +350,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       END FUNCTION EXTRAP_VEL_FIELD
 
-      subroutine mark_nlte(N, NATOM)
+      subroutine mark_nlte(N, NATOM, ND)
 
       use vardatom_lte
       use vardatom_nlte
@@ -360,9 +361,9 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       implicit none
 
-      integer, intent(in) :: N, NATOM
+      integer, intent(in) :: N, NATOM, ND
 
-      integer :: i, j
+      integer :: i, j, L
 
       call datom(datom_nlte,
      $           N_nlte,
@@ -395,15 +396,13 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
      $           sigarr_nlte,
      $           nfdim) ! NFDIM is known from varhminus module
 
-      allocate(nlte_lev(N)); allocate(idx_nlte(N_nlte))
+      allocate(nlte_lev(N)); allocate(idx_nlte(N_nlte)); allocate(nlte_ele(NATOM))
 
-      allocate(nlte_ele(NATOM)); allocate(abxyz_nlte(natom_nlte))
+      allocate(abxyz_nlte(natom_nlte)); allocate(ABXYZn_nlte(natom_nlte, ND))
 
       nlte_lev(1 : N) = .false.
 
       nlte_ele(1 : NATOM) = .false.
-
-!      i_nlte = 1
 
       do i = 1, N
 
@@ -415,8 +414,6 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
                 idx_nlte(j) = i
 
-!                i_nlte = i_nlte + 1
-
                 cycle
 
             endif
@@ -424,8 +421,6 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
          enddo
 
       enddo
-
-!      i_nlte = 1
 
       do i = 1, NATOM
 
@@ -437,7 +432,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
                 abxyz_nlte(j) = abxyz(i)
 
-!                i_nlte = i_nlte + 1
+                do L = 1, ND; ABXYZn_nlte(j, L) = ABXYZn(i, L); enddo
 
                 cycle
 

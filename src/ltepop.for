@@ -2,20 +2,19 @@
 
       contains
 
-      SUBROUTINE LTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,ABXYZ,NFIRST,NLAST,NATOM)
-C     ******************************************************************
-C     POPULATION NUMBERS IN THERMODYNAMIC EQUILIBRIUM FOR ALL ELEMENTS
-C     CALLED BY GREYM,POPZERO
-C     ******************************************************************
+      subroutine LTEPOP(N,ENLTE,TL,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,ABXYZ,NFIRST,NLAST,NATOM)
+
+!     POPULATION NUMBERS IN THERMODYNAMIC EQUILIBRIUM FOR ALL ELEMENTS
+!     CALLED BY GREYM, POPZERO, LINPOP
 
       use mod_error
 
-      IMPLICIT REAL*8(A - H, O - Z) 
+      IMPLICIT REAL*8(A - H, O - Z)
 
       DIMENSION ENLTE(N), WEIGHT(N), NCHARG(N), EION(N), ELEVEL(N), NOM(N)
       DIMENSION NFIRST(NATOM), NLAST(NATOM)
 
-      real*8, allocatable :: ABXYZ(:)
+      real*8, intent(in), dimension(NATOM) :: ABXYZ
 
 C***  C1 = H * C / K    ( CM * KELVIN )
       DATA C1/1.4388d0/

@@ -38,33 +38,33 @@
       integer IFL
       integer JOBNUM
       integer K
-      integer LASTIND,LASTK,LBLANK,LSINT,LSOPA
+      integer LASTIND, LASTK, LBLANK, LSINT, LSOPA
 
       integer MAXVAL,MINVAL
       integer N, NATOM, ND
 
       integer NF, NP
-      real*8 CARD, CRATE, DM
-      real*8 RSTAR
-      real*8 TEFF,TOTIN
-      real*8 TOTOUT,VDOP
-      real*8,allocatable:: DUMMY1(:)
-      character*8,allocatable :: CDUMMY1(:)
-      integer tdiff,tstart,tend
-      integer,external :: time
+      real*8  CARD, CRATE, DM
+      real*8  RSTAR
+      real*8  TEFF, TOTIN
+      real*8  TOTOUT, VDOP
+      real*8, allocatable :: DUMMY1(:)
+      character*8, allocatable :: CDUMMY1(:)
+      integer tdiff, tstart, tend
+      integer, external :: time
 
       integer :: l
 
 !     CONTINUOUS RADIATION TRANSFER (MOMENT EQUATIONS) WITH GIVEN EDDI-FACTORS
 !     FORMAL SOLUTION FROM GIVEN POP NUMBERS
 
-      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2 
+      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2
       CHARACTER MODHEAD*104, LCARD*100
 
 CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
-      INTEGER XLBKG1,XLBKG2
+      INTEGER XLBKG1, XLBKG2
       LOGICAL LBKG
 
       tstart = time()
@@ -79,8 +79,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       CALL DECOMO(LSOPA, LSINT, LBLANK)
 
-      CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $             GRADI,RSTAR,VDOP,NF,
+      CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
      $             XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
@@ -92,17 +91,13 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       close(ifl)
 
-      if (allocated(wcharm))    deallocate(wcharm)
+      if (allocated(wcharm))    deallocate(wcharm);    allocate(WCHARM(ND, NF))
 
-      if (allocated(tau_cont))  deallocate(tau_cont)
+      if (allocated(tau_cont))  deallocate(tau_cont);  allocate(tau_cont(ND, NF))
 
-      if (allocated(damp_cont)) deallocate(damp_cont)
+      if (allocated(damp_cont)) deallocate(damp_cont); allocate(damp_cont(ND, NF))
 
-      allocate(WCHARM(ND, NF))
-
-      allocate(tau_cont(ND, NF))
-
-      allocate(damp_cont(ND, NF))
+      if (allocated(sigmaki))   deallocate(sigmaki);   allocate(sigmaki(NF, N))
 
       damp_cont(1 : ND, 1 : NF) = .false.
 

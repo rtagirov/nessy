@@ -46,6 +46,20 @@
 
       INTEGER ::                                 NLINE
 
+      real*8, allocatable ::                     ABXYZ(:), ABXYZn(:, :)
+
+      integer ::                                 negintl
+
+!     nlte marking variables
+
+      logical, dimension(:), allocatable ::      nlte_lev, nlte_ele
+
+      integer ::                                 N_nlte, lastind_nlte, natom_nlte
+
+      integer, dimension(:), allocatable ::      idx_nlte
+
+      real*8,                allocatable ::      ABXYZ_nlte(:), ABXYZn_nlte(:, :)
+
 !     FIOSS VARIABLES
 
       INTEGER ::                                 NUMTRA
@@ -59,13 +73,5 @@
       REAL*8,  ALLOCATABLE, DIMENSION(:) ::      WAVTRA, AUL
 
       REAL*8,  ALLOCATABLE, DIMENSION(:, :) ::   NTPL, NTPU, NTDL, NTDU
-
-      logical, dimension(:), allocatable ::      nlte_lev, nlte_ele
-
-      integer ::                                 N_nlte, lastind_nlte, natom_nlte
-
-      integer, dimension(:), allocatable ::      idx_nlte
-
-      real*8, allocatable ::                     ABXYZ(:), ABXYZn(:, :), abxyz_nlte(:)
 
       end module

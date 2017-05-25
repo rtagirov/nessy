@@ -55,7 +55,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       logical   line(lastind_nlte)
 
-      logical   TPLOT,NODM,LBKG
+      logical   TPLOT, LBKG
 
       character MODHEAD*104,MODHOLD*104, CARD*80, LCARD*120
 
@@ -84,7 +84,6 @@ C***  READING THE ATOMIC DATA FROM FILE DATOM
      $         NLAST,WAVARR,SIGARR,NFDIM)
 
       if (allocated(levelpl)) deallocate(levelpl); allocate(levelpl(N))
-      if (allocated(nfedge))  deallocate(nfedge);  allocate(nfedge(N))
 
 C***  DECODING INPUT DATA ******************************************
       CALL DECSTE(LSRAT,LSPOP,JOBMAX,EPSILON,REDUCE,IHIST,IFRRA,ITORA,LSEXPO,
@@ -103,8 +102,6 @@ C***  READING OF THE MODEL FILE ----------------------------------------
 
       if (allocated(itne))    deallocate(itne);    allocate(itne(ND))
       if (allocated(iwarn))   deallocate(iwarn);   allocate(iwarn(ND))
-
-      if (allocated(sigmaki)) deallocate(sigmaki); allocate(sigmaki(NF, N))
 
       if (allocated(depart))  deallocate(depart);  allocate(depart(ND, N))
 
@@ -148,12 +145,44 @@ c***     the new blanketing table needs to be written to the model file
  
       IF (JOBNUM .LE. 1) THEN
 
-         CALL POPZERO(T,RNE,POPNUM,DEPART,ENTOT,ITNE,N,
-     $                WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
-     $                XLAMBDA,FWEIGHT,XJCARR,NF,XJL,IFRRA,ITORA,ALPHA,
-     $                SEXPO,AGAUNT,MODHEAD,MODHOLD,JOBNUM,
-     $                ND,LSRAT,SIGMAKI,ALTESUM,COCO,KEYCOL,NOM,NATOM,
-     $                KODAT,NFIRST,NLAST,WAVARR,SIGARR)
+         CALL POPZERO(T,
+     $                RNE,
+     $                POPNUM,
+     $                DEPART,
+     $                ENTOT,
+     $                ITNE,
+     $                N,
+     $                WEIGHT,
+     $                NCHARG,
+     $                EION,
+     $                ELEVEL,
+     $                EINST,
+     $                LEVEL,
+     $                XLAMBDA,
+     $                FWEIGHT,
+     $                XJCARR,
+     $                NF,
+     $                XJL,
+     $                IFRRA,
+     $                ITORA,
+     $                ALPHA,
+     $                SEXPO,
+     $                AGAUNT,
+     $                MODHEAD,
+     $                MODHOLD,
+     $                JOBNUM,
+     $                ND,
+     $                LSRAT,
+     $                ALTESUM,
+     $                COCO,
+     $                KEYCOL,
+     $                NOM,
+     $                NATOM,
+     $                KODAT,
+     $                NFIRST,
+     $                NLAST,
+     $                WAVARR,
+     $                SIGARR)
 
       ELSE
 
@@ -161,15 +190,77 @@ c***     the new blanketing table needs to be written to the model file
 !     IN THIS BRANCH, PRIRAT MAY ONLY SHOW THE NETTO RATES
 !     CALCULATION OF NEW POPULATION NUMBERS, EL. DENSITY AND DEPARTURE COEFF.
 
-         CALL LINPOP(T,RNE,ENTOT,ITNE,POPNUM,DEPART,POP1,
-     $               N,WEIGHT,NCHARG,EION,ELEVEL,EINST,LEVEL,
-     $               XLAMBDA,FWEIGHT(1 : NF),XJCARR,NF,XJL,WCHARM,
-     $               EPSILON,NODM,MODHEAD,JOBNUM,IFRRA,ITORA,
-     $               RADIUS,RSTAR,IWARN,MAINPRO,MAINLEV,
-     $               VDOP,INDNUP,INDLOW,LASTIND,
-     $               SIGMAKI,ND,LSRAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,
-     $               ALTESUM,NFEDGE,NOM,NATOM,KODAT,NFIRST,
-     $               NLAST,WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2,JOBMAX)
+         CALL LINPOP(T,
+     $               RNE,
+     $               ENTOT,
+     $               ITNE,
+     $               POPNUM,
+     $               DEPART,
+     $               POP1,
+     $               N_nlte,
+     $               weight_nlte,
+     $               ncharg_nlte,
+     $               eion_nlte,
+     $               elevel_nlte,
+     $               einst_nlte,
+     $               level_nlte,
+     $               XLAMBDA,
+     $               FWEIGHT(1 : NF),
+     $               XJCARR,
+     $               NF,
+     $               XJL,
+     $               WCHARM,
+     $               EPSILON,
+     $               MODHEAD,
+     $               JOBNUM,
+     $               IFRRA,
+     $               ITORA,
+     $               RADIUS,
+     $               RSTAR,
+     $               IWARN,
+     $               MAINPRO,
+     $               MAINLEV,
+     $               VDOP,
+     $               indnup_nlte,
+     $               indlow_nlte,
+     $               lastind_nlte,
+     $               ND,
+     $               LSRAT,
+     $               alpha_nlte,
+     $               sexpo_nlte,
+     $               agaunt_nlte,
+     $               coco_nlte,
+     $               keycol_nlte,
+     $               altesum_nlte,
+     $               nom_nlte,
+     $               natom_nlte,
+     $               kodat_nlte,
+     $               nfirst_nlte,
+     $               nlast_nlte,
+     $               WAVARR,
+     $               SIGARR,
+     $               LBKG,
+     $               XLBKG1,
+     $               XLBKG2,
+     $               JOBMAX,
+     $               N,
+     $               weight,
+     $               ncharg,
+     $               eion,
+     $               elevel,
+     $               einst,
+     $               level,
+     $               alpha,
+     $               sexpo,
+     $               agaunt,
+     $               coco,
+     $               keycol,
+     $               altesum,
+     $               nom,
+     $               natom,
+     $               kodat,
+     $               nfirst,
+     $               nlast)
 
       ENDIF
  

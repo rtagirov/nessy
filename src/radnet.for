@@ -1,22 +1,22 @@
-      MODULE MOD_RADNET
+      module mod_radnet
 
-      CONTAINS
+      contains
 
-      SUBROUTINE RADNET(N, ENLTE, TL, WEIGHT, NCHARG, EION, ELEVEL, EINST,
+      subroutine RADNET(N, ENLTE, TL, WEIGHT, NCHARG, EION, ELEVEL, EINST,
      $                  SL, EN, NOM, RRATE, XLAMBDA, FWEIGHT,
-     $                  XJC, NF, XJL, SIGMAKI, LASTIND,
-     $                  LEVEL, DP, JOBNUM, ITNEL)
+     $                  XJC, NF, XJL, SIGMAKI, LASTIND, LEVEL, DP, ITNEL)
 
 !     RADIATIVE RATE COEFFICIENT MATRIX RRATE IS CALCULATED AT
 !     NOTE THAT THIS SUBROUTINE CALCULATES NETTO RATE COEFFICIENTS
 !     FOR NON-RUDIMENTAL LINE TRANSITIONS
 
-      USE MOD_ISRCHFGT
-      USE MOD_XRUDI
-      USE UTILS
-      USE PHYS
-      USE FILE_OPERATIONS
-      USE COMMON_BLOCK
+      use mod_isrchfgt
+      use mod_xrudi
+
+      use utils
+      use phys
+      use file_operations
+      use common_block
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -29,13 +29,9 @@
       DIMENSION SIGMAKI(NF, N)
       DIMENSION XLAMBDA(NF), FWEIGHT(NF)
 
-      INTEGER, INTENT(IN) :: DP
+      INTEGER, INTENT(IN)                    :: DP
 
-      REAL*8 :: XJ_LTE, EMINDU_LTE
-
-      REAL*8, DIMENSION(N, N), INTENT(OUT) :: RRATE
-
-      INTEGER, INTENT(IN) :: JOBNUM, ITNEL
+      INTEGER, INTENT(IN)                    :: ITNEL
 
       REAL*8, DIMENSION(LASTIND), INTENT(IN) :: SL, XJL
 
@@ -43,22 +39,29 @@
 
       CHARACTER*10, DIMENSION(N), INTENT(IN) :: LEVEL
 
-      REAL*8 :: FREQ_FACT
+      REAL*8, DIMENSION(N, N), INTENT(OUT)   :: RRATE
 
-      REAL*8 :: XJCK_LTE
+      REAL*8                                 :: XJ_LTE, EMINDU_LTE
 
-      LOGICAL :: ARR_LTE_COND, DEPTH_COND
+      REAL*8                                 :: FREQ_FACT
 
-      REAL*4 ::  JSRATIO
+      REAL*8                                 :: XJCK_LTE
 
-      !***  C1 = H * C / K      (CM * KELVIN)
-      DATA C1 / 1.4388d0 /
-      !***  C2 = 2 * H * C      (H AND C IN CGS UNITS)
-      DATA C2 / 3.9724d-16 /
-      !***  C3 = 4 * PI / H / C (CGS UNITS)
-      DATA C3 / 0.06327d18 /
-      !***  PI8 = 8 * PI
-      DATA PI8 / 25.13274123d0 /
+      REAL*4                                 :: JSRATIO
+
+      LOGICAL                                :: ARR_LTE_COND, DEPTH_COND
+
+!     C1 = H * C / K (CM * KELVIN)
+      DATA C1 /1.4388d0/
+
+!     C2 = 2 * H * C (H AND C IN CGS UNITS)
+      DATA C2 /3.9724d-16/
+
+!     C3 = 4 * PI / H / C (CGS UNITS)
+      DATA C3 /0.06327d18/
+
+!     PI8 = 8 * PI
+      DATA PI8 /25.13274123d0/
 
       DEPTH_COND = (DP .LE. 91 .AND. DP .GE. 80) .OR. (DP .LE. 11)
 
@@ -69,7 +72,7 @@
 
       IF (ARR_LTE_COND) ARR_LTE(DP, 1 : N, 1 : N) = 0.0D0
 
-      !***  LOOP OVER ALL TRANSITIONS  ---------------------------------
+      ! LOOP OVER ALL TRANSITIONS ---------------------------------
 
       IND = 0
 
@@ -81,14 +84,14 @@
 
           IF (NCHARG(LOW) .NE. NCHARG(NUP)) GOTO 8
 
-          !***  LINE TRANSITION   **************************************
+          ! LINE TRANSITION ***************************************
 
           IND = IND + 1
 
           WAVENUM = ELEVEL(NUP) - ELEVEL(LOW)
           W3 = WAVENUM * WAVENUM * WAVENUM
 
-          !***  CHECK WHETHER THIS TRANSITION IS ONLY RUDIMENTAL
+          ! CHECK WHETHER THIS TRANSITION IS ONLY RUDIMENTAL
 
 !***************************************************************************************************************************************
 !***************************************************************************************************************************************
@@ -127,7 +130,7 @@
 
           ELSE
 
-          !*** TRANSITION IS RUDIMENTAL -- RADIATION FIELD FROM INTERPOLATION OF CONT.
+!            TRANSITION IS RUDIMENTAL -- RADIATION FIELD FROM INTERPOLATION OF CONTINUUM
 
              CALL XRUDI(XJ, WAVENUM, XJC, XLAMBDA, 1, NF, 1)
 
@@ -155,7 +158,7 @@
 
           ELSE
 
-          !*** TRANSITION IS RUDIMENTAL -- RADIATION FIELD FROM INTERPOLATION OF CONT.
+!            TRANSITION IS RUDIMENTAL -- RADIATION FIELD FROM INTERPOLATION OF CONTINUUM
 
              CALL XRUDI(XJ, WAVENUM, XJC, XLAMBDA, 1, NF, 1)
 
@@ -172,9 +175,9 @@
           IF (ARR_LTE_COND) XJ_LTE = PLANCK_FUNC(WAVENUM * light_speed, TL) ! RINAT TAGIROV: ONE HAS TO CALCULATE THE LTE ABSOLUTE RADIATIVE RATES 
                                                                             ! WITH THE PLANCK FUNCTION TO COMPARE THEM WITH THE NLTE ONES
 
-	  IF (ARR_LTE_COND) EMINDU_LTE = EINST(NUP, LOW) * XJ_LTE / C2 / W3
-	  IF (ARR_LTE_COND) ARR_LTE(DP, LOW, NUP) = EMINDU_LTE * WEIGHT(NUP) / WEIGHT(LOW)
-	  IF (ARR_LTE_COND) ARR_LTE(DP, NUP, LOW) = EINST(NUP, LOW) + EMINDU_LTE
+          IF (ARR_LTE_COND) EMINDU_LTE = EINST(NUP, LOW) * XJ_LTE / C2 / W3
+          IF (ARR_LTE_COND) ARR_LTE(DP, LOW, NUP) = EMINDU_LTE * WEIGHT(NUP) / WEIGHT(LOW)
+          IF (ARR_LTE_COND) ARR_LTE(DP, NUP, LOW) = EINST(NUP, LOW) + EMINDU_LTE
 
 !**************************************************************************************************************************************
 !**************************************************************************************************************************************
@@ -182,20 +185,20 @@
           CYCLE LLOW
 
   8       CONTINUE
-          !***  CHARGE DIFFERENCE MUST BE 1
+          ! CHARGE DIFFERENCE MUST BE 1
           IF (NCHARG(NUP) .NE. NCHARG(LOW)+1 ) GOTO 14
-          !***  UPPER LEVEL MUST BE A GROUND STATE
+          ! UPPER LEVEL MUST BE A GROUND STATE
           IF (NCHARG(NUP) .NE. NCHARG(NUP-1)+1) GOTO 14
 
-          !***  CONTINUUM TRANSITION (NET RADIATIVE BRACKETS) ****************
-          !***  SIGMAKI = PRECALCULATED CROSS SECTION IN CM**2
-          !***  EDGE = THRESHOLD ENERGY IN KAYSER *******
+          ! CONTINUUM TRANSITION (NET RADIATIVE BRACKETS)
+          ! SIGMAKI = PRECALCULATED CROSS SECTION IN CM**2
+          ! EDGE = THRESHOLD ENERGY IN KAYSER
           EDGE = EION(LOW) - ELEVEL(LOW)
           EDGELAM = 1.0D8 / EDGE
 
-          !***  RATE INTEGRAL
+          ! RATE INTEGRAL
           REC = 0.0D0
-          !***  FIND EDGE FREQUENCY INDEX
+          ! FIND EDGE FREQUENCY INDEX
           NFEDGE = ISRCHFGT(NF, XLAMBDA, 1, EDGELAM) - 1
 
           L2 : DO K = 1, NFEDGE
@@ -208,11 +211,11 @@
 
                XJCK = XJC(K)
 
-               SIGMA = SIGMAKI(K, LOW)
+               SIGMA = SIGMAKI(K, idx_nlte(LOW))
 
 !               write(*, '(A,2x,2(i4,2x),2(e15.7,2x))'), 'radnet check:', k, low, xjc(k), sigmaki(k, low)
 
-            !***  CALCULATE BOUND-FREE SOURCE FUNCTION FOR TRANSITION LOW-UP ONLY
+!              CALCULATE BOUND-FREE SOURCE FUNCTION FOR TRANSITION LOW-UP ONLY
                EXFAC = EXP(-C1 * WAVENUM / TL)
                G = EXFAC * ENLTE(LOW) / ENLTE(NUP)
                SBF = C2 * W3 / (EN(LOW) / (EN(NUP) * G) - one)
@@ -256,8 +259,8 @@
 
           CYCLE LLOW
 
-          !***  LEVELS BELONG TO DIFFERENT ELEMENTS,
-          !***  CHARGE DIFFERENCE NOT 1 OR UPPER LEVEL NO GROUND STATE: ZERO RATE
+!         LEVELS BELONG TO DIFFERENT ELEMENTS
+!         CHARGE DIFFERENCE NOT 1 OR UPPER LEVEL NO GROUND STATE: ZERO RATE
 
   14      RRATE(LOW, NUP) = 0.0D0
           RRATE(NUP, LOW) = 0.0D0
@@ -266,9 +269,9 @@
 
       ENDDO
 
-      !***  ENDLOOP  ---------------------------------------------------------
+!     ENDLOOP ---------------------------------------------------------
      
-      !***  DIAGONAL ELEMENTS ARE SET TO ZERO
+!     DIAGONAL ELEMENTS ARE SET TO ZERO
 
       FORALL (J = 1 : N) RRATE(J, J) =   0.0D0
       FORALL (J = 1 : N) ARR(DP, J, J) = 0.0D0
@@ -277,8 +280,8 @@
 
       IF (ARR_LTE_COND) FORALL (J = 1 : N) ARR_LTE(DP, J, J) = 0.0D0
 
-      RETURN
+      return
 
-      END SUBROUTINE
+      end subroutine
 
-      END MODULE
+      end module

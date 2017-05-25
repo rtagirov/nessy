@@ -32,6 +32,8 @@
 
       real*8, allocatable, dimension(:, :)    :: U, VJL
 
+      real*8, allocatable, dimension(:, :)    :: sigmaki
+
       real*8, allocatable, dimension(:)       :: VL, HNU
 
       character*10, allocatable, dimension(:) :: mainpro, mainlev
