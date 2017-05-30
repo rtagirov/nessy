@@ -2,8 +2,12 @@
 
 !     datom_NLTE file variables (both for fioss and hminus)
 
+      integer                                   :: N_nlte, natom_nlte, lastind_nlte
+
       integer, allocatable, dimension(:)        :: kodat_nlte, nom_nlte, nfirst_nlte, nlast_nlte,
      $                                             indlow_nlte, indnup_nlte, ncharg_nlte, mainqn_nlte
+
+      integer, allocatable, dimension(:)        :: eleatnum_nlte, levatnum_nlte
 
       real*8,  allocatable, dimension(:)        :: atmass_nlte, alpha_nlte, eion_nlte, elevel_nlte,
      $                                             sexpo_nlte, weight_nlte, stage_nlte

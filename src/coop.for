@@ -60,9 +60,10 @@
       INTEGER, dimension(ND):: IWARN
       INTEGER :: K, NF
       
-      INTEGER,dimension(N)  :: NCHARG, NOM
-      CHARACTER*10          :: MAINPRO(ND),MAINLEV(ND)
-      REAL*8, dimension(ND) :: OPA,ETA,THOMSON
+      CHARACTER*10                        :: MAINPRO(ND), MAINLEV(ND)
+
+      INTEGER, intent(in),  dimension(N)  :: NCHARG, NOM
+      REAL*8,  intent(out), dimension(ND) :: OPA, ETA, THOMSON
       
       !global in
       
@@ -71,7 +72,9 @@
 
       REAL*8,dimension(N):: WEIGHT,ELEVEL,EION,ALPHA,SEXPO
       REAL*8,dimension(ND):: T, RNE, ENTOT
-      REAL*8,dimension(N,NF) ::SIGARR,WAVARR
+
+      real*8, dimension(N, NF) :: SIGARR, WAVARR
+
       REAL*8  :: XLAM
       character*8 :: agaunt(N) 
       integer XLBKG1,XLBKG2
@@ -130,8 +133,6 @@
         ENDDO
 
         if (num_of_columns(atm_mod_file) .eq. 7 .or. num_of_columns(atm_mod_file) .eq. 4) NDPMIN = 1
-
-!        print*, 'temp min loc:', NDPMIN
 
         if (LBKG) then
           NLTELBKG=1
@@ -254,7 +255,7 @@
          ENDIF
       ENDDO
 
-      ETAL=ETAL*C2*W3
+      ETAL = ETAL * C2 * W3
 !-hm-addition
 !*** hier kommt H^- ff rein...
       if (l_h0.eq.0) then
@@ -285,6 +286,7 @@
             MAINLEV(L)=LEVEL(I)
           endif
       endif
+
 !***  THOMSON SCATTERING ***********************************************
 !MH   NEW ENTRY FOR SUM
 !MH   SUM MUST NOT BE ADDED TO FORMER SUM!
@@ -298,16 +300,18 @@
 
          CALL LINSCA(XLAM, ELDEN, SCAFAC, ABSFAC)
 
-        !***  MULTIPLY THE TRUE ABSORPTION TO ACCOUNT FOR LINE ABSORPTION
-         OPAL=OPAL*ABSFAC
-        !***  MULTIPLY SUM TO ACOUNT FOR LINE-SCATTERING
-         SUM=SUM*SCAFAC
+        ! MULTIPLY THE TRUE ABSORPTION TO ACCOUNT FOR LINE ABSORPTION
+         OPAL = OPAL * ABSFAC
+        ! MULTIPLY SUM TO ACOUNT FOR LINE-SCATTERING
+         SUM = SUM * SCAFAC
         ENDIF
         IF (SUM.GE.OPAMAX) THEN
           MAINPRO(L)='THOMSON'
           MAINLEV(L)='ELECTRON'
         ENDIF
-        OPAL=OPAL+SUM
+
+        OPAL = OPAL + SUM
+
 !**********************************************************************
 !MH**  CHANGES BY MARGIT HABERREITER
 !MH**  RDOPAC: READS BINNED LINE OPACITY DATA FROM *.LBKG FILES
@@ -338,13 +342,14 @@
           ETAL=ETAL+alemis
 
         ENDIF
-        !***  THOMSON = RELATIVE FRACTION FROM THE TOTAL OPACITY
-        THOMSON(L)=SUM/OPAL
-        OPA(L)=OPAL*ENTOT(L)*RSTAR
-        ETA(L)=ETAL*ENTOT(L)*RSTAR
+
+        ! THOMSON = RELATIVE FRACTION FROM THE TOTAL OPACITY
+        THOMSON(L) = SUM / OPAL
+        OPA(L) = OPAL * ENTOT(L) * RSTAR
+        ETA(L) = ETAL * ENTOT(L) * RSTAR
       ENDDO
 
-      RETURN
+      return
 
       END subroutine
 

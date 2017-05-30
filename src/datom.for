@@ -6,7 +6,7 @@
      $                 EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $                 INDNUP,INDLOW,LASTIND,NATOM,
      $                 ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $                 NLAST,WAVARR,SIGARR,NFDIM)
+     $                 NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
 
 C*** CALLED BY COMO, ETL, STEAL, WRCONT, WRSTART, FIOSS
 C*******************************************************************************
@@ -63,25 +63,27 @@ C*******************************************************************************
 
       implicit none
 
-      integer, intent(out) ::                            N, NATOM, LASTIND
+      integer, intent(out)                                   :: N, NATOM, LASTIND
 
-      integer, intent(out), allocatable, dimension(:) :: KODAT, NOM, NFIRST, NLAST, INDLOW, INDNUP, NCHARG, MAINQN
+      integer, intent(out), allocatable, dimension(:)        :: KODAT, NOM, NFIRST, NLAST, INDLOW, INDNUP, NCHARG, MAINQN
 
-      real*8,  intent(out), allocatable, dimension(:) :: ATMASS, ALPHA, EION, ELEVEL, SEXPO, WEIGHT, STAGE
+      integer, intent(out), allocatable, dimension(:)        :: eleatnum, levatnum ! eleatnum - atomic number of an element, levatnum - atomic number of a level
 
-      real*8,  intent(out), allocatable, dimension(:, :) :: ALTESUM, EINST, SIGARR, WAVARR
+      real*8,  intent(out), allocatable, dimension(:)        :: ATMASS, ALPHA, EION, ELEVEL, SEXPO, WEIGHT, STAGE
 
-      real*8,  intent(out), allocatable, dimension(:, :, :) :: COCO
+      real*8,  intent(out), allocatable, dimension(:, :)     :: ALTESUM, EINST, SIGARR, WAVARR
 
-      character*2, intent(out), allocatable, dimension(:) ::  symbol
+      real*8,  intent(out), allocatable, dimension(:, :, :)  :: COCO
 
-      character*4, intent(out), allocatable, dimension(:, :) ::  keycol
+      character*2, intent(out), allocatable, dimension(:)    :: symbol
 
-      character*8, intent(out), allocatable, dimension(:) ::  agaunt
+      character*4, intent(out), allocatable, dimension(:, :) :: keycol
 
-      character*10, intent(out), allocatable, dimension(:) :: level, element
+      character*8, intent(out), allocatable, dimension(:)    :: agaunt
 
-      integer, intent(in) :: NFDIM
+      character*10, intent(out), allocatable, dimension(:)   :: level, element
+
+      integer, intent(in)                                    :: NFDIM
 
       !private variables
       integer ::     I, IND, IRANGE, IECHO, J, LEV, LEVSEQ, LOW, LOWP
@@ -110,31 +112,33 @@ C*******************************************************************************
      $FORMAT_LTESUM='(10X,A10,1X,A8,1X,G9.0,1X,F7.0,1X,F7.0)'
 !     ---------------------- Array Allocation ------------------
 
-      if (allocated(kodat))   deallocate(kodat)
-      if (allocated(nom))     deallocate(nom)
-      if (allocated(nfirst))  deallocate(nfirst)
-      if (allocated(nlast))   deallocate(nlast)
-      if (allocated(indlow))  deallocate(indlow)
-      if (allocated(indnup))  deallocate(indnup)
-      if (allocated(ncharg))  deallocate(ncharg)
-      if (allocated(mainqn))  deallocate(mainqn)
-      if (allocated(atmass))  deallocate(atmass)
-      if (allocated(alpha))   deallocate(alpha)
-      if (allocated(eion))    deallocate(eion)
-      if (allocated(elevel))  deallocate(elevel)
-      if (allocated(sexpo))   deallocate(sexpo)
-      if (allocated(weight))  deallocate(weight)
-      if (allocated(stage))   deallocate(stage)
-      if (allocated(altesum)) deallocate(altesum)
-      if (allocated(einst))   deallocate(einst)
-      if (allocated(sigarr))  deallocate(sigarr)
-      if (allocated(wavarr))  deallocate(wavarr)
-      if (allocated(coco))    deallocate(coco)
-      if (allocated(symbol))  deallocate(symbol)
-      if (allocated(keycol))  deallocate(keycol)
-      if (allocated(agaunt))  deallocate(agaunt)
-      if (allocated(level))   deallocate(level)
-      if (allocated(element)) deallocate(element)
+      if (allocated(kodat))    deallocate(kodat)
+      if (allocated(nom))      deallocate(nom)
+      if (allocated(eleatnum)) deallocate(eleatnum)
+      if (allocated(levatnum)) deallocate(levatnum)
+      if (allocated(nfirst))   deallocate(nfirst)
+      if (allocated(nlast))    deallocate(nlast)
+      if (allocated(indlow))   deallocate(indlow)
+      if (allocated(indnup))   deallocate(indnup)
+      if (allocated(ncharg))   deallocate(ncharg)
+      if (allocated(mainqn))   deallocate(mainqn)
+      if (allocated(atmass))   deallocate(atmass)
+      if (allocated(alpha))    deallocate(alpha)
+      if (allocated(eion))     deallocate(eion)
+      if (allocated(elevel))   deallocate(elevel)
+      if (allocated(sexpo))    deallocate(sexpo)
+      if (allocated(weight))   deallocate(weight)
+      if (allocated(stage))    deallocate(stage)
+      if (allocated(altesum))  deallocate(altesum)
+      if (allocated(einst))    deallocate(einst)
+      if (allocated(sigarr))   deallocate(sigarr)
+      if (allocated(wavarr))   deallocate(wavarr)
+      if (allocated(coco))     deallocate(coco)
+      if (allocated(symbol))   deallocate(symbol)
+      if (allocated(keycol))   deallocate(keycol)
+      if (allocated(agaunt))   deallocate(agaunt)
+      if (allocated(level))    deallocate(level)
+      if (allocated(element))  deallocate(element)
 
       call system('grep -irw ELEMENT'//' '//datom_file//' '//'> ele.temp')
       call system('grep -irw LEVEL'  //' '//datom_file//' '//'> lev.temp')
@@ -155,8 +159,10 @@ C*******************************************************************************
       allocate(stage(elenum))
       allocate(symbol(elenum))
       allocate(element(elenum))
+      allocate(eleatnum(elenum))
 
       allocate(nom(levnum))
+      allocate(levatnum(levnum))
       allocate(ncharg(levnum))
       allocate(mainqn(levnum))
       allocate(alpha(levnum))
@@ -197,9 +203,11 @@ C*******************************************************************************
       indlow(:) = 0
       indnup(:) = 0
 
-      nom(:) =    0
-      ncharg(:) = 0
-      mainqn(:) = 0
+      nom(:) =      0
+      eleatnum(:) = 0
+      levatnum(:) = 0
+      ncharg(:) =   0
+      mainqn(:) =   0
 
       atmass(:) =  0.0D0
       alpha(:) =   0.0D0
@@ -249,114 +257,156 @@ C***  ELEMENTS ---------------------------------------------------------
       read (KARTE,FORMAT_ELEMENT) ELEMENT(NATOM),SYMBOL(NATOM),
      $                    ATMASS(NATOM),STAGE(NATOM)
 
+      IF ((ELEMENT(NATOM) .EQ. 'HELIUM    ') .AND. (SYMBOL(NATOM) .EQ. 'HE' .or. SYMBOL(NATOM) .EQ. 'He')) THEN
 
-      IF ( (ELEMENT(NATOM) .EQ. 'HELIUM    ') .AND.
-     $     ( SYMBOL(NATOM) .EQ. 'HE' .or. SYMBOL(NATOM) .EQ. 'He' )
-     $    ) THEN   
-      KODAT(1)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'HYDROGEN  ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'H ')) THEN
-                                     KODAT(2)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'LITHIU    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Li')) THEN
-                                     KODAT(3)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'BERRYL    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Be')) THEN
-                                     KODAT(4)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'BOR       ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'B ')) THEN
-                                     KODAT(5)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'CARBON    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'C ')) THEN
-                                     KODAT(6)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'NITROG  ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'N ')) THEN
-                                     KODAT(7)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'OXYGEN    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'O ')) THEN
-                                     KODAT(8)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'FLOUR    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'F ')) THEN
-                                     KODAT(9)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'NEON     ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Ne')) THEN
-                                     KODAT(10)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'NATRIUM   ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Na')) THEN
-                                     KODAT(11)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'MAGNES    ') .AND.
-     $   ((SYMBOL(NATOM) .EQ. 'Mg').or.(SYMBOL(NATOM) .EQ. 'MG'))) THEN
-                                     KODAT(12)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'ALUMIN    ') .AND.
-     $   ((SYMBOL(NATOM) .EQ. 'Al').or.(SYMBOL(NATOM) .EQ. 'AL'))) THEN
-                                     KODAT(13)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'SILICON   ') .AND.
-     $   ((SYMBOL(NATOM) .EQ. 'Si').or.(SYMBOL(NATOM) .EQ. 'SI'))) THEN
-                                     KODAT(14)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'PHOSPH    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'P ')) THEN
-                                    KODAT(15)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'SULPHUR   ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'S ')) THEN
-                                     KODAT(16)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'CHLOR     ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Cl')) THEN
-                                    KODAT(17)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'ARGON    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Ar')) THEN
-                                    KODAT(18)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'POTASS    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'K ')) THEN
-                                     KODAT(19)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'CALCIUM   ') .AND.
-     $   ((SYMBOL(NATOM) .EQ. 'Ca').or.(SYMBOL(NATOM) .EQ. 'CA'))) THEN
-                                     KODAT(20)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'SCANDI    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Sc')) THEN
-                                    KODAT(21)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'TITAN    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Ti')) THEN
-                                    KODAT(22)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'VANADI    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'V ')) THEN
-                                    KODAT(23)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'CHROM    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Cr')) THEN
-                                    KODAT(24)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'MANGAN    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Mn')) THEN
-                                    KODAT(25)=NATOM
+             KODAT(1) = NATOM; eleatnum(NATOM) = 2
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'HYDROGEN  ') .AND. (SYMBOL(NATOM) .EQ. 'H ')) THEN
+
+             KODAT(2) = NATOM; eleatnum(NATOM) = 1
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'LITHIU    ') .AND. (SYMBOL(NATOM) .EQ. 'Li')) THEN
+
+             KODAT(3) = NATOM; eleatnum(NATOM) = 3
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'BERRYL    ') .AND. (SYMBOL(NATOM) .EQ. 'Be')) THEN
+
+             KODAT(4) = NATOM; eleatnum(NATOM) = 4
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'BOR       ') .AND. (SYMBOL(NATOM) .EQ. 'B ')) THEN
+
+             KODAT(5) = NATOM; eleatnum(NATOM) = 5
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'CARBON    ') .AND. (SYMBOL(NATOM) .EQ. 'C ')) THEN
+
+             KODAT(6) = NATOM; eleatnum(NATOM) = 6
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'NITROG  ') .AND. (SYMBOL(NATOM) .EQ. 'N ')) THEN
+
+             KODAT(7) = NATOM; eleatnum(NATOM) = 7
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'OXYGEN    ') .AND. (SYMBOL(NATOM) .EQ. 'O ')) THEN
+
+             KODAT(8) = NATOM; eleatnum(NATOM) = 8
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'FLOUR    ') .AND. (SYMBOL(NATOM) .EQ. 'F ')) THEN
+
+             KODAT(9) = NATOM; eleatnum(NATOM) = 9
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'NEON     ') .AND. (SYMBOL(NATOM) .EQ. 'Ne')) THEN
+
+             KODAT(10) = NATOM; eleatnum(NATOM) = 10
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'NATRIUM   ') .AND. (SYMBOL(NATOM) .EQ. 'Na')) THEN
+
+             KODAT(11) = NATOM; eleatnum(NATOM) = 11
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'MAGNES    ') .AND. ((SYMBOL(NATOM) .EQ. 'Mg') .or. (SYMBOL(NATOM) .EQ. 'MG'))) THEN
+
+             KODAT(12) = NATOM; eleatnum(NATOM) = 12
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'ALUMIN    ') .AND. ((SYMBOL(NATOM) .EQ. 'Al').or.(SYMBOL(NATOM) .EQ. 'AL'))) THEN
+
+             KODAT(13) = NATOM; eleatnum(NATOM) = 13
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'SILICON   ') .AND. ((SYMBOL(NATOM) .EQ. 'Si').or.(SYMBOL(NATOM) .EQ. 'SI'))) THEN
+
+             KODAT(14) = NATOM; eleatnum(NATOM) = 14
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'PHOSPH    ') .AND. (SYMBOL(NATOM) .EQ. 'P ')) THEN
+
+             KODAT(15) = NATOM; eleatnum(NATOM) = 15
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'SULPHUR   ') .AND. (SYMBOL(NATOM) .EQ. 'S ')) THEN
+
+             KODAT(16) = NATOM; eleatnum(NATOM) = 16
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'CHLOR     ') .AND. (SYMBOL(NATOM) .EQ. 'Cl')) THEN
+
+             KODAT(17) = NATOM; eleatnum(NATOM) = 17
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'ARGON    ') .AND. (SYMBOL(NATOM) .EQ. 'Ar')) THEN
+
+             KODAT(18) = NATOM; eleatnum(NATOM) = 18
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'POTASS    ') .AND. (SYMBOL(NATOM) .EQ. 'K ')) THEN
+
+             KODAT(19) = NATOM; eleatnum(NATOM) = 19
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'CALCIUM   ') .AND. ((SYMBOL(NATOM) .EQ. 'Ca') .or. (SYMBOL(NATOM) .EQ. 'CA'))) THEN
+
+             KODAT(20) = NATOM; eleatnum(NATOM) = 20
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'SCANDI    ') .AND. (SYMBOL(NATOM) .EQ. 'Sc')) THEN
+
+             KODAT(21) = NATOM; eleatnum(NATOM) = 21
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'TITAN    ') .AND. (SYMBOL(NATOM) .EQ. 'Ti')) THEN
+
+             KODAT(22) = NATOM; eleatnum(NATOM) = 22
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'VANADI    ') .AND. (SYMBOL(NATOM) .EQ. 'V ')) THEN
+
+             KODAT(23) = NATOM; eleatnum(NATOM) = 23
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'CHROM    ') .AND. (SYMBOL(NATOM) .EQ. 'Cr')) THEN
+
+             KODAT(24) = NATOM; eleatnum(NATOM) = 24
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'MANGAN    ') .AND. (SYMBOL(NATOM) .EQ. 'Mn')) THEN
+
+             KODAT(25) = NATOM; eleatnum(NATOM) = 25
+
 CMH  MODEL ATOM OF "IRON" DECODED
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'IRON      ') .AND.
-     $   ((SYMBOL(NATOM) .EQ. 'Fe').or.(SYMBOL(NATOM) .EQ. 'FE'))) THEN
-                                     KODAT(26)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'COBALT    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Co')) THEN
-                                    KODAT(27)=NATOM
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'IRON      ') .AND. ((SYMBOL(NATOM) .EQ. 'Fe') .or. (SYMBOL(NATOM) .EQ. 'FE'))) THEN
+
+             KODAT(26) = NATOM; eleatnum(NATOM) = 26
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'COBALT    ') .AND. (SYMBOL(NATOM) .EQ. 'Co')) THEN
+
+             KODAT(27) = NATOM; eleatnum(NATOM) = 27
+
 CMH  MODEL ATOM OF "NICKEL" DECODED
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'NICKEL    ') .AND.
-     $   ((SYMBOL(NATOM) .EQ. 'Ni').or.(SYMBOL(NATOM) .EQ. 'NI'))) THEN
-                                     KODAT(28)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'COPPER    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Cu')) THEN
-                                    KODAT(29)=NATOM
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'ZINC    ') .AND.
-     $    (SYMBOL(NATOM) .EQ. 'Zn')) THEN
-                                    KODAT(30)=NATOM
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'NICKEL    ') .AND. ((SYMBOL(NATOM) .EQ. 'Ni') .or. (SYMBOL(NATOM) .EQ. 'NI'))) THEN
+
+             KODAT(28) = NATOM; eleatnum(NATOM) = 28
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'COPPER    ') .AND. (SYMBOL(NATOM) .EQ. 'Cu')) THEN
+
+             KODAT(29) = NATOM; eleatnum(NATOM) = 29
+
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'ZINC    ') .AND. (SYMBOL(NATOM) .EQ. 'Zn')) THEN
+
+             KODAT(30) = NATOM; eleatnum(NATOM) = 30
+
       ELSE
-          print *, 'UNKNOWN ELEMENT DECODED'
-          print *,KARTE
-          STOP 'ERROR'
+
+          print*, 'UNKNOWN ELEMENT DECODED'
+          print*, KARTE
+          STOP    'ERROR'
+
       ENDIF
+
       GOTO 1
      
-C***  LEVELS -----------------------------------------------------------
+!     LEVELS -----------------------------------------------------------
    10 N = N + 1
-      IF (LEVSEQ.NE.0) THEN
-          print *, 'DATOM: LEVEL CARD OUT OF SEQUENCE'
+
+      IF (LEVSEQ .NE. 0) THEN
+
+          print*, 'DATOM: LEVEL CARD OUT OF SEQUENCE'
+
           STOP 'ERROR'
-          ENDIF
-      IF (NATOM .NE. 0) NOM(N)=NATOM
+
+      ENDIF
+
+      IF (NATOM .NE. 0) THEN
+
+         NOM(N) = NATOM
+
+         levatnum(N) = eleatnum(NATOM)
+
+      ENDIF
 
       nchg = 0
       nw= 0

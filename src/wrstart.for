@@ -72,6 +72,8 @@
 
       REAL*8 :: H
 
+      integer :: iii
+
       DATA AMU /1.660531d-24/
 
       call FDATE(fstring)
@@ -82,7 +84,15 @@
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $           NLAST,WAVARR,SIGARR,NFDIM) ! NFDIM is known from varhminus module
+     $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM) ! NFDIM is known from varhminus module
+
+!      do iii = 1, N
+
+!         print*, iii, 'privet', NOM(iii)
+
+!      enddo
+
+!      stop
 
       allocate(ABXYZ(NATOM))
 
@@ -92,7 +102,7 @@
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
-     $CALL PRIDAT(N,LEVEL,NCHARG, WEIGHT,ELEVEL,EION,EINST,
+     $CALL PRIDAT(N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $            KODAT,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $            NATOM,ELEMENT,NOM,ABXYZ,ATMASS)
 
@@ -109,9 +119,9 @@
 !     INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
       call initvel(maxval(radius), t_eff, glog, rstar, xmass)
 
-      allocate(XJC(ND))
+!      allocate(XJC(ND))
       allocate(XJCARR(ND, NF))
-      allocate(XJL(ND, lastind_nlte))
+!      allocate(XJL(ND, lastind_nlte))
       allocate(EDDI(3, ND))
       allocate(EDDARR(3, ND, NF))
       allocate(TAUROSS(ND))
@@ -143,7 +153,7 @@
 
       call mol_ab(ABXYZn, ABXYZ, SYMBOL, ENTOT, T, NATOM, ND)
 
-      call mark_nlte(N, NATOM, ND)
+      call mark_nlte()
 
 !     RINAT TAGIROV:
 !     Calculation or read-out of the velocity field.
@@ -285,13 +295,10 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       EDDI(1 : 3, 1 : ND) = 0.0d0
 
-      CALL JSTART(NF,lastind_nlte,XLAMBDA(1 : NF),ND,T,XJC,
-     $            XJL(1 : ND, 1 : lastind_nlte),
-     $            HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $            ncharg_nlte,elevel_nlte,EDDI,WCHARM,nom_nlte,N_nlte,einst_nlte,
-     $            MODHEAD,JOBNUM,TEFF)
-
-!      stop
+      CALL JSTART(NF, lastind_nlte, XLAMBDA(1 : NF), ND, T, XJC, XJL,
+     $            HTOT, GTOT, XTOT, ETOT, EMFLUX, TOTIN, TOTOUT,
+     $            ncharg_nlte, elevel_nlte, EDDI, WCHARM, nom_nlte, N_nlte, einst_nlte,
+     $            MODHEAD, JOBNUM, TEFF)
 
       write(*,  *) 'WRSTART - ', fstring, ' run time: ', TOC(timer)
 
@@ -350,7 +357,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       END FUNCTION EXTRAP_VEL_FIELD
 
-      subroutine mark_nlte(N, NATOM, ND)
+      subroutine mark_nlte()
 
       use vardatom_lte
       use vardatom_nlte
@@ -361,9 +368,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       implicit none
 
-      integer, intent(in) :: N, NATOM, ND
-
-      integer :: i, j, L
+      integer :: i, j, L, iii
 
       call datom(datom_nlte,
      $           N_nlte,
@@ -394,11 +399,21 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
      $           nlast_nlte,
      $           wavarr_nlte,
      $           sigarr_nlte,
+     $           eleatnum_nlte,
+     $           levatnum_nlte,
      $           nfdim) ! NFDIM is known from varhminus module
+
+!      do iii = 1, N_nlte
+
+!         print*, iii, levatnum_nlte(iii)
+
+!      enddo
+
+!      stop
 
       allocate(nlte_lev(N)); allocate(idx_nlte(N_nlte)); allocate(nlte_ele(NATOM))
 
-      allocate(abxyz_nlte(natom_nlte)); allocate(ABXYZn_nlte(natom_nlte, ND))
+      allocate(abxyz_nlte(natom_nlte)); allocate(ABXYZn_nlte(natom_nlte, dpn))
 
       nlte_lev(1 : N) = .false.
 
@@ -432,7 +447,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
                 abxyz_nlte(j) = abxyz(i)
 
-                do L = 1, ND; ABXYZn_nlte(j, L) = ABXYZn(i, L); enddo
+                do L = 1, dpn; ABXYZn_nlte(j, L) = ABXYZn(i, L); enddo
 
                 cycle
 
@@ -466,7 +481,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       enddo
 
-      stop
+!      stop
 
       end subroutine
 

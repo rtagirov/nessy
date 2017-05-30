@@ -5,7 +5,8 @@
       subroutine COMA(CRATE, RRATE, RATCO, DM, N, NRANK, V1, ABUND,
      $                ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, EION, WEIGHT, ALTESUM,
      $                XLAMBDA, FWEIGHT, XJC, NF, L, XJL, ND, XJLAPP, SLOLD, LASTIND, INDLOW,
-     $                INDNUP, NOM, NATOM, KODAT, NFIRST, NLAST, SLNEW, SIGMAKI, NFEDGE, EXPFAC, NODM,
+     $                INDNUP, NOM, NATOM, KODAT, levatnum, NFIRST,
+     $                NLAST, SLNEW, SIGMAKI, NFEDGE, EXPFAC, NODM,
      $                WCHARM, EN, RSTAR, SCOLD, VDOP, COCO, KEYCOL,
      $                POPHIIL, POPHML, POPHIL, LOE, ITNEL, LEVEL, JOBNUM, IRESTA,
      $                N_full, ncharg_full, weight_full, elevel_full, eion_full, en_full, nom_full)
@@ -71,6 +72,8 @@
       integer, dimension(N) ::     NCHARG
       integer, dimension(NATOM) :: NFIRST, NLAST
 
+      integer, intent(in), dimension(N) :: levatnum
+
       real*8 :: TL, RSTAR
       real*8 :: COCO(N, N, 4), VDOP
       real*8 :: EINST(N, N), ENE
@@ -132,6 +135,8 @@
       REAL*8 ::                               TRUPDOWN, TRDOWNUP
 
       INTEGER :: N1, N2
+
+      integer :: ii, iii
 
       NPLUS1 = N + 1
 
@@ -249,7 +254,7 @@ CMH - new: needed to calculate new collision cross sections for Hminus
 
       CALL COLLI(N, ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
      $           EION, COCO, KEYCOL, WEIGHT, ALTESUM, NATOM, NOM, KODAT,
-     $           POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, L)
+     $           levatnum, POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, L)
 
 !     CALCULATE LINE RADIATION FIELD WITH APPROXIMATE LAMBDA OPERATOR TERMS
 

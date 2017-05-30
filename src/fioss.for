@@ -194,7 +194,7 @@
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $           NLAST,WAVARR,SIGARR,NFDIM)
+     $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
 
 !     READING OF THE MODEL FILE ------------------------------------
 

@@ -54,7 +54,7 @@
 
       logical, dimension(:), allocatable ::      nlte_lev, nlte_ele
 
-      integer ::                                 N_nlte, lastind_nlte, natom_nlte
+!      integer ::                                 N_nlte, lastind_nlte, natom_nlte
 
       integer, dimension(:), allocatable ::      idx_nlte
 

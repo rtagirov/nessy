@@ -39,72 +39,68 @@
       use varsteal
       use local_operator
  
-!***  THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
-!***  CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
-!***  IT MAKES USE OF THE ATOMIC DATA (FILE DATOM)
-!***  AND THE FREQUENCY GRID (FILE FGRID)
-!***  PRESENT VERSION: MODEL ATMOSPHERE OF HELIUM (CODE NR. "1") WITH
-!***                                       HYDROGEN         "2"
-!***  FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS:
-!***  MODIFY SUBROUTINES  "DATOM", "DECSTAR"
-!***  INSERT CORRESPONDING ATOMIC DATA INTO SUBR. "COLLI", "PHOTOCS"
+!     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
+!     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
+!     IT MAKES USE OF THE ATOMIC DATA (FILE DATOM)
+!     AND THE FREQUENCY GRID (FILE FGRID)
+!     PRESENT VERSION: MODEL ATMOSPHERE OF HELIUM (CODE NR. "1") WITH
+!                                          HYDROGEN         "2"
+!     FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS:
+!     MODIFY SUBROUTINES  "DATOM", "DECSTAR"
+!     INSERT CORRESPONDING ATOMIC DATA INTO SUBR. "COLLI", "PHOTOCS"
       IMPLICIT REAL*8(A - H, O - Z)
  
       real*8, ALLOCATABLE :: DUMMY2(:, :)
 
-!***  CHANGES BY MARGIT HABERREITER, 20 MAY, 2002
-!***  LEVLOW NEEDS TO BE DEFINED, AS IT IS USED AS A KEYWORD TO SELECT THE 
-!***  ELEMENT AND LEVEL TO READ THE CONTINUUM OPACITIES FROM AN INPUT TABLE
-CMH   LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
+!     CHANGES BY MARGIT HABERREITER, 20 MAY, 2002
+!     LEVLOW NEEDS TO BE DEFINED, AS IT IS USED AS A KEYWORD TO SELECT THE 
+!     ELEMENT AND LEVEL TO READ THE CONTINUUM OPACITIES FROM AN INPUT TABLE
+!     LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
+!     XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 !     THIS PROGRAM IS TO SOLVE THE CONTINUOUS RADIATION TRANSFER
 !     WITH GIVEN POPULATION NUMBERS
 
       parameter (IPDIM = 25, NBDIM = 99)
-      COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM,NBDIM), 
-     $                                ABSEVT(IPDIM,NBDIM)
-      COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
 
-      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2 
-      LOGICAL LBKG
-      INTEGER XLBKG1,XLBKG2 
-      CHARACTER MODHEAD*104,CARD*80, LCARD*100
+      COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
 
-      CHARACTER*7 JOB
+      LOGICAL          LBKG
+      INTEGER          XLBKG1, XLBKG2
+      CHARACTER        MODHEAD*104, CARD*80, LCARD*100
 
-      integer :: timer
+      CHARACTER*7      JOB
 
-      real*8 :: amu
+      integer ::       timer
 
-      LOGICAL LDUMMY1, LDUMMY2
+      real*8 ::        amu
 
-      REAL*8, ALLOCATABLE, DIMENSION(:, :) :: EDDI_OLD
+      LOGICAL          LDUMMY1, LDUMMY2
 
-      REAL*8 ::  DEDDI1, DEDDI2, DEDDI3
+      real*8, allocatable, dimension(:, :) :: eddi_old
 
-      INTEGER :: DEDDI1_LOC, DEDDI2_LOC, DEDDI3_LOC
+      REAL*8 ::                               DEDDI1, DEDDI2, DEDDI3
+
+      INTEGER ::                              DEDDI1_LOC, DEDDI2_LOC, DEDDI3_LOC
 
       DATA AMU /1.660531d-24/
 
       print*, 'Entering wrcont, JOB = '//JOB
 
-      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $           INDNUP,INDLOW,LASTIND,NATOM,
-     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $           NLAST,WAVARR,SIGARR,NFDIM)
+!      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+!     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+!     $           INDNUP,INDLOW,LASTIND,NATOM,
+!     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+!     $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
 
       CALL DECSTAR(MODHEAD,FM,RSTAR,teff,glog,xmass,VDOP,LDUMMY1,LBKG,XLBKG1,XLBKG2,
      $             LDUMMY2,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN,amu)
 
-!***  DECODING INPUT OPTIONS *******************************************
+!     DECODING INPUT OPTIONS
       CALL DECON(LSOPA,LSINT,IFLUX,JOBMAX,LPRIH,LPHNU,LPRIV,TEFF,LBLANK)
 
-!***  READING OF THE MODEL FILE ----------------------------------------
-      IFL = 3
-
-      open(IFL, file = 'MODFILE', STATUS = 'OLD')
+!     READING OF THE MODEL FILE
+      IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'OLD')
 
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
      $             GRADI,RSTAR,VDOP,NF,
@@ -112,6 +108,12 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
       close(IFL)
+
+      if (.not. allocated(opa))     allocate(opa(ND))
+
+      if (.not. allocated(eta))     allocate(eta(ND))
+
+      if (.not. allocated(thomson)) allocate(thomson(ND))
 
       if (allocated(dummy2)) deallocate(dummy2); allocate(dummy2(NF, N))
 
@@ -142,18 +144,17 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       XTOT(1 : ND) = 0.0d0
       HTOT(1 : ND) = 0.0d0
 
-!***  the blanketing table is read by routine READMOD
-!***  if lblank.gt.0 then read a new table from the file LIBLANK
-      CALL REBLANK(LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
+!     the blanketing table is read by routine READMOD
+!     if lblank .gt. 0 then read a new table from the file LIBLANK
+      CALL REBLANK(LBLANK, NF, XLAMBDA, ND, ENTOT, RNE, SCAFAC, ABSFAC)
 
-      if (lblank.lt.0) then
-!***     the new blanketing table needs to be written to the model file
+      if (lblank .lt. 0) then
+!        the new blanketing table needs to be written to the model file
          IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'UNKNOWN')
 
-         CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
-     $                GRADI,RSTAR,VDOP,NF,
+         CALL WRITMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,GRADI,RSTAR,VDOP,NF,
      $                XLAMBDA(1 : NF),FWEIGHT(1 : NF),AKEY(1 : NF),
-     $                ABXYZ,NATOM,MODHEAD,JOBNUM) 
+     $                ABXYZ,NATOM,MODHEAD,JOBNUM)
 
          CLOSE(ifl)
 
@@ -163,11 +164,13 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       call TIC(timer)
 
-!***  SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT ********
+!     SOLUTION OF THE TRANSFER EQUATION FOR EACH FREQUENCY-POINT
 
       ALLOCATE(EDDI_OLD(3, ND)); EDDI_OLD = EDDI(1 : 3, 1 : ND)
 
       FRQS: DO K = 1, NF
+
+!        print*, 'wrcont: K = ', K, ' out of ', NF
 
 !       now extract XJC and EDDI for the frequency K
         CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
@@ -178,8 +181,6 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
      $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,
      $            WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF),
      $            LBKG,XLBKG1,XLBKG2,NF)
-
-!        print*, 'wrcont: K = ', K, ' out of ', NF
 
         CALL DIFFUS(XLAMBDA(K),T,RADIUS,ND,BCORE,DBDR)
 

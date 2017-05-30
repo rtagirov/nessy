@@ -77,11 +77,11 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 C***  READING THE ATOMIC DATA FROM FILE DATOM
 
-	CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $         EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $         INDNUP,INDLOW,LASTIND,NATOM,
-     $         ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $         NLAST,WAVARR,SIGARR,NFDIM)
+!	CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+!     $         EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+!     $         INDNUP,INDLOW,LASTIND,NATOM,
+!     $         ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+!     $         NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
 
       if (allocated(levelpl)) deallocate(levelpl); allocate(levelpl(N))
 
@@ -235,6 +235,7 @@ c***     the new blanketing table needs to be written to the model file
      $               nom_nlte,
      $               natom_nlte,
      $               kodat_nlte,
+     $               levatnum_nlte,
      $               nfirst_nlte,
      $               nlast_nlte,
      $               WAVARR,

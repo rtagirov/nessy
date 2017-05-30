@@ -38,10 +38,10 @@
       integer IFL
       integer JOBNUM
       integer K
-      integer LASTIND, LASTK, LBLANK, LSINT, LSOPA
+      integer LASTK, LBLANK, LSINT, LSOPA
 
       integer MAXVAL,MINVAL
-      integer N, NATOM, ND
+      integer ND
 
       integer NF, NP
       real*8  CARD, CRATE, DM
@@ -69,11 +69,11 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       tstart = time()
 
-      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $           INDNUP,INDLOW,LASTIND,NATOM,
-     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $           NLAST,WAVARR,SIGARR,NFDIM)
+!      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+!     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
+!     $           INDNUP,INDLOW,LASTIND,NATOM,
+!     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
+!     $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
 
       IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'OLD')
 

@@ -1,9 +1,11 @@
       module MOD_JSTART
+
       contains
-      SUBROUTINE JSTART (NF,NL,XLAMBDA,ND,T,XJC,XJL,
-     $                   HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
-     $                   NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,  ! renamed WRCHARM to WCHARM 
-     $                   MODHEAD,JOBNUM,TEFF)
+
+      subroutine JSTART(NF,NL,XLAMBDA,ND,T,XJC,XJL,
+     $                  HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
+     $                  NCHARG,ELEVEL,EDDI,WCHARM,NOM,N,EINST,  ! renamed WRCHARM to WCHARM 
+     $                  MODHEAD,JOBNUM,TEFF)
 C******************************************************************************
 C***  CALLED BY WRSTART
 C***  READ THE RADIATION FIELD
@@ -19,34 +21,39 @@ C******************************************************************************
 
       use phys
 
-      IMPLICIT NONE
+      implicit none
 
       real*8,PARAMETER ::  ONE = 1.D+0, TWO = 2.D+0 
 
 C***  TRANSFER OF THE LTE-OPTION FROM SUBR. DECSTAR
-      real*8,  intent(inout),dimension(ND)     :: XJC ! Continuum and Line Radiation Field
-      real*8,  intent(inout),dimension(ND, NL) :: XJL ! Continuum and Line Radiation Field
+!      real*8,  intent(out),dimension(ND)     :: XJC ! Continuum Radiation Field
+!      real*8,  intent(out),dimension(ND, NL) :: XJL ! Line Radiation Field
+      real*8,  intent(out), allocatable, dimension(:)    :: XJC ! Continuum Radiation Field
+      real*8,  intent(out), allocatable, dimension(:, :) :: XJL ! Line Radiation Field
       integer, intent(in) :: NF, ND, N, NL
-      integer, intent(in) :: NCHARG(N), NOM(N),JOBNUM
+      integer, intent(in) :: NCHARG(N), NOM(N), JOBNUM
       real*8,  intent(in) :: TOTIN, TOTOUT
-      real*8,  intent(in) :: ELEVEL(N),EINST(N,N),EDDI(3,ND)
+      real*8,  intent(in) :: ELEVEL(N), EINST(N, N), EDDI(3, ND)
       real*8,  intent(in),dimension(ND)   :: T
       real*8,  intent(in),dimension(NF)   :: XLAMBDA
       real*8,  intent(in),dimension(ND,NF):: WCHARM
-      real*8,  intent(in),dimension(:)    :: HTOT, GTOT,XTOT, ETOT,EMFLUX
-      character,intent(in  ) :: MODHEAD*104
-      real*8  ::SQRT,XLAM, BTEFF, TEFF, W
-      integer :: IFL,IERR, K, L, J, I,IND
+      real*8,  intent(in),dimension(:)    :: HTOT, GTOT, XTOT, ETOT, EMFLUX
+      character,intent(in) :: MODHEAD*104
+      real*8  :: SQRT, XLAM, BTEFF, TEFF, W
+      integer :: IFL, IERR, K, L, J, I, IND
       CHARACTER CNAME*10
-! micha: Added dimensions to be able to use modules
-C***  CONTINUUM RADIATION FIELD XJC  *****************************************
-C***  LOOP OVER ALL CONTINUUM FREQUENCY POINTS
-C***  ( DEPTH VEKTOR AT EACH FREQUENCY POINT )
-      IFL=2
+
+      allocate(XJC(ND))
+      allocate(XJL(ND, NL))
+
+!     CONTINUUM RADIATION FIELD XJC
+!     LOOP OVER ALL CONTINUUM FREQUENCY POINTS
+!     (DEPTH VEKTOR AT EACH FREQUENCY POINT)
+      IFL = 2
       open (IFL,file='RADIOC',STATUS='UNKNOWN')
-      write (ifl,'(A)')  'MODHEAD'
-	write (ifl,'(A104)') MODHEAD 
-c      CALL WRITMSC(IFL,MODHEAD,104,CNAME,-1,IERR)
+      write (ifl, '(A)')   'MODHEAD'
+	  write (ifl, '(A104)') MODHEAD 
+
       CALL WRITMSI1(IFL,JOBNUM,  'JOBNUM',-1,IERR)
       CALL WRITMSI1(IFL,NF,      'NF'    ,-1,IERR)
       CALL WRITMS1 (IFL,TOTIN,   'TOTIN' ,-1,IERR)
@@ -57,10 +64,11 @@ c      CALL WRITMSC(IFL,MODHEAD,104,CNAME,-1,IERR)
       CALL WRITMS (IFL,XTOT,ND,  'XTOT'  ,-1,IERR)
       CALL WRITMS (IFL,ETOT,ND,  'ETOT'  ,-1,IERR)
 
-      DO 6 K=1,NF
-      XLAM=XLAMBDA(K)
+      DO 6 K = 1, NF
+
+      XLAM = XLAMBDA(K)
      
-C***   GEOMETRICAL DILUTION OF BLACKBODY FIELD
+!      GEOMETRICAL DILUTION OF BLACKBODY FIELD
         BTEFF=BNUE(XLAM,TEFF)
         DO L=1,ND
           IF (T(L) .LT. TEFF) THEN
@@ -81,45 +89,61 @@ C***   GEOMETRICAL DILUTION OF BLACKBODY FIELD
     6 CONTINUE
       close (IFL)
 C******************************************************************************
-     
-C***  LINE RADIATION FIELD XJL  ***********************************************
-C***  ( DEPTH VEKTOR FOR EACH LINE TRANSITION LABELLED WITH IND )
-      IFL=4
-      open (IFL,file='RADIOL',STATUS='UNKNOWN')
+ 
+C***  LINE RADIATION FIELD XJL
+C***  (DEPTH VEKTOR FOR EACH LINE TRANSITION LABELLED WITH IND)
+      IFL = 4
+      open(IFL, file = 'RADIOL', STATUS = 'UNKNOWN')
 
       CNAME='MODHEAD'
       write (ifl,'(A10)')  cname
       write (ifl,'(A104)') MODHEAD 
       CALL WRITMSI1(IFL,jobnum,'JOBNUM',-1,IERR)
 
-      IND=0
-      DO 99 J=2,N
-      DO 99 I=1,J-1
-      IF ((NOM(I) .NE. NOM(J)) .OR. (NCHARG(I) .NE. NCHARG(J))) GOTO 99
-      IND=IND+1
-      IF (EINST(I,J) .EQ. - TWO) GOTO 99
-      XLAM=1.d8*ONE/(ELEVEL(J)-ELEVEL(I))
+      IND = 0
 
-C***  THIS VERSION: SAME APPROXIMATION AS FOR CONTINUUM
-C***  GEOMETRICAL DILUTION OF BLACKBODY FIELD
-        BTEFF=BNUE(XLAM,TEFF)
-        DO L=1,ND
+      DO 99 J = 2, N
+
+      DO 99 I = 1, J - 1
+
+      IF ((NOM(I) .NE. NOM(J)) .OR. (NCHARG(I) .NE. NCHARG(J))) GOTO 99
+
+      IND = IND + 1
+
+      IF (EINST(I, J) .EQ. -TWO) GOTO 99
+
+      XLAM = 1.d8 * ONE / (ELEVEL(J) - ELEVEL(I))
+
+!       THIS VERSION: SAME APPROXIMATION AS FOR CONTINUUM
+!       GEOMETRICAL DILUTION OF BLACKBODY FIELD
+        BTEFF = BNUE(XLAM, TEFF)
+
+        DO L = 1, ND
+
           IF (T(L) .LT. TEFF) THEN
-            W=0.5_8
-            XJL(L, 1 : NL)=BTEFF*W
+
+            W = 0.5d0
+
+            XJL(L, 1 : NL) = BTEFF * W
+
           ELSE
-            XJL(L, 1 : NL)=BNUE(XLAM,T(L))
+
+            XJL(L, 1 : NL) = BNUE(XLAM, T(L))
+
           ENDIF
+
         ENDDO
 
       WRITE(CNAME,FMT_KEY) 'XJL ',IND
+
       CALL WRITMS (IFL,XJL(1 : ND, IND),ND,CNAME,-1,IERR)
+
    99 CONTINUE
+
       close (IFL)
-C*****************************************************************************
 
-      RETURN
+      return
 
-      END subroutine
+      end subroutine
 
       end module

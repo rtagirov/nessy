@@ -2,11 +2,11 @@
 
       USE MOD_ERROR
 
-      CONTAINS
+      contains
 
-      SUBROUTINE COLLI(N, ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
+      subroutine COLLI(N, ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
      $                 EION, COCO, KEYCOL, WEIGHT, ALTESUM, NATOM, NOM, KODAT,
-     $                 POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, DP)
+     $                 levatnum, POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, DP)
 
 !     COLLISIONAL TRANSITION RATES STORED IN MATRIX CRATE
 !     BOUND-BOUND: DEPENDING ON THE ELEMENT (HE, H)
@@ -15,28 +15,32 @@
 
 CMH   ENLTE: LTE POPULATION NUMBER FOR EACH LEVEL
 
-      USE HYD_COL_RATE
-      USE PHYS
-      USE MATH
-      USE COMMON_BLOCK
+      use hyd_col_rate
+      use phys
+      use math
+      use common_block
 
-      implicit real*8(a-h,o-z)
-      integer,intent(in) :: N, NCHARG, NATOM, NOM, KODAT
-      real*8,intent(in)  :: ENLTE,TL,ENE,ELEVEL,EINST,EION,COCO,WEIGHT
-      real*8,intent(in)  :: ALTESUM
+      implicit real*8(a - h, o - z)
 
-      REAL*8, INTENT(IN) :: POPHIIL, POPHML, POPHIL
+      integer,intent(in)  :: N, NCHARG, NATOM, NOM, KODAT
+      real*8, intent(in)  :: ENLTE,TL,ENE,ELEVEL,EINST,EION,COCO,WEIGHT
+      real*8, intent(in)  :: ALTESUM
+
+      integer, intent(in), dimension(N) :: levatnum
+
+      REAL*8, INTENT(IN)  :: POPHIIL, POPHML, POPHIL
 
       REAL*8, INTENT(OUT) :: CRATE(N, N)
 
-      DIMENSION EINST(N,N)
-      DIMENSION ENLTE(N),NCHARG(N),ELEVEL(N),WEIGHT(N)
-      DIMENSION EION(N),ALTESUM(4,N)
-      DIMENSION COCO(N,N,4)
+      DIMENSION EINST(N, N)
+      DIMENSION ENLTE(N), NCHARG(N), ELEVEL(N), WEIGHT(N)
+      DIMENSION EION(N), ALTESUM(4, N)
+      DIMENSION COCO(N, N, 4)
       DIMENSION NOM(N)
       DIMENSION KODAT(10)
-      CHARACTER*4 KEYCOL(N,N)
-C***  C1 = H * C / K
+      CHARACTER*4 KEYCOL(N, N)
+
+!     C1 = H * C / K
       DATA C1 /1.4388D0/ ! (CGS, cm / K)
 
       REAL*8, DIMENSION(10) :: Temp
@@ -205,7 +209,10 @@ C***  LINE TRANSITION   *******************************************************
       WN3=WN2*WAVENUM
 C***  ******************************************************************     
 C***  HELIUM  ==========================================================
-      IF (NOM(LOW) .EQ. KODAT(1)) THEN
+
+!      IF (NOM(LOW) .EQ. KODAT(1)) THEN
+      IF (levatnum(LOW) .EQ. 2) THEN
+
 C***  HE I  *******************************************************************
 C***  OMEGA(UP-LOW) IS CALCULATED DEPENDING ON KEYWORD KEYCOL  *********
        IF (NCHARG(LOW).EQ.0) THEN
@@ -289,7 +296,10 @@ C***  HE III  *****************************************************************
        ENDIF
 C***  ******************************************************************     
 C***  HYDROGEN  ========================================================
-      ELSE IF (NOM(LOW) .EQ. KODAT(2)) THEN
+
+!      ELSE IF (NOM(LOW) .EQ. KODAT(2)) THEN
+      ELSE IF (levatnum(LOW) .EQ. 1) THEN
+
 C***  H I  *************************************************************
        IF (NCHARG(LOW) .EQ. 0) THEN
 
@@ -311,7 +321,7 @@ C***  H II  ************************************************************
        ENDIF
 C***  ******************************************************************
 C***  METALS: INDEX GE 3
-      ELSE IF (NOM(LOW) .GE. 3) THEN
+      ELSE IF (levatnum(LOW) .GE. 3) THEN
 C***  ALL IONIZATION STAGES
 C***  UPSILON TEMPERATURE INDEPENDENT
 C***  OMEGA (UP-LOW) ACCORDING TO JEFFERIES P. 118 (EQ. 6.24)

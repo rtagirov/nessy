@@ -2,7 +2,11 @@
 
 !     datom_lte file variables (both for fioss and hminus)
 
+      integer                                   :: N, NATOM, LASTIND
+
       integer, allocatable, dimension(:)        :: KODAT, NOM, NFIRST, NLAST, INDLOW, INDNUP, NCHARG, MAINQN
+
+      integer, allocatable, dimension(:)        :: eleatnum, levatnum
 
       real*8,  allocatable, dimension(:)        :: ATMASS, ALPHA, EION, ELEVEL, SEXPO, WEIGHT, STAGE
 

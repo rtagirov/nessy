@@ -47,6 +47,7 @@
      $                  NOM,
      $                  NATOM,
      $                  KODAT,
+     $                  levatnum,
      $                  NFIRST,
      $                  NLAST,
      $                  WAVARR,
@@ -118,7 +119,7 @@
 
       real*8,        intent(in),     dimension(N)                 :: elevel, eion, alpha, sexpo, weight
 
-      integer,       intent(in),     dimension(N)                 :: ncharg, nom
+      integer,       intent(in),     dimension(N)                 :: ncharg, nom, levatnum
 
       integer,       intent(in),     dimension(natom)             :: nfirst, nlast, kodat
 
@@ -238,6 +239,8 @@
       logical                                                     :: NTRM_FILE_EXISTS, CONV_FILE_EXISTS
 
       logical                                                     :: PRINT_LTE_ARR
+
+      integer :: iii
 
 !     C1 = H * C / K (CM * KELVIN)
       DATA C1 /1.4388D0/
@@ -530,6 +533,7 @@
      $          NOM,
      $          NATOM,
      $          KODAT,
+     $          levatnum,
      $          NFIRST,
      $          NLAST,
      $          SLNEW(L, 1 : LASTIND),
