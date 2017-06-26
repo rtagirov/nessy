@@ -121,7 +121,7 @@
 
       function sigma_rayleigh(wvl) result(sigma)
 
-      use vardatom_lte
+      use vardatom_full
 
       real*8, intent(in) :: wvl ! wavelength in angstroems
 

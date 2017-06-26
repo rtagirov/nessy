@@ -23,7 +23,7 @@ C***                         CARBON    (C )            6
 C**********************************************************
 C***                         NITROGEN  (N )            7
 C***                         OXYGEN    (O )            8
-C***                         FLOUR     (FL )           9
+C***                         FLUOR     (FL )           9
 C***                         NEON      (NE )          10
 C**********************************************************
 C***                         SODIUM    (Na)           11
@@ -289,7 +289,7 @@ C***  ELEMENTS ---------------------------------------------------------
 
              KODAT(8) = NATOM; eleatnum(NATOM) = 8
 
-      ELSEIF ((ELEMENT(NATOM) .EQ. 'FLOUR    ') .AND. (SYMBOL(NATOM) .EQ. 'F ')) THEN
+      ELSEIF ((ELEMENT(NATOM) .EQ. 'FLUOR    ') .AND. (SYMBOL(NATOM) .EQ. 'F ')) THEN
 
              KODAT(9) = NATOM; eleatnum(NATOM) = 9
 

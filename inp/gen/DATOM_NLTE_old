@@ -88,7 +88,7 @@ ELEMENT     MAGNES     (Mg)    12.00     2.      *
 LEVEL       MgI------1  0    1      0.00  61671.02
 LEVEL       MgI------2  0    9  21877.30
 LEVEL       MgI------3  0    3  35051.26 
-LEVEL       MgII-----1  1    2      0.00 121267.64
+LEVEL       MgII-----1  1    2
 *KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 LINE      MgI------2  MgI------1   1.00E-8   X CARB   1.E2
 LINE      MgI------3  MgI------1   4.90000     CARB   1.E2
@@ -109,7 +109,7 @@ LEVEL       SiI------3  0    1  15394.37
 LEVEL       SiI------4  0    5  33326.04
 LEVEL       SiI------5  0    9  39799.50
 LEVEL       SiI------6  0    3  40991.88
-LEVEL       SiII-----1  1    6    191.49 131838.10
+LEVEL       SiII-----1  1    6
 *KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 LINE      SiI------2  SiI------1  1.00E-8    X CARB   1.E2
 LINE      SiI------3  SiI------1  1.00E-8    X CARB   1.E2
@@ -139,12 +139,12 @@ ELEMENT     IRON       (Fe)    26.00     2.      *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
 *Physical and Chemical Reference Data, 1975, Vol. 4, No2, p.353
-LEVEL       FeI------1  0   25    402.96  63737.00
+LEVEL       FeI------1  0   25    402.96  63737.
 LEVEL       FeI------2  0   35   7457.82
 LEVEL       FeI------3  0   21  12408.10
 LEVEL       FeI------4  0   15  17761.40
 LEVEL       FeI------5  0    9  19232.20
-LEVEL       FeII-----1  1   30    416.30 130655.40
+LEVEL       FeII-----1  1   30
 *KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 LINE      FeI------2  FeI------1   1.00E-8   X CARB   1.E2
 LINE      FeI------3  FeI------1   1.00E-8   X CARB   1.E2

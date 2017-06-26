@@ -59,7 +59,7 @@ math.for\
 phys.for\
 comblock.for\
 fileoper.for\
-vardatom_lte.for\
+vardatom_full.for\
 geomesh.for\
 opac.for\
 synopa.for\
@@ -216,6 +216,8 @@ phys.for\
 math.for\
 fileoper.for\
 stroper.for\
+vardatom_full.for\
 vardatom_lte.for\
 vardatom_nlte.for\
+elresp.for\
 comblock.for

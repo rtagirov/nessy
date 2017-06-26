@@ -24,4 +24,4 @@
 
       character*10, allocatable, dimension(:)   :: level_nlte, element_nlte
 
-      end module vardatom_nlte
+      end module

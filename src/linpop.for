@@ -192,7 +192,7 @@
 
       real*8,                        dimension(N_full)            :: ENLTE_full, en_full
 
-      real*8,                        dimension(ND, N_full)        :: POPNUM_LTE
+      real*8,                        dimension(ND, N_full)        :: POPNUM_FULL
 
       real*8,                        dimension(N, N)              :: CRATE, RRATE
 
@@ -278,7 +278,7 @@
 
       DO L = 1, ND
 
-         do j = 1, N; pop1(L, j) = pop1_full(L, idx_nlte(j)); enddo
+         do j = 1, N; pop1(L, j) = pop1_full(L, idx_orig(j)); enddo
 
          DO IND = 1, LASTIND
 
@@ -560,7 +560,7 @@
 
       JNEW(L, 1 : LASTIND) = XJLAPP(1 : LASTIND)
 
-      do i = 1, N; en_full(idx_nlte(i)) = EN(i); enddo
+      do i = 1, N; en_full(idx_orig(i)) = EN(i); enddo
 
       IF (NEWRAP) THEN
 
@@ -724,19 +724,19 @@
 
       POPNUM_NLTE(L, 1 : N) = EN(1 : N)
 
-      POPNUM_LTE(L, 1 : N_full) = ENLTE_full(1 : N_full)
-      POPNUM(L,     1 : N_full) = ENLTE_full(1 : N_full)
+      POPNUM_FULL(L, 1 : N_full) = ENLTE_full(1 : N_full)
+      POPNUM(L,      1 : N_full) = ENLTE_full(1 : N_full)
 
 !     the populations of levels treated in NLTE are replaced with their NLTE values
-      do i = 1, N; POPNUM(L, idx_nlte(i)) = EN(i); enddo
+      do i = 1, N; POPNUM(L, idx_orig(i)) = EN(i); enddo
 
-      DEPART(L, 1 : N_full) = POPNUM(L, 1 : N_full) / POPNUM_LTE(L, 1 : N_full)
+      DEPART(L, 1 : N_full) = POPNUM(L, 1 : N_full) / POPNUM_FULL(L, 1 : N_full)
 
 !     UPDATING THE ELECTRON DENSITY
       RNE(L) = EN(NPLUS1)
 
-      ElecConc(L) =    SUM(NCHARG_full(1 : N_full) * POPNUM(L,     1 : N_full))
-      ElecConcLTE(L) = SUM(NCHARG_full(1 : N_full) * POPNUM_LTE(L, 1 : N_full))
+      ElecConc(L) =    SUM(NCHARG_full(1 : N_full) * POPNUM(L,      1 : N_full))
+      ElecConcLTE(L) = SUM(NCHARG_full(1 : N_full) * POPNUM_FULL(L, 1 : N_full))
 
       ElecConcDep(L) = ElecConc(L) / ElecConcLTE(L)
 
@@ -762,7 +762,7 @@
 
       IF (.NOT. LTE_RUN) THEN
 
-         DO J = 1, N_full; CALL PRINT_LEV(LEVEL_full(J), POPNUM_LTE(1 : ND, J),
+         DO J = 1, N_full; CALL PRINT_LEV(LEVEL_full(J), POPNUM_FULL(1 : ND, J),
      $                                    POPNUM(1 : ND, J), DEPART(1 : ND, J)); ENDDO
 
          CALL PRINT_LEV('ELECTRONS ', ElecConcLTE(1 : ND), ElecConc(1 : ND), ElecConcDep(1 : ND))

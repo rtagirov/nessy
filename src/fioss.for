@@ -26,7 +26,7 @@
       use UTILS
       use CONSTANTS,only:CLIGHT_SI
 
-      use vardatom_lte
+      use vardatom_full
       use varhminus
       use common_block
       use file_operations
@@ -190,7 +190,7 @@
 
       CALL TIC()
 
-      call DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      call DATOM(datom_full,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,

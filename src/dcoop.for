@@ -2,9 +2,9 @@
 
       contains
 
-      SUBROUTINE DCOOP (I,DOPA,DETA,XLAMBDA,NF,TL,RNEL,ENTOTL,EN,RSTAR,
-     $                  WCHARM,ND,L,NFEDGE,EXPFAC,N,NCHARG,WEIGHT,
-     $                  ELEVEL,EION,NOM,EINST,SIGMAKI)
+      SUBROUTINE DCOOP(I,DOPA,DETA,XLAMBDA,NF,TL,RNEL,ENTOTL,EN,RSTAR,
+     $                 WCHARM,ND,L,NFEDGE,EXPFAC,N,NCHARG,WEIGHT,
+     $                 ELEVEL,EION,NOM,EINST,SIGMAKI)
 
 !***********************************************************************
 !     DERIVATIVE OF NON-LTE OPACITY AND EMISSIVITY WITH RESPECT TO EN(I)
@@ -87,7 +87,7 @@ C***  SEARCH FOR THE INDEX OF IONIZATION EDGE
 C***  I IS LOWER LEVEL
       	DO K = 1, NFLOW
 
-      		DOPA(K) = DOPA(K) + SIGMAKI(K, idx_nlte(LOW))
+      		DOPA(K) = DOPA(K) + SIGMAKI(K, idx_orig(LOW))
 
       	ENDDO
      
@@ -98,7 +98,7 @@ C***  I IS UPPER LEVEL
 	      	W=1.d8/XLAMBDA(K)
 C*** RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON
             G=WE*EXPFAC(K)
-            SIGMA=SIGMAKI(K, idx_nlte(LOW))
+            SIGMA=SIGMAKI(K, idx_orig(LOW))
             DOPA(K)=DOPA(K)-G*SIGMA
             DETA(K)=DETA(K)+G*SIGMA
         ENDDO
@@ -146,7 +146,7 @@ C***  CHARGES MUST DIFFER BY 1
           WE=C3*     ENTOTL/T32 *WEIGHT(LOW)/WEIGHT(NUP)*EXPEDGE
           DO K=1,NFLOW
             W=1.d8/XLAMBDA(K)
-            SIGMA=SIGMAKI(K, idx_nlte(LOW))
+            SIGMA = SIGMAKI(K, idx_orig(LOW))
             !G DIVIDED BY RNEL
             G=WE*EXPFAC(K)
             DETA(K)=DETA(K)+G*SIGMA*EN(NUP)

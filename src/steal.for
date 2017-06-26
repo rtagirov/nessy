@@ -33,7 +33,7 @@
 
       use file_operations
       use common_block
-      use vardatom_lte
+      use vardatom_full
       use vardatom_nlte
       use varhminus
       use varsteal

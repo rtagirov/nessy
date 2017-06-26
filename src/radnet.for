@@ -211,9 +211,7 @@
 
                XJCK = XJC(K)
 
-               SIGMA = SIGMAKI(K, idx_nlte(LOW))
-
-!               write(*, '(A,2x,2(i4,2x),2(e15.7,2x))'), 'radnet check:', k, low, xjc(k), sigmaki(k, low)
+               SIGMA = SIGMAKI(K, idx_orig(LOW))
 
 !              CALCULATE BOUND-FREE SOURCE FUNCTION FOR TRANSITION LOW-UP ONLY
                EXFAC = EXP(-C1 * WAVENUM / TL)

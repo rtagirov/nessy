@@ -56,7 +56,7 @@
 
 !      integer ::                                 N_nlte, lastind_nlte, natom_nlte
 
-      integer, dimension(:), allocatable ::      idx_nlte
+      integer, dimension(:), allocatable ::      idx_orig
 
       real*8,                allocatable ::      ABXYZ_nlte(:), ABXYZn_nlte(:, :)
 

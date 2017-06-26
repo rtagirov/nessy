@@ -23,7 +23,7 @@
       use MOD_ERROR
       use MOD_chemeq
 
-      use vardatom_lte
+      use vardatom_full
       use vardatom_nlte
       use varhminus
       use geo_mesh
@@ -72,27 +72,17 @@
 
       REAL*8 :: H
 
-      integer :: iii
-
       DATA AMU /1.660531d-24/
 
       call FDATE(fstring)
       call TIC(timer)
 
 !     READ ATOMIC DATA FROM FILE DATOM
-      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      CALL DATOM(datom_full,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM) ! NFDIM is known from varhminus module
-
-!      do iii = 1, N
-
-!         print*, iii, 'privet', NOM(iii)
-
-!      enddo
-
-!      stop
 
       allocate(ABXYZ(NATOM))
 
@@ -359,6 +349,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       subroutine mark_nlte()
 
+      use vardatom_full
       use vardatom_lte
       use vardatom_nlte
       use varhminus
@@ -368,7 +359,9 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       implicit none
 
-      integer :: i, j, L, iii
+      integer :: i, j, L, k
+
+      real*8  :: eground
 
       call datom(datom_nlte,
      $           N_nlte,
@@ -403,19 +396,26 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
      $           levatnum_nlte,
      $           nfdim) ! NFDIM is known from varhminus module
 
-!      do iii = 1, N_nlte
+      natom_lte = natom - natom_nlte
 
-!         print*, iii, levatnum_nlte(iii)
+      allocate(nlte_lev(N))
 
-!      enddo
+      allocate(idx_orig(N_nlte))
 
-!      stop
+      allocate(nlte_ele(NATOM))
 
-      allocate(nlte_lev(N)); allocate(idx_nlte(N_nlte)); allocate(nlte_ele(NATOM))
+      allocate(abxyz_nlte(natom_nlte))
 
-      allocate(abxyz_nlte(natom_nlte)); allocate(ABXYZn_nlte(natom_nlte, dpn))
+      allocate(ABXYZn_nlte(natom_nlte, dpn))
 
-      nlte_lev(1 : N) = .false.
+      allocate(abxyz_lte(natom_lte))
+
+      allocate(abxyzn_lte(natom_lte, dpn))
+
+      allocate(eleatnum_lte(natom_lte))
+      allocate(eleisnum_lte(natom_lte))
+
+      nlte_lev(1 : N) =     .false.
 
       nlte_ele(1 : NATOM) = .false.
 
@@ -427,7 +427,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
                 nlte_lev(i) = .true.
 
-                idx_nlte(j) = i
+                idx_orig(j) = i
 
                 cycle
 
@@ -457,20 +457,40 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       enddo
 
+      j = 1
+
+      do i = 1, NATOM
+
+         if (.not. nlte_ele(i)) then
+
+            abxyz_lte(j) = abxyz(i)
+
+            do L = 1, dpn; abxyzn_lte(j, L) = ABXYZn(i, L); enddo
+
+            j = j + 1
+
+         endif
+
+      enddo
+
       do i = 1, N
 
          write(*, '(A,2x,i4,2x,A,2x,L)') 'mark_nlte, levels:', i, level(i), nlte_lev(i)
 
       enddo
 
-      j = 1
+      j = 1; k = 1
 
       do i = 1, NATOM
 
-         if (.not. nlte_ele(i)) write(*, '(A,2x,i4,2x,A,2x,L,2x,ES9.3)')
-     $                          'mark_nlte, abundances:', i, element(i), nlte_ele(i), ABXYZ(i)
+         if (.not. nlte_ele(i)) then 
 
-         if (nlte_ele(i)) then 
+            write(*, '(A,2x,i4,2x,A,2x,L,2x,ES9.3,2x,A10,2x,ES9.3)')
+     $      'mark_nlte, abundances:', i, element(i), nlte_ele(i), ABXYZ(i), '         ', abxyz_lte(k)
+
+            k = k + 1
+
+         else
 
             write(*, '(A,2x,i4,2x,A,2x,L,2(2x,ES9.3))')
      $      'mark_nlte, abundances:', i, element(i), nlte_ele(i), ABXYZ(i), abxyz_nlte(j)
@@ -481,7 +501,207 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       enddo
 
+      j = 1
+
+      do i = 1, NATOM
+
+         if (.not. nlte_ele(i)) then
+
+            eleatnum_lte(j) = eleatnum(i)
+
+            j = j + 1
+
+         endif
+
+      enddo
+
+      eleisnum_lte(:) = 0
+
+      do j = 1, natom_lte
+
+         do i = 1, N
+
+            if (levatnum(i) .eq. eleatnum_lte(j)) then
+
+               if (i .ne. 1 .and. ncharg(i) .eq. ncharg(i - 1)) cycle
+
+               eleisnum_lte(j) = eleisnum_lte(j) + 1 ! number of ionization stages in lte element j
+
+            endif
+
+         enddo
+
+      enddo
+
+!      do i = 1, natom_lte
+
+!         print*, i, eleisnum_lte(i)
+
+!      enddo
+
 !      stop
+
+       do i = 1, N
+
+          write(*, '(I2,2(2x,F8.1))'), i, eion(i), elevel(i)
+
+       enddo
+
+!       stop
+
+!      allocate(lte_isl_num(natom_lte, maxval(eleisnum_lte)))
+
+!      lte_isl_num(:, :) = 0
+
+!      do j = 1, natom_lte
+
+!         k = 1
+
+!         do i = 1, N
+
+!            if (levatnum(i) .eq. eleatnum_lte(j)) then
+
+!                if (ncharg(i) .ne. 0) then
+
+!                   lte_isl_num(j, k) = lte_isl_num(j, k) + 1
+
+!                   if (i .ne. N .and. ncharg(i + 1) .ne. ncharg(i)) then
+
+!                      k = k + 1
+
+!                      lte_isl_num(j, k) = lte_isl_num(j, k) + 1
+
+!                   endif
+
+!                endif
+
+!            endif
+
+!         enddo
+
+!      enddo
+
+      lis_num = sum(eleisnum_lte) ! number of LTE Ionization Stages (LIS)
+
+      allocate(lis_name(lis_num)) ! name of each ionization stage
+      allocate(lis_anum(lis_num)) ! atomic number of each ionization stage
+      allocate(lis_cnum(lis_num)) ! charge number of each ionization stage
+
+      j = 1
+
+      do i = 1, N
+
+         if (nlte_lev(i)) cycle
+
+         if (i .ne. 1 .and. ncharg(i) .ne. ncharg(i - 1)) then
+
+            lis_name(j) = level(i)
+
+            lis_anum(j) = levatnum(i)
+
+            lis_cnum(j) = ncharg(i)
+
+            j = j + 1
+
+         endif
+
+      enddo
+
+      allocate(lis_lnum(lis_num)) ! number of levels in each ionization stage
+
+      lis_lnum(1 : lis_num) = 1
+
+      j = 0
+
+      do i = 1, N
+
+         if (nlte_lev(i)) cycle
+
+         if (i .ne. 1 .and. ncharg(i) .ne. ncharg(i - 1)) j = j + 1
+
+         if (i .ne. 1 .and. ncharg(i) .eq. ncharg(i - 1)) lis_lnum(j) = lis_lnum(j) + 1
+
+      enddo
+
+      allocate(lis_weight(lis_num, maxval(lis_lnum)))
+
+      allocate(lis_levien(lis_num, maxval(lis_lnum)))
+
+      lis_weight(:, :) = 0
+
+      lis_levien(:, :) = 0.0d0
+
+      j = 0
+
+      do i = 1, N
+
+         if (nlte_lev(i)) cycle
+
+         if (i .ne. 1 .and. ncharg(i) .ne. ncharg(i - 1)) then
+
+            j = j + 1 ! lte ionization stage counter
+
+            k = 1     ! level counter within the lte ionization stage
+
+            lis_weight(j, k) = weight(i)
+
+            lis_levien(j, k) = eion(i)
+
+            eground          = elevel(i)
+
+         endif
+
+         if (i .ne. 1 .and. ncharg(i) .eq. ncharg(i - 1)) then
+
+            k = k + 1
+
+            lis_weight(j, k) = weight(i)                     ! Statistical weight of level k within the lte ionization stage j
+
+            lis_levien(j, k) = eion(i) - elevel(i) + eground ! LEVel Ionization ENergy (LEVIEN) of the ionization energy from excited state
+
+         endif
+
+      enddo
+
+      do i = 1, lis_num
+
+         write(*, '(I2,2x,A10,3(2x,I2))'), i, lis_name(i), lis_anum(i), lis_lnum(i), lis_cnum(i)
+
+      enddo
+
+      write(*, '(/)')
+
+      do i = 1, lis_num
+
+         write(*, '($,I2,2x,A10,2x,I2,A))'), i, lis_name(i), lis_lnum(i), '        '
+
+         do j = 1, maxval(lis_lnum)
+
+            if (j /= maxval(lis_lnum)) write(*, '($,2x,I2)'),   lis_weight(i, j)
+
+            if (j == maxval(lis_lnum)) write(*, '($,2x,I2,/)'), lis_weight(i, j)
+
+         enddo
+
+      enddo
+
+      write(*, '(/)')
+
+      do i = 1, lis_num
+
+         write(*, '($,I2,2x,A10,2x,I2,A))'), i, lis_name(i), lis_lnum(i), '        '
+
+         do j = 1, maxval(lis_lnum)
+
+            if (j /= maxval(lis_lnum)) write(*, '($,2x,F8.1)'),   lis_levien(i, j)
+
+            if (j == maxval(lis_lnum)) write(*, '($,2x,F8.1,/)'), lis_levien(i, j)
+
+         enddo
+
+      enddo
+
+      stop
 
       end subroutine
 

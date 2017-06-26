@@ -1,25 +1,19 @@
       module vardatom_lte
 
-!     datom_lte file variables (both for fioss and hminus)
+      integer                                    :: natom_lte, lis_num
 
-      integer                                   :: N, NATOM, LASTIND
+      integer,      dimension(:),    allocatable :: eleatnum_lte, eleisnum_lte
 
-      integer, allocatable, dimension(:)        :: KODAT, NOM, NFIRST, NLAST, INDLOW, INDNUP, NCHARG, MAINQN
+      integer,      dimension(:),    allocatable :: lis_anum, lis_cnum, lis_lnum
 
-      integer, allocatable, dimension(:)        :: eleatnum, levatnum
+      integer,      dimension(:, :), allocatable :: lis_weight
 
-      real*8,  allocatable, dimension(:)        :: ATMASS, ALPHA, EION, ELEVEL, SEXPO, WEIGHT, STAGE
+      real*8,       dimension(:, :), allocatable :: lis_levien
 
-      real*8,  allocatable, dimension(:, :)     :: ALTESUM, EINST, SIGARR, WAVARR
+      character*10, dimension(:),    allocatable :: lis_name
 
-      real*8,  allocatable, dimension(:, :, :)  :: COCO
+      real*8,       dimension(:),    allocatable :: abxyz_lte
 
-      character*2, allocatable, dimension(:)    :: symbol
+      real*8,       dimension(:, :), allocatable :: abxyzn_lte
 
-      character*4, allocatable, dimension(:, :) :: keycol
-
-      character*8, allocatable, dimension(:)    :: agaunt
-
-      character*10, allocatable, dimension(:)   :: level, element
-
-      end module vardatom_lte
+      end module
