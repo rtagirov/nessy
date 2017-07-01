@@ -1,4 +1,4 @@
-      module elresp
+      module elresp ! ELectron RESPonse
 
       implicit none
 
@@ -16,7 +16,9 @@
 
       integer             :: k, i, f
 
-      deriv = 0
+      deriv = 0.0d0
+
+      if (natom_lte == 0) return
 
       do k = 1, natom_lte
 
@@ -42,7 +44,6 @@
 
          enddo
 
-!         deriv = deriv + abxyzn_lte(k, L) * (m1 * m2 - m3 * m4) / m3**2.0
          deriv = deriv + abxyzn_lte(k, L) * m4 * (m1 * m2 / m3 / m4 - 1.0d0) / m3
 
       enddo
@@ -92,7 +93,7 @@
 
       do l = 1, lis_lnum(i)
 
-         U = U + lis_weight(i, l) * exp(-planck * light_speed * lis_levien(i, l) / boltz * T)
+         U = U + lis_weight(i, l) * dexp(-planck * light_speed * lis_levien(i, l) / boltz / T)
 
       enddo
 
@@ -115,7 +116,7 @@
 
       le = planck / sqrt(2.0 * pai * elec_mass * boltz * T) ! de Broglie wavelength of electron
 
-      V = 2.0 * pf(i, T) * exp(-planck * light_speed * lis_levien(i - 1, 1) / boltz * T)
+      V = 2.0 * pf(i, T) * dexp(-planck * light_speed * lis_levien(i - 1, 1) / boltz / T)
 
       V = V / le**3.0
 

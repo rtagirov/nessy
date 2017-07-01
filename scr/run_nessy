@@ -75,6 +75,8 @@ ATM_MOD_DIR=$nessy_inp/atm/
 DATOM_DIR=$nessy_inp/ato
 VEL_FIELD_DIR=$nessy_inp/vel/
 
+DATOM_FILE=DATOM_NLTE
+
 FILES_TO_IGNORE='CARDS ATM_MOD vel_field.in'
 ##############################################################################################################################
 
@@ -273,7 +275,7 @@ for RUN in $RUNS; do
 
  if [ $ATM_MOD ]; then check_file $ATM_MOD_DIR$ATM_MOD; cp -v $ATM_MOD_DIR$ATM_MOD $HM_DIR$RUN/ATM_MOD; echo; fi
 
- if [ $DATOM ];   then check_file $DATOM_DIR/$DATOM;    cp -v $DATOM_DIR/$DATOM    $HM_DIR$RUN/DATOM;  echo; fi
+ if [ $DATOM ];   then check_file $DATOM_DIR/$DATOM;    cp -v $DATOM_DIR/$DATOM    $HM_DIR$RUN/$DATOM_FILE;  echo; fi
 
  if [ $VEL_FIELD ]; then check_file $VEL_FIELD_DIR$VEL_FIELD; cp -v $VEL_FIELD_DIR$VEL_FIELD $HM_DIR$RUN/vel_field.in; echo; fi
 
@@ -308,7 +310,7 @@ for RUN in $RUNS; do
 
  if [ $ATM_MOD ] &&   [ "$ODF_IT" == "0" ]; then check_file $ATM_MOD_DIR$ATM_MOD;     cp -v $ATM_MOD_DIR$ATM_MOD     $HM_DIR$RUN/ATM_MOD;       echo; fi
 
- if [ $DATOM ] &&     [ "$ODF_IT" == "0" ]; then check_file $DATOM_DIR/$DATOM;        cp -v $DATOM_DIR/$DATOM        $HM_DIR$RUN/DATOM;        echo; fi
+ if [ $DATOM ] &&     [ "$ODF_IT" == "0" ]; then check_file $DATOM_DIR/$DATOM;        cp -v $DATOM_DIR/$DATOM        $HM_DIR$RUN/$DATOM_FILE;   echo; fi
 
  if [ $VEL_FIELD ] && [ "$ODF_IT" == "0" ]; then check_file $VEL_FIELD_DIR$VEL_FIELD; cp -v $VEL_FIELD_DIR$VEL_FIELD $HM_DIR$RUN/vel_field.in; echo; fi
 

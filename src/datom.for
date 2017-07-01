@@ -110,6 +110,11 @@ C*******************************************************************************
      $FORMAT_LEVEL='(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)',
      $FORMAT_ELEMENT='(12X,A10,2X,A2,4X,F6.2,3X,F5.0)',
      $FORMAT_LTESUM='(10X,A10,1X,A8,1X,G9.0,1X,F7.0,1X,F7.0)'
+
+!      CHARACTER*34 :: FORMAT_LEVEL =   '(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)'
+!      CHARACTER*31 :: FORMAT_ELEMENT = '(12X,A10,2X,A2,4X,F6.2,3X,F5.0)'
+!      CHARACTER*39 :: FORMAT_LTESUM =  '(10X,A10,1X,A8,1X,G9.0,1X,F7.0,1X,F7.0)'
+
 !     ---------------------- Array Allocation ------------------
 
       if (allocated(kodat))    deallocate(kodat)
@@ -184,6 +189,8 @@ C*******************************************************************************
       allocate(sigarr(levnum, NFDIM))
       allocate(wavarr(levnum, NFDIM))
 
+      print*, 'datom, check 1'
+
       ! ------------------- Begin init -------------------------
       NATOM = 0
       N = 0
@@ -221,20 +228,25 @@ C*******************************************************************************
 
       agaunt(:) = '        '
 
+      print*, 'datom, check 2'
+
       !--------------------- Initialisation Rinat Tagirov ----------------
 
-      OPEN (4, FILE = datom_file, status='old', readonly)
+      OPEN(4, FILE = datom_file, status='old', readonly)
+
+      print*, 'datom, check 2.1'
 
       IECHO = 0
 
       ! ------------- end init ------------------------------
     1 READ(4,'(A)',END=66) KARTE
-c      IF (IECHO.EQ.1) PRINT *,KARTE
-!    2 FORMAT(A)
+
       IF (KARTE(:1) .EQ. '*' ) GOTO 1     ! comment
-      IF (KARTE(:4)  .EQ. 'ECHO') GOTO 3    ! outdated
+!      print*, 'datom, check 2.2'
+!      IF (KARTE(:4)  .EQ. 'ECHO') GOTO 3    ! outdated
       IF (KARTE(:10) .EQ. 'ELEMENT   ') GOTO 5
       IF (KARTE(:10) .EQ. 'LEVEL     ' ) GOTO 10
+!      print*, 'datom, check 2.3'
       IF (KARTE(:10) .EQ. 'LINE      ' ) GOTO 20
       IF (KARTE(:10) .EQ. 'CONTINUUM ' ) GOTO 30
       IF (KARTE(:10) .EQ. 'LTESUM    ') GOTO 40
@@ -246,16 +258,20 @@ c     ignore dielectronic option
       CALL ERROR('UNRECOGNIZED DATA INPUT IN DATOM: "'//KARTE//'"')
     3 IECHO=1
       GOTO 1
+
+      print*, 'datom, check 3'
+
 C***  ELEMENTS ---------------------------------------------------------
-    5 NATOM=NATOM+1
+    5 NATOM = NATOM + 1
+
       if (natom .gt. 30) stop 'datom: natom > 30'
 
+      print*, 'datom, check 2.4'
 
+      LEVSEQ = 0
+      read (KARTE,FORMAT_ELEMENT) ELEMENT(NATOM),SYMBOL(NATOM),ATMASS(NATOM),STAGE(NATOM)
 
-
-      LEVSEQ=0
-      read (KARTE,FORMAT_ELEMENT) ELEMENT(NATOM),SYMBOL(NATOM),
-     $                    ATMASS(NATOM),STAGE(NATOM)
+      print*, ELEMENT(NATOM)
 
       IF ((ELEMENT(NATOM) .EQ. 'HELIUM    ') .AND. (SYMBOL(NATOM) .EQ. 'HE' .or. SYMBOL(NATOM) .EQ. 'He')) THEN
 
@@ -303,7 +319,11 @@ C***  ELEMENTS ---------------------------------------------------------
 
       ELSEIF ((ELEMENT(NATOM) .EQ. 'MAGNES    ') .AND. ((SYMBOL(NATOM) .EQ. 'Mg') .or. (SYMBOL(NATOM) .EQ. 'MG'))) THEN
 
+             print*, 'hello 1'
+
              KODAT(12) = NATOM; eleatnum(NATOM) = 12
+
+             print*, 'hello 2'
 
       ELSEIF ((ELEMENT(NATOM) .EQ. 'ALUMIN    ') .AND. ((SYMBOL(NATOM) .EQ. 'Al').or.(SYMBOL(NATOM) .EQ. 'AL'))) THEN
 
@@ -387,10 +407,14 @@ CMH  MODEL ATOM OF "NICKEL" DECODED
 
       ENDIF
 
-      GOTO 1
+      print*, 'datom, check 3'
      
+      GOTO 1
+
 !     LEVELS -----------------------------------------------------------
    10 N = N + 1
+
+      print*, 'datom, check 3.1'
 
       IF (LEVSEQ .NE. 0) THEN
 
@@ -408,17 +432,28 @@ CMH  MODEL ATOM OF "NICKEL" DECODED
 
       ENDIF
 
+      print*, 'datom, check 3.2'
+
       nchg = 0
-      nw= 0
-      elev=0.
-      e=0.
-      mqn=0
-      read(KARTE,FORMAT_LEVEL) lread,nchg,nw,elev,e,mqn
-      LEVEL(N)=lread
-      NCHARG(N)=nchg
-      ELEVEL(N)=elev
-      MAINQN(N)=mqn
-      WEIGHT(N)=FLOAT(NW)
+      nw =   0
+      elev = 0.
+      e =    0.
+      mqn =  0
+
+      print*, 'datom, check 3.3'
+
+      read(KARTE, FORMAT_LEVEL) lread, nchg, nw, elev, e, mqn
+
+      print*, 'datom, check 3.4'
+
+      LEVEL(N) = lread
+      NCHARG(N) = nchg
+      ELEVEL(N) = elev
+      MAINQN(N) = mqn
+      WEIGHT(N) = FLOAT(NW)
+
+      print*, 'datom level: ', LEVEL(N)
+
       IF (ELEVEL(N).EQ..0 .AND. MAINQN(N).LE.1) EION(N)=E
 
       IF (ELEVEL(N).NE..0 .AND. MAINQN(N).LE.1 .AND. (E.NE.0.))

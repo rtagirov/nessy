@@ -21,6 +21,8 @@
 
       use file_operations
       use common_block
+      use elresp
+      use vardatom_lte
 
 !*******************************************************************************
 ! THIS ROUTINE SETS UP THE RATE COEFFICIENT MATRIX RATCO
@@ -114,7 +116,8 @@
       LOGICAL NODM, DEPTH_PR_COND, JOBNUM_PR_COND, ITNEL_COND, PR_COND
 
       integer :: NFIRNA, NLANA, NA, I, J, K, NPLUS1, NUP, IND, LOW
-      REAL*8  :: ENTOTL, RNEL, DLOWUP
+
+      real*8  :: ENTOTL, RNEL, DLOWUP, ltecharg
 
       real*8, dimension(NF) :: SCNEW, XJCAPP
 
@@ -294,15 +297,27 @@ C***  REMARK: TOTAL NUMBER CONSERVATION IS IMPLICITLY ENSURED
 
       ENDDO
 
-!     COLUMN N + 1: CHARGE CONSERVATION
-      DO 4 I = 1, N
-    4 RATCO(I, NPLUS1) = NCHARG(I)
+!     COLUMN N + 1: CHARGE CONSERVATION equation (NTLE levels term)
+      do I = 1, N; RATCO(I, NPLUS1) = NCHARG(I); enddo
 
-      RATCO(NPLUS1, NPLUS1) = -1.0d0
+!     now calculating the LTE levels term
+      ltecharg = 0.0d0
+
+      if (natom_lte /= 0) then
+
+          do i = 1, N_full; if (.not. nlte_lev(i)) ltecharg = ltecharg + ncharg_full(i) * en_full(i); enddo
+
+      endif
+
+!     the LTE levels term enters the equation as a correction to the electron concentration coefficient
+!     in the following form
+      ltecharg = ltecharg / rnel
+
+!     adding the charge contribution from the LTE levels to the original electron concentration coefficient
+      RATCO(NPLUS1, NPLUS1) = -1.0d0 + ltecharg
 
 !     ROW N + 1: ZERO
-      DO 5 J = 1, N
-    5 RATCO(NPLUS1, J) = .0d0
+      do J = 1, N; RATCO(NPLUS1, J) = 0.0d0; enddo
      
       DM(1 : NRANK, 1 : NRANK) = 0.0D0
 
@@ -352,6 +367,11 @@ C***  NOTE THAT DUPLOW = - DLOWUP
     8 CONTINUE
 
    10 CONTINUE
+
+!     Correction to the Jacobian from the LTE levels
+!     This is the derivative of the charge conservation equation with respect to the electron concentration
+!     Function ecd is the Electron Coefficient Derivative (declared in elresp.for)
+      dm(nplus1, nplus1) = dm(nplus1, nplus1) + rnel * ecd(L, rnel, TL)
 
 C***  COLUMNS NLAST(NA)  (I.E. COLUMNS CONTAINING THE EQUATIONS OF NUMBER
 C***  CONSERVATION FOR ELEMENT NA)  ARE NOT CHANGED
