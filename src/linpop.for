@@ -633,6 +633,35 @@
 !     ALGEBRA COMMON TO BOTH APPROACHES; UPDATE THE POPULATIONS EN = EN + ENDELTA
       CALL VADD(EN, ENDELTA, NRANK)
 
+!     updating array popnum and calculating the departure coefficients:
+!     Rinat Tagirov:
+!     the most accurate way to do this is to update the lte populations here
+!     because upon the last LTEPOP call the electron concentration has not
+!     yet converged, i.e. if we don't do that here the LTE populations will
+!     correspond to the penultimate broyden/newton iteration
+!*******************************************************************************************
+
+      ENE = EN(NPLUS1) * ENTOT(L)
+
+      CALL LTEPOP(N_full,
+     $            ENLTE_full,
+     $            TL,ENE,
+     $            WEIGHT_full,
+     $            NCHARG_full,
+     $            EION_full,
+     $            ELEVEL_full,
+     $            NOM_full,
+     $            ABXYZn(1 : NATOM_full, L),
+     $            NFIRST_full,
+     $            NLAST_full,
+     $            NATOM_full)
+
+      do i = 1, N; en_full(idx_orig(i)) = EN(i); enddo
+
+      do i = 1, N_full; if (.not. nlte_lev(i)) en_full(i) = enlte_full(i); enddo
+
+!*******************************************************************************************
+
 !     CONVERGENCE CHECK FOR BROYDEN OR NEWTON ITERATION
       STRONG_CONV = .TRUE.
 
@@ -694,35 +723,6 @@
       IF (NEWRAP) CALL ACOPY(DB, DM, NRANK)
 
       CALL DBSAVE(DB, L, NRANK)
-
-!     updating array popnum and calculating the departure coefficients:
-!     Rinat Tagirov:
-!     the most accurate way to do this is to update the lte populations here
-!     because upon the last LTEPOP call the electron concentration has not
-!     yet converged, i.e. if we don't do that here the LTE populations will
-!     correspond to the penultimate broyden/newton iteration
-!*******************************************************************************************
-
-      ENE = EN(NPLUS1) * ENTOT(L)
-
-      CALL LTEPOP(N_full,
-     $            ENLTE_full,
-     $            TL,ENE,
-     $            WEIGHT_full,
-     $            NCHARG_full,
-     $            EION_full,
-     $            ELEVEL_full,
-     $            NOM_full,
-     $            ABXYZn(1 : NATOM_full, L),
-     $            NFIRST_full,
-     $            NLAST_full,
-     $            NATOM_full)
-
-      do i = 1, N; en_full(idx_orig(i)) = EN(i); enddo
-
-      do i = 1, N_full; if (.not. nlte_lev(i)) en_full(i) = enlte_full(i); enddo
-
-!*******************************************************************************************
 
       POPNUM_NLTE(L, 1 : N) = EN(1 : N)
 

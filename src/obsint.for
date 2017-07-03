@@ -370,7 +370,6 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
 
       subroutine PRINTTAU(NFOBR,TAUSUM,ZFINE_SUM,ND,RSTAR,RWLAE,DLAM,JP)
 
-      use interpolation
       use utils
 
       implicit none
