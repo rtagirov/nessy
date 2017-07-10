@@ -614,16 +614,6 @@ CONTINUUM FeI------3     4.7690                     TABLE
 CONTINUUM FeI------4     6.8550                     TABLE                     
 CONTINUUM FeI------5     6.9800                     TABLE 
 **************************************************
-ELEMENT     COBALT     (Co)    27.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       CoI------1  0   28    792.80  63430.00
-LEVEL       CoII-----1  1   21    697.06 137795.00
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM CoI------1    10.48                1.32   SEATON
-**************************************************
 ELEMENT     NICKEL     (Ni)    28.00     2.      *
 *           ======                               *
 **************************************************

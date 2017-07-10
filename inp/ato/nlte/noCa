@@ -514,26 +514,6 @@ CONTINUUM KI-------7    30.17                3.81   SEATON
 CONTINUUM KI-------8    31.62                3.99   SEATON                    
 CONTINUUM KI-------9    33.85                4.27   SEATON                    
 CONTINUUM KI------10    37.76                4.77   SEATON                    
-*------------------------------------------------------------------------------
-**************************************************
-ELEMENT     CALCIUM    (Ca)    20.00     2.      *
-*           =======                              *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-*NIST Atomic Spectra Database Levels Data http://physlab2.nist.gov/, levels database
-LEVEL       CaI------1  0    1      0.00  49305.95 
-LEVEL       CaI------2  0    9  15263.09
-LEVEL       CaI------3  0    5  21849.63
-LEVEL       CaII-----1  1    2      0.00  95751.87   
-*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-LINE      CaI------3  CaI------2   1.00E-8   X CARB   1.E2
-LINE      CaI------3  CaI------1   1.00E-8   X CARB   1.E2
-LINE      CaI------2  CaI------1   1.00E-8   X CARB   1.E2
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM CaI------1     2.934                      TABLE                     
-CONTINUUM CaI------2    16.190                      TABLE                     
-CONTINUUM CaI------3    73.460                      TABLE                     
-*------------------------------------------------------------------------------
 **************************************************
 ELEMENT     SCANDI     (Sc)    21.00     2.      *
 *           ======                               *

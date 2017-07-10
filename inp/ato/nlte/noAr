@@ -424,16 +424,6 @@ LEVEL       ClII-----1  1    9    342.72 192070.00
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM ClI------1     8.11                1.02   SEATON
-**************************************************
-ELEMENT     ARGON      (Ar)    18.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       ArI------1  0    1      0.00 127109.80
-LEVEL       ArII-----1  1    6    477.19 222848.30
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM ArI------1     7.35                0.93   SEATON
 ************************************************** 
 ELEMENT     POTASS     (K )    19.00     2.      *
 *           ======                               *

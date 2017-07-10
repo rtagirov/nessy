@@ -84,6 +84,8 @@
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM) ! NFDIM is known from varhminus module
 
+      call print_eion(N, levatnum, ncharg, eion - elevel)
+
       allocate(ABXYZ(NATOM))
 
 !     DECODING INPUT DATA
@@ -306,6 +308,31 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
  
       END SUBROUTINE
 
+      subroutine print_eion(N, levatnum, ncharg, eion)
+
+      use file_operations
+
+      implicit none
+
+      integer, intent(in) :: N
+
+      integer, dimension(N), intent(in) :: levatnum, ncharg
+
+      real*8,  dimension(N), intent(in) :: eion
+
+      integer :: i
+
+      open(unit = 2764, file = 'eion.out', action = 'write')
+
+      do i = 1, N
+
+         write(2764, '(i4,2x,i3,2x,i2,2x,F8.1))') i, levatnum(i), ncharg(i), eion(i)
+
+      enddo
+
+      close(2764)
+
+      end subroutine
 
       FUNCTION EXTRAP_VEL_FIELD(VEL, ND) RESULT(VEL_E)
 

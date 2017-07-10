@@ -384,17 +384,6 @@ CONTINUUM SiI------3    26.290                      TABLE
 CONTINUUM SiI------4    54.000                      TABLE                     
 CONTINUUM SiI------5     0.563                      TABLE                     
 CONTINUUM SiI------6     3.386                      TABLE                     
-*------------------------------------------------------------------------------                    
-**************************************************
-ELEMENT     PHOSPH     (P )    15.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       PI-------1  0    4     0.0    84580.83
-LEVEL       PII------1  1    9  315.59   159451.70
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM PI-------1     9.01                1.24   SEATON
 ************************************************** 
 ELEMENT     SULPHUR    (S )    16.00     2.      *
 *           =======                              *

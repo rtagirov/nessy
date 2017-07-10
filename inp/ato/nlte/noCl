@@ -413,17 +413,6 @@ LINE      SI-------3  SI-------2   1.00E-8     CARB   1.E2
 CONTINUUM SI-------1     9.22                       TABLE
 CONTINUUM SI-------2    30.18                       TABLE
 CONTINUUM SI-------3     0.61                       TABLE                    
-*------------------------------------------------------------------------------
-**************************************************
-ELEMENT     CHLOR      (Cl)    17.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       ClI------1  0    6    294.11 104591.00
-LEVEL       ClII-----1  1    9    342.72 192070.00
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM ClI------1     8.11                1.02   SEATON
 **************************************************
 ELEMENT     ARGON      (Ar)    18.00     2.      *
 *           ======                               *

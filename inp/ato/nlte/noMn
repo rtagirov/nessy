@@ -575,16 +575,6 @@ LEVEL       CrII-----1  1    6      0.00 132971.02
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM CrI------1    11.23                1.42   SEATON
 **************************************************
-ELEMENT     MANGAN     (Mn)    25.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       MnI------1  0    6      0.00  59959.40
-LEVEL       MnII-----1  1    7      0.00 126145.00
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM MnI------1    10.71                1.35   SEATON
-**************************************************
 ELEMENT     IRON       (Fe)    26.00     2.      *
 *           =======                              *
 **************************************************

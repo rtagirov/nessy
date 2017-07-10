@@ -175,16 +175,6 @@ LEVEL       BeII-----1  1    2           146882.86
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM BeI------1     9.56                1.21   SEATON
 **************************************************
-ELEMENT     BOR        (B )     5.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       BI-------1  0    2      0.0   66928.10
-LEVEL       BII------1  1    1           202887.40
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM BI-------1    10.14                1.28   SEATON
-**************************************************
 ELEMENT     CARBON     (C )     6.00     2.      *
 *           ======                               *
 **************************************************

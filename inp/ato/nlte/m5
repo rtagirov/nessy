@@ -575,16 +575,6 @@ LEVEL       CrII-----1  1    6      0.00 132971.02
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM CrI------1    11.23                1.42   SEATON
 **************************************************
-ELEMENT     MANGAN     (Mn)    25.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       MnI------1  0    6      0.00  59959.40
-LEVEL       MnII-----1  1    7      0.00 126145.00
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM MnI------1    10.71                1.35   SEATON
-**************************************************
 ELEMENT     IRON       (Fe)    26.00     2.      *
 *           =======                              *
 **************************************************
@@ -613,44 +603,3 @@ CONTINUUM FeI------2     5.2350                     TABLE
 CONTINUUM FeI------3     4.7690                     TABLE                     
 CONTINUUM FeI------4     6.8550                     TABLE                     
 CONTINUUM FeI------5     6.9800                     TABLE 
-**************************************************
-ELEMENT     COBALT     (Co)    27.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       CoI------1  0   28    792.80  63430.00
-LEVEL       CoII-----1  1   21    697.06 137795.00
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM CoI------1    10.48                1.32   SEATON
-**************************************************
-ELEMENT     NICKEL     (Ni)    28.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       NiI------1  0   21    971.80  61600.00
-LEVEL       NiII-----1  1   10    602.78 146541.56
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM NiI------1    10.65                1.34   SEATON
-**************************************************
-ELEMENT     COPPER     (Cu)    29.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       CuI------1  0    2      0.00  62317.44 
-LEVEL       CuII-----1  1    1      0.00 163669.20
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM CuI------1    10.51                1.32   SEATON 
-**************************************************
-ELEMENT     ZINC       (Zn)    30.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       ZnI------1  0    1      0.00  75769.33 
-LEVEL       ZnII-----1  1    2      0.00 144892.60
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM ZnI------1     9.52                1.20    SEATON
-**************************************************

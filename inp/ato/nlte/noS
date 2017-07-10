@@ -395,25 +395,6 @@ LEVEL       PII------1  1    9  315.59   159451.70
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM PI-------1     9.01                1.24   SEATON
-************************************************** 
-ELEMENT     SULPHUR    (S )    16.00     2.      *
-*           =======                              *
-**************************************************
-*NIST Atomic Spectra Database Levels Data http://physlab2.nist.gov/, levels database
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       SI-------1  0    9    107.74  83559.10
-LEVEL       SI-------2  0    5   9238.61
-LEVEL       SI-------3  0    1  22179.95 
-LEVEL       SII------1  1    4      0.00 188232.70
-*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-LINE      SI-------2  SI-------1   3.57E-1     CARB   1.E2 
-LINE      SI-------3  SI-------1   1.78E-7     CARB   1.E2 
-LINE      SI-------3  SI-------2   1.00E-8     CARB   1.E2 
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM SI-------1     9.22                       TABLE
-CONTINUUM SI-------2    30.18                       TABLE
-CONTINUUM SI-------3     0.61                       TABLE                    
-*------------------------------------------------------------------------------
 **************************************************
 ELEMENT     CHLOR      (Cl)    17.00     2.      *
 *           ======                               *

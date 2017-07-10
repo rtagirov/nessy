@@ -555,16 +555,6 @@ LEVEL       TiII-----1  1   28    225.17 109494.00
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM TiI------1    11.18                1.41   SEATON
 **************************************************
-ELEMENT     VANADI     (V )    23.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       VI-------1  0   30    316.48  54360.00
-LEVEL       VII------1  1   25    206.26 117900.00
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM VI-------1    11.25                1.42   SEATON
-**************************************************
 ELEMENT     CHROM      (Cr)    24.00     2.      *
 *           ======                               *
 **************************************************

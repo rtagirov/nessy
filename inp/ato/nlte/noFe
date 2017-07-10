@@ -585,35 +585,6 @@ LEVEL       MnII-----1  1    7      0.00 126145.00
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM MnI------1    10.71                1.35   SEATON
 **************************************************
-ELEMENT     IRON       (Fe)    26.00     2.      *
-*           =======                              *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-*Physical and Chemical Reference Data, 1975, Vol. 4, No2, p.353
-LEVEL       FeI------1  0   25    402.96  63737.00
-LEVEL       FeI------2  0   35   7457.82
-LEVEL       FeI------3  0   21  12408.10
-LEVEL       FeI------4  0   15  17761.40
-LEVEL       FeI------5  0    9  19232.20
-LEVEL       FeII-----1  1   30    416.30 130655.40
-*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-LINE      FeI------2  FeI------1   1.00E-8   X CARB   1.E2
-LINE      FeI------3  FeI------1   1.00E-8   X CARB   1.E2
-LINE      FeI------4  FeI------1   1.00E-8   X CARB   1.E2
-LINE      FeI------5  FeI------1   1.00E-8   X CARB   1.E2
-LINE      FeI------3  FeI------2   1.00E-8   X CARB   1.E2
-LINE      FeI------4  FeI------2   1.00E-8   X CARB   1.E2
-LINE      FeI------5  FeI------2   1.00E-8   X CARB   1.E2
-LINE      FeI------4  FeI------3   1.00E-8   X CARB   1.E2
-LINE      FeI------5  FeI------3   1.00E-8   X CARB   1.E2
-LINE      FeI------5  FeI------4   1.00E-8   X CARB   1.E2
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM FeI------1     9.3780                     TABLE                     
-CONTINUUM FeI------2     5.2350                     TABLE                     
-CONTINUUM FeI------3     4.7690                     TABLE                     
-CONTINUUM FeI------4     6.8550                     TABLE                     
-CONTINUUM FeI------5     6.9800                     TABLE 
-**************************************************
 ELEMENT     COBALT     (Co)    27.00     2.      *
 *           ======                               *
 **************************************************

@@ -110,6 +110,7 @@
       use common_block
       use matoper
       use broyden
+      use vardatom_lte
 
       implicit real*8(A - H, O - Z)
 
@@ -658,7 +659,11 @@
 
       do i = 1, N; en_full(idx_orig(i)) = EN(i); enddo
 
-      do i = 1, N_full; if (.not. nlte_lev(i)) en_full(i) = enlte_full(i); enddo
+      if (natom_lte /= 0) then
+
+          do i = 1, N_full; if (.not. nlte_lev(i)) en_full(i) = enlte_full(i); enddo
+
+      endif
 
 !*******************************************************************************************
 

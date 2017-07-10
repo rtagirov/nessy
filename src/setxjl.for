@@ -4,8 +4,8 @@
 
       SUBROUTINE SETXJL(LASTIND, INDLOW, INDNUP, SLNEW, SLOLD, OPAL, XJLAPP,
      $                  NF, XLAMBDA, OPAC, N, EINST, ELEVEL, EN, WEIGHT,
-     $                  ND, XJL, ENTOTL, RSTAR, VDOP, L, LOE,
-     $                  AccFact, NODM, LEVEL, NFIRST, NLAST, NATOM, ENLTE, ITNEL)
+     $                  ND, XJL, ENTOTL, RSTAR, VDOP, L, LOE, AccFact, levatnum,
+     $                  NODM, LEVEL, NFIRST, NLAST, NATOM, ENLTE, ITNEL)
 
 !     CALCULATE LINE RADIATION FIELD WITH APPROXIMATE LAMBDA OPERATOR TERMS
 
@@ -27,6 +27,8 @@
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)
 
       INTEGER, INTENT(IN) :: NATOM
+
+      integer, dimension(N), intent(in) :: levatnum
 
       INTEGER, DIMENSION(NATOM), INTENT(IN) :: NFIRST, NLAST
 
@@ -84,7 +86,8 @@
       LOW = INDLOW(IND)
       NUP = INDNUP(IND)
 
-      IF (LOW .GE. NFIRST(2) .AND. NUP .LE. NLAST(2)) AccFactCutOff = 0.0D0 ! Helium is not accelerated
+!      IF (LOW .GE. NFIRST(2) .AND. NUP .LE. NLAST(2)) AccFactCutOff = 0.0D0 ! Helium is not accelerated
+      IF (levatnum(low) .eq. 2 .or. levatnum(nup) .eq. 2) AccFactCutOff = 0.0D0 ! Helium is not accelerated
 
 !     FOR RUDIMENTAL LINES, ZERO CORE IS ASSUMED
       IF (EINST(LOW, NUP) .EQ. -2.0D0) CYCLE

@@ -565,16 +565,6 @@ LEVEL       VII------1  1   25    206.26 117900.00
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM VI-------1    11.25                1.42   SEATON
 **************************************************
-ELEMENT     CHROM      (Cr)    24.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       CrI------1  0    7      0.00  54575.60
-LEVEL       CrII-----1  1    6      0.00 132971.02
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM CrI------1    11.23                1.42   SEATON
-**************************************************
 ELEMENT     MANGAN     (Mn)    25.00     2.      *
 *           ======                               *
 **************************************************

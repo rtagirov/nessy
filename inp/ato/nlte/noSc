@@ -533,17 +533,6 @@ LINE      CaI------2  CaI------1   1.00E-8   X CARB   1.E2
 CONTINUUM CaI------1     2.934                      TABLE                     
 CONTINUUM CaI------2    16.190                      TABLE                     
 CONTINUUM CaI------3    73.460                      TABLE                     
-*------------------------------------------------------------------------------
-**************************************************
-ELEMENT     SCANDI     (Sc)    21.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       ScI------1  0   10    101.00  52922.00
-LEVEL       ScII-----1  1   15    105.53 103237.10
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM ScI------1    11.40                1.44   SEATON
 **************************************************
 ELEMENT     TITAN      (Ti)    22.00     2.      *
 *           ======                               *

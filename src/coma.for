@@ -265,7 +265,7 @@ CMH - new: needed to calculate new collision cross sections for Hminus
      $            SLOLD(1 : LASTIND), OPAL, XJLAPP(1 : LASTIND),
      $            NF, XLAMBDA, OPAC, N, EINST, ELEVEL, EN(1 : N), WEIGHT,
      $            ND, XJL(1 : LASTIND), ENTOTL, RSTAR, VDOP, L,
-     $            LOE(1 : LASTIND), AccFact(1 : LASTIND),
+     $            LOE(1 : LASTIND), AccFact(1 : LASTIND), levatnum,
      $            NODM, LEVEL, NFIRST, NLAST, NATOM, ENLTE, ITNEL)
 
 !     RADIATIVE RATES ARE CALCULATED WITH THE MODIFIED RADIATION FIELD
