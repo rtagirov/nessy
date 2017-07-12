@@ -19,7 +19,7 @@ LEVEL       H I......7  0   98                      7
 LEVEL       H I......8  0  128                      8
 LEVEL       H I......9  0  162                      9
 LEVEL       H I.....10  0  200                     10
-LEVEL       H II......  1    1
+LEVEL       H II......  1    1      0.00
 *KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 LINE      H I......2  H I......1  4.699E8
 LINE      H I......3  H I......1  5.575E7
@@ -78,7 +78,6 @@ CONTINUUM H I......7    55.40                7.     SEATON
 CONTINUUM H I......8    63.24                8.     SEATON
 CONTINUUM H I......9    71.16                9.     SEATON
 CONTINUUM H I.....10    79.08               10.     SEATON
-**************************************************************************************************
 **************************************************
 ELEMENT     HELIUM     (HE)     4.00     2.      *
 *           ======                               *
@@ -153,14 +152,13 @@ CONTINUUM HEI 3S1..7    14.98     3.8797 -0.12479   KOESTER
 CONTINUUM HEI 3P3..8    25.97     3.1833 -0.043675  KOESTER
 CONTINUUM HEI 3D3..9    18.38     7.1751 -0.20821   KOESTER
 CONTINUUM HEI 3D1.10    18.38     7.1751 -0.20821   KOESTER
-*------------------------------------------------------------------------------
 **************************************************
 ELEMENT     LITHIU     (Li)     3.00     2.      *
 *           ======                               *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
 LEVEL       LiI------1  0    2      0.0   43487.15
-LEVEL       LiII-----1  1    1           610078.53
+LEVEL       LiII-----1  1    1      0.0  610078.53
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM LiI------1    12.56                1.59   SEATON
@@ -170,7 +168,7 @@ ELEMENT     BERRYL     (Be)     4.00     2.      *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
 LEVEL       BeI------1  0    1      0.0   75192.64
-LEVEL       BeII-----1  1    2           146882.86
+LEVEL       BeII-----1  1    2      0.0  146882.86
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM BeI------1     9.56                1.21   SEATON
@@ -180,7 +178,7 @@ ELEMENT     BOR        (B )     5.00     2.      *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
 LEVEL       BI-------1  0    2      0.0   66928.10
-LEVEL       BII------1  1    1           202887.40
+LEVEL       BII------1  1    1      0.0  202887.40
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM BI-------1    10.14                1.28   SEATON
@@ -201,7 +199,6 @@ LINE      CI-------3  CI-------2   1.00E-8   X CARB   1.E2
 CONTINUUM CI-------1    17.770                      TABLE
 CONTINUUM CI-------2    12.360                      TABLE                     
 CONTINUUM CI-------3    14.380                      TABLE
-*------------------------------------------------------------------------------
 **************************************************
 ELEMENT     NITROG     (N )     7.00     2.      *
 *           ======                               *
@@ -646,4 +643,3 @@ LEVEL       ZnII-----1  1    2      0.00 144892.60
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM ZnI------1     9.52                1.20    SEATON
-**************************************************
