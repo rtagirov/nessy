@@ -153,16 +153,6 @@ CONTINUUM HEI 3P3..8    25.97     3.1833 -0.043675  KOESTER
 CONTINUUM HEI 3D3..9    18.38     7.1751 -0.20821   KOESTER
 CONTINUUM HEI 3D1.10    18.38     7.1751 -0.20821   KOESTER
 **************************************************
-ELEMENT     LITHIU     (Li)     3.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       LiI------1  0    2      0.0   43487.15
-LEVEL       LiII-----1  1    1      0.0  610078.53
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM LiI------1    12.56                1.59   SEATON
-**************************************************
 ELEMENT     BERRYL     (Be)     4.00     2.      *
 *           ======                               *
 **************************************************
@@ -229,6 +219,16 @@ LEVEL       FII------1  1    9    168.10 282058.60
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM FI-------1     7.00                0.88   SEATON
+**************************************************
+ELEMENT     NEON       (Ne)    10.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       NeI------1  0    1      0.0  173929.75
+LEVEL       NeII-----1  1    6    260.1  330388.60
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM NeI------1     6.29                0.79   SEATON
 **************************************************
 ELEMENT     NATRIUM    (Na)    11.00     2.      *
 *           =======                              *

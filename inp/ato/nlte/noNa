@@ -230,79 +230,15 @@ LEVEL       FII------1  1    9    168.10 282058.60
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM FI-------1     7.00                0.88   SEATON
 **************************************************
-ELEMENT     NATRIUM    (Na)    11.00     2.      *
-*           =======                              *
+ELEMENT     NEON       (Ne)    10.00     2.      *
+*           ======                               *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       NaI------1  0    2      0.00 41449.620
-LEVEL       NaI------2  0    6  16967.64
-LEVEL       NaI------3  0    2  25739.99 
-LEVEL       NaI------4  0   10  29172.86
-LEVEL       NaI------5  0    6  30270.72
-LEVEL       NaI------6  0    2  33200.68
-LEVEL       NaI------7  0   10  34548.74
-LEVEL       NaI------8  0   14  34586.92
-LEVEL       NaI------9  0    6  35042.03
-LEVEL       NaI-----10  0    2  36372.62
-LEVEL       NaII-----1  1    1      0.00 381390.20
-*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS
-*EINSTEIN COEFFICIENTS TAKEN FROM GEHREN 1974
-LINE      NaI------2  NaI------1   6.29E-1     CARB   1.E2
-LINE      NaI------3  NaI------1   1.00E-8   X CARB   1.E2
-LINE      NaI------4  NaI------1   1.00E-8   X CARB   1.E2
-LINE      NaI------5  NaI------1   2.92E-2     CARB   1.E2
-LINE      NaI------6  NaI------1   1.00E-8   X CARB   1.E2
-LINE      NaI------7  NaI------1   1.00E-8   X CARB   1.E2
-LINE      NaI------8  NaI------1   1.00E-8   X CARB   1.E2
-LINE      NaI------9  NaI------1   6.00E-3     CARB   1.E2 
-LINE      NaI-----10  NaI------1   1.00E-8   X CARB   1.E2
-LINE      NaI------3  NaI------2   2.51E-1     CARB   1.E2 
-LINE      NaI------4  NaI------2   4.95E-1     CARB   1.E2 
-LINE      NaI------5  NaI------2   1.00E-8   X CARB   1.E2
-LINE      NaI------6  NaI------2   7.20E-2     CARB   1.E2 
-LINE      NaI------7  NaI------2   6.31E-1     CARB   1.E2 
-LINE      NaI------8  NaI------2   1.00E-8   X CARB   1.E2
-LINE      NaI------9  NaI------2   1.00E-8   X CARB   1.E2
-LINE      NaI-----10  NaI------2   1.75E-2     CARB   1.E2
-LINE      NaI------4  NaI------3   1.00E-8   X CARB   1.E2
-LINE      NaI------5  NaI------3   6.20E-2     CARB   1.E2 
-LINE      NaI------6  NaI------3   1.00E-8   X CARB   1.E2
-LINE      NaI------7  NaI------3   1.00E-8   X CARB   1.E2
-LINE      NaI------8  NaI------3   1.00E-8   X CARB   1.E2
-LINE      NaI------9  NaI------3   7.40E-3     CARB   1.E2 
-LINE      NaI-----10  NaI------3   1.00E-8   X CARB   1.E2
-LINE      NaI------5  NaI------4   1.57E-3     CARB   1.E2 
-LINE      NaI------6  NaI------4   1.00E-8   X CARB   1.E2
-LINE      NaI------7  NaI------4   1.00E-8   X CARB   1.E2
-LINE      NaI------8  NaI------4   1.40E-1     CARB   1.E2 
-LINE      NaI------9  NaI------4   6.19E-5     CARB   1.E2 
-LINE      NaI-----10  NaI------4   1.00E-8   X CARB   1.E2
-LINE      NaI------6  NaI------5   5.38E-2     CARB   1.E2 
-LINE      NaI------7  NaI------5   6.70E-2     CARB   1.E2 
-LINE      NaI------8  NaI------5   1.00E-8   X CARB   1.E2
-LINE      NaI------9  NaI------5   1.00E-8   X CARB   1.E2
-LINE      NaI-----10  NaI------5   8.65E-3     CARB   1.E2
-LINE      NaI------7  NaI------6   1.00E-8   X CARB   1.E2
-LINE      NaI------8  NaI------6   1.00E-8   X CARB   1.E2
-LINE      NaI------9  NaI------6   1.00E-8   X CARB   1.E2
-LINE      NaI-----10  NaI------6   1.00E-8   X CARB   1.E2
-LINE      NaI------8  NaI------7   1.00E-8   X CARB   1.E2
-LINE      NaI------9  NaI------7   1.00E-8   X CARB   1.E2
-LINE      NaI-----10  NaI------7   1.00E-8   X CARB   1.E2
-LINE      NaI------9  NaI------8   1.00E-8   X CARB   1.E2
-LINE      NaI-----10  NaI------8   1.00E-8   X CARB   1.E2
-LINE      NaI-----10  NaI------9   1.00E-8   X CARB   1.E2
+LEVEL       NeI------1  0    1      0.0  173929.75
+LEVEL       NeII-----1  1    6    260.1  330388.60
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM NaI------1     0.13                       TABLE
-CONTINUUM NaI------2     8.67                       TABLE
-CONTINUUM NaI------3     1.31                       TABLE                    
-CONTINUUM NaI------4    24.91                       TABLE                    
-CONTINUUM NaI------5    24.21                       TABLE                    
-CONTINUUM NaI------6     4.11                       TABLE                    
-CONTINUUM NaI------7    56.94                       TABLE                    
-CONTINUUM NaI------8     0.46                       TABLE                    
-CONTINUUM NaI------9    49.92                       TABLE                    
-CONTINUUM NaI-----10    10.11                       TABLE                    
+CONTINUUM NeI------1     6.29                0.79   SEATON
 **************************************************
 ELEMENT     MAGNES     (Mg)    12.00     2.      *
 *           ======                               *

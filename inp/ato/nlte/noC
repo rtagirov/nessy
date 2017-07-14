@@ -183,23 +183,6 @@ LEVEL       BII------1  1    1      0.0  202887.40
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM BI-------1    10.14                1.28   SEATON
 **************************************************
-ELEMENT     CARBON     (C )     6.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       CI-------1  0    9     29.57  90820.42
-LEVEL       CI-------2  0    5  10192.63    
-LEVEL       CI-------3  0    1  21648.01
-LEVEL       CII------1  1    6     42.28 196674.00
-*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-LINE      CI-------2  CI-------1   1.00E-8   X CARB   1.E2
-LINE      CI-------3  CI-------1   1.00E-8   X CARB   1.E2
-LINE      CI-------3  CI-------2   1.00E-8   X CARB   1.E2
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM CI-------1    17.770                      TABLE
-CONTINUUM CI-------2    12.360                      TABLE                     
-CONTINUUM CI-------3    14.380                      TABLE
-**************************************************
 ELEMENT     NITROG     (N )     7.00     2.      *
 *           ======                               *
 **************************************************
@@ -229,6 +212,16 @@ LEVEL       FII------1  1    9    168.10 282058.60
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM FI-------1     7.00                0.88   SEATON
+**************************************************
+ELEMENT     NEON       (Ne)    10.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       NeI------1  0    1      0.0  173929.75
+LEVEL       NeII-----1  1    6    260.1  330388.60
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM NeI------1     6.29                0.79   SEATON
 **************************************************
 ELEMENT     NATRIUM    (Na)    11.00     2.      *
 *           =======                              *

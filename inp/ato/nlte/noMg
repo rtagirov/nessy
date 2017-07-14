@@ -230,6 +230,16 @@ LEVEL       FII------1  1    9    168.10 282058.60
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM FI-------1     7.00                0.88   SEATON
 **************************************************
+ELEMENT     NEON       (Ne)    10.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       NeI------1  0    1      0.0  173929.75
+LEVEL       NeII-----1  1    6    260.1  330388.60
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM NeI------1     6.29                0.79   SEATON
+**************************************************
 ELEMENT     NATRIUM    (Na)    11.00     2.      *
 *           =======                              *
 **************************************************
@@ -303,24 +313,6 @@ CONTINUUM NaI------7    56.94                       TABLE
 CONTINUUM NaI------8     0.46                       TABLE                    
 CONTINUUM NaI------9    49.92                       TABLE                    
 CONTINUUM NaI-----10    10.11                       TABLE                    
-**************************************************
-ELEMENT     MAGNES     (Mg)    12.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-*NIST Atomic Spectra Database Levels Data http://physlab2.nist.gov/, levels database
-LEVEL       MgI------1  0    1      0.00  61671.02
-LEVEL       MgI------2  0    9  21877.30
-LEVEL       MgI------3  0    3  35051.26 
-LEVEL       MgII-----1  1    2      0.00 121267.64
-*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-LINE      MgI------2  MgI------1   1.00E-8   X CARB   1.E2
-LINE      MgI------3  MgI------1   4.90000     CARB   1.E2
-LINE      MgI------3  MgI------2   1.00E-8   X CARB   1.E2
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM MgI------1     2.934                      TABLE                     
-CONTINUUM MgI------2    16.190                      TABLE                     
-CONTINUUM MgI------3    73.460                      TABLE                     
 **************************************************
 ELEMENT     ALUMIN     (Al)    13.00     2.      *
 *           ======                               *

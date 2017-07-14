@@ -230,6 +230,16 @@ LEVEL       FII------1  1    9    168.10 282058.60
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM FI-------1     7.00                0.88   SEATON
 **************************************************
+ELEMENT     NEON       (Ne)    10.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       NeI------1  0    1      0.0  173929.75
+LEVEL       NeII-----1  1    6    260.1  330388.60
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM NeI------1     6.29                0.79   SEATON
+**************************************************
 ELEMENT     NATRIUM    (Na)    11.00     2.      *
 *           =======                              *
 **************************************************
@@ -332,42 +342,6 @@ LEVEL       AlII-----1  1    1      0.00 151862.50
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM AlI------1    60.900                      TABLE 
-**************************************************
-ELEMENT     SILICON    (Si)    14.00     2.      *
-*           =======                              *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-*Physical and Chemical Reference Data, 1983, Vol.12, no 2 p.323
-LEVEL       SiI------1  0    9    149.68 65747.76
-LEVEL       SiI------2  0    5   6298.85
-LEVEL       SiI------3  0    1  15394.37
-LEVEL       SiI------4  0    5  33326.04
-LEVEL       SiI------5  0    9  39799.50
-LEVEL       SiI------6  0    3  40991.88
-LEVEL       SiII-----1  1    6    191.49 131838.10
-*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-LINE      SiI------2  SiI------1  1.00E-8    X CARB   1.E2
-LINE      SiI------3  SiI------1  1.00E-8    X CARB   1.E2
-LINE      SiI------4  SiI------1  1.00E-8    X CARB   1.E2
-LINE      SiI------5  SiI------1  2.51000      CARB   1.E2
-LINE      SiI------6  SiI------1  1.00E-8    X CARB   1.E2
-LINE      SiI------3  SiI------2  1.00E-8    X CARB   1.E2
-LINE      SiI------4  SiI------2  1.00E-8    X CARB   1.E2
-LINE      SiI------5  SiI------2  1.00E-8    X CARB   1.E2
-LINE      SiI------6  SiI------2  1.00E-8    X CARB   1.E2
-LINE      SiI------4  SiI------3  1.00E-8    X CARB   1.E2
-LINE      SiI------5  SiI------3  1.00E-8    X CARB   1.E2
-LINE      SiI------6  SiI------3  1.42E-1      CARB   1.E2
-LINE      SiI------5  SiI------4  1.00E-8    X CARB   1.E2
-LINE      SiI------6  SiI------4  1.00E-8    X CARB   1.E2
-LINE      SiI------6  SiI------5  1.00E-8    X CARB   1.E2
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM SiI------1    70.160                      TABLE                     
-CONTINUUM SiI------2    34.610                      TABLE                     
-CONTINUUM SiI------3    26.290                      TABLE                     
-CONTINUUM SiI------4    54.000                      TABLE                     
-CONTINUUM SiI------5     0.563                      TABLE                     
-CONTINUUM SiI------6     3.386                      TABLE                     
 **************************************************
 ELEMENT     PHOSPH     (P )    15.00     2.      *
 *           ======                               *

@@ -200,16 +200,6 @@ CONTINUUM CI-------1    17.770                      TABLE
 CONTINUUM CI-------2    12.360                      TABLE                     
 CONTINUUM CI-------3    14.380                      TABLE
 **************************************************
-ELEMENT     NITROG     (N )     7.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       NI-------1  0    4      0.0  117314.58
-LEVEL       NII------1  1    9     88.9  238750.20
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM NI-------1     7.65                0.96   SEATON
-**************************************************
 ELEMENT     OXYGEN     (O )     8.00     2.      *
 *           ======                               *
 **************************************************
@@ -229,6 +219,16 @@ LEVEL       FII------1  1    9    168.10 282058.60
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM FI-------1     7.00                0.88   SEATON
+**************************************************
+ELEMENT     NEON       (Ne)    10.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       NeI------1  0    1      0.0  173929.75
+LEVEL       NeII-----1  1    6    260.1  330388.60
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM NeI------1     6.29                0.79   SEATON
 **************************************************
 ELEMENT     NATRIUM    (Na)    11.00     2.      *
 *           =======                              *

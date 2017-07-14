@@ -210,16 +210,6 @@ LEVEL       NII------1  1    9     88.9  238750.20
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM NI-------1     7.65                0.96   SEATON
 **************************************************
-ELEMENT     OXYGEN     (O )     8.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       OI-------1  0    9     77.97 109837.02
-LEVEL       OII------1  1    4      0.00 283270.90
-*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM OI-------1     7.91                1.00   SEATON
-**************************************************
 ELEMENT     FLUOR      (F )     9.00     2.      *
 *           ======                               *
 **************************************************
@@ -229,6 +219,16 @@ LEVEL       FII------1  1    9    168.10 282058.60
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
 CONTINUUM FI-------1     7.00                0.88   SEATON
+**************************************************
+ELEMENT     NEON       (Ne)    10.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       NeI------1  0    1      0.0  173929.75
+LEVEL       NeII-----1  1    6    260.1  330388.60
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM NeI------1     6.29                0.79   SEATON
 **************************************************
 ELEMENT     NATRIUM    (Na)    11.00     2.      *
 *           =======                              *
