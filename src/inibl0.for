@@ -676,22 +676,22 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
       !*** ABLIN/EMLIN from files, otherwise calculate and write out the
       !*** lopa and if the ABEMLIN key is set to WRITE then write out
       !*** the ABLIN/EMLIN variables.
-  !    IF(cards.ABEMLIN==card_params.ABEMLIN_READ) THEN
-  !      read(201,*) NFREQ_TMP,ID_TMP
-  !      call assert(ID_TMP==ID,'opac:ABEMLIN R:ID /= FILE ID')
-  !      call assert(NFREQ==NFREQ_TMP,'opac:ABEMLIN R:NFREQ/=FILE NFREQ')
-  !      read(201,*) ABLIN(1:NFREQ)
-  !      read(201,*) EMLIN(1:NFREQ)
-  !    ELSE
+      IF(cards.ABEMLIN==card_params.ABEMLIN_READ) THEN
+        read(201,*) NFREQ_TMP,ID_TMP
+        call assert(ID_TMP==ID,'opac:ABEMLIN R:ID /= FILE ID')
+        call assert(NFREQ==NFREQ_TMP,'opac:ABEMLIN R:NFREQ/=FILE NFREQ')
+        read(201,*) ABLIN(1:NFREQ)
+        read(201,*) EMLIN(1:NFREQ)
+      ELSE
 
- !       CALL LINOP_MS(ID,ABLIN,EMLIN)
+        CALL LINOP_MS(ID,ABLIN,EMLIN)
 
-!        if(cards.ABEMLIN==card_params.ABEMLIN_WRITE) then
-!          write(201,*) NFREQ,ID
-!          write(201,*) ABLIN(1:NFREQ)
-!          write(201,*) EMLIN(1:NFREQ)
-!        endif
-  !    ENDIF  ! EMABLIN /= EMABLIN_READ
+        if(cards.ABEMLIN==card_params.ABEMLIN_WRITE) then
+          write(201,*) NFREQ,ID
+          write(201,*) ABLIN(1:NFREQ)
+          write(201,*) EMLIN(1:NFREQ)
+        endif
+      ENDIF  ! EMABLIN /= EMABLIN_READ
       ! CALL LINOP(ID,ABLIN,EMLIN,AVAB)
       ! print *,(abso(ij),emlin(ipj),ij=1,nfreq)
       !***********************************************************
@@ -700,7 +700,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
       !***  WHICH WILL BE THE INBUT FOR HMINUS-ROUTINE
       !***  ID: depth point
       !***  NFREQ: number of frequency points
-  !    write (200,*) nfreq, id
+      write (200,*) nfreq, id
     
 
 ! *****************************
@@ -717,7 +717,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         
        ind=minloc(abs(wav_f(1:Nfudge)-lambdat))  
 
-       ! contf=ffactor(ind(1))
+       !contf=ffactor(ind(1))
   
        endif 
 !====================================================================
@@ -796,16 +796,16 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 
 
-!       do i=1,nfreq
+       do i=1,nfreq
 !!!       write (200,310) ablin(i),emlin(i)
-!        write (200,FMT_LOPA) ablin(i)
-!        IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
-!          PRINT '(i0,X,i0," ",$)',I,ID
-!          PRINT '("inibl0: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
-!     &             ' EMISSIVITY : ",$)' ! WARNING!!!
-!          PRINT *,I, ABLIN(I),EMLIN(I)
-!        ENDIF
-!      enddo
+        write (200,'(F10.4, 2X, e12.5)') (clight_cgs/freq(i))*1.d8, ablin(i) 
+        IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
+          PRINT '(i0,X,i0," ",$)',I,ID
+          PRINT '("inibl0: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
+     &             ' EMISSIVITY : ",$)' ! WARNING!!!
+          PRINT *,I, ABLIN(I),EMLIN(I)
+        ENDIF
+      enddo
 
   300 CONTINUE
 
@@ -853,7 +853,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !     Rinat, use it to calculate continuum
 
       FMTT = "(F8.3, 2X, F8.3, 2X, F8.3)"
-      ODF = .TRUE.
+      ODF = .FALSE.
       IF (ODF) THEN
       reduced='.rk'
       IF (ID.GT.9) THEN
