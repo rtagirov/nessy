@@ -14,7 +14,7 @@ OUT=../obj/
 F90             =ifort
 LIBRARY_PATH    =/opt/intel/Compiler/current/lib/intel64/
 LD_LIBRARY_PATH =/opt/intel/Compiler/current/lib/intel64/
-F90FLAGS       += -mkl=sequential -diag-disable=cpu-dispatch -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2
+F90FLAGS       += -mkl=sequential -diag-disable=cpu-dispatch -fPIC -axAVX,CORE-AVX-I,CORE-AVX2
 LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -mkl=sequential
 SET__=1
 endif # arch=64
