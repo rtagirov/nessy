@@ -4,7 +4,7 @@
 
       contains
 
-      function ecd(L, ne, T) result(deriv)
+      function eftd(L, ne, T) result(deriv)
 
       use vardatom_lte
 
@@ -38,17 +38,17 @@
 
             m3 = m3 + sef(i, ne, T)
 
-            m4 = m4 + (1 + f) * lis_cnum(i) * sef(i, ne, T)
+            m4 = m4 + f * lis_cnum(i) * sef(i, ne, T)
 
             f = f + 1
 
          enddo
 
-         deriv = deriv + abxyzn_lte(k, L) * m4 * (m1 * m2 / m3 / m4 - 1.0d0) / m3
+         deriv = deriv + abxyzn_lte(k, L) * (m4 / m3) * (m1 * m2 / m3 / m4 - 1.0d0)
 
       enddo
 
-      deriv = deriv / ne**2.0
+      deriv = deriv / ne
 
       end function
 

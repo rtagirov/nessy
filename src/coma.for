@@ -300,21 +300,8 @@ C***  REMARK: TOTAL NUMBER CONSERVATION IS IMPLICITLY ENSURED
 !     COLUMN N + 1: CHARGE CONSERVATION equation (NTLE levels term)
       do I = 1, N; RATCO(I, NPLUS1) = NCHARG(I); enddo
 
-!     now calculating the LTE levels term
-      ltecharg = 0.0d0
-
-      if (natom_lte /= 0) then
-
-          do i = 1, N_full; if (.not. nlte_lev(i)) ltecharg = ltecharg + ncharg_full(i) * en_full(i); enddo
-
-      endif
-
-!     the LTE levels term enters the equation as a correction to the electron concentration coefficient
-!     in the following form
-      ltecharg = ltecharg / rnel
-
-!     adding the charge contribution from the LTE levels to the original electron concentration coefficient
-      RATCO(NPLUS1, NPLUS1) = -1.0d0 + ltecharg
+!     Electron concentration coefficient in the charge conservation equation
+      RATCO(NPLUS1, NPLUS1) = -1.0d0
 
 !     ROW N + 1: ZERO
       do J = 1, N; RATCO(NPLUS1, J) = 0.0d0; enddo
@@ -370,8 +357,8 @@ C***  NOTE THAT DUPLOW = - DLOWUP
 
 !     Correction to the Jacobian from the LTE levels
 !     This is the derivative of the charge conservation equation with respect to the electron concentration
-!     Function ecd is the Electron Coefficient Derivative (declared in elresp.for)
-      dm(nplus1, nplus1) = dm(nplus1, nplus1) + rnel * ecd(L, rnel, TL)
+!     Function eftd is the Electron Free Term (or charge conservation inhomogeniety, see V1(NPLUS1) below) Derivative (see elresp.for)
+      dm(nplus1, nplus1) = dm(nplus1, nplus1) + eftd(L, rnel, TL)
 
 C***  COLUMNS NLAST(NA)  (I.E. COLUMNS CONTAINING THE EQUATIONS OF NUMBER
 C***  CONSERVATION FOR ELEMENT NA)  ARE NOT CHANGED
@@ -400,6 +387,17 @@ C***          NLAST(NA)-TH ELEMENT = ABUND(NA)  (NUMBER CONSERVATION)
         V1(NLANA) = ABUND(NA)
 
       ENDDO
+
+!     The inhomogeniety for the charge conservation equation is the -(Z_i * n_i) sum for all the levels treated in LTE
+!     (Z_i - charge number of LTE level i, n_i - number density of LTE level i)
+!     The charge conservation equation hence looks like:
+!     (Z_i * n_i)_nlte - n_e = -(Z_i * n_i)_lte
+!     The right hand side of the above equation is the V1(NPLUS1)
+      if (natom_lte /= 0) then
+
+          do i = 1, N_full; if (.not. nlte_lev(i)) V1(NPLUS1) = V1(NPLUS1) - ncharg_full(i) * en_full(i); enddo
+
+      endif
 
       if (any(isnan(dm))) stop 'como: dm NaN'
 
