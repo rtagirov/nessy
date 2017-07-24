@@ -81,11 +81,12 @@
       real*8 :: EINST(N, N), ENE
       real*8 :: ALTESUM(4, N)
 
-      real*8, dimension(lastind) :: opal, detal, dopal
+      real*8, dimension(lastind)                     :: opal, detal, dopal
 
-      integer, dimension(N)   :: NFEDGE
-      real*8,  dimension(N)   :: ELEVEL, EION, WEIGHT
-      real*8,  dimension(NF)  :: XLAMBDA, EXPFAC, FWEIGHT
+      integer, dimension(N_full)                     :: NFEDGE
+
+      real*8,  dimension(N)                          :: ELEVEL, EION, WEIGHT
+      real*8,  dimension(NF)                         :: XLAMBDA, EXPFAC, FWEIGHT
 
       real*8,  dimension(NF)                         :: ETAC, DETA
       real*8,  dimension(NF)                         :: OPAC, DOPA
@@ -117,7 +118,7 @@
 
       integer :: NFIRNA, NLANA, NA, I, J, K, NPLUS1, NUP, IND, LOW
 
-      real*8  :: ENTOTL, RNEL, DLOWUP, ltecharg
+      real*8  :: ENTOTL, RNEL, DLOWUP
 
       real*8, dimension(NF) :: SCNEW, XJCAPP
 
@@ -324,11 +325,10 @@ C***  CONSTRUCT DERIVATIVE VECTORS DOPA, DETA WITH RESPECT TO EN(I)
 
       CALL DCOOP(I,DOPA,DETA,XLAMBDA,NF,TL,RNEL,ENTOTL,EN(1 : N),RSTAR,
      $           WCHARM,ND,L,NFEDGE,EXPFAC,N,NCHARG,WEIGHT,
-     $           ELEVEL,EION,NOM,EINST,SIGMAKI)
+     $           ELEVEL,EION,NOM,EINST,SIGMAKI,N_full)
 
 C***  CONSTRUCT DERIVATIVE VECTORS DOPAL, DETAL (LINES) WITH RESPECT TO EN(I)
-      CALL DLIOP(I,ENTOTL,DOPAL,DETAL,VDOP,RSTAR,N,
-     $           EINST,WEIGHT,ELEVEL,LASTIND,INDLOW,INDNUP)
+      CALL DLIOP(I,ENTOTL,DOPAL,DETAL,VDOP,RSTAR,N,EINST,WEIGHT,ELEVEL,LASTIND,INDLOW,INDNUP)
      
       IND = 0
 
@@ -342,7 +342,7 @@ C***  COMPUTE ELEMENT (LOW,NUP) OF MATRIX DM (DERIVATIVE WITH RESPECT TO EN(I))
      $           WCHARM,ND,L,TL,ENLTE,DETAL,DOPAL,SLNEW(1 : LASTIND),OPAL,XJLAPP,XJCAPP,
      $           FWEIGHT,DOPA,DETA,OPAC,SCNEW,XLAMBDA,NF,
      $           N,NCHARG,WEIGHT,ELEVEL,NOM,EINST,SIGMAKI,LASTIND,
-     $           XJL(1 : LASTIND), AccFact(1 : LASTIND), SLOLD(1 : LASTIND))
+     $           XJL(1 : LASTIND), AccFact(1 : LASTIND), SLOLD(1 : LASTIND), N_full)
 
       DM(I, NUP) = DM(I, NUP) + DLOWUP
 

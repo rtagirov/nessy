@@ -6,7 +6,7 @@
      $                 WCHARM,ND,L,TL,ENLTE,DETAL,DOPAL,SLNEW,OPAL,XJLAPP,XJCAPP,
      $                 FWEIGHT,DOPA,DETA,OPAC,SCNEW,XLAMBDA,NF,
      $                 N,NCHARG,WEIGHT,ELEVEL,NOM,EINST,SIGMAKI,LASTIND,
-     $                 XJL, AccFact, SLOLD)
+     $                 XJL, AccFact, SLOLD, N_full)
 
 !     DERIVATIVE OF RATE EQ. COEFFICIENTS:
 !     D(I,M,J) := N(M) * D(RATCO(M,J))/DN(I) - N(J) * D(RATCO(J,M))/DN(I)
@@ -15,21 +15,26 @@
 
       IMPLICIT REAL*8(A - H, O - Z)
 
+      integer, intent(in) :: N, N_full
+
+      integer, dimension(N_full)     :: nfedge
+
+      real*8,  dimension(NF, N_full) :: sigmaki
+
       REAL*8, INTENT(IN), DIMENSION(N, N) :: CRATE ! Collision Rate
 
       REAL*8, dimension(N)      :: ENLTE  ! population number in LTE
       REAL*8, dimension(NPLUS1) :: EN     ! population number in NLTE
       REAL*8, dimension(ND, NF) :: WCHARM
 
-      DIMENSION NCHARG(N),RRATE(N,N)
-      DIMENSION EINST(N,N),ELEVEL(N)
-      DIMENSION WEIGHT(N),NFEDGE(N)
+      DIMENSION NCHARG(N), RRATE(N, N)
+      DIMENSION EINST(N, N), ELEVEL(N)
+      DIMENSION WEIGHT(N)
       DIMENSION NOM(N)
-      DIMENSION DOPA(NF),DETA(NF),OPAC(NF),SCNEW(NF)
-      DIMENSION FWEIGHT(NF),XLAMBDA(NF),XJCAPP(NF),EXPFAC(NF)
-      DIMENSION DOPAL(LASTIND),SLNEW(LASTIND),OPAL(LASTIND),DETAL(LASTIND)
+      DIMENSION DOPA(NF), DETA(NF), OPAC(NF), SCNEW(NF)
+      DIMENSION FWEIGHT(NF), XLAMBDA(NF), XJCAPP(NF), EXPFAC(NF)
+      DIMENSION DOPAL(LASTIND), SLNEW(LASTIND), OPAL(LASTIND), DETAL(LASTIND)
       DIMENSION XJLAPP(LASTIND)
-      DIMENSION SIGMAKI(NF,N)
 
       REAL*8, DIMENSION(LASTIND), INTENT(IN) :: XJL, AccFact, SLOLD
 
@@ -89,7 +94,7 @@ C***  PREFACTOR FOR THE DERIVATIVE OF 1/S-BOUND-FREE WITH RESPECT TO N(I)
 
       ENDIF
 
-      DO K = 1, NFEDGE(LOW)
+      DO K = 1, NFEDGE(idx_orig(LOW))
 
          WAVENUM = 1.0D8 / XLAMBDA(K)
 

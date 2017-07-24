@@ -4,7 +4,7 @@
 
       SUBROUTINE DCOOP(I,DOPA,DETA,XLAMBDA,NF,TL,RNEL,ENTOTL,EN,RSTAR,
      $                 WCHARM,ND,L,NFEDGE,EXPFAC,N,NCHARG,WEIGHT,
-     $                 ELEVEL,EION,NOM,EINST,SIGMAKI)
+     $                 ELEVEL,EION,NOM,EINST,SIGMAKI,N_full)
 
 !***********************************************************************
 !     DERIVATIVE OF NON-LTE OPACITY AND EMISSIVITY WITH RESPECT TO EN(I)
@@ -21,19 +21,24 @@
       use common_block
 
       implicit none
+
       !global variables
-      integer, intent(in)                    :: I, L, N, ND
-      integer, intent(in)                    :: NF
-      real*8,  intent(in)                    :: ENTOTL
-      real*8,                    intent(in)  :: RNEL,RSTAR,TL
-      integer, dimension(N),     intent(in)  :: NCHARG,NFEDGE,NOM
-      real*8,  dimension(N),     intent(in)  :: ELEVEL,EION(N),WEIGHT
-      real*8,  dimension(NF),    intent(in)  :: EXPFAC,XLAMBDA
-      real*8,  dimension(N,N),   intent(in)  :: EINST
-      real*8,  dimension(N),     intent(in)  :: EN
-      real*8,  dimension(ND,NF), intent(in)  :: WCHARM
-      real*8,  dimension(NF,N),  intent(in)  :: SIGMAKI
-      real*8,  dimension(NF),    intent(out) :: DOPA,DETA
+      integer,                        intent(in)  :: I, L, N, N_full, ND
+      integer,                        intent(in)  :: NF
+      real*8,                         intent(in)  :: ENTOTL
+
+      real*8,                         intent(in)  :: RNEL,RSTAR,TL
+      integer, dimension(N),          intent(in)  :: NCHARG, NOM
+      real*8,  dimension(N),          intent(in)  :: ELEVEL,EION(N),WEIGHT
+      real*8,  dimension(NF),         intent(in)  :: EXPFAC,XLAMBDA
+      real*8,  dimension(N, N),       intent(in)  :: EINST
+      real*8,  dimension(N),          intent(in)  :: EN
+      real*8,  dimension(ND, NF),     intent(in)  :: WCHARM
+
+      integer, dimension(N_full),     intent(in)  :: NFEDGE
+      real*8,  dimension(NF, N_full), intent(in)  :: SIGMAKI
+
+      real*8,  dimension(NF),        intent(out)  :: DOPA, DETA
 	
       !local variables
       real*8, dimension(-1:6)                :: GFF,GIIIX
@@ -81,7 +86,8 @@ C***  CHARGES MUST DIFFER BY 1
 C***  SEARCH FOR THE INDEX OF IONIZATION EDGE
       EDGE=EION(LOW)-ELEVEL(LOW)
       EXPEDGE=EXP(C1*EDGE/TL)
-      NFLOW=NFEDGE(LOW)
+
+      NFLOW = NFEDGE(idx_orig(LOW))
      
       IF (I .LT. J) THEN
 C***  I IS LOWER LEVEL
@@ -140,7 +146,9 @@ C***  LEVELS MUST BELONG TO THE SAME ELEMENT
 C***  CHARGES MUST DIFFER BY 1
       IF (NCHARG(NUP).NE.NCHARG(LOW)+1 ) GOTO 5
           EDGE=EION(LOW)-ELEVEL(LOW)
-          NFLOW=NFEDGE(LOW)
+
+          NFLOW = NFEDGE(idx_orig(LOW))
+
           EXPEDGE=EXP(C1*EDGE/TL)
           !***  NOTE: FACTOR RNEL OMITTED (DERIVATIVE TO ELECTRON DENSITY)
           WE=C3*     ENTOTL/T32 *WEIGHT(LOW)/WEIGHT(NUP)*EXPEDGE
