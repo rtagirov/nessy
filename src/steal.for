@@ -69,6 +69,8 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       REAL*8 :: CORMAX
 
+      real*8 :: finish_linpop, start_linpop
+
       WRITE(*, *), 'entering steal: job = '//JOB
 
       IF(LBKG) PRINT*, 'STEAL: LINE BLANKETING = TRUE'
@@ -190,6 +192,8 @@ c***     the new blanketing table needs to be written to the model file
 !     IN THIS BRANCH, PRIRAT MAY ONLY SHOW THE NETTO RATES
 !     CALCULATION OF NEW POPULATION NUMBERS, EL. DENSITY AND DEPARTURE COEFF.
 
+         call cpu_time(start_linpop)
+
          CALL LINPOP(T,
      $               RNE,
      $               ENTOT,
@@ -262,6 +266,14 @@ c***     the new blanketing table needs to be written to the model file
      $               kodat,
      $               nfirst,
      $               nlast)
+
+         call cpu_time(finish_linpop)
+
+         if (lambda_iter == 1) call system('rm -fv time_linpop.out')
+
+         call open_to_append(213, 'time_linpop.out')
+
+         write(213, '(I2,2x,F6.3)') lambda_iter, finish_linpop - start_linpop
 
       ENDIF
  

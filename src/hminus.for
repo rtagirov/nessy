@@ -144,6 +144,11 @@
       integer nbinw
       real*8  almin, almax
 
+      real*8 :: como_start,  como_finish,  como_time
+      real*8 :: etl_start,   etl_finish,   etl_time
+      real*8 :: steal_start, steal_finish, steal_time
+      real*8 :: cycle_start, cycle_finish, cycle_time
+
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
 
       character*7 :: JOB
@@ -241,26 +246,57 @@
    10 continue
       IF (JOB.EQ.'newline') INEW=1
       if (itsw.eq.1) itsw=0
+
       print *,'HMINUS: CYCLE STARTED'
+
+      call cpu_time(cycle_start)
+
       call tic(timer2)
 
+      call cpu_time(como_start)
+
       CALL COMO
-      call finish('COMO',timer2)
+
+      call cpu_time(como_finish)
+
+      como_time = como_finish - como_start
+
+      call finish('COMO', timer2)
+
+      call cpu_time(etl_start)
+
       CALL ETL(JOB)
 
+      call cpu_time(etl_finish)
 
+      etl_time = etl_finish - etl_start
 
+      call finish('ETL', timer2)
 
+      call cpu_time(steal_start)
 
-      call finish('ETL',timer2)
       CALL STEAL (JOB)
 
+      call cpu_time(steal_finish)
 
+      steal_time = steal_finish - steal_start
 
+      call cpu_time(cycle_finish)
 
-      first=.false.
-      call finish('STEAL',timer2)
-      print *,'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
+      cycle_time = cycle_finish - cycle_start
+
+      first = .false.
+
+      call finish('STEAL', timer2)
+
+      print*, 'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
+
+      if (lambda_iter == 0 .or. lambda_iter == 1) call system('rm -fv times.out')
+
+      call open_to_append(231, 'times.out')
+
+      write(231, '(I2,4(2x,F6.3))') lambda_iter, como_time, etl_time, steal_time, cycle_time
+
       IF (INEW.EQ.1) THEN
         print *,'HMINUS: TIME FOR CYCLE INCLUDING LINE BACKGROUND '//
      &              'RADIATION FIELD, JOB='//JOB 
