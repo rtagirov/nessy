@@ -275,6 +275,8 @@ c***     the new blanketing table needs to be written to the model file
 
          write(213, '(I2,2x,F6.3)') lambda_iter, finish_linpop - start_linpop
 
+         close(213)
+
       ENDIF
  
 C***  REDUCED CORRECTIONS, IF OPTION IS SET

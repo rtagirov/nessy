@@ -144,10 +144,11 @@
       integer nbinw
       real*8  almin, almax
 
-      real*8 :: como_start,  como_finish,  como_time
-      real*8 :: etl_start,   etl_finish,   etl_time
-      real*8 :: steal_start, steal_finish, steal_time
-      real*8 :: cycle_start, cycle_finish, cycle_time
+      real*8 :: wrcont_start, wrcont_finish, wrcont_time
+      real*8 :: como_start,   como_finish,   como_time
+      real*8 :: etl_start,    etl_finish,    etl_time
+      real*8 :: steal_start,  steal_finish,  steal_time
+      real*8 :: cycle_start,  cycle_finish,  cycle_time
 
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
 
@@ -229,10 +230,21 @@
       ENDIF
 
     1 continue
+
       call tic(timer2)
+
+      call cpu_time(wrcont_start)
+
       CALL WRCONT(JOB)
-      itemp=itemp+1
-      if (itemp.ge.2) itsw=1
+
+      call cpu_time(wrcont_finish)
+
+      wrcont_time = wrcont_finish - wrcont_start
+
+      itemp = itemp + 1
+
+      if (itemp .ge. 2) itsw = 1
+
       call finish('WRCONT',timer2)
 
       IF (JOB.NE.'repeat'.AND.JOB.NE.'newline') THEN
@@ -295,7 +307,9 @@
 
       call open_to_append(231, 'times.out')
 
-      write(231, '(I2,4(2x,F6.3))') lambda_iter, como_time, etl_time, steal_time, cycle_time
+      write(231, '(I2,5(2x,F6.3))') lambda_iter, wrcont_time, como_time, etl_time, steal_time, cycle_time
+
+      close(231)
 
       IF (INEW.EQ.1) THEN
         print *,'HMINUS: TIME FOR CYCLE INCLUDING LINE BACKGROUND '//
