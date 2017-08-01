@@ -214,11 +214,11 @@
       CALL RM_FILE('BROYDEN', '-vf')
       CALL RM_FILE('NEWBROYDEN', '-vf')
 
-      CALL WRSTART
-      call finish('WRSTART',timer2,.true.)
+      CALL RM_FILE('etl_time.out', '-vf')
 
-      CALL STEAL(JOB)
-      call finish('STEAL',timer2)
+      CALL WRSTART; call finish('WRSTART', timer2, .true.)
+
+      CALL STEAL(JOB); call finish('STEAL', timer2)
 
       IF (JOB.NE.'wrcont') THEN
         PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=',JOB
@@ -277,7 +277,11 @@
 
       call cpu_time(etl_start)
 
+      call system("echo -n $(date +%s) >> etl_time.out")
+
       CALL ETL(JOB)
+
+      call system("echo ' '$(date +%s) >> etl_time.out")
 
       call cpu_time(etl_finish)
 
