@@ -70,7 +70,6 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       REAL*8 :: CORMAX
 
       real*8 :: steal_start,  steal_finish
-      real*8 :: linpop_start, linpop_finish
 
       call cpu_time(steal_start); call system("echo -n $(date +%s) >> wall_time.steal")
 
@@ -195,8 +194,6 @@ c***     the new blanketing table needs to be written to the model file
 !     IN THIS BRANCH, PRIRAT MAY ONLY SHOW THE NETTO RATES
 !     CALCULATION OF NEW POPULATION NUMBERS, EL. DENSITY AND DEPARTURE COEFF.
 
-         call cpu_time(linpop_start); call system("echo -n $(date +%s) >> wall_time.linpop")
-
          CALL LINPOP(T,
      $               RNE,
      $               ENTOT,
@@ -269,10 +266,6 @@ c***     the new blanketing table needs to be written to the model file
      $               kodat,
      $               nfirst,
      $               nlast)
-
-         call system("echo ' '$(date +%s) >> wall_time.linpop"); call cpu_time(linpop_finish)
-
-         call open_to_append(377, 'cpu_time.linpop'); write(377, '(F6.3)') linpop_finish - linpop_start; close(377)
 
       ENDIF
  

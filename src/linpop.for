@@ -241,10 +241,12 @@
 
       logical                                                     :: PRINT_LTE_ARR
 
-      integer :: iii
+      real*8                                                      :: linpop_start, linpop_finish
 
 !     C1 = H * C / K (CM * KELVIN)
       DATA C1 /1.4388D0/
+
+      call cpu_time(linpop_start); call system("echo -n $(date +%s) >> wall_time.linpop")
 
       CONV_FILE = CONV_DIR//'ALL'
 
@@ -917,6 +919,10 @@
 !      IF (NRRM_FILE_EXISTS) CALL REPLACE_PATTERN(NRRM_FILE, '0.0000000E+00', '      -      ', 13, 13)
 !      IF (NCRM_FILE_EXISTS) CALL REPLACE_PATTERN(NCRM_FILE, '0.0000000E+00', '      -      ', 13, 13)
 !      IF (NTRM_FILE_EXISTS) CALL REPLACE_PATTERN(NTRM_FILE, '0.0000000E+00', '      -      ', 13, 13)
+
+      call system("echo ' '$(date +%s) >> wall_time.linpop"); call cpu_time(linpop_finish)
+
+      call open_to_append(377, 'cpu_time.linpop'); write(377, '(F6.3)') linpop_finish - linpop_start; close(377)
 
       IF (LTE_RUN) STOP 'LTE RUN IS DONE'
 

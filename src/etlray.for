@@ -21,11 +21,11 @@
       use MOD_COFREQ
       use MOD_INVTRI
       use MOD_GMALU
-      USE FILE_OPERATIONS
       USE UTILS
       USE MATOPER
 
       use local_operator
+      use file_operations
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -60,7 +60,11 @@
 !     INV_T_DIAG averaged over the line profile and over all angles, i.e. the Local approximate lambda-Operator for a given line
       REAL*8, DIMENSION(ND), INTENT(INOUT) :: LO
 
+      real*8 :: start, finish
+
       COMMON / COMFUN / DELTAV,XMIN
+
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.etlray")
 
       LMAX = MIN0(NP + 1 - JP, ND)
       LZ = LMAX - 1
@@ -167,6 +171,7 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
 !      IF (LMAX.LT.ND) GOTO 1
 !      BMHI(K)=BMHI(K)+WBMHI*U(ND)
 !      BMNI(K)=BMNI(K)+WBMNI*U(ND)
+
     1 CONTINUE
 
       DEALLOCATE(ZERO)
@@ -181,7 +186,11 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
       DEALLOCATE(TBL)
       DEALLOCATE(TCL)
 
-      RETURN
+      call system("echo ' '$(date +%s) >> wall_time.etlray"); call cpu_time(finish)
+
+      call open_to_append(218, 'cpu_time.etlray'); write(218, '(F6.3)') finish - start; close(218)
+
+      return
 
 10    FORMAT(I3,8x,I2,8x,I2,8x,I2,8x,E15.7,8x,E15.7,8x,E15.7,8x,E15.7)
 
@@ -189,6 +198,8 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
 
       SUBROUTINE CMFSET(PHIK,Z,ND,LMAX,TA,TB,TC,UB,VA,VB,GA,H,S,OPA,OPAL,
      $                  ETA,ETAL,PP,BCORE,DBDR,XIMINUS,DXI)
+
+      use file_operations
 
 !     THIS SUBROUTINE IS TO SET UP THE ARRAY ELEMENTS FOR THE CMF FORMALISM
 
@@ -220,6 +231,10 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
       DIMENSION PP(ND),Z(ND)
 
       DIMENSION TA(LMAX), TB(LMAX), TC(LMAX)
+
+      real*8 :: start, finish
+
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.cmfset")
 
       LZ = LMAX - 1
      
@@ -293,7 +308,11 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
       UB(L)=DX
       VA(L)=0.0d0
 
-      RETURN
+      call system("echo ' '$(date +%s) >> wall_time.cmfset"); call cpu_time(finish)
+
+      call open_to_append(1219, 'cpu_time.cmfset'); write(1219, '(F6.3)') finish - start; close(1219)
+
+      return
      
 !     INNER BOUNDARY CONDITION (NON-CORE RAYS) - SECOND ORDER
     4 AK=OPA(LMAX)+PHIK*OPAL(LMAX)
@@ -309,8 +328,12 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
       UB(L)=DX
       VA(L)=-two*DT*DB
 
-      RETURN
+      call system("echo ' '$(date +%s) >> wall_time.cmfset"); call cpu_time(finish)
 
-      END SUBROUTINE
+      call open_to_append(1220, 'cpu_time.cmfset'); write(1220, '(F6.3)') finish - start; close(1220)
 
-      END MODULE
+      return
+
+      end subroutine
+
+      end module

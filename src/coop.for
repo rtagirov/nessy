@@ -115,6 +115,10 @@
 !MH   TABASUN:   NDPMIN = 1
       integer:: NDPMIN 
 
+      real*8 :: start, finish
+
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.coop")
+
        ! Read in all LINOP at once.
       W=1.d8/XLAM; W3=W*W*W
       IF ( ND.EQ.1 )THEN
@@ -349,8 +353,12 @@
         ETA(L) = ETAL * ENTOT(L) * RSTAR
       ENDDO
 
+      call system("echo ' '$(date +%s) >> wall_time.coop"); call cpu_time(finish)
+
+      call open_to_append(1222, 'cpu_time.coop'); write(1222, '(F6.3)') finish - start; close(1222)
+
       return
 
-      END subroutine
+      end subroutine
 
       end module

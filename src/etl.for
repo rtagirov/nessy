@@ -80,11 +80,9 @@
 
       real*8, allocatable, dimension(:) ::    xjcind, xjlmean
 
-      real*8 :: etl_start, etl_finish
+      real*8 :: start, finish
 
-      call cpu_time(etl_start)
-
-      call system("echo -n $(date +%s) >> wall_time.etl")
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.etl")
 
       print*, 'entered etl: ' // writeTOC()
 
@@ -406,11 +404,9 @@
 
       close(6)
 
-      call system("echo ' '$(date +%s) >> wall_time.etl")
+      call system("echo ' '$(date +%s) >> wall_time.etl"); call cpu_time(finish)
 
-      call cpu_time(etl_finish)
-
-      call open_to_append(281, 'cpu_time.etl'); write(281, '(F6.3)') etl_finish - etl_start; close(281)
+      call open_to_append(281, 'cpu_time.etl'); write(281, '(F6.3)') finish - start; close(281)
 
       return
 
