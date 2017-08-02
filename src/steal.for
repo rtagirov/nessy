@@ -69,9 +69,12 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       REAL*8 :: CORMAX
 
-      real*8 :: finish_linpop, start_linpop
+      real*8 :: steal_start,  steal_finish
+      real*8 :: linpop_start, linpop_finish
 
-      WRITE(*, *), 'entering steal: job = '//JOB
+      call cpu_time(steal_start); call system("echo -n $(date +%s) >> wall_time.steal")
+
+      WRITE(*, *), 'entered steal: job = '//JOB
 
       IF(LBKG) PRINT*, 'STEAL: LINE BLANKETING = TRUE'
 
@@ -192,7 +195,7 @@ c***     the new blanketing table needs to be written to the model file
 !     IN THIS BRANCH, PRIRAT MAY ONLY SHOW THE NETTO RATES
 !     CALCULATION OF NEW POPULATION NUMBERS, EL. DENSITY AND DEPARTURE COEFF.
 
-         call cpu_time(start_linpop)
+         call cpu_time(linpop_start); call system("echo -n $(date +%s) >> wall_time.linpop")
 
          CALL LINPOP(T,
      $               RNE,
@@ -267,15 +270,9 @@ c***     the new blanketing table needs to be written to the model file
      $               nfirst,
      $               nlast)
 
-         call cpu_time(finish_linpop)
+         call system("echo ' '$(date +%s) >> wall_time.linpop"); call cpu_time(linpop_finish)
 
-         if (lambda_iter == 1) call system('rm -fv time_linpop.out')
-
-         call open_to_append(213, 'time_linpop.out')
-
-         write(213, '(I2,2x,F6.3)') lambda_iter, finish_linpop - start_linpop
-
-         close(213)
+         call open_to_append(377, 'cpu_time.linpop'); write(377, '(F6.3)') linpop_finish - linpop_start; close(377)
 
       ENDIF
  
@@ -445,7 +442,13 @@ C***  PROGRAM STOP
 
       CLOSE(99)
 
-      RETURN
+      call system("echo ' '$(date +%s) >> wall_time.steal")
+
+      call cpu_time(steal_finish)
+
+      call open_to_append(302, 'cpu_time.steal'); write(302, '(F6.3)') steal_finish - steal_start; close(302)
+
+      return
 
 555   continue
       write (6,*) ' error during history file read - search for wrcont'

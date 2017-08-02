@@ -135,7 +135,7 @@
       use common_block
       use file_operations
 
-      IMPLICIT NONE
+      implicit none
 
       integer itemp
       integer itsw
@@ -144,17 +144,11 @@
       integer nbinw
       real*8  almin, almax
 
-      real*8 :: wrcont_start, wrcont_finish, wrcont_time
-      real*8 :: como_start,   como_finish,   como_time
-      real*8 :: etl_start,    etl_finish,    etl_time
-      real*8 :: steal_start,  steal_finish,  steal_time
-      real*8 :: cycle_start,  cycle_finish,  cycle_time
+      real*8 :: cycle_start, cycle_finish
 
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
 
       character*7 :: JOB
-
-      logical :: first=.true.
 
       LOGICAL :: VEL_FIELD_FILE_EXISTS
 
@@ -211,10 +205,22 @@
 
       CALL tic(timer2)
 
-      CALL RM_FILE('BROYDEN', '-vf')
-      CALL RM_FILE('NEWBROYDEN', '-vf')
+      CALL RM_FILE('BROYDEN',          '-vf')
+      CALL RM_FILE('NEWBROYDEN',       '-vf')
 
-      CALL RM_FILE('etl_time.out', '-vf')
+      CALL RM_FILE('wall_time.etl',    '-vf')
+      CALL RM_FILE('wall_time.como',   '-vf')
+      CALL RM_FILE('wall_time.steal',  '-vf')
+      CALL RM_FILE('wall_time.linpop', '-vf')
+      CALL RM_FILE('wall_time.cycle',  '-vf')
+      CALL RM_FILE('wall_time.wrcont', '-vf')
+
+      CALL RM_FILE('cpu_time.etl',     '-vf')
+      CALL RM_FILE('cpu_time.como',    '-vf')
+      CALL RM_FILE('cpu_time.steal',   '-vf')
+      CALL RM_FILE('cpu_time.linpop',  '-vf')
+      CALL RM_FILE('cpu_time.cycle',   '-vf')
+      CALL RM_FILE('cpu_time.wrcont',  '-vf')
 
       CALL WRSTART; call finish('WRSTART', timer2, .true.)
 
@@ -233,13 +239,7 @@
 
       call tic(timer2)
 
-      call cpu_time(wrcont_start)
-
       CALL WRCONT(JOB)
-
-      call cpu_time(wrcont_finish)
-
-      wrcont_time = wrcont_finish - wrcont_start
 
       itemp = itemp + 1
 
@@ -256,82 +256,55 @@
       ENDIF
 
    10 continue
-      IF (JOB.EQ.'newline') INEW=1
-      if (itsw.eq.1) itsw=0
 
-      print *,'HMINUS: CYCLE STARTED'
+      IF (JOB .eq. 'newline') INEW = 1
+
+      if (itsw .eq. 1) itsw = 0
+
+      print*, 'HMINUS: CYCLE STARTED'
 
       call cpu_time(cycle_start)
 
+      call system("echo -n $(date +%s) >> wall_time.cycle")
+
       call tic(timer2)
 
-      call cpu_time(como_start)
+      CALL COMO;       call finish('COMO',  timer2)
 
-      CALL COMO
+      CALL ETL(JOB);   call finish('ETL',   timer2)
 
-      call cpu_time(como_finish)
+      CALL STEAL(JOB); call finish('STEAL', timer2)
 
-      como_time = como_finish - como_start
-
-      call finish('COMO', timer2)
-
-      call cpu_time(etl_start)
-
-      call system("echo -n $(date +%s) >> etl_time.out")
-
-      CALL ETL(JOB)
-
-      call system("echo ' '$(date +%s) >> etl_time.out")
-
-      call cpu_time(etl_finish)
-
-      etl_time = etl_finish - etl_start
-
-      call finish('ETL', timer2)
-
-      call cpu_time(steal_start)
-
-      CALL STEAL (JOB)
-
-      call cpu_time(steal_finish)
-
-      steal_time = steal_finish - steal_start
+      call system("echo ' '$(date +%s) >> wall_time.cycle")
 
       call cpu_time(cycle_finish)
 
-      cycle_time = cycle_finish - cycle_start
-
-      first = .false.
-
-      call finish('STEAL', timer2)
-
       print*, 'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
 
-      if (lambda_iter == 0 .or. lambda_iter == 1) call system('rm -fv times.out')
+      call open_to_append(231, 'cpu_time.cycle'); write(231, '(F6.3)') cycle_finish - cycle_start; close(231)
 
-      call open_to_append(231, 'times.out')
+      IF (INEW .EQ. 1) THEN
 
-      write(231, '(I2,5(2x,F6.3))') lambda_iter, wrcont_time, como_time, etl_time, steal_time, cycle_time
+         print*, 'HMINUS: TIME FOR CYCLE INCLUDING LINE BACKGROUND '//
+     &           'RADIATION FIELD, JOB = '//JOB
+        INEW = 0
 
-      close(231)
+      ENDIF
 
-      IF (INEW.EQ.1) THEN
-        print *,'HMINUS: TIME FOR CYCLE INCLUDING LINE BACKGROUND '//
-     &              'RADIATION FIELD, JOB='//JOB 
-        INEW=0
-        ENDIF
       selectcase(JOB)
+
         case('wrcont','extrap') ; goto 1;
         case('repeat')          ; goto 10;
+
       endselect
       
-      call WRCONT(JOB)
-      call finish('WRCONT',timer2)
+      call WRCONT(JOB); call finish('WRCONT', timer2)
 
-      PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=',JOB
-      REWIND 99
-      WRITE (99,'(A4)') 'exit'
-      print *,'HMINUS: Elapsed time for total job: '//writeTOC(timer)
+      PRINT*, 'HMINUS: NO NEW JOB TO BE ROUTED; JOB = ', JOB
+
+      REWIND 99; WRITE (99,'(A4)') 'exit'
+
+      print*,'HMINUS: Elapsed time for total job: '//writeTOC(timer)
 
       CALL SYSTEM("echo '\n'END OF THE RUN - $(date)'\n'")
 

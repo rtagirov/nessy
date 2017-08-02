@@ -83,7 +83,13 @@
 
       INTEGER ::                              DEDDI1_LOC, DEDDI2_LOC, DEDDI3_LOC
 
+      real*8 ::        wrcont_start, wrcont_finish
+
       DATA AMU /1.660531d-24/
+
+      call cpu_time(wrcont_start)
+
+      call system("echo -n $(date +%s) >> wall_time.wrcont")
 
       print*, 'Entering wrcont, JOB = '//JOB
 
@@ -367,10 +373,17 @@
          JOB='wrcont'
          PRINT *,LASTK,' OF ',NF,' FREQUENCY POINTS COMPLETED'
          PRINT *,' NEW WRCONT-JOB TO BE ROUTED, JOB='//JOB
-         ENDIF
 
-      RETURN
+      ENDIF
 
-      END subroutine
+      call system("echo ' '$(date +%s) >> wall_time.wrcont")
+
+      call cpu_time(wrcont_finish)
+
+      call open_to_append(261, 'cpu_time.wrcont'); write(261, '(F6.3)') wrcont_finish - wrcont_start; close(261)
+
+      return
+
+      end subroutine
 
       end module

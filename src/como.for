@@ -55,6 +55,8 @@
 
       integer :: l
 
+      real*8 :: como_start, como_finish
+
 !     CONTINUOUS RADIATION TRANSFER (MOMENT EQUATIONS) WITH GIVEN EDDI-FACTORS
 !     FORMAL SOLUTION FROM GIVEN POP NUMBERS
 
@@ -67,13 +69,11 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       INTEGER XLBKG1, XLBKG2
       LOGICAL LBKG
 
-      tstart = time()
+      call cpu_time(como_start)
 
-!      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-!     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-!     $           INDNUP,INDLOW,LASTIND,NATOM,
-!     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-!     $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
+      call system("echo -n $(date +%s) >> wall_time.como")
+
+      tstart = time()
 
       IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'OLD')
 
@@ -223,7 +223,13 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       write (7,'(A100)') LCARD
       close (7)   ! MODHIST
 
-      RETURN
+      call system("echo ' '$(date +%s) >> wall_time.como")
+
+      call cpu_time(como_finish)
+
+      call open_to_append(271, 'cpu_time.como'); write(271, '(F6.3)') como_finish - como_start; close(271)
+
+      return
 
       END SUBROUTINE
 
