@@ -115,9 +115,9 @@
 !MH   TABASUN:   NDPMIN = 1
       integer:: NDPMIN 
 
-      real*8 :: start, finish
+!      real*8 :: start, finish
 
-      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.coop")
+!      call cpu_time(start)
 
        ! Read in all LINOP at once.
       W=1.d8/XLAM; W3=W*W*W
@@ -353,9 +353,9 @@
         ETA(L) = ETAL * ENTOT(L) * RSTAR
       ENDDO
 
-      call system("echo ' '$(date +%s) >> wall_time.coop"); call cpu_time(finish)
+!      call cpu_time(finish)
 
-      call open_to_append(1222, 'cpu_time.coop'); write(1222, '(F6.3)') finish - start; close(1222)
+!      call open_to_append(1222, 'cpu_time.coop'); write(1222, '(ES9.3)') finish - start; close(1222)
 
       return
 

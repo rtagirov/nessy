@@ -60,11 +60,11 @@
 !     INV_T_DIAG averaged over the line profile and over all angles, i.e. the Local approximate lambda-Operator for a given line
       REAL*8, DIMENSION(ND), INTENT(INOUT) :: LO
 
-      real*8 :: start, finish
+!      real*8 :: start, finish
 
       COMMON / COMFUN / DELTAV,XMIN
 
-      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.etlray")
+!      call cpu_time(start)
 
       LMAX = MIN0(NP + 1 - JP, ND)
       LZ = LMAX - 1
@@ -186,9 +186,9 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
       DEALLOCATE(TBL)
       DEALLOCATE(TCL)
 
-      call system("echo ' '$(date +%s) >> wall_time.etlray"); call cpu_time(finish)
+!      call cpu_time(finish)
 
-      call open_to_append(218, 'cpu_time.etlray'); write(218, '(F6.3)') finish - start; close(218)
+!      call open_to_append(218, 'cpu_time.etlray'); write(218, '(ES9.3)') finish - start; close(218)
 
       return
 
@@ -232,9 +232,9 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
 
       DIMENSION TA(LMAX), TB(LMAX), TC(LMAX)
 
-      real*8 :: start, finish
+!      real*8 :: start, finish
 
-      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.cmfset")
+!      call cpu_time(start)
 
       LZ = LMAX - 1
      
@@ -308,9 +308,9 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
       UB(L)=DX
       VA(L)=0.0d0
 
-      call system("echo ' '$(date +%s) >> wall_time.cmfset"); call cpu_time(finish)
+!      call cpu_time(finish)
 
-      call open_to_append(1219, 'cpu_time.cmfset'); write(1219, '(F6.3)') finish - start; close(1219)
+!      call open_to_append(1219, 'cpu_time.cmfset'); write(1219, '(ES9.3)') finish - start; close(1219)
 
       return
      
@@ -328,9 +328,9 @@ C***  MODIFICATION FOR NONZERO INCIDENT RADIATION FROM TRUNCATED LAYERS
       UB(L)=DX
       VA(L)=-two*DT*DB
 
-      call system("echo ' '$(date +%s) >> wall_time.cmfset"); call cpu_time(finish)
+!      call cpu_time(finish)
 
-      call open_to_append(1220, 'cpu_time.cmfset'); write(1220, '(F6.3)') finish - start; close(1220)
+!      call open_to_append(1220, 'cpu_time.cmfset'); write(1220, '(ES9.3)') finish - start; close(1220)
 
       return
 

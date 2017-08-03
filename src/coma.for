@@ -140,9 +140,9 @@
 
       INTEGER :: N1, N2
 
-      real*8 :: start, finish
+!      real*8 :: start, finish
 
-      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.coma")
+!      call cpu_time(start)
 
       NPLUS1 = N + 1
 
@@ -403,9 +403,9 @@ C***          NLAST(NA)-TH ELEMENT = ABUND(NA)  (NUMBER CONSERVATION)
 
       if (any(isnan(dm))) stop 'como: dm NaN'
 
-      call system("echo ' '$(date +%s) >> wall_time.coma"); call cpu_time(finish)
+!      call cpu_time(finish)
 
-      call open_to_append(1227, 'cpu_time.coma'); write(1227, '(F6.3)') finish - start; close(1227)
+!      call open_to_append(1227, 'cpu_time.coma'); write(1227, '(ES9.3)') finish - start; close(1227)
 
       return
 
