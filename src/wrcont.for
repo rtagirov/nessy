@@ -88,6 +88,10 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       INTEGER :: DEDDI1_LOC, DEDDI2_LOC, DEDDI3_LOC
 
+      real*8 :: start, finish
+
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.wrcont")
+
       DATA AMU /1.660531d-24/
 
       print*, 'Entering wrcont, JOB = '//JOB
@@ -349,13 +353,9 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
      $   CALL PRIGH (LPRIH,ND,RADIUS,HTOT,GTOT,ETOT,TEFF,ENTOT,RNE,
      $               RSTAR,T,VELO,GRADI,ATMASS,ABXYZ,NATOM)
 
-
-
-
-
-
       !***  ROUTING OF SUBSEQUENT JOBS
       IF (LASTK .EQ. NF) THEN
+
          WRITE (6,*) ' ALL FREQUENCY POINTS COMPLETED'
          IF (JOBNUM .GE. JOBMAX) THEN
             JOB='exit'
@@ -368,10 +368,15 @@ CMH   XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
          JOB='wrcont'
          PRINT *,LASTK,' OF ',NF,' FREQUENCY POINTS COMPLETED'
          PRINT *,' NEW WRCONT-JOB TO BE ROUTED, JOB='//JOB
-         ENDIF
 
-      RETURN
+      endif
 
-      END subroutine
+      call system("echo ' '$(date +%s) >> wall_time.wrcont"); call cpu_time(finish)
+
+      call open_to_append(431, 'cpu_time.wrcont'); write(431, '(F6.3)') finish - start; close(431)
+
+      return
+
+      end subroutine
 
       end module

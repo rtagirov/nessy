@@ -100,7 +100,12 @@
 
       real*8, allocatable, dimension(:) :: opal, etal
 
+      real*8 :: start, finish
+
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.etl")
+
       print*, 'entering etl... ' // writeTOC()
+
       call tic(timer)
 
 !***  DECODING INPUT CARDS
@@ -420,7 +425,12 @@
    99 CONTINUE
 
       close (6)
-      RETURN
+
+      call system("echo ' '$(date +%s) >> wall_time.etl"); call cpu_time(finish)
+
+      call open_to_append(4315, 'cpu_time.etl'); write(4315, '(F6.3)') finish - start; close(4315)
+
+      return
 
 1001  continue
       write (6,*) ' ETL: error exit 1001'

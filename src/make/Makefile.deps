@@ -9,7 +9,7 @@ chemeq.for:           $(addprefix $(OUT), constants.o constants.o constants.o co
 cofreq.for:           $(addprefix $(OUT), funsch.o erf_inf.o regula.o )
 colli.for:            $(addprefix $(OUT), error.o hydcolrate.o phys.o math.o comblock.o )
 coma.for:             $(addprefix $(OUT), deriv.o coopfrq.o setxjl.o radnet.o colli.o dliop.o dcoop.o fileoper.o comblock.o fileoper.o comblock.o )
-como.for:             $(addprefix $(OUT), lodiag.o coop_m.o datom_m.o decomo.o deriv.o error.o extrxjc.o momo.o pribla.o primint.o priopa.o readmod.o readpop.o readrad.o reblank.o storxjc.o writmod.o writradc.o utils.o params_array.o abund.o bfcross.o comblock.o vardatom.o varhminus.o varsteal.o )
+como.for:             $(addprefix $(OUT), lodiag.o coop_m.o datom_m.o decomo.o deriv.o error.o extrxjc.o momo.o pribla.o primint.o priopa.o readmod.o readpop.o readrad.o reblank.o storxjc.o writmod.o writradc.o utils.o params_array.o abund.o bfcross.o comblock.o vardatom.o varhminus.o varsteal.o fileoper.o )
 coopfrq.for:          $(addprefix $(OUT), gauntff.o )
 coop_m.for:           $(addprefix $(OUT), bnue.o photocs_m.o gauntff.o hminusff.o linsca.o rdopac.o )
 cstabread.for:        $(addprefix $(OUT), intplcs.o intpl.o utils.o )

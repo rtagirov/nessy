@@ -31,6 +31,7 @@
       use MOD_REBLANK
       use MOD_WRITMOD
       use ABUNDANCES
+
       USE FILE_OPERATIONS
       USE COMMON_BLOCK
       USE VARDATOM
@@ -72,6 +73,10 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       logical PROLIB
 
       REAL*8 :: CORMAX
+
+      real*8 :: start, finish
+
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.steal")
 
       WRITE(*, *), 'entering steal: job = '//JOB
 
@@ -363,7 +368,11 @@ C***  PROGRAM STOP
 
       CLOSE(99)
 
-      RETURN
+      call system("echo ' '$(date +%s) >> wall_time.steal"); call cpu_time(finish)
+
+      call open_to_append(5312, 'cpu_time.steal'); write(5312, '(F6.3)') finish - start; close(5312)
+
+      return
 
 555   continue
       write (6,*) ' error during history file read - search for wrcont'

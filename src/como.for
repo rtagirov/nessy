@@ -26,10 +26,12 @@
       use PARAMS_ARRAY ! NFDIM is known from here (see params_array.for)
       use ABUNDANCES
       USE MOD_BFCROSS
-      USE COMMON_BLOCK
-      USE VARDATOM
-      USE VARHMINUS
-      USE VARSTEAL
+
+      use common_block
+      use vardatom
+      use varhminus
+      use varsteal
+      use file_operations
 
       IMPLICIT NONE
 
@@ -84,6 +86,10 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       INTEGER XLBKG1,XLBKG2
       LOGICAL LBKG
+
+      real*8 :: start, finish
+
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.como")
 
       print*, 'entering como...'
 
@@ -266,10 +272,12 @@ C***  UPDATING THE MODEL HISTORY
       write (7,'(A100)') LCARD
       close (7)   ! MODHIST
 
-!      close (6)  ! como.out
+      call system("echo ' '$(date +%s) >> wall_time.como"); call cpu_time(finish)
 
-      RETURN
+      call open_to_append(2313, 'cpu_time.como'); write(2313, '(F6.3)') finish - start; close(2313)
 
-      END SUBROUTINE
+      return
 
-      END MODULE
+      end subroutine
+
+      end module

@@ -155,8 +155,12 @@
 
       INTEGER :: N_HI_LEV, N_HI_LIN
 
+      real*8 :: start, finish
+
 C***  C1 = H * C / K (CM * KELVIN)
       DATA C1 /1.4388D0/
+
+      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.linpop")
 
       CONV_FILE = CONV_DIR//'ALL'
 
@@ -876,6 +880,10 @@ C***  PRINTOUT OF RATE COEFFICIENTS ETC.  ------------------------------
 !      IF (NRRM_FILE_EXISTS) CALL REPLACE_PATTERN(NRRM_FILE, '0.0000000E+00', '      -      ', 13, 13)
 !      IF (NCRM_FILE_EXISTS) CALL REPLACE_PATTERN(NCRM_FILE, '0.0000000E+00', '      -      ', 13, 13)
 !      IF (NTRM_FILE_EXISTS) CALL REPLACE_PATTERN(NTRM_FILE, '0.0000000E+00', '      -      ', 13, 13)
+
+      call system("echo ' '$(date +%s) >> wall_time.linpop"); call cpu_time(finish)
+
+      call open_to_append(6137, 'cpu_time.linpop'); write(6137, '(F6.3)') finish - start; close(6137)
 
       IF (LTE_RUN) STOP 'LTE RUN IS DONE'
 

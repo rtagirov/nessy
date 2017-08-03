@@ -150,6 +150,8 @@
       real*8  almin, almax
       real*8  scaevt, absevt, scafac, absfac, scagri
 
+      real*8 :: cycle_start, cycle_finish
+
       parameter(IPDIM = 25, NBDIM = 99)
       COMMON /LIBLDAT/ SCAGRI(IPDIM), SCAEVT(IPDIM, NBDIM), ABSEVT(IPDIM,NBDIM)
       COMMON /LIBLPAR/ ALMIN, ALMAX, LBLAON, IPMAX, NBMAX, NBINW
@@ -157,8 +159,6 @@
       COMMON /LIBLFAC/ SCAFAC(NDDIM, NFDIM),ABSFAC(NDDIM, NFDIM)
 
       character*7 :: JOB
-
-      logical :: first=.true.
 
       LOGICAL :: VEL_FIELD_FILE_EXISTS
 
@@ -215,17 +215,22 @@
 
       CALL tic(timer2)
 
-      CALL RM_FILE('BROYDEN', '-vf')
-      CALL RM_FILE('NEWBROYDEN', '-vf')
+      CALL RM_FILE('BROYDEN',         '-vf')
+      CALL RM_FILE('NEWBROYDEN',      '-vf')
 
-      CALL WRSTART
-      call finish('WRSTART',timer2,.true.)
+      CALL RM_FILE('como_time.out',   '-vf')
+      CALL RM_FILE('etl_time.out',    '-vf')
+      CALL RM_FILE('steal_time.out',  '-vf')
+      CALL RM_FILE('cycle_time.out',  '-vf')
+      CALL RM_FILE('linpop_time.out', '-vf')
+      CALL RM_FILE('wrcont_time.out', '-vf')
 
-      CALL STEAL(JOB)
-      call finish('STEAL',timer2)
+      CALL WRSTART;    call finish('WRSTART', timer2, .true.)
 
-      IF (JOB.NE.'wrcont') THEN
-        PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=',JOB
+      CALL STEAL(JOB); call finish('STEAL', timer2)
+
+      IF (JOB .NE. 'wrcont') THEN
+        PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=', JOB
         REWIND 99
         WRITE (99,'(A4)') 'exit'
 
@@ -234,11 +239,16 @@
       ENDIF
 
     1 continue
+
       call tic(timer2)
+
       CALL WRCONT(JOB)
-      itemp=itemp+1
-      if (itemp.ge.2) itsw=1
-      call finish('WRCONT',timer2)
+
+      itemp = itemp + 1
+
+      if (itemp .ge. 2) itsw = 1
+
+      call finish('WRCONT', timer2)
 
       IF (JOB.NE.'repeat'.AND.JOB.NE.'newline') THEN
          PRINT *,' NO NEW JOB TO BE ROUTED; JOB=',JOB
@@ -252,25 +262,23 @@
       IF (JOB.EQ.'newline') INEW=1
       if (itsw.eq.1) itsw=0
       print *,'HMINUS: CYCLE STARTED'
+
+      call cpu_time(cycle_start); call system("echo -n $(date +%s) >> wall_time.cycle")
+
       call tic(timer2)
 
-      CALL COMO
-      call finish('COMO',timer2)
-      CALL ETL(JOB)
+      call COMO; call finish('COMO', timer2)
 
+      call ETL(JOB); call finish('ETL', timer2)
 
+      call STEAL(JOB); call finish('STEAL', timer2)
 
+      call system("echo ' '$(date +%s) >> wall_time.cycle"); call cpu_time(cycle_finish)
 
+      print*, 'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
 
-      call finish('ETL',timer2)
-      CALL STEAL (JOB)
+      call open_to_append(231, 'cpu_time.cycle'); write(231, '(F6.3)') cycle_finish - cycle_start; close(231)
 
-
-
-
-      first=.false.
-      call finish('STEAL',timer2)
-      print *,'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
       IF (INEW.EQ.1) THEN
         print *,'HMINUS: TIME FOR CYCLE INCLUDING LINE BACKGROUND '//
      &              'RADIATION FIELD, JOB='//JOB 
@@ -281,8 +289,7 @@
         case('repeat')          ; goto 10;
       endselect
       
-      call WRCONT(JOB)
-      call finish('WRCONT',timer2)
+      call WRCONT(JOB); call finish('WRCONT',timer2)
 
       PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=',JOB
       REWIND 99
