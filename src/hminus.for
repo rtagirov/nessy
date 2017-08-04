@@ -137,10 +137,11 @@
       use UTILS, only: cp
       use MOD_HMINUS
       use PARAMS_ARRAY
-      USE COMMON_BLOCK
-      USE FILE_OPERATIONS
 
-      IMPLICIT NONE
+      use common_block
+      use file_operations
+
+      implicit none
 
       integer ipdim,  nbdim, itemp
       integer itsw
@@ -218,12 +219,19 @@
       CALL RM_FILE('BROYDEN',         '-vf')
       CALL RM_FILE('NEWBROYDEN',      '-vf')
 
-      CALL RM_FILE('como_time.out',   '-vf')
-      CALL RM_FILE('etl_time.out',    '-vf')
-      CALL RM_FILE('steal_time.out',  '-vf')
-      CALL RM_FILE('cycle_time.out',  '-vf')
-      CALL RM_FILE('linpop_time.out', '-vf')
-      CALL RM_FILE('wrcont_time.out', '-vf')
+      CALL RM_FILE('wall_time.como',   '-vf')
+      CALL RM_FILE('wall_time.etl',    '-vf')
+      CALL RM_FILE('wall_time.steal',  '-vf')
+      CALL RM_FILE('wall_time.cycle',  '-vf')
+      CALL RM_FILE('wall_time.linpop', '-vf')
+      CALL RM_FILE('wall_time.wrcont', '-vf')
+
+      CALL RM_FILE('cpu_time.como',    '-vf')
+      CALL RM_FILE('cpu_time.etl',     '-vf')
+      CALL RM_FILE('cpu_time.steal',   '-vf')
+      CALL RM_FILE('cpu_time.cycle',   '-vf')
+      CALL RM_FILE('cpu_time.linpop',  '-vf')
+      CALL RM_FILE('cpu_time.wrcont',  '-vf')
 
       CALL WRSTART;    call finish('WRSTART', timer2, .true.)
 
@@ -259,9 +267,12 @@
       ENDIF
 
    10 continue
-      IF (JOB.EQ.'newline') INEW=1
-      if (itsw.eq.1) itsw=0
-      print *,'HMINUS: CYCLE STARTED'
+
+      IF (JOB .EQ. 'newline') INEW = 1
+
+      if (itsw .eq. 1) itsw = 0
+
+      print*, 'HMINUS: CYCLE STARTED'
 
       call cpu_time(cycle_start); call system("echo -n $(date +%s) >> wall_time.cycle")
 
@@ -275,9 +286,9 @@
 
       call system("echo ' '$(date +%s) >> wall_time.cycle"); call cpu_time(cycle_finish)
 
-      print*, 'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
-
       call open_to_append(231, 'cpu_time.cycle'); write(231, '(F6.3)') cycle_finish - cycle_start; close(231)
+
+      print*, 'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
 
       IF (INEW.EQ.1) THEN
         print *,'HMINUS: TIME FOR CYCLE INCLUDING LINE BACKGROUND '//
