@@ -178,7 +178,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
          lastk = K
 
-         print*, 'keycon(k) = ', KEYCON(K) .EQ. 4HETLA
+!         print*, 'keycon(k) = ', KEYCON(K) .EQ. 4HETLA
 
 !     ONLY FREQUENCIES WHICH ARE NOT YET TREATED BY ETLA
 !     IF "PRINT OPA" OPTION IS GIVEN, THE JUMP IS AFTER "CALL PRIOPA"
