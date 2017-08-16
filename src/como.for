@@ -182,7 +182,13 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
 !     ONLY FREQUENCIES WHICH ARE NOT YET TREATED BY ETLA
 !     IF "PRINT OPA" OPTION IS GIVEN, THE JUMP IS AFTER "CALL PRIOPA"
-         IF (KEYCON(K).EQ.4HETLA .AND. LSOPA.LE.0 ) GOTO 6
+         IF (KEYCON(K).EQ.4HETLA .AND. LSOPA.LE.0 ) then
+
+             print*, 'check 1 is true'
+
+             GOTO 6
+
+         endif
  
          CALL COOP_M(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $               OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
@@ -197,7 +203,13 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
          ENDIF
 
-         IF (KEYCON(K) .EQ. 4HETLA) GOTO 6
+         IF (KEYCON(K) .EQ. 4HETLA) then
+
+            print*, 'check 2 is true'
+
+            GOTO 6
+
+         endif
  
 !        now extract XJC and EDDI for the frequency K
          call extrxjc(XJCARR,XJC,EDDARR,EDDI,nd,nf,K)
