@@ -136,7 +136,7 @@
           endif
         ENDDO
 
-        if (num_of_columns(atm_mod_file) .eq. 7 .or. num_of_columns(atm_mod_file) .eq. 4) NDPMIN = 1
+!        if (num_of_columns(atm_mod_file) .eq. 7 .or. num_of_columns(atm_mod_file) .eq. 4) NDPMIN = 1
 
         if (LBKG) then
           NLTELBKG=1
@@ -151,13 +151,13 @@
           NDPMIN = 1      ! continue, dont abort
           NDPMIN_WARN=NDPMIN_WARN+1
         endif
-        if ((T(NDPMIN) .gt. 5000d0) .and. (ND .gt. 1)) then !Sanity check 2
-          print *,'something wrong with Temperature minimum!',
-     $                 NDPMIN, T(NDPMIN)
-          write (6,*)'something wrong with Temperature minimum!',
-     $                   NDPMIN, T(NDPMIN)
-          pause
-        endif
+!        if ((T(NDPMIN) .gt. 5000d0) .and. (ND .gt. 1)) then !Sanity check 2
+!          print *,'something wrong with Temperature minimum!',
+!     $                 NDPMIN, T(NDPMIN)
+!          write (6,*)'something wrong with Temperature minimum!',
+!     $                   NDPMIN, T(NDPMIN)
+!          pause
+!        endif
       ENDIF
 
       CALL RDOPAC(XLAM,LINOP,NDPMIN,XLBKG1,XLBKG2)
