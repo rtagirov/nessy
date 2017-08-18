@@ -10,9 +10,6 @@
      $                ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,
      $                LBKG,XLBKG1,XLBKG2,NF)
 
-      use file_operations
-      use phys
-
 !***  NON-LTE CONTINUOUS OPACITY AT GIVEN FREQUENCY POINT K (XLAM)
 !***  OPACITY AT DEPTH POINT L: OPAL
 !***  SUMMATION OVER ALL DEPTH POINTS LEADS TO THE OPACITY AT GIVEN
@@ -52,7 +49,11 @@
       use MOD_LINSCA
       use MOD_RDOPAC
 
-      IMPLICIT NONE
+      use file_operations
+      use phys
+
+      implicit none
+
 !MH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
 !MH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       !global in/out

@@ -111,9 +111,11 @@
 
       do l = 2, ND
 
-         tau(l) = (h(l - 1) - h(l)) * (opac(l - 1) + opac(l)) / 2.0D0
+         tau(l) = (h(l - 1) - h(l)) * (opac(l - 1) + opac(l))
 
       enddo
+
+      tau = tau / 2.0d0
 
       return
 
