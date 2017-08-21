@@ -93,7 +93,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       if (allocated(wcharm))    deallocate(wcharm);    allocate(WCHARM(ND, NF))
 
-!      if (allocated(tau_cont))  deallocate(tau_cont);  allocate(tau_cont(ND, NF))
+      if (allocated(tau_cont))  deallocate(tau_cont);  allocate(tau_cont(ND, NF))
 
       if (allocated(damp_cont)) deallocate(damp_cont); allocate(damp_cont(ND, NF))
 
@@ -168,7 +168,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
          WCHARM(1 : ND, K) = cont_loc_oper(OPA, RADIUS, EDDI, ND)
 
-!         tau_cont(1 : ND, K) = opt_dep(opa(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
+         tau_cont(1 : ND, K) = opt_dep(opa(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
 
 !        UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
 !        XJC and EDDI are stored for later write to file RADIOC
@@ -184,7 +184,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       call assert(.not.any(isnan(WCHARM)),'COMO: WCHARM is NaN')
 
 !     perform the acceleration damping in case the density is too high at the outer edge of the atmosphere
-!      if (damp_acc) call acc_damp(ND, NF, tau_cont, WCHARM, damp_cont)
+      if (damp_acc) call acc_damp(ND, NF, tau_cont, WCHARM, damp_cont)
 
       !Sanity Check ----------------------------------------------------
       IF(maxval(WCHARM) >= 1d0-1d-20) THEN
