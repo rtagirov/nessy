@@ -6,8 +6,6 @@
 
 !     STATISTICAL EQUATIONS WITH APPROXIMATE LAMBDA-OPERATORS
 
-      use MOD_DATOM
-      use MOD_DECSTE
       use MOD_LINPOP
       use MOD_PLOTPOP
       use MOD_PLOTT
@@ -31,6 +29,7 @@
       use MOD_REBLANK
       use MOD_WRITMOD
 
+      use mod_decode
       use file_operations
       use common_block
       use vardatom_full
@@ -46,16 +45,12 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
  
       COMMON /VELPAR/  VFINAL,VMIN,BETA,VPAR1,VPAR2,RCON,HSCALE
 
-      COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
-
       integer   NGAMR(10),NGAML(10)
       real*8    AGAMR(10),AGAML(10)
 
-      integer   XLBKG1, XLBKG2
-
       logical   line(lastind_nlte)
 
-      logical   TPLOT, LBKG
+      logical   TPLOT
 
       character MODHEAD*104,MODHOLD*104, CARD*80, LCARD*120
 
@@ -78,14 +73,6 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
       IF(LBKG) PRINT*, 'STEAL: LINE BLANKETING = TRUE'
 
       tstart = time()
-
-C***  READING THE ATOMIC DATA FROM FILE DATOM
-
-!	CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-!     $         EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-!     $         INDNUP,INDLOW,LASTIND,NATOM,
-!     $         ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-!     $         NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
 
       if (allocated(levelpl)) deallocate(levelpl); allocate(levelpl(N))
 
@@ -244,9 +231,6 @@ c***     the new blanketing table needs to be written to the model file
      $               nlast_nlte,
      $               WAVARR,
      $               SIGARR,
-     $               LBKG,
-     $               XLBKG1,
-     $               XLBKG2,
      $               JOBMAX,
      $               N,
      $               weight,
@@ -258,12 +242,8 @@ c***     the new blanketing table needs to be written to the model file
      $               alpha,
      $               sexpo,
      $               agaunt,
-     $               coco,
-     $               keycol,
-     $               altesum,
      $               nom,
      $               natom,
-     $               kodat,
      $               nfirst,
      $               nlast)
 
@@ -451,22 +431,22 @@ C***  PROGRAM STOP
       write (6,*) ' error during history file read - forward to EOF'
       stop 'error ft7'
 
-      END SUBROUTINE
+      end subroutine
 
-      SUBROUTINE CHANGE(array1, array2, N)
-C***  THIS SUBROUTINE copies an array
+      subroutine change(array1, array2, N)
 
-      IMPLICIT REAL*8(A - H, O - Z)
+      implicit none
 
-      DIMENSION array1(N), array2(N)
-      DO 1 I = 1, N
+      integer, intent(in) ::               N
 
-         array2(i) = array1(i)
+      real*8, dimension(N), intent(in) ::  array1
 
-    1 CONTINUE
+      real*8, dimension(N), intent(out) :: array2
 
-      RETURN
+      array2(1 : N) = array1(1 : N)
 
-      END subroutine
+      return
 
-      END MODULE
+      end subroutine
+
+      end module

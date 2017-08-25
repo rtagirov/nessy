@@ -5,11 +5,7 @@
       SUBROUTINE COMO
 
       use MOD_COOP
-      use MOD_DATOM
-      use MOD_DECOMO
-      use MOD_DERIV
       use MOD_ERROR
-      use MOD_extrxjc
       use MOD_MOMO
       use MOD_PRIBLA
       use MOD_PRIMINT
@@ -18,12 +14,13 @@
       use MOD_READPOP
       use MOD_READRAD
       use MOD_REBLANK
-      use MOD_STORXJC
       use MOD_WRITMOD
       use MOD_WRITRADC
       use UTILS
       USE MOD_BFCROSS
 
+      use mod_decode
+      use storextr
       use common_block
       use vardatom_full
       use vardatom_nlte
@@ -60,14 +57,7 @@
 !     CONTINUOUS RADIATION TRANSFER (MOMENT EQUATIONS) WITH GIVEN EDDI-FACTORS
 !     FORMAL SOLUTION FROM GIVEN POP NUMBERS
 
-      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2
       CHARACTER MODHEAD*104, LCARD*100
-
-CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
-
-      INTEGER XLBKG1, XLBKG2
-      LOGICAL LBKG
 
       call cpu_time(como_start)
 
@@ -146,16 +136,9 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
      $             OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $             N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $             DUMMY1,DUMMY1,CDUMMY1,K,SIGMAKI,
-     $             WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
-     $             LBKG,XLBKG1,XLBKG2,NF)
+     $             WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),NF)
 
-!         print*, 'como: K = ', K, ' out of ', NF
-
-         IF (LSOPA .GT. 0) THEN
-
-             CALL PRIOPA(XLAMBDA(K),K,ND,LSOPA,RADIUS,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,JOBNUM,MODHEAD)
-
-         ENDIF
+         IF (LSOPA .GT. 0) CALL PRIOPA(XLAMBDA(K),K,ND,LSOPA,RADIUS,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,JOBNUM,MODHEAD)
 
 !        now extract XJC and EDDI for the frequency K
          call extrxjc(XJCARR,XJC,EDDARR,EDDI,nd,nf,K)
@@ -163,8 +146,6 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
          CALL MOMO(OPA,ETA,THOMSON,EDDI,RADIUS,XJC,ND)
 
          IF (LSINT.GT.0) CALL PRIMINT(XJCARR,ND,XLAMBDA,NF,K,LSINT,EDDI,JOBNUM,MODHEAD)
-
-   6     CONTINUE
 
          WCHARM(1 : ND, K) = cont_loc_oper(OPA, RADIUS, EDDI, ND)
 

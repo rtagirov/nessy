@@ -16,8 +16,7 @@
       use MOD_chemeq
       use constants
 
-!      use common_block
-!      use phys
+      use common_block
       use auxfioss
 
 C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
@@ -96,7 +95,6 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
       ENDIF
 
-      NDPMIN = getLocalTMin(TEMP,ND)
       allocate(ABLINN(NFREQ))
       allocate(ABL_A(NFREQ))
       allocate(XFR(NFREQ))
@@ -447,12 +445,10 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
       print '(i7)', AB0_COUNTER
 
-C     LTE line emissivity
+!     LTE line emissivity
 
-CMH   IF THE DEPTPOINT IS OUTWARD OF THE TEMPERATURE MIMIMUM
-CMH   THE PLANCK-FUNCION (OR TEMPERATURE) IS SET TO THE
-CMH   VALUE AT THE TEMPERATURE MINIMUM (ID = 55)
-C     print *,ID,'LINOP: USE THE PLANCK FUNKTION OF ID=55 (FOR MODEL C)'
+!     IF THE DEPTPOINT IS ABOVE THE TEMPERATURE MIMIMUM
+!     THE PLANCK-FUNCION IS SET TO THE VALUE AT THE TEMPERATURE MINIMUM
 
 !      if (rayleigh) then
 
@@ -471,7 +467,6 @@ C     print *,ID,'LINOP: USE THE PLANCK FUNKTION OF ID=55 (FOR MODEL C)'
 !      endif
 
 !     always true
-
       if (velw(id) .le. velmax) EMLIN(1 : NFREQ) = EMLIN(1:NFREQ)+ABLIN(1:NFREQ)*PLAN(max(NDPMIN,id))*WDIL(ID)
 
 !     add opacity of NLTE lines (RT: this is a bit from the original NLTE treatment,

@@ -362,6 +362,8 @@ C***  NOTE THAT DUPLOW = - DLOWUP
 !     Function eftd is the Electron Free Term (or charge conservation inhomogeniety, see V1(NPLUS1) below) Derivative (see elresp.for)
 !      dm(nplus1, nplus1) = dm(nplus1, nplus1) + eftd(L, rnel, TL)
 
+      print*, 'eftd: ', L, eftd(L, rnel, TL) / dm(nplus1, nplus1)
+
 C***  COLUMNS NLAST(NA)  (I.E. COLUMNS CONTAINING THE EQUATIONS OF NUMBER
 C***  CONSERVATION FOR ELEMENT NA)  ARE NOT CHANGED
 

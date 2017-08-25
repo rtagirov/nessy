@@ -1,14 +1,17 @@
       module MOD_COOP
 
-      integer :: NDPMIN_WARN=0 !* set to true if an NDPMIN sanity check fails
+      type ROW
+        integer :: LBKG_IDX
+        real*8,allocatable :: V(:)
+      endtype
+      type(ROW),private,allocatable:: ROWS(:)
 
       contains
 
       SUBROUTINE COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $                OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $                N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $                ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,
-     $                LBKG,XLBKG1,XLBKG2,NF)
+     $                ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,NF)
 
 !***  NON-LTE CONTINUOUS OPACITY AT GIVEN FREQUENCY POINT K (XLAM)
 !***  OPACITY AT DEPTH POINT L: OPAL
@@ -32,10 +35,10 @@
 !MH   C2*W3   = 2 * H * NU^3/ C^2
 !MH   CALLED BY OPAROSS, CCORE, COMO, ETL, WRCONT, FIOSS
 !MH   ND = 1 WHEN COOP IS CALLED FROM OPAROSS
-!MH   CALLED BY OPAROSS:  NLTELBKG=1
+!MH   CALLED BY OPAROSS:  LBKG = TRUE
 !MH            ABLIN,EMLIN IS THEN WRITTEN TO *.LBKG FILE
 !MH                      OPACITY.FOR HAS TO BE RUN IN ORDER TO BIN
-!MH   CALLED BY FIOSS:   NLTELBKG=0
+!MH   CALLED BY FIOSS:   LBKG = FALSE
 !MH                      SECOND TIME FIOSS IS RUN:
 !MH                      LINE OPACITY, EMISSIVITY MUST NOT BE ADDED TO TOTAL OPACITY, EMISSIVITY
 !***********************************************************************
@@ -47,8 +50,8 @@
       use MOD_GAUNTFF
       use MOD_HMINUSFF
       use MOD_LINSCA
-      use MOD_RDOPAC
 
+      use common_block
       use file_operations
       use phys
 
@@ -76,14 +79,13 @@
 
       real*8, dimension(N, NF) :: SIGARR, WAVARR
 
-      REAL*8  :: XLAM
-      character*8 :: agaunt(N) 
-      integer XLBKG1,XLBKG2
-      REAL*8  :: RSTAR
-      LOGICAL :: LBKG
-      CHARACTER*10 ::LEVEL(N)
+      REAL*8       :: XLAM
+      character*8  :: agaunt(N) 
+      REAL*8       :: RSTAR
+      CHARACTER*10 :: LEVEL(N)
+
       !functions
-      REAL*8  :: SQRT  ! FUNCTION
+      REAL*8  :: SQRT ! FUNCTION
 
       !local
       REAL*8  :: G, WE, EDGE, T32, ROOTTL, TL, W, W3
@@ -94,74 +96,30 @@
       real*8 :: LINOP(ND)
       INTEGER :: L, J, I ! loop variables
       INTEGER :: JM  ! JM = J-1
-      INTEGER :: L_H0, IG, NLTELBKG
-      REAL*8  :: SIGMAE, SIGMA, SIGMATH, SIGMAFF,SIGHMFF
-!***  C1 = H * C / K    ( CM * ANGSTROEM )
-      DATA AK_BOL, C1 / 1.38062259d-16, 1.4388d0 /
-!***  C2 = 2 * H * C    ( G * CM**3 / S**2 )
-!MH   C2*W3 = 2 * H * NU^3 / C^2 (pre-factor of the Planck-function)
-      DATA C2 / 3.972d-16 /
-!***  SIGMAE = ELCTRON SCATTERING CROSS SECTION  ( CM**2 )
-      DATA SIGMAE / 0.6652d-24 /
-!***  C3 = RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON
-!        = 0.5 ( h^2/(2*pi*m_e*k_bol) )^(3/2)
+      INTEGER :: L_H0, IG
+      REAL*8 :: SIGMAE, SIGMA, SIGMATH, SIGMAFF, SIGHMFF
 
-      DATA C3 / 2.07d-16 /
-!***  CFF = COEFFICIENT FOR FREE-FREE CROSS SECTION ( ALLEN PAGE 100 )
-      DATA CFF / 1.370d-23 /
-!***  W= wavenumber in cm^(-1)
-!MH   NDPMIN IS THE DEPTH POINT OF THE TEMPERATURE MINIMUM
-!MH   Model C,P: NDPMIN = 55
-!MH   Model A:   NDPMIN = 53
-!MH   TABASUN:   NDPMIN = 1
-      integer:: NDPMIN 
+!     C1 = H * C / K    (CM * ANGSTROEM)
+      DATA AK_BOL, C1 /1.38062259d-16, 1.4388d0/
 
-!      real*8 :: start, finish
+!     C2 = 2 * H * C (G * CM**3 / S**2)
+!     C2 * W3 = 2 * H * NU^3 / C^2 (pre-factor of the Planck-function)
+      DATA C2 /3.972d-16/
 
-!      call cpu_time(start)
+!     SIGMAE = ELECTRON SCATTERING CROSS SECTION  ( CM**2 )
+      DATA SIGMAE /0.6652d-24/
 
-       ! Read in all LINOP at once.
-      W=1.d8/XLAM; W3=W*W*W
-      IF ( ND.EQ.1 )THEN
-        NDPMIN = 1
-        NLTELBKG=0
-      ELSE
-!**********************************************************************
-!***  LINEBLANKETING=0
-!MH   DETERMINE DEPTH INDEX OF TEMPERATURE MINIMUM
-        NDPMIN = 0       ! Sanity check 1
+!     C3 = RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON = 0.5*(h^2/(2*pi*m_e*k_bol))^(3/2)
+      DATA C3 /2.07d-16/
 
-        DO L=2,ND-1       ! Find minimum
-          if ((T(L) .LT. T(L-1)) .AND. (T(L) .LT. T(L+1))) THEN
-            NDPMIN = L
-          endif
-        ENDDO
+!     CFF = COEFFICIENT FOR FREE-FREE CROSS SECTION (ALLEN PAGE 100)
+      DATA CFF /1.370d-23/
 
-!        if (num_of_columns(atm_mod_file) .eq. 7 .or. num_of_columns(atm_mod_file) .eq. 4) NDPMIN = 1
+!     W = wavenumber in cm^(-1)
+      W = 1.d8 / XLAM; W3 = W * W * W
 
-        if (LBKG) then
-          NLTELBKG=1
-        else
-          NLTELBKG=0
-        endif
-        if (NDPMIN .eq. 0) then     ! Sanity check 1 - finish
-          if(NDPMIN_WARN==0)
-     $      print *,'coop: something wrong! NDPMIN = ',NDPMIN, 
-     $              ' setting NDPMIN to 1'
-          !pause
-          NDPMIN = 1      ! continue, dont abort
-          NDPMIN_WARN=NDPMIN_WARN+1
-        endif
-!        if ((T(NDPMIN) .gt. 5000d0) .and. (ND .gt. 1)) then !Sanity check 2
-!          print *,'something wrong with Temperature minimum!',
-!     $                 NDPMIN, T(NDPMIN)
-!          write (6,*)'something wrong with Temperature minimum!',
-!     $                   NDPMIN, T(NDPMIN)
-!          pause
-!        endif
-      ENDIF
-
-      CALL RDOPAC(XLAM,LINOP,NDPMIN,XLBKG1,XLBKG2)
+!     Read in all LINOP at once
+      CALL RDOPAC(XLAM, LINOP, NDPMIN, XLBKG1, XLBKG2)
 
 !**********************************************************************
 !***  LOOP OVER ALL DEPTH POINTS
@@ -178,8 +136,7 @@
 !***  I = LOW      J = UP
       DO J=2,N
 !***  UPPER LEVEL MUST BE GROUND STATE OF HIGHER IONIZATION STAGES
-        IF ((NOM(J) .NE. NOM(J-1)) .OR. 
-     $      (NCHARG(J) .NE. NCHARG(J-1)+1)) GOTO 5
+        IF ((NOM(J) .NE. NOM(J-1)) .OR. (NCHARG(J) .NE. NCHARG(J-1)+1)) GOTO 5
         JM=J-1
         DO I=1,JM
 !***      LOWER LEVEL I MUST BELONG TO THE SAME ELEMENT AS UPPER LEVEL J
@@ -317,29 +274,20 @@
 
         OPAL = OPAL + SUM
 
-!**********************************************************************
-!MH**  CHANGES BY MARGIT HABERREITER
-!MH**  RDOPAC: READS BINNED LINE OPACITY DATA FROM *.LBKG FILES
-!MH**  LINOP, LINEM AT DEPTHPOINT L AND FREQUENCY XLAM
-!MH**  IF coop IS CALLED FROM WRCONT
-        IF (NLTELBKG .EQ. 1) THEN
-          ! PRINT *,l,xlam, 'READING NON-LTE LINEBLANKETING DATA'
-          !MH**  LINEMMIN: EMISSIVITY AT DEPTH POINT 84 (MODELC)
-          !MH** LINEMMIN: NOT YET DEVIDED BY ENTOT(L)
-          !MH** check temperature minimum
-          if (NDPMIN .NE. 1 .AND. (  T(NDPMIN) .gt. 5000d0)) then
-            print *, 'coop: NDPMIN wrong! ', NDPMIN, T(NDPMIN)
-            pause
-          endif
+!MH    CHANGES BY MARGIT HABERREITER
+!MH    RDOPAC: READS BINNED LINE OPACITY DATA FROM *.LBKG FILES
+!MH    LINOP, LINEM AT DEPTHPOINT L AND FREQUENCY XLAM
+!MH    IF coop IS CALLED FROM WRCONT
+        IF (LBKG) THEN
 
-          !MH**  OUTWARD OF TEMPERATURE MINIMUM EMISSION AND ABSORPTION SET TO ZERO
+!MH    OUTWARD OF TEMPERATURE MINIMUM EMISSION AND ABSORPTION SET TO ZERO
           if (l .le. NDPMIN) then
             !alemis =0.
             alcross=linop(L)/ENTOT(L)
             alemis = BNUE(XLAM,T(NDPMIN))*alcross
           else
           !MH**  INWARD OF TEMPERATURE MINIMUM
-          ! if (l .gt. NDPMIN) then
+
             alcross = linop(L)/ENTOT(L)
             alemis  = BNUE(XLAM,T(L))*alcross
           endif
@@ -354,12 +302,109 @@
         ETA(L) = ETAL * ENTOT(L) * RSTAR
       ENDDO
 
-!      call cpu_time(finish)
-
-!      call open_to_append(1222, 'cpu_time.coop'); write(1222, '(ES9.3)') finish - start; close(1222)
-
       return
 
       end subroutine
+
+      subroutine RDOPAC(XLAM,LINOP,NDPMIN,XLBKG1,XLBKG2)
+
+!     PROGRAM READS THE BINNED LINE OPACITIES AND INCLUDES THEM IN THE HMINUS CODE TO CALCULATE THE CONTINUUMS OPACITIES
+
+      use MOD_ERROR
+
+      implicit none
+
+      real*8, intent(out) :: LINOP(:)
+      real*8, intent(in)  :: XLAM
+      integer,intent(in)  :: XLBKG1,XLBKG2,NDPMIN
+      integer             :: LAM
+      character*50        :: FLNAM
+      integer             :: i,IDX, nLINOP
+
+      if(.not.allocated(ROWS)) allocate(ROWS(0))
+
+!     ABBIN: BINNED LINE OPACITY -  OPACITY DISTRIBUTION FUNCTION
+!     XLAM: WAVELENGTH GIVEN IN FGRID INCLUDING EDGE WAVELENGHTS
+
+      LINOP = 0.0
+      IDX = -1
+
+!      if (xlbkg1 .ne. 0) print*, 'xlbkg1 = ', xlbkg1
+!      if (xlbkg2 .ne. 0) print*, 'xlbkg2 = ', xlbkg2
+
+      IF (XLAM < XLBKG1) RETURN
+      IF (XLAM > XLBKG2) RETURN
+
+      nLINOP = size(LINOP)
+      LAM = XLAM
+      LAM = ((XLAM)/10);   LAM = LAM*10+5
+
+      !*** Search for frequency index
+      SEARCH_IDX: do i=1,size(ROWS)
+        if(ROWS(i)%LBKG_IDX == LAM) then
+          IDX=i
+          if(size(ROWS(i)%V) <= nLINOP) exit SEARCH_IDX !** reread the LINOP
+          LINOP = ROWS(i)%V(1:nLINOP)
+          return !** if found and correct size, return
+        endif
+      enddo SEARCH_IDX
+      write(flnam,'(i6)') LAM
+      flnam=adjustl(adjustr(flnam)//'.lbkg')
+      open (300,file=flnam,status='old',action='read', err=999)
+      read (300,'(A)')           ! read the header
+      !***********************************************************
+      !*  L = 1 : MOST OUTWARD DEPTH POINT
+      !*  L = ND: MOST INWARD DEPTH POINT
+      !*  If depth point is outward of temperature minimum,
+      !*  use LINOP of temperature minimum
+      read(300,'(1pe12.5)') LINOP
+      LINOP(1:NDPMIN) = LINOP(NDPMIN)
+      close (300)
+      !************************************************************
+      if(IDX>0) then 
+        !*** Change the size of ROWS(IDX)%V and replace with new value
+        deallocate(ROWS(IDX)%V)
+        allocate(ROWS(IDX)%V(nLINOP))
+        ROWS(IDX)%V = LINOP
+      else
+        call append_ROW(LAM,LINOP)  ! ROW(end+1)%(LBKG_IDX, V) = (LAM, LINOP)
+      endif
+
+      if  (any(linop  <  0.)) then
+        print *,xlam,'linop= ',linop
+        call ERROR('rdopac: negative linop in ' // flnam)
+      endif
+      RETURN
+
+      !***************************************************************
+      !* Error handling
+  999 print *, 'RDOPAC: IO Error opening file ' // flnam
+      print '("XLBKG1,2 = ", i7," ",i7," xlam =",e10.4," lam=",i6)',
+     $    XLBKG1,XLBKG2,xlam,lam
+      call ERROR('RDOPAC: IO Error opening file ' // flnam)
+
+      END subroutine
+
+      !****************************************
+      !* Append a row to the array of rows.
+      subroutine append_ROW(LAM,LINOP)
+      integer,intent(in) :: LAM
+      real*8,intent(in) :: LINOP(:)
+      type(ROW),allocatable :: old_ROWS(:)
+      integer :: nrow
+      nrow = size(ROWS)
+      !* make a copy of the original, reallocate by n+1 and copy back the old one to the first n rows.
+      allocate(old_ROWS(nrow))
+      old_ROWS = ROWS
+      deallocate(ROWS)
+      allocate(ROWS(nrow+1))
+      ROWS(1:nrow) = old_ROWS
+
+      !* Set Data for the last row (LBKG_IDX, V)
+      ROWS(nrow+1)%LBKG_IDX = LAM
+      allocate(ROWS(nrow+1)%V(size(LINOP)))
+      ROWS(nrow+1)%V = LINOP
+
+      end subroutine append_ROW
 
       end module

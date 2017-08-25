@@ -27,6 +27,7 @@
       use CONSTANTS,only:CLIGHT_SI
 
       use vardatom_full
+      use vardatom_nlte
       use varhminus
       use common_block
       use file_operations
@@ -61,7 +62,9 @@
 !
 !MH*	XLAM: WAVELENGTH IN VACUUM
 !*******************************************************************************
-      IMPLICIT REAL*8(a - h, o - z)
+
+      implicit real*8(a - h, o - z)
+
       !***  Constant for thermal Gauss-Profile (= m(e)/(4k)) (cgs?)
       PARAMETER (GAUKONST = 1.649538d-12)
 
@@ -71,12 +74,6 @@
       !        good idea to make NFODIM quite a bit larger
 
       real*8, allocatable, dimension(:) ::       R
-!      real*8, allocatable, dimension(:) ::       T
-!      real*8, allocatable, dimension(:) ::       XJC
-!      real*8, allocatable, dimension(:) ::       TAUROSS
-!      real*8, allocatable, dimension(:) ::       RNE
-!      real*8, allocatable, dimension(:) ::       VELO, GRADI
-!      real*8, allocatable, dimension(:) ::       HTOT, GTOT, XTOT, ETOT
 
       real*8, allocatable, dimension(:) ::       VDU
 
@@ -92,42 +89,21 @@
 
       integer, allocatable, dimension(:, :) ::   iback
 
-!      CHARACTER*10, allocatable, dimension(:) :: MAINPRO, MAINLEV
-
       real*8, allocatable, dimension(:, :) ::    WLK
 
       real*8, allocatable, dimension(:, :) ::    Z2D
 
       real*8, allocatable, dimension(:) ::       Z1D
 
-!      real*8, allocatable, dimension(:, :) ::    POPNUM, POP1, POP2, POP3
-
       real*8, allocatable, dimension(:, :) ::    Tion_pot
 
-!      real*8, allocatable, dimension(:, :) ::    XJCARR
-!      real*8, allocatable, dimension(:, :) ::    XJL
-!      real*8, allocatable, dimension(:, :) ::    WCHARM
-
-!      real*8, allocatable, dimension(:, :) ::    EDDI, U
-
-!      real*8, allocatable, dimension(:, :, :) :: EDDARR
-
-      real*8, allocatable, dimension(:) :: VERTVELO, VELOVAR
+      real*8, allocatable, dimension(:) ::       VERTVELO, VELOVAR
 
       integer :: NVD
 
-      PARAMETER (NBLEND = 6)
-      !***  ARRAYS FOR TREATMENT OF LINE OVERLAPS (MAX. DIMENSION: NBLEND)
-      COMMON / COMOLAP / INDLAP(NBLEND),XLAMLAP(NBLEND),DELXLAP(NBLEND)
-      !***  CHANGES MARGIT HABERREITER
-      !MH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-      !MH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF	
+      LOGICAL :: LOPA
 
-      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2	
-      INTEGER XLBKG1,XLBKG2
-      LOGICAL LBKG,LOPA
-      !***  END OF CHANGES MARGIT HABERREITER
-      CHARACTER KARTE*80,MODHEAD*104,PHEAD*28
+      CHARACTER KARTE*80, MODHEAD*104, PHEAD*28
 
       CHARACTER flnam*70
 
@@ -159,14 +135,13 @@
 
       REAL*8, ALLOCATABLE :: WAV_CLV(:), FLUX_CLV(:, :)
        
-      real*8 dummy0
-      integer ndummy0
+      real*8 :: dummy0
 
-      real*8,allocatable:: PROFILE(:),PROFN(:),DLAM(:),EMINT(:)
+      real*8, allocatable :: PROFILE(:),PROFN(:),DLAM(:),EMINT(:)
 
       logical :: CORE,FILE_EXIST
-      real*8,allocatable,dimension(:,:) :: XJK,CWK,DINT,XJ
-      real*8,allocatable,dimension(:) :: XNU
+      real*8, allocatable, dimension(:,:) :: XJK,CWK,DINT,XJ
+      real*8, allocatable, dimension(:) :: XNU
 
       !MH   VARIABILITY OF VELOCITY ACTIV/NONACTIVE
       !MH var = true then variation of Doppler velocity considered
@@ -190,11 +165,71 @@
 
       CALL TIC()
 
-      call DATOM(datom_full,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $           INDNUP,INDLOW,LASTIND,NATOM,
-     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
+      call DATOM(datom_full,
+     $           N,
+     $           LEVEL,
+     $           NCHARG,
+     $           WEIGHT,
+     $           ELEVEL,
+     $           EION,
+     $           MAINQN,
+     $           EINST,
+     $           ALPHA,
+     $           SEXPO,
+     $           AGAUNT,
+     $           COCO,
+     $           KEYCOL,
+     $           ALTESUM,
+     $           INDNUP,
+     $           INDLOW,
+     $           LASTIND,
+     $           NATOM,
+     $           ELEMENT,
+     $           SYMBOL,
+     $           NOM,
+     $           KODAT,
+     $           ATMASS,
+     $           STAGE,
+     $           NFIRST,
+     $           NLAST,
+     $           WAVARR,
+     $           SIGARR,
+     $           eleatnum,
+     $           levatnum,
+     $           NFDIM)
+
+      call datom(datom_nlte,
+     $           N_nlte,
+     $           level_nlte,
+     $           ncharg_nlte,
+     $           weight_nlte,
+     $           elevel_nlte,
+     $           eion_nlte,
+     $           mainqn_nlte,
+     $           einst_nlte,
+     $           alpha_nlte,
+     $           sexpo_nlte,
+     $           agaunt_nlte,
+     $           coco_nlte,
+     $           keycol_nlte,
+     $           altesum_nlte,
+     $           indnup_nlte,
+     $           indlow_nlte,
+     $           lastind_nlte,
+     $           natom_nlte,
+     $           element_nlte,
+     $           symbol_nlte,
+     $           nom_nlte,
+     $           kodat_nlte,
+     $           atmass_nlte,
+     $           stage_nlte,
+     $           nfirst_nlte,
+     $           nlast_nlte,
+     $           wavarr_nlte,
+     $           sigarr_nlte,
+     $           eleatnum_nlte,
+     $           levatnum_nlte,
+     $           nfdim) ! NFDIM is known from varhminus module
 
 !     READING OF THE MODEL FILE ------------------------------------
 
@@ -206,7 +241,7 @@
 
       allocate(entot(ND))
       allocate(T(ND), RNE(ND))
-      allocate(XJC(ND), XJCARR(ND, NF), WCHARM(ND, NF), XJL(ND, LASTIND))
+      allocate(XJC(ND), XJCARR(ND, NF), WCHARM(ND, NF), XJL(ND, lastind_nlte))
       allocate(R(ND), TAUROSS(ND))
       allocate(VELO(ND), GRADI(ND), VDU(ND))
 
@@ -255,24 +290,17 @@
       close(IFL)
 
       IFL = 3; open(IFL, file = 'POPNUM', STATUS='OLD')
-      !***MH readpop also reads number of depth points, temperature, rne
+!     also reads number of depth points, temperature, rne
       call readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
       close (ifl)
 
-!     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
+      NDPMIN = tempmin(T, ND)
 
+!     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
       CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,dummy4_nf,TOTIN,TOTOUT,
-     $             NCHARG,EDDARR,EDDI,NOM,WCHARM,N,lastind,
-     $             EINST,MODHEAD,JOBNUM)
-
-!      do i = 1, ND
-
-!         print*, 'fioss XJC here:', i, XJC(i)
-
-!      enddo
-
-!      stop
+     $             NCHARG_nlte,EDDARR,EDDI,NOM_nlte,WCHARM,N_nlte,lastind_nlte,
+     $             EINST_nlte,MODHEAD,JOBNUM)
 
       !***  READING VERTICAL VELOCITY ASPLUND 2000, A&A 359, 729
       if (ADDVELO) then
@@ -486,7 +514,7 @@
       print*, 'RWLAE = ', rwlae
 
 !***  PREPARATION OF LINE QUANTITIES (ALSO FOR BLENDING LINES)
-      CALL PREF_SYN(KARTE,N,ELEVEL,LINE,INDLOW,INDNUP,LASTIND,
+      CALL PREF_SYN(KARTE,N_nlte,ELEVEL_nlte,LINE,INDLOW_nlte,INDNUP_nlte,LASTIND_nlte,
      $              VDOP,FMAX,FMIN,XMAX,VDU(1),VSIDU,esca_wd,
      $              DXOBS,NFOBS,XLAM,FREMAX,
      $              NF,FNUEC)
@@ -507,8 +535,7 @@
      $          OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $          ALPHA,SEXPO,AGAUNT,0,DUMMY2,
-     $          WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
-     $          LBKG,XLBKG1,XLBKG2,NF)
+     $          WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),NF)
 
 !     CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
       CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z2D,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)

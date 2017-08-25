@@ -279,13 +279,11 @@ C     **** calculated only in the first and the last frequency *****
 
         ENDDO NION_LOOP
 
-        !* Additional opacities
-
-!        print*, 'IJ = ', IJ, 'wvl = ', 1.0d+8 * light_speed / FR
+!       Additional opacities
 
         CALL OPADD(0,IJ,ID,FR,ABAD,EMAD,SCAD)
 
-        !* Total continuum opacity and emissivity
+!       Total continuum opacity and emissivity
 
         BNE = BNU * X * ANE
 
@@ -294,8 +292,6 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
         ABSOC(IJ)=ABF+ANE*(AFF-X*EBF)+ANE*SIGEL+ABAD+ABLY
         EMISC(IJ)=BNE*(AFF/X1+EBF)+EMAD+EMLY
-
-!        SCATC(IJ)=SCAD+SCLY+ANE*SIGEL ! Obsolete
 
         if (rayleigh) then
 

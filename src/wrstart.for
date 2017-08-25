@@ -5,7 +5,6 @@
       SUBROUTINE WRSTART
 
       use MOD_DATOM
-      use MOD_DECSTAR
       use MOD_FGRID
       use MOD_GRADIFF
       use MOD_GREYM
@@ -23,6 +22,7 @@
       use MOD_ERROR
       use MOD_chemeq
 
+      use mod_decode
       use vardatom_full
       use vardatom_nlte
       use varhminus
@@ -45,13 +45,7 @@
 
       COMMON /VELPAR/  VFINAL, VMIN, BETA, VPAR1, VPAR2, RCON, HSCALE
       COMMON /COMTEFF/ TEFF, TMIN, TMODIFY, SPHERIC
-      COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
 
-!     LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-!     XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
-
-      INTEGER XLBKG1, XLBKG2
-      LOGICAL LBKG
       LOGICAL TTABLE, TPLOT, SPHERIC
 
       CHARACTER MODHEAD*104
@@ -89,8 +83,7 @@
       allocate(ABXYZ(NATOM))
 
 !     DECODING INPUT DATA
-      CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,LBKG,XLBKG1,XLBKG2,
-     $             TPLOT,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN,AMU)
+      CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,TPLOT,NATOM,KODAT,IDAT,LBLANK,ATMEAN,AMU)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
@@ -111,11 +104,7 @@
 !     INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
       call initvel(maxval(radius), t_eff, glog, rstar, xmass)
 
-      print*, 'after initvel'
-
-!      allocate(XJC(ND))
       allocate(XJCARR(ND, NF))
-!      allocate(XJL(ND, lastind_nlte))
       allocate(EDDI(3, ND))
       allocate(EDDARR(3, ND, NF))
       allocate(TAUROSS(ND))
@@ -222,8 +211,7 @@ C***  Read Line-blanketing table
 C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       CALL GREYM(ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,ENTOT,RNE,RSTAR,
-     $           ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,
-     $           LBKG,XLBKG1,XLBKG2,N,
+     $           ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,N,
      $           LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,KODAT,
      $           NOM,NFIRST,NLAST,NATOM,WAVARR,SIGARR)
 

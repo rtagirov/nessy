@@ -43,6 +43,8 @@
 
       endselect
 
+      NDPMIN = tempmin(T, ND)
+
       call pgrid(NP, ND, radius, p)
 
       call zgrid(radius, p, z, ND, NP)
@@ -311,5 +313,27 @@
       deallocate(entotn)
 
       end subroutine
+
+      function tempmin(T, ND) result(NDPMIN)
+
+      integer :: NDPMIN
+
+      integer, intent(in) :: ND
+
+      real*8, dimension(ND), intent(in) :: T(ND)
+
+      integer :: L
+
+      NDPMIN = 1
+
+      do L = 2, ND - 1
+
+         if ((T(L) .lt. T(L - 1)) .AND. (T(L) .lt. T(L + 1)) .and. T(L) .lt. T(NDPMIN)) NDPMIN = L
+
+      enddo
+
+      return
+
+      end function
 
       end module

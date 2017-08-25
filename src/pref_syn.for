@@ -1,28 +1,30 @@
       module MOD_PREF_SYN
+
       contains
-      SUBROUTINE PREF_SYN (KARTE,N,ELEVEL,LINE,INDLOW,INDNUP,LASTIND,
-     $                      VDOP,FMAX,FMIN,XMAX,VMAX,VSIDU,esca_wd,
-     $                      DXOBS,NFOBS,XLAM,FREMAX,
-     $                      NF,FNUEC)
-C*******************************************************************************
-C***  CALLED FROM FORMAL FOR DECODING LINE OPTION CARDS
-C***  CALCULATES LINE QUANTITIES FOR DETECTED LINE
-C***  IN CASE OF LINE OVERLAP:  PREPARES ALSO ALL QUANTITIES FOR BLENDING LINES
-C*******************************************************************************
-      USE MOD_LIPO
-      implicit real*8(a-h,o-z)
+
+      subroutine pref_syn(KARTE,N,ELEVEL,LINE,INDLOW,INDNUP,LASTIND,
+     $                    VDOP,FMAX,FMIN,XMAX,VMAX,VSIDU,esca_wd,
+     $                    DXOBS,NFOBS,XLAM,FREMAX,
+     $                    NF,FNUEC)
+
+!     CALLED FROM FORMAL FOR DECODING LINE OPTION CARDS
+!     CALCULATES LINE QUANTITIES FOR DETECTED LINE
+!     IN CASE OF LINE OVERLAP:  PREPARES ALSO ALL QUANTITIES FOR BLENDING LINES
+
+      use mod_lipo
+
+      implicit real*8(a - h, o - z)
      
       DIMENSION ELEVEL(N)
       DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)
-      DIMENSION INDLAP(6),XLAMLAP(6),DELXLAP(6)
       CHARACTER*7 KARBL(5)
       CHARACTER KARTE*80
      
       
       if (karte(1:4).eq.'LINE') then
-c***  branch for line card driven wavelength selection
-c
-C***     DECODE THE DESIRED LINE
+!     branch for line card driven wavelength selection
+
+!        DECODE THE DESIRED LINE
          DECODE (7,1,KARTE) LCODE,LINE
  1       FORMAT (A4,I3)
          PRINT*, 'ACHTUNG: LINE = ', LINE
@@ -41,8 +43,8 @@ C***     CALCULATE LINE QUANTITIES
          print *,' line vac-wavelength: ',xlam
 
       else if (karte(1:4).eq.'INTE') then
-!       print*, xlam
-!      print*, 'Yes, we are here :)'
+
+
 c***  branch for wavelength interval
          if (xlam.le.0. .or. FMAX.le.0.) then
             print *,' something wrong!'
@@ -64,10 +66,8 @@ c*** test for number of frequency points
 
 C***     DEFINING THE FREQUENCY BAND
       IF (FMAX .LE. 0.0) FMAX=VMAX+XMAX+VSIDU+esca_wd
-c-       IF (FMIN .EQ. 0.0) FMIN=VMAX*SQRT(1.-1./RMAX/RMAX)+XMAX+VSIDU
+
       IF (FMIN .LE. 0.0) FMIN=FMAX
- 
-      
     
 C***     DEFINING INCREMENT OF THE OBSERVER'S FRAME FREQUENCY
       PRINT*, 'FMAX FMIN:', FMAX, FMIN, NFOBS

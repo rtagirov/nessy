@@ -19,9 +19,7 @@ c     *           MION  = 30,
      *           MION0 =  9,
      *           MI1   = MION-1,
      *           ibuff = 15
-CMH   CHANGED BY MARGIT HABERREITER
-      INTEGER NDPMIN
-CMH  
+
 C     Basic physical constants
 C      
       real*8,PARAMETER :: CL    = 2.99792458D10,
@@ -124,4 +122,3 @@ C
       COMMON/ATOBLN/ENEV(MATOM,MI1),AMAS(MATOM),ABND(MATOM),TYPAT(MATOM)
       COMMON/ATOINI/NATOMS,IONIZ(MATOM),LGR,LRM
       COMMON/POPCHN/RELAB(MLEV)
-      COMMON/NDTMIN/NDPMIN

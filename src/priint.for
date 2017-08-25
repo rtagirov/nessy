@@ -1,14 +1,17 @@
       module MOD_PRIINT
+
       contains
-C**********  MODULNAME: PRIINT    ******* 24/03/87  21.29.40.******    34 KARTEN
-      SUBROUTINE PRIINT (XJC,XJCARR,EDDI,EDDARR,R,ND,XLAMBDA,NF,LSTEP,
-     $                   JOBNUM,MODHEAD)
+
+      SUBROUTINE PRIINT(XJC,XJCARR,EDDI,EDDARR,R,ND,XLAMBDA,NF,LSTEP,JOBNUM,MODHEAD)
+
       use MOD_TRADFUN
-      use MOD_extrxjc
+
+      use storextr
+
       IMPLICIT REAL*8(A-H,O-Z)
 
       DIMENSION XJC(ND),XLAMBDA(NF),EDDI(3,ND),R(ND)
-	DIMENSION XJCARR(ND,NF),EDDARR(3,ND,NF)
+      DIMENSION XJCARR(ND,NF),EDDARR(3,ND,NF)
       CHARACTER MODHEAD*104
 
       PRINT 2,MODHEAD,JOBNUM
@@ -39,6 +42,8 @@ c      CALL READMS (3,EDDI,3*ND,NAME)
     4 PRINT 6
     6 FORMAT (1X)
 
-      RETURN
+      return
+
       END subroutine
+
       end module

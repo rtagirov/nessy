@@ -13,7 +13,6 @@ inibl.for\
 moments.for\
 hydtab.for\
 tictoc.for\
-rdopac.for\
 hminusff.for\
 liop.for\
 lipo.for\
@@ -60,6 +59,7 @@ phys.for\
 comblock.for\
 fileoper.for\
 vardatom_full.for\
+vardatom_nlte.for\
 geomesh.for\
 opac.for\
 synopa.for\
@@ -86,7 +86,6 @@ momadd.for\
 writmsi.for\
 writms.for\
 deriv.for\
-rdopac.for\
 moments.for\
 hminusff.for\
 hminus.for\
@@ -111,13 +110,9 @@ cwgauss9.for\
 datom.for\
 broyden.for\
 dcoop.for\
-decetl.for\
 decf_syn.for\
 decfreq.for\
-decomo.for\
-decon.for\
-decstar.for\
-decste.for\
+decode.for\
 diffus.for\
 dliop.for\
 dtdr.for\
@@ -126,7 +121,7 @@ erf_inf.for\
 etl.for\
 etlhist.for\
 etlray.for\
-extrxjc.for\
+storextr.for\
 fgrid.for\
 flgrid.for\
 funsch.for\
@@ -149,7 +144,6 @@ momo.for\
 odeint.for\
 omeg.for\
 opaross.for\
-phnu.for\
 photocs.for\
 plottab.for\
 plotanf.for\
@@ -159,7 +153,6 @@ plotpop.for\
 plott.for\
 popzero.for\
 pref_syn.for\
-preline.for\
 prepr_f.for\
 pribla.for\
 pricolr.for\
@@ -190,12 +183,9 @@ readpop.for\
 readrad.for\
 reblank.for\
 redcor.for\
-rkck.for\
-rkqs.for\
+rk.for\
 steal.for\
 sthist.for\
-storxjc.for\
-storxjl.for\
 tcolor.for\
 tradfun.for\
 tictoc.for\
@@ -210,7 +200,6 @@ writradc.for\
 writradl.for\
 wrstart.for\
 wrvel.for\
-stateq.for\
 hydcolrate.for\
 phys.for\
 math.for\

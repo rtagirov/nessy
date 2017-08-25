@@ -78,13 +78,7 @@
      
       call invtri(A, B, C, W, ND)
 
-      do L = 1, ND
-
-      	RL = R(L)
-
-        XJC(L) = W(L) / RL / RL
-
-      enddo
+      XJC(1 : ND) = W(1 : ND) / R(1 : ND) / R(1 : ND)
 
       return
 

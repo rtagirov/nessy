@@ -23,8 +23,6 @@ C***  XLAMBDA = CORRESPONDING WAVELENGTH POINTS IN ANGSTROEMS
       integer,intent(in) :: NFDIM, NOM, NATOM, N, NCHARG(N)
       real*8, intent(in) :: ELEVEL(N), EION(N), EINST(N, N)
 
-
-
       DIMENSION NOM(N)
       CHARACTER*2,intent(in):: SYMBOL(NATOM)
       PARAMETER (ONE=1.d0, TWO=2.d0)   
@@ -148,6 +146,9 @@ C***   AT REFERENCE TEMPERATURE TREF
       PRINT 10,RENORM,TREF
    10 FORMAT(//,' RENORMALIZATION FACTOR :',F10.6,
      $ '     REFERENCE TEMPERATURE :',F8.0,' K')
-      RETURN
-      END subroutine
+
+      return
+
+      end subroutine
+
       end module

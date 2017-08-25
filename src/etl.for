@@ -1,8 +1,8 @@
-      MODULE MOD_ETL
+      module mod_etl
 
-      CONTAINS
+      contains
 
-      SUBROUTINE ETL(job)
+      subroutine etl(job)
 
       use UTILS, only: ASSERT
       use MOD_READMOD
@@ -13,16 +13,12 @@
       use MOD_READMS
       use MOD_READMSI
       use MOD_LIOP
-      use MOD_DATOM
       use MOD_READRAD
       use MOD_ETLRAY
       use MOD_DIFFUS
       use MOD_ELIMIN
       use MOD_PRIINTL
-      use MOD_STORXJL
       use MOD_FLGRID
-      use MOD_DECETL
-      use MOD_PRELINE
       use MOD_ETLHIST
       use MOD_WRITMOD
       use MOD_REBLANK
@@ -33,6 +29,8 @@
       use MOD_TICTOC
       USE CONSTANTS
 
+      use mod_decode
+      use storextr
       use vardatom_full
       use vardatom_nlte
       use varhminus
@@ -47,16 +45,9 @@
 
       INTEGER :: LASTUPD
       integer :: timer
-      integer :: NDUMMY0
       
       real*8, allocatable :: DUMMY2(:, :)
       real*8 :: DUMMY0
-
-      COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
-
-      INTEGER XLBKG1, XLBKG2
-
-      LOGICAL LBKG
 
 !     RINAT TAGIROV:
 !     See Fig. 7-29 in Mihalas, Stellar Atmospheres, 2nd edition, 1978
@@ -95,12 +86,6 @@
  
       CALL FLGRID(NFL, PHI, PWEIGHT, DELTAX)
 
-!      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-!     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-!     $           INDNUP,INDLOW,LASTIND,NATOM,
-!     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-!     $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
-	
 !***  READING OF THE MODEL FILE
       IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'OLD')
 
@@ -174,7 +159,7 @@
  
 !***  CHECK WHETHER THESE DATA EXIST AND BELONG TO THE PRESENT MODEL
       IFL=9
-	ierr9=.false.
+      ierr9=.false.
       open (IFL,file='RADIOCL',STATUS='UNKNOWN')
       IERR=-10
       CNAME='MODHEAD'
@@ -261,8 +246,7 @@
      $          OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $          ALPHA,SEXPO,AGAUNT,0,DUMMY2,
-     $          WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),
-     $          LBKG,XLBKG1,XLBKG2,NF)
+     $          WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),NF)
 
 !***  BACKGROUND CONTINUUM RADIATION FIELD
 
@@ -418,4 +402,64 @@
 
       END SUBROUTINE
 
-      END MODULE
+      subroutine preline(NUP,LOW,IND,N,LRUD,XLAM,ND,NFL,LINE,
+     $                   XJLMEAN,ELEVEL,NL,EINST,INDNUP,INDLOW,LASTIND)
+
+      use common_block
+
+!     PREPARING SOME QUANTITIES FOR THE CONSIDERED LINE TRANSITION
+
+      implicit real*8(a - h, o - z)
+     
+	  parameter (zero = 0.0d0)
+
+      DIMENSION EINST(N, N)
+      DIMENSION ELEVEL(N)
+
+      DIMENSION INDNUP(LASTIND),INDLOW(LASTIND)
+
+      DIMENSION XJLMEAN(ND)
+
+      character*7 name, line(nl)
+
+!     LOOP OVER ALL POSSIBLE LINE INDICES IND
+
+      DO 16 IND = 1, LASTIND
+
+   	  write(name, 1) 'LINE', ind
+    1 FORMAT (A4,I3)
+
+      IF (LINE(NL).EQ.NAME) GOTO 6
+   16 ENDDO
+
+      PRINT 8, LINE(NL)
+    8 FORMAT (10X,'NON-FATAL ERROR: UNRECOGNIZED LINE OPTION CARD=',A8)
+      PRINT*, 'The number of lines in DATOM file does not match the number of lines indicated in the CARDS file. See decetl.for'
+
+      LINE(NL)='LINE000'
+      NUP=0
+      RETURN
+     
+    6 CONTINUE
+C***  FIND THE LEVEL INDICES NUP, LOW
+      NUP = INDNUP(IND)
+      LOW = INDLOW(IND)
+
+C***  RUDIMENTAL LINES (EINST(LOW,NUP)=-2.) WILL BE MARKED BY LRUD=0
+      LRUD=1
+
+      IF (EINST(LOW,NUP) .EQ. -2.d0) THEN
+         LINE(NL)='LINE000'
+         LRUD=0
+         RETURN
+      ENDIF
+
+      XLAM = 1.d8 / (ELEVEL(NUP) - ELEVEL(LOW))
+     
+      XJLMEAN(1 : ND) = zero
+     
+      return
+
+      end subroutine
+
+      end module

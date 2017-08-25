@@ -6,7 +6,7 @@
      $                 SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
      $                 IWARN,MAINPRO,MAINLEV,NOM,
      $                 N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
-     $                 WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+     $                 WAVARR,SIGARR)
 
 C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
 
@@ -23,34 +23,32 @@ C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
       integer :: XLBKG1, XLBKG2
 
 	! gobal variables, intent(inout)  (inout because of subprocedures)
-	real*8,dimension(ND) :: OPA,ETA,THOMSON
-	real*8,dimension(ND) :: RADIUS  ! = [1+delta, ... ,1] given in relative solar units
+      real*8,dimension(ND) :: OPA,ETA,THOMSON
+      real*8,dimension(ND) :: RADIUS  ! = [1+delta, ... ,1] given in relative solar units
 	
-	character,dimension(*) :: MAINPRO*10, MAINLEV*10, LEVEL*10
-	real*8,dimension(NF,ND) :: SCOLD
+      character,dimension(*) :: MAINPRO*10, MAINLEV*10, LEVEL*10
+      real*8,dimension(NF,ND) :: SCOLD
+
 	!global variables, intent(in)
-	character::MODHEAD*104
-	real*8,dimension(N,NF) :: WAVARR,SIGARR
-	real*8,dimension(NF)    :: XLAMBDA	     ! Array of Wavelength
-	logical :: LBKG	
-	real*8 ::  RSTAR
+      character::MODHEAD*104
+      real*8,dimension(N,NF) :: WAVARR, SIGARR
+      real*8,dimension(NF)    :: XLAMBDA ! Array of Wavelength
+      logical :: LBKG
+      real*8 ::  RSTAR
 	
 	! local variables
-	real*8 :: OPAL	! OPAL =(OPA*(1-THOMSON))(L)
-	real*8 :: XLAM   			! wavelength at point k(@see XLAMBDA)
+      real*8 :: OPAL	! OPAL =(OPA*(1-THOMSON))(L)
+      real*8 :: XLAM   			! wavelength at point k(@see XLAMBDA)
       real*8,allocatable :: DUMMY1(:)
       character*8,allocatable :: CDUMMY1(:)
-	integer :: K, L			! loop variables			
-!	integer iostat
+      integer :: K, L			! loop variables
+
 ! micha: added dimensions for modules
       integer, dimension(*) :: NCHARG, IWARN
       real*8, dimension(*)  :: T, RNE, POP1, ENTOT,WEIGHT,ELEVEL,EION
       real*8, dimension(*)  :: EINST,SIGMAKI
-C***  MARGIT HABERREITER
-CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
      
-C***  LOOP OVER ALL CONTINUUM FREQUENCIES  *************************************
+C***  LOOP OVER ALL CONTINUUM FREQUENCIES
       DO K = 1, NF
 
         XLAM = XLAMBDA(K)
@@ -60,7 +58,7 @@ C***  LOOP OVER ALL CONTINUUM FREQUENCIES  *************************************
      $	          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $	          DUMMY1,DUMMY1,CDUMMY1,K,
      $            SIGMAKI,WAVARR(1 : N, 1 : NF),
-     $            SIGARR(1 : N, 1 : NF),LBKG,XLBKG1,XLBKG2,NF)
+     $            SIGARR(1 : N, 1 : NF),NF)
 
 C***  SOURCE FUNCTION WITH OLD POP.NUMBERS (WITHOUT THOMSON OPACITY)
 	  DO L=1,ND

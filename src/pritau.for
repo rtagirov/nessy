@@ -24,8 +24,6 @@ C***********************************************************************
 	DIMENSION WAVARR(N,NF),SIGARR(N,NF)
       CHARACTER*10 LEVEL(N)
       CHARACTER MODHEAD*104
-      logical LBKG
-      integer XLBKG1,XLBKG2
       character*8,dimension(N) :: AGAUNT
      
 C***  SIGMATH = THOMSON CROSS-SECTION FOR ELECTRON SCATTERING  (IN CM**2)
@@ -65,7 +63,7 @@ C***  CHANGES BY MARGIT HABERREITER
       CALL OPAROSS(OPARL,EN,TL,RNEL,ENTOTL,RSTAR,N,
      $             LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $             ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
-     $             WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+     $             WAVARR,SIGARR)
 
       IF (L .GT. 1) THEN
          DR=RM1-RL

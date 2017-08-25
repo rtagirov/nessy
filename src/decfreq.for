@@ -3,12 +3,11 @@
       contains
 
       SUBROUTINE DECFREQ (XLAMBDA,NF,NFDIM,TREF)
-C*******************************************************************************
-C***  DECODE THE FREQUENCY GRID (WAVELENGTHS IN A) FROM TAPE6 = FGRID
-!***  Also returns the 
-C*******************************************************************************
 
-      IMPLICIT REAL*8(A-H,O-Z)
+!     DECODE THE FREQUENCY GRID (WAVELENGTHS IN A) FROM TAPE6 = FGRID
+
+      IMPLICIT REAL*8(A - H, O - Z)
+
       real*8,intent(out) :: XLAMBDA(NFDIM),TREF
       integer,intent(out):: NF
       integer,intent(in) :: NFDIM
@@ -65,10 +64,11 @@ c***  end of changes by Margit Haberreiter
 		ENDIF
 
    21 CONTINUE
-	   CLOSE(71)
 
-      RETURN
+	  close(71)
 
-      END subroutine
+      return
+
+      end subroutine
 
       end module

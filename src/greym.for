@@ -3,8 +3,7 @@
       contains
 
       SUBROUTINE GREYM(ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,ENTOT,RNE,RSTAR, 
-     $                 ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,
-     $                 LBKG,XLBKG1,XLBKG2,N, 
+     $                 ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,N,
      $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,KODAT, 
      $                 NOM,NFIRST,NLAST,NATOM,WAVARR,SIGARR)
 
@@ -39,7 +38,7 @@ C***********************************************************************
       use MOD_LIPO
       use MOD_OPAROSS
       use MOD_LTEPOP
-      use MOD_RKQS
+      use MOD_RK
       use MOD_DTDR
       use MOD_ODEINT
       use MOD_ERROR
@@ -61,10 +60,7 @@ C***********************************************************************
       !DIMENSION PARAM(50)
       real*8,DIMENSION(*) ::SEXPO,EINST,EION,ELEVEL,WEIGHT,ALPHA
 C***      DIMENSION COMVEC(24),WORKSP(1,9) 
-CMH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
-      INTEGER XLBKG1,XLBKG2
-      LOGICAL TTABLE, SPHERIC,LBKG 
+      LOGICAL TTABLE, SPHERIC
       CHARACTER*10 LEVEL(N) 
 C***  PARAM(4) = NUMBER OF ALLOWED INTEGRATION STEPS
       !DATA PARAM / 3 * 0.,20000, 46 * 0.0 / 
@@ -275,7 +271,7 @@ C*****************************************************************************
         CALL OPAROSS(OPARL,ENLTE,TP,RNEL,ENTOT(L),RSTAR,N,
      $               LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
      $               ALPHA,SEXPO,AGAUNT,NF,XLAMBDA(1 : NF),FWEIGHT(1 : NF),NOM,
-     $               WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),LBKG,XLBKG1,XLBKG2)
+     $               WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF))
 
 C***************************************************************************** 
 C***  COMPUTATION OF THE ROSSELAND MEAN OPACITY  AT POINT L+1 
@@ -340,7 +336,7 @@ C*****************************************************************************
         CALL OPAROSS(OPARL1,ENLTE,TP1,RNEL,ENTOT(L+1),RSTAR,N,
      $               LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
      $               ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
-     $               WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+     $               WAVARR,SIGARR)
 
 C***************************************************************************** 
 C***  ARITHMETIC MEAN OF OPARL AND OPARL1 
@@ -354,21 +350,20 @@ C*****************************************************************************
           IF (SPHERIC) THEN 
             RL=RADIUS(L) 
             RL1=RADIUS(L+1) 
-C***************************************************************************** 
-C***  DVERK (IMSL VERSION 9) IS REPLACED BY IVPRK (VERSION 10) 
-C***        CALL DVERK(1,DTDR,RL,TL,RL1,TOL,IND,COMVEC,NW,WORKSP,IER)
-C            print *,l,rl,rl1,tl
-c***        PC version: IVPRK replaced with ...
-c        CALL IVPRK (IDO,NEQ,DTDR,RL,RL1,TOL,PARAM,TL)
-c***        ... numerical recipe routine ODEINT (which calls rkqs)
-C*****************************************************************************
+
+
+
+
+
+
+
+
             h1=abs((rl-rl1)/10.)
             hmin=h1/1000.
             if (NEQ .ne. 1)  ! NEQ is set to 1 at top - *should* be safe
      $         call error('GREYM.for: NEQ not 1 but TL is a scalar')
             TL_=TL
-            call odeint(TL_,NEQ,RL,RL1,TOL,h1,hmin,nok,
-     $         nbad,DTDR,rkqs)
+            call odeint(TL_,NEQ,RL,RL1,TOL,h1,hmin,nok,nbad,DTDR,rkqs)
             TL=TL_(1)
             T(L+1)=TL
           ELSE 

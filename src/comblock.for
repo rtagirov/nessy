@@ -42,6 +42,8 @@
 
       REAL*8, DIMENSION(:), ALLOCATABLE ::       HEIGHT
 
+      integer ::                                 NDPMIN ! THE DEPTH POINT OF TEMPERATURE MINIMUM
+
       LOGICAL ::                                 OLDSTART
 
       INTEGER ::                                 NLINE
@@ -59,6 +61,9 @@
       integer, dimension(:), allocatable ::      idx_orig
 
       real*8,                allocatable ::      ABXYZ_nlte(:), ABXYZn_nlte(:, :)
+
+      logical ::                                 LBKG           ! KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
+      integer ::                                 XLBKG1, XLBKG2 ! WAVELENTH RANGE FOR THE ODF
 
 !     FIOSS VARIABLES
 

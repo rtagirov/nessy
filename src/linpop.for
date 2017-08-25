@@ -52,9 +52,6 @@
      $                  NLAST,
      $                  WAVARR,
      $                  SIGARR,
-     $                  LBKG,
-     $                  XLBKG1,
-     $                  XLBKG2,
      $                  JOBMAX,
      $                  N_full,
      $                  weight_full,
@@ -66,12 +63,8 @@
      $                  alpha_full,
      $                  sexpo_full,
      $                  agaunt_full,
-     $                  coco_full,
-     $                  keycol_full,
-     $                  altesum_full,
      $                  nom_full,
      $                  natom_full,
-     $                  kodat_full,
      $                  nfirst_full,
      $                  nlast_full)
 
@@ -143,16 +136,11 @@
 
       integer,       intent(in),     dimension(N_full)            :: ncharg_full, nom_full
 
-      integer,       intent(in),     dimension(natom_full)        :: nfirst_full, nlast_full, kodat_full
+      integer,       intent(in),     dimension(natom_full)        :: nfirst_full, nlast_full
 
       character*8,   intent(in),     dimension(N_full)            :: agaunt_full
 
-      character*4,   intent(in),     dimension(N_full, N_full)    :: keycol_full
-
       character*10,  intent(in),     dimension(N_full)            :: level_full
-
-      real*8,        intent(in),     dimension(N_full, N_full, 4) :: coco_full
-      real*8,        intent(in),     dimension(4, N_full)         :: altesum_full
 
       real*8,        intent(in),     dimension(N_full, NF)        :: WAVARR, SIGARR
 
@@ -169,9 +157,6 @@
  
       character*104, intent(in)                                   :: modhead
 
-      logical,       intent(in)                                   :: LBKG
-
-      integer,       intent(in)                                   :: XLBKG1, XLBKG2
       integer,       intent(in)                                   :: JOBNUM
 
       integer,       intent(out),    dimension(ND)                :: itne
@@ -330,7 +315,7 @@
       CALL CCORE(NF,MODHEAD,JOBNUM,SCOLD,RADIUS,XLAMBDA,ND,T,RNE,pop1_full,ENTOT,RSTAR,
      $           IWARN,MAINPRO,MAINLEV,NOM_full,
      $           N_full,LEVEL_full,NCHARG_full,WEIGHT_full,ELEVEL_full,EION_full,EINST_full,SIGMAKI,
-     $           WAVARR,SIGARR,LBKG,XLBKG1,XLBKG2)
+     $           WAVARR,SIGARR)
 
       N_HI_LEV = NLAST(1) - 2
 

@@ -1,20 +1,15 @@
-      MODULE MOD_WRCONT
+      module mod_wrcont
 
-      CONTAINS
+      contains
 
-      SUBROUTINE WRCONT(job)
+      subroutine wrcont(job)
 
       use MOD_AMBIPOLAR
       use MOD_CALCH
       use MOD_COOP
-      use MOD_DATOM
-      use MOD_DECON
-      use MOD_DECSTAR
       use MOD_DIFFUS
       use MOD_ELIMIN
-      use MOD_extrxjc
       use MOD_FORMATS
-      use MOD_PHNU
       use MOD_PRIBLA
       use MOD_PRIFLUX
       use MOD_PRIGH
@@ -25,12 +20,13 @@
       use MOD_READPOP
       use MOD_READRAD
       use MOD_REBLANK
-      use MOD_STORXJC
       use MOD_TICTOC
       use MOD_WRITMOD
       use MOD_WRITRADC
       USE CONSTANTS
 
+      use mod_decode
+      use storextr
       use common_block
       use file_operations
       use vardatom_full
@@ -39,43 +35,25 @@
       use varsteal
       use local_operator
  
-!     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
-!     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
-!     IT MAKES USE OF THE ATOMIC DATA (FILE DATOM)
-!     AND THE FREQUENCY GRID (FILE FGRID)
-!     PRESENT VERSION: MODEL ATMOSPHERE OF HELIUM (CODE NR. "1") WITH
-!                                          HYDROGEN         "2"
-!     FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS:
-!     MODIFY SUBROUTINES  "DATOM", "DECSTAR"
-!     INSERT CORRESPONDING ATOMIC DATA INTO SUBR. "COLLI", "PHOTOCS"
+!     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
+!     THE CONTINUOUS RADIATION TRANSFER IS SOLVED WITH GIVEN POPULATION NUMBERS.
+!     IT MAKES USE OF THE FREQUENCY GRID (FILE FGRID).
+!     FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS: MODIFY SUBROUTINES DATOM, DECSTAR.
+!     INSERT CORRESPONDING ATOMIC DATA INTO SUBROUTINES COLLI AND PHOTOCS.
+
       IMPLICIT REAL*8(A - H, O - Z)
  
       real*8, ALLOCATABLE :: DUMMY2(:, :)
 
-!     CHANGES BY MARGIT HABERREITER, 20 MAY, 2002
-!     LEVLOW NEEDS TO BE DEFINED, AS IT IS USED AS A KEYWORD TO SELECT THE 
-!     ELEMENT AND LEVEL TO READ THE CONTINUUM OPACITIES FROM AN INPUT TABLE
-!     LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-!     XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
+      CHARACTER ::                            MODHEAD*104, CARD*80, LCARD*100
 
-!     THIS PROGRAM IS TO SOLVE THE CONTINUOUS RADIATION TRANSFER
-!     WITH GIVEN POPULATION NUMBERS
+      CHARACTER*7 ::                          JOB
 
-      parameter (IPDIM = 25, NBDIM = 99)
+      integer ::                              timer
 
-      COMMON /COMLBKG/ LBKG, XLBKG1, XLBKG2
+      real*8 ::                               amu
 
-      LOGICAL          LBKG
-      INTEGER          XLBKG1, XLBKG2
-      CHARACTER        MODHEAD*104, CARD*80, LCARD*100
-
-      CHARACTER*7      JOB
-
-      integer ::       timer
-
-      real*8 ::        amu
-
-      LOGICAL          LDUMMY1, LDUMMY2
+      LOGICAL ::                              LDUMMY1, LDUMMY2
 
       real*8, allocatable, dimension(:, :) :: eddi_old
 
@@ -83,7 +61,7 @@
 
       INTEGER ::                              DEDDI1_LOC, DEDDI2_LOC, DEDDI3_LOC
 
-      real*8 ::        wrcont_start, wrcont_finish
+      real*8 ::                               wrcont_start, wrcont_finish
 
       DATA AMU /1.660531d-24/
 
@@ -93,19 +71,12 @@
 
       print*, 'Entering wrcont, JOB = '//JOB
 
-!      CALL DATOM(datom_lte,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-!     $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-!     $           INDNUP,INDLOW,LASTIND,NATOM,
-!     $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-!     $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
-
-      CALL DECSTAR(MODHEAD,FM,RSTAR,teff,glog,xmass,VDOP,LDUMMY1,LBKG,XLBKG1,XLBKG2,
-     $             LDUMMY2,NATOM,ABXYZ,KODAT,IDAT,LBLANK,ATMEAN,amu)
-
 !     DECODING INPUT OPTIONS
+      CALL DECSTAR(MODHEAD,FM,RSTAR,teff,glog,xmass,VDOP,LDUMMY1,LDUMMY2,NATOM,KODAT,IDAT,LBLANK,ATMEAN,amu)
+
       CALL DECON(LSOPA,LSINT,IFLUX,JOBMAX,LPRIH,LPHNU,LPRIV,TEFF,LBLANK)
 
-!     READING OF THE MODEL FILE
+!     READING THE MODEL FILE
       IFL = 3; open(IFL, file = 'MODFILE', STATUS = 'OLD')
 
       CALL READMOD(IFL,N,ND,TEFF,RADIUS,NP,P,Z,ENTOT,VELO,
@@ -176,8 +147,6 @@
 
       FRQS: DO K = 1, NF
 
-!        print*, 'wrcont: K = ', K, ' out of ', NF
-
 !       now extract XJC and EDDI for the frequency K
         CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
 
@@ -185,8 +154,7 @@
      $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $            N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,
-     $            WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF),
-     $            LBKG,XLBKG1,XLBKG2,NF)
+     $            WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF),NF)
 
         CALL DIFFUS(XLAMBDA(K),T,RADIUS,ND,BCORE,DBDR)
 
@@ -194,61 +162,17 @@
      $                                OPA,ETA,THOMSON,IWARN,MAINPRO,
      $                                MAINLEV,JOBNUM,MODHEAD)
 
-        if (any(isnan(eddi(1, :)))) then
+        CALL ELIMIN(XLAMBDA(K),EMFLUX(K),FLUXIN,U,Z,XJC,RADIUS,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
 
-            do i = 1, ND
-
-               write(*, '(i4,2x,e15.7,2x,i4,3(2x,e15.7))') 
-     $         k, fweight(k), i, etot(i), eddi(1, i), xjc(i)
-
-            enddo
-
-            stop 'eddi nan before elimin'
-
-        endif
-
-!        print*, 'before elimin'
-
-        CALL ELIMIN(XLAMBDA(K),EMFLUX(K),FLUXIN,U,Z,XJC,RADIUS,
-     $              P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
-
-!        print*, 'after elimin'
-
-        !***  INTEGRATION OF THE TOTAL INCIDENT AND EMERGENT FLUX
-        TOTIN=TOTIN+FLUXIN*FWEIGHT(K)
-        TOTOUT=TOTOUT+EMFLUX(K)*FWEIGHT(K)
+!       INTEGRATION OF THE TOTAL INCIDENT AND EMERGENT FLUX
+        TOTIN =  TOTIN  + FLUXIN    * FWEIGHT(K)
+        TOTOUT = TOTOUT + EMFLUX(K) * FWEIGHT(K)
 
         CALL CALCH(ND,NP,OPA,Z,P,U,VL,VJL,RADIUS,HNU,FLUXIN,EMFLUX(K))
 
         XTOT(1 : ND) = XTOT(1 : ND) + XJC(1 : ND) * FWEIGHT(K)
 
-        if (any(isnan(eddi(1, :)))) then
-
-            do i = 1, ND
-
-               write(*, '(i4,2x,e15.7,2x,i4,3(2x,e15.7))') 
-     $         k, fweight(k), i, etot(i), eddi(1, i), xjc(i)
-
-            enddo
-
-            stop 'eddi nan before'
-
-        endif
-
         ETOT(1 : ND) = ETOT(1 : ND) + EDDI(1, 1 : ND) * XJC(1 : ND) * FWEIGHT(K)
-
-        if (any(isnan(etot))) then
-
-            do i = 1, ND
-
-               write(*, '(i4,2x,e15.7,2x,i4,3(2x,e15.7))') 
-     $         k, fweight(k), i, etot(i), eddi(1, i), xjc(i)
-
-            enddo
-
-            stop 'nan after'
-
-        endif
 
         GTOT(1 : ND) = GTOT(1 : ND) + OPA(1 : ND) * HNU(1 : ND) * FWEIGHT(K)
 
@@ -381,6 +305,43 @@
       call cpu_time(wrcont_finish)
 
       call open_to_append(261, 'cpu_time.wrcont'); write(261, '(F6.3)') wrcont_finish - wrcont_start; close(261)
+
+      return
+
+      end subroutine
+
+      subroutine phnu(K, XL, LPHNU, ND, RADIUS, HNU, RSTAR)
+      !*** Print the Eddington Flux as a function of Wavelength
+      !** Does not change any variables.
+      implicit none
+
+      integer,intent(in) :: K,LPHNU,ND
+      real*8, intent(in) :: XL,RADIUS,HNU,RSTAR
+      INTEGER :: I,NPRPT,L
+      DIMENSION RADIUS(ND),HNU(ND)
+      INTEGER LPT(100)
+      IF (ND.LE.2) STOP 'ND.LE.2'
+      IF (ND.GT.100) STOP 'ND.G.100'
+      I=0
+      IF (K.EQ.1) PRINT 10
+   10 FORMAT (1H1/,
+     $10X,'EDDINGTON FLUX AS A FUNCTION OF WAVELENGTH AND DEPTH',/,
+     $10X,'===================================================='/)
+
+      NPRPT=(ND-2)/LPHNU
+
+      DO 111 L=2,ND-1
+      IF(((L-1)/LPHNU)*LPHNU.NE.(L-1) .AND. L.NE.ND) GOTO 111
+
+      I=I+1
+      LPT(I)=L
+  111 CONTINUE
+
+      PRINT *,XL,' WAVELENGTH IN A'
+
+      PRINT 13, (HNU(LPT(I)),I=1,NPRPT)
+
+   13 FORMAT (8(1PE10.3))
 
       return
 

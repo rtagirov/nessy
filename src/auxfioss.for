@@ -227,42 +227,6 @@ c version with fraction of integral
 
       END FUNCTION
 
-      function getLocalTMin(T,ND)
-      implicit none
-      integer :: getLocalTMin
-      integer,intent(in) ::ND
-      real*8,intent(in) :: T(ND)
-      integer :: NDPMIN,L
-      IF(ND==1) THEN
-        getLocalTMin=1
-        RETURN
-      ELSE
-      NDPMIN = 0                    ! Sanity check 1
-      DO L=2,ND-1                   ! Find local minimum in T
-        if ((T(L) .LT. T(L-1)) .AND. (T(L) .LT. T(L+1))) THEN
-          NDPMIN = L
-        endif
-      ENDDO
-
-!      PRINT*, 'TEMP MIN', NDPMIN, T(NDPMIN)
-
-      if (NDPMIN .eq. 0) then       ! Sanity check 1 - finish
-        print *,'linop: something wrong! NDPMIN = ',NDPMIN,
-     $   ' setting NDPMIN to 1'
-        NDPMIN = 1              ! continue, dont abort
-      endif
-      if ((T(NDPMIN) .gt. 5000d0) .and. (ND .gt. 1)) then !Sanity check 2
-        print *,'something wrong with Temperature minimum!',NDPMIN, T(NDPMIN)
-        write(6,*)'something wrong with Temperature minimum!',
-     $                        NDPMIN,T(NDPMIN)
-        pause
-      endif
-      ENDIF
-
-      getLocalTMin = NDPMIN
-
-      end function getLocalTMin
-
       function getContIdx(idxFreq)
       use MOD_ERROR
       use UTILS, only: ASSERT

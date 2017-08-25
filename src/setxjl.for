@@ -86,7 +86,6 @@
       LOW = INDLOW(IND)
       NUP = INDNUP(IND)
 
-!      IF (LOW .GE. NFIRST(2) .AND. NUP .LE. NLAST(2)) AccFactCutOff = 0.0D0 ! Helium is not accelerated
       IF (levatnum(low) .eq. 2 .or. levatnum(nup) .eq. 2) AccFactCutOff = 0.0D0 ! Helium is not accelerated
 
 !     FOR RUDIMENTAL LINES, ZERO CORE IS ASSUMED

@@ -32,9 +32,11 @@
       use MOD_DECF_SYN,only:CARDS
       use MOD_ERROR
 
+      use common_block
       use auxfioss
 
-      IMPLICIT REAL*8(A-H,O-Z)
+      implicit real*8(A - H, O - Z)
+
       integer,intent(  out) :: npot
       real*8, intent(  out) :: TEFF,dil(nd),Tion_pot(ND,3)
       real*8, intent(in   ) :: ENTOT,RNE, POPNUM, T,WEIGHT,ELEVEL,EION
@@ -181,13 +183,9 @@ c         print *,i,nreflw(i),nrefup(i),eion(nreflw(i)),zeta(i)
       teff  = teff4**(1./4.)
       print *,' Teff = ',teff
 
-      !print *,'  not printed:  L,  log(entot),  W,      Te,   3 x Tion'
-      !write (10,*) '   L,    log(entot),        Te,           3xTion'
       !*** Calculate the Dilution arry *********************************
       dil(1:ND)=1.
-      NDTMIN=getLocalTMin(T,ND)
-c      open (10,file='temp.cols',status='unknown')
-c      open (11,file='pops.cols',status='unknown')
+
 CMH	CACLULATION OF DILUTION ARRAY
 CMH	CHECK WHETHER IT IS SET TO ONE IN LINOP !!
       DO 1515 L=ND,1,-1
@@ -198,11 +196,11 @@ CMH	CHECK WHETHER IT IS SET TO ONE IN LINOP !!
         !!*** compress w
         dil(l) = w
         if(CARDS%COMPRESS /= '') then
-          if(L<NDTMIN+CARDS%CMPRS_TMIN_OFFSET) then ! above temperature minimum
-            if(L>=NDTMIN+CARDS%CMPRS_TMIN_OFFSET-CARDS%CMPRS_LENGTH)then
+          if(L<ndpmin+CARDS%CMPRS_TMIN_OFFSET) then ! above temperature minimum
+            if(L>=ndpmin+CARDS%CMPRS_TMIN_OFFSET-CARDS%CMPRS_LENGTH)then
               dil(l)=w+(1.-w)*
      &           (1.-CMPRS(CARDS%COMPRESS,
-     &                    dble(NDTMIN+CARDS%CMPRS_TMIN_OFFSET-L)
+     &                    dble(ndpmin+CARDS%CMPRS_TMIN_OFFSET-L)
      &                   /dble(CARDS%CMPRS_LENGTH))
      &           )
             print *,l,dil(l)
