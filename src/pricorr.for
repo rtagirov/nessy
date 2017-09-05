@@ -11,6 +11,8 @@
 
       USE ABUNDANCES
 
+      use mod_tictoc
+
       USE FILE_OPERATIONS
       USE COMMON_BLOCK
 
@@ -246,11 +248,16 @@ C***  NEGINTL COUNTS THE ERROR MESSAGES  FROM SUBR. LINPOP
 
       IF (LAMBDA_ITER .EQ. 1) THEN
 
-         WRITE(1001 + NATOM, '(3x,A,5x,A,3(8x,A),5x,A,/)') 'LI', 'ALL', 'NHE', 'NHN', 'HYD', 'DCMF'
+         WRITE(1001 + NATOM, '(3x,A,7x,A,6x,A,3(8x,A),5x,A,/)') 'LI', 'TIME', 'ALL', 'NHE', 'NHN', 'HYD', 'DCMF'
 
       ENDIF
 
-      WRITE(1001 + NATOM, '(I5,4(2x,ES9.3),2x,I3)') LAMBDA_ITER, CORMAX_ALL, CORMAX_NHE, CORMAX_NHN, CORMAX_ELE(1), DCM_FIN
+      time = trim(adjustl(writeTOC()))
+
+      if (len_trim(time) == 5) time = '00:'//time
+
+      WRITE(1001 + NATOM, '(I5,5x,A8,4(2x,ES9.3),2x,I3)') LAMBDA_ITER, time, CORMAX_ALL,
+     $                                                    CORMAX_NHE, CORMAX_NHN, CORMAX_ELE(1), DCM_FIN
 
 !----------------------------------------------------------------------------------
 !PRINT OUT BLOCK END
