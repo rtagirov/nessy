@@ -649,9 +649,6 @@ C                          ====
 
                CALL SYSTEM('rm temp.out')
 
-!                  DECODE (80,43,KARTE) IND2
-!   43             FORMAT(15X,I3)
-
             ELSE
 
                   IND2 = IND1
