@@ -54,6 +54,8 @@
 
       CHARACTER(LEN = 10) ::       ELE
 
+      character(len = 8)  ::       time
+
       INTEGER, ALLOCATABLE, DIMENSION(:) :: DEPTHS
 
       INTEGER :: DEPTHS_DIM, DEPTH_IND
