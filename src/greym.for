@@ -123,31 +123,14 @@ C***  INITIALIZATION OF VARIABLES USED IN THE IMSL-SUBROUTINE IVPRK (DVERK)
 C***************************************************************************** 
 C***  LOOP OVER ALL DEPTH POINTS  ******************************************* 
 C***************************************************************************** 
-!       do  j=1, ND
-!         do i=1, NATOM
-!         print*, 'test', j, i, ABXYZn(i,j)
 
-!         enddo
-!       enddo
-
- !     print*, test3
-      DO 10 L=1,ND 
+      DO 10 L = 1, ND
  
-        if (.NOT. allocated(ABXYZ_new))     allocate(ABXYZ_new(NATOM))
+        if (.NOT. allocated(ABXYZ_new)) allocate(ABXYZ_new(NATOM))
  
-      ABXYZ_new(1:NATOM)=ABXYZn(1:NATOM,L)
-
-!      print*, ABXYZ_new(1), ABXYZ_new(2), ABXYZ_new(3), ABXYZ_new(4)
-!      stop
-      
- !     do i=1, NATOM
+      ABXYZ_new(1 : NATOM) = ABXYZn(1 : NATOM, L)
  
- !     print *, 'test', i, l, ABXYZ_new(i), ABXYZn(i,L)
- !     enddo 
-
- 
-c     PRINT *, 'GREYM: WITHIN ND LOOP N=', L, ND 
-          TL=T(L) 
+        TL = T(L)
         IF (ITER .GT. 1) then
           if (L.lt.nd) then
             TOLD=T(L+1)
@@ -188,80 +171,48 @@ c*** first entry for rnel =  0.99997
 
         ENDIF
 
-        !MH   print *,ITER,'RNEL=',rnel
-        !!**************************************************************
         n3 = 1
-CMH    3 if (RNEL.lt. 0.d0) rnel=abs(rnel)/3.
-CMH    3 if (RNEL.lt. 0.d0) rnel=abs(rnel)/1.9
-        do  ! while (ABS(RNEDIF/RNEL).GT. 1.e-13 .OR. ABS(RNEDIF).GT. 1.e-13)
-          if (RNEL.lt. 0.d0) rnel=abs(rnel)/3d0
-          n3=n3+1
-          !MH   if (l.gt.30)
-          !MH   print *,n3,'loop 3','depth point=',L, ND ,'rnel' ,rnel
-          ENE=RNEL*ENTOT(L)
+
+        do
+          if (RNEL.lt. 0.d0) rnel = abs(rnel) / 3d0
+
+          n3 = n3 + 1
+
+          ENE = RNEL * ENTOT(L)
+
           !BEGIN DEBUG micha
           if(n3 == 1 000 000) then
             print '("greym: RNE has difficulty to converge")'
             print '("greym: L,N,RNEL,RNEDIF=",I4,I4,e10.4," ",e10.4)',
      $             L,N,RNEDIF,RNEDIF/RNEL
-          endif  !END DEBUG
+          endif ! END DEBUG
 
           if(n3 > 20 000 000) then
             print '("greym:RNE does not converge L,N,RNEL,RNEDIF=" '//
-     $      ',I4,I4,e6.4,e6.4)',
-     $             L,N,RNEL,RNEDIF
+     $      ',I4,I4,e6.4,e6.4)', L, N, RNEL, RNEDIF
           call error('greym: RNEL does not to converge')
           endif  !END DEBUG
 
-   
-          CALL   LTEPOP (N,ENLTE,TP,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM, 
-     $           ABXYZ_new,NFIRST,NLAST,NATOM)
+          CALL LTEPOP(N,ENLTE,TP,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,ABXYZ_new,NFIRST,NLAST,NATOM)
+
           RNEOLD=RNEL
           RNEL=sum(NCHARG*ENLTE)
 
-!        IF (n3 == 1000000) THEN
-
-!        WRITE(*, '(A,1x,I4,1x,I4,1x,E15.7,12(1x,E15.7))'), 'ACHTUNG 3:', ITER, L, RNEL, ENLTE(1),
-!     $                                                                                  ENLTE(2),
-!     $                                                                           ENLTE(3),
-!     $                                                                           ENLTE(4),
-!     $                                                                           ENLTE(5),
-!     $                                                                           ENLTE(6), 
-!     $                                                                           ENLTE(7), 
-!     $                                                                           ENLTE(8), 
-!     $                                                                           ENLTE(9),
-!     $                                                                           ENLTE(10),
-!     $                                                                           ENLTE(11),
-!     $                                                                           ENLTE(12)
-
-!         STOP
-
-!         ENDIF
-
-  !        print*, enlte
-  !        print*, 'rnel', rnel
- !         stop
-          !!************************************************************
-          !DO 2 J=1,N
-          !2   RNEL=RNEL+NCHARG(J)*ENLTE(J)
-          !!************************************************************
           RNEDIF=RNEL-RNEOLD
-          !!************************************************************
+
           IF (ABS(RNEDIF/RNEL) < 1e-13 .and. ABS(RNEDIF) < 1e-13)  exit
         end do
 
-!          print*, rnel
-!          stop
 C*****************************************************************************
-C***  STORE LTE POPNUMBERS TO BE WRITTEN AT THE MODEL FILE (START APPROXIMAT9ON@
+C*** STORE LTE POPNUMBERS TO BE WRITTEN AT THE MODEL FILE (START APPROXIMATION
 C*****************************************************************************
-!          DO 5 J=1,N 
-!    5     POPNUM(L,J)=ENLTE(J)
-          POPNUM(L,1:N)=ENLTE(1:N)
+
+          POPNUM(L, 1 : N) = ENLTE(1 : N)
+
 C***************************************************************************** 
 C*** ELECTRON DENSITY ALSO STORED 
 C*****************************************************************************
-        RNE(L)=RNEL 
+        RNE(L) = RNEL 
 c*** pressure at depth point L
         press = entot(l)*(1.d0+rnel)*ak*T(L)
 C*****************************************************************************
@@ -304,20 +255,12 @@ C*****************************************************************************
 
    13   if (rnel.lt.0.d0) rnel=abs(rnel)/1.3
 
-        n13 = n13+1
-
-
-
-
-
-
-
-
+        n13 = n13 + 1
 
 C*****************************************************************************
-        ENE=RNEL*ENTOT(L+1) 
-        CALL  LTEPOP (N,ENLTE,TP1,ENE,WEIGHT,NCHARG,EION,
-     $                ELEVEL,NOM,ABXYZ_new,NFIRST,NLAST,NATOM)
+        ENE = RNEL * ENTOT(L + 1)
+
+        CALL LTEPOP(N,ENLTE,TP1,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,ABXYZ_new,NFIRST,NLAST,NATOM)
 
         RNEOLD=RNEL 
         RNEL=.0 
@@ -368,7 +311,7 @@ C*****************************************************************************
             T(L+1)=TL
           ELSE 
 C***        HOPF FUNCTION, C.F. UNSOELD P. 138 
-C            PRINT *, L,TAUROSS(l+1) 
+
             Q=0.6940-0.1167*EXP(-1.9720*TAUROSS(L+1)) 
             T(L+1)=TEFF*(0.75*(TAUROSS(L+1)+Q))**0.25 
           ENDIF 

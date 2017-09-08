@@ -1,12 +1,15 @@
       module MOD_PRIOPA
+
       contains
-C**********  MODULNAME: PRIOPA    ******* 24/03/87  21.31.14.******    54 KARTEN
-      SUBROUTINE PRIOPA (XLAM,K,ND,LSTEP,R,
-     $ OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,JOBNUM,MODHEAD)
+
+      SUBROUTINE PRIOPA (XLAM,K,ND,LSTEP,R,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,JOBNUM,MODHEAD)
+
 C***  PRINTOUT OF THE CONTINUUM OPACITIES ETC.
-C***  CALLED BY WRCONT, COMO, FORMAL, 
+C***  CALLED BY WRCONT, COMO
+
       use MOD_TRADFUN
-      IMPLICIT REAL*8(A-H,O-Z)
+
+      IMPLICIT REAL*8(A - H, O - Z)
      
       parameter (one=1.d0)
       DIMENSION OPA(ND),ETA(ND),THOMSON(ND),R(ND),IWARN(ND)
@@ -31,8 +34,8 @@ C***  CALLED BY WRCONT, COMO, FORMAL,
      $ '   INDEX    INDEX   (PER RSTAR) FRACTION   DEPTH               '
      $ 'PROCESS     LEVEL      WARNING    (...)        TRAD/KELVIN')
 	endif
-c    1 PRINT 3
-c    3 FORMAT (1H )
+
+
       print '(A,F10.1)',' Wavelength= ',XLAM
       TAU=.0
       RTAU1=.0
@@ -46,11 +49,11 @@ c    3 FORMAT (1H )
     7 IF(((L-1)/LSTEP)*LSTEP.NE.(L-1) .AND. L.NE.ND) GOTO 6
       IF (OPA(L).LE..0) THEN
             TRAD=.0
-c		  write (100,*) k, l, TRAD
+
             ELSE
             S=ETA(L)/OPA(L)/(one-THOMSON(L))
             TRAD=TRADFUN (XLAM,S)
-c		  write (100,*) k, l, TRAD
+
             ENDIF
       IF (L.EQ.ND) THEN
             PRINT 9,K,L,OPA(L),THOMSON(L),TAU,RTAU1

@@ -203,10 +203,11 @@ C***  S T A R T   A P P R O X I M A T I O N
       RNE(1 : ND) = STAPEL
 
 C***  Read Line-blanketing table
-      IF (LBLANK.NE.0) LBLANK=-2
+      IF (LBLANK .NE. 0) LBLANK = -2
+
       CALL REBLANK (LBLANK,NF,XLAMBDA,ND,ENTOT,RNE,SCAFAC,ABSFAC)
-      IF (ABS(LBLANK).EQ.2) 
-     $CALL PRIBLA (LBLANK,ENTOT,ND,XLAMBDA,NF,JOBNUM,MODHEAD,SCAFAC,ABSFAC)
+
+      IF (ABS(LBLANK) .EQ. 2) CALL PRIBLA (LBLANK,ENTOT,ND,XLAMBDA,NF,JOBNUM,MODHEAD,SCAFAC,ABSFAC)
  
 C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
@@ -382,8 +383,6 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       real*8  :: eground
 
-      print*, 'check -1'
-
       call datom(datom_nlte,
      $           N_nlte,
      $           level_nlte,
@@ -416,8 +415,6 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
      $           eleatnum_nlte,
      $           levatnum_nlte,
      $           nfdim) ! NFDIM is known from varhminus module
-
-      print*, 'check 0'
 
       natom_lte = natom - natom_nlte
 
