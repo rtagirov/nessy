@@ -79,82 +79,6 @@ CONTINUUM H I......8    63.24                8.     SEATON
 CONTINUUM H I......9    71.16                9.     SEATON
 CONTINUUM H I.....10    79.08               10.     SEATON
 **************************************************************************************************
-**************************************************
-ELEMENT     HELIUM     (HE)     4.00     2.      *
-*           ======                               *
-**************************************************
-*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       HEI 1S1..1  0    1      0.00 198310.76
-LEVEL       HEI 2S3..2  0    3 159856.07
-LEVEL       HEI 2S1..3  0    1 166277.55
-LEVEL       HEI 2P3..4  0    9 169086.94
-LEVEL       HEI 2P1..5  0    3 171135.00
-LEVEL       HEI 3S3..6  0    3 183236.89
-LEVEL       HEI 3S1..7  0    1 184864.55
-LEVEL       HEI 3P3..8  0    9 185564.68
-LEVEL       HEI 3D3..9  0   15 186101.65
-LEVEL       HEI 3D1.10  0    5 186105.07
-LEVEL       HE II....1  1    2      0.00 438908.85
-*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
-*XXXXXXXXX   A10    XX    A10   ...G10....XX A3 A4 X 4G7.0
-LINE      HEI 2S3..2  HEI 1S1..1 1.1300E-4   X BFK1 +7.0E-7       -4.E-13
-LINE      HEI 2S1..3  HEI 1S1..1 5.1300E1      BFK1        +4.3E-9-3.E-12
-LINE      HEI 2S1..3  HEI 2S3..2 1.5100E-7   X BFK2        +5.8E-6
-LINE      HEI 2P3..4  HEI 1S1..1 1.7600E2      BFK1        +2.3E-9-2.E-12
-LINE      HEI 2P3..4  HEI 2S3..2FA0.539086     JEFF
-LINE      HEI 2P3..4  HEI 2S1..3 2.7000E-2   X BFK2        +9.8E-6+2.3E-8
-LINE      HEI 2P1..5  HEI 1S1..1FA 0.27616     JEFF
-LINE      HEI 2P1..5  HEI 2S3..2 1.29        X BFK2               +3.1E-8-2.E-13
-LINE      HEI 2P1..5  HEI 2S1..3FA 0.37644     JEFF
-LINE      HEI 2P1..5  HEI 2P3..4 1.0000E-8   X BFK2 -8.1E-5+4.9E-6
-LINE      HEI 3S3..6  HEI 1S1..1 1.0000E-8   X BKMS 3.87E-7-0.454 -0.02
-LINE      HEI 3S3..6  HEI 2S3..2 1.0000E-8   X BKGR 3.86E-4-0.953 -0.12
-LINE      HEI 3S3..6  HEI 2S1..3 1.0000E-8   X BKGR 1.10E-3-1.03  -0.17
-LINE      HEI 3S3..6  HEI 2P3..4FE 0.20853     JEFF
-LINE      HEI 3S3..6  HEI 2P1..5 2.          X BKGR 2.94E-3-1.11  -0.23
-LINE      HEI 3S1..7  HEI 1S1..1 0.          X BKMS 1.9E-13+0.764 +0.007
-LINE      HEI 3S1..7  HEI 2S3..2 1.0000E-8   X BKGR 3.06E-4-0.922 -0.11
-LINE      HEI 3S1..7  HEI 2S1..3 0.          X BKGR 8.26E-4-1.01  -0.15
-LINE      HEI 3S1..7  HEI 2P3..4 8.          X BKGR 1.37E-3-1.05  -0.18
-LINE      HEI 3S1..7  HEI 2P1..5FE 0.14547     JEFF
-LINE      HEI 3S1..7  HEI 3S3..6 0.          X BKGR 6.36E-1-1.35  -0.79
-LINE      HEI 3P3..8  HEI 1S1..1 1.0000E2    X BKMS 2.6E-14+0.906 +0.051
-LINE      HEI 3P3..8  HEI 2S3..2FA0.064461     JEFF
-LINE      HEI 3P3..8  HEI 2S1..3 0.3         X BKGR 7.34E-4-1.00  -0.15
-LINE      HEI 3P3..8  HEI 2P3..4 0.          X BKGR 1.20E-3-1.04  -0.17
-LINE      HEI 3P3..8  HEI 2P1..5 0.          X BKGR 1.07E-2-1.07  -0.19
-LINE      HEI 3P3..8  HEI 3S3..6FA 0.8909      JEFF
-LINE      HEI 3P3..8  HEI 3S1..7 2.0000E-3   X BKGR 2.67   -1.47  -1.98
-LINE      HEI 3D3..9  HEI 1S1..1 0.          X BKMS 1.37E-9+0.650 -0.01
-LINE      HEI 3D3..9  HEI 2S3..2 0.          X BKGR 2.58E-4-0.922 -0.11
-LINE      HEI 3D3..9  HEI 2S1..3 0.          X BKGR 6.71E-4-0.996 -0.14
-LINE      HEI 3D3..9  HEI 2P3..4FA 0.61022     JEFF
-LINE      HEI 3D3..9  HEI 2P1..5 0.5         X BKGR 1.61E-2-1.06  -0.19
-LINE      HEI 3D3..9  HEI 3S3..6 0.          X BKGR 4.10E-2-1.32  -0.61
-LINE      HEI 3D3..9  HEI 3S1..7 0.          X BKGR 8.25E-2-1.37  -0.92
-LINE      HEI 3D3..9  HEI 3P3..8FA 0.1121      JEFF
-LINE      HEI 3D1.10  HEI 1S1..1 0.          X BKMS 2.4E-13+0.789 +0.009
-LINE      HEI 3D1.10  HEI 2S3..2 0.          X BKGR 2.58E-4-0.922 -0.11
-LINE      HEI 3D1.10  HEI 2S1..3 0.          X BKMS 6.71E-4-0.996 -0.14
-LINE      HEI 3D1.10  HEI 2P3..4 2.          X BKMS 1.08E-3-1.03  -0.16
-LINE      HEI 3D1.10  HEI 2P1..5FA 0.71016     JEFF
-LINE      HEI 3D1.10  HEI 3S3..6 0.          X BKGR 4.10E-2-1.32  -0.61
-LINE      HEI 3D1.10  HEI 3S1..7 0.          X BKGR 8.22E-1-1.37  -0.92
-LINE      HEI 3D1.10  HEI 3P3..8 2.0000E-3   X BKGR 6.77E-1-1.56  -3.92
-LINE      HEI 3D1.10  HEI 3D3..9 0.          X BKGR 3.39E+3-2.50  -105.
-*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
-CONTINUUM HEI 1S1..1    7.43      4.3965 -0.22134   KOESTER
-CONTINUUM HEI 2S3..2    5.59      6.1831 -0.32244   KOESTER
-CONTINUUM HEI 2S1..3    9.25      5.7453 -0.26277   KOESTER
-CONTINUUM HEI 2P3..4    14.89     5.2666 -0.15812   KOESTER
-CONTINUUM HEI 2P1..5    13.56    10.313  -0.45090   KOESTER
-CONTINUUM HEI 3S3..6     8.63     4.5102 -0.18213   KOESTER
-CONTINUUM HEI 3S1..7    14.98     3.8797 -0.12479   KOESTER
-CONTINUUM HEI 3P3..8    25.97     3.1833 -0.043675  KOESTER
-CONTINUUM HEI 3D3..9    18.38     7.1751 -0.20821   KOESTER
-CONTINUUM HEI 3D1.10    18.38     7.1751 -0.20821   KOESTER
-*------------------------------------------------------------------------------
-**************************************************
 ELEMENT     LITHIU     (Li)     3.00     2.      *
 *           ======                               *
 **************************************************
@@ -613,3 +537,33 @@ CONTINUUM FeI------2     5.2350                     TABLE
 CONTINUUM FeI------3     4.7690                     TABLE                     
 CONTINUUM FeI------4     6.8550                     TABLE                     
 CONTINUUM FeI------5     6.9800                     TABLE 
+**************************************************
+ELEMENT     COBALT     (Co)    27.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       CoI------1  0   28    792.80  63430.00
+LEVEL       CoII-----1  1   21    697.06 137795.00
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM CoI------1    10.48                1.32   SEATON
+**************************************************
+ELEMENT     NICKEL     (Ni)    28.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       NiI------1  0   21    971.80  61600.00
+LEVEL       NiII-----1  1   10    602.78 146541.56
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM NiI------1    10.65                1.34   SEATON
+**************************************************
+ELEMENT     COPPER     (Cu)    29.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       CuI------1  0    2      0.00  62317.44 
+LEVEL       CuII-----1  1    1      0.00 163669.20
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM CuI------1    10.51                1.32   SEATON 

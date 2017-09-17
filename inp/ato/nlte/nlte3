@@ -1,0 +1,90 @@
+* atomic data from www.physik.tu-dresden/apg/einoben.hmt
+* respectively R.D.Cowan, 'The Theory of Atomic Structure and Spectra,
+* University of California Press, 1981 
+*----------------------------------------------------------------------------
+*KEYWORD--  ---NAME--- SYMB   ATMASS   STAGE (IONIZATION-STATES)
+**************************************************
+ELEMENT     HYDROGEN   (H )     1.00     2.      *
+*           ========                             *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       H MINUS..1 -1    1      0.00   6090.5
+LEVEL       H I......1  0    2      0.00 109677.38
+LEVEL       H I......2  0    8                      2
+LEVEL       H I......3  0   18                      3
+LEVEL       H I......4  0   32                      4
+LEVEL       H I......5  0   50                      5
+LEVEL       H I......6  0   72                      6
+LEVEL       H I......7  0   98                      7
+LEVEL       H I......8  0  128                      8
+LEVEL       H I......9  0  162                      9
+LEVEL       H I.....10  0  200                     10
+LEVEL       H II......  1    1
+*KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+LINE      H I......2  H I......1  4.699E8
+LINE      H I......3  H I......1  5.575E7
+LINE      H I......3  H I......2  4.410E7
+LINE      H I......4  H I......1  1.278E7
+LINE      H I......4  H I......2  8.419E6
+LINE      H I......4  H I......3  8.986E6
+LINE      H I......5  H I......1  4.125E6
+LINE      H I......5  H I......2  2.530E6
+LINE      H I......5  H I......3  2.201E6
+LINE      H I......5  H I......4  2.699E6
+LINE      H I......6  H I......1 1.6449E6
+LINE      H I......6  H I......2 9.7370E5
+LINE      H I......6  H I......3 7.7870E5
+LINE      H I......6  H I......4 7.7149E5
+LINE      H I......6  H I......5 1.0259E6
+LINE      H I......7  H I......1 7.5722E5
+LINE      H I......7  H I......2 4.3910E5
+LINE      H I......7  H I......3 3.3602E5
+LINE      H I......7  H I......4 3.0429E5
+LINE      H I......7  H I......5 3.2542E5
+LINE      H I......7  H I......6 4.5627E5
+LINE      H I......8  H I......1 3.8713E5
+LINE      H I......8  H I......2 2.2159E5
+LINE      H I......8  H I......3 1.6515E5
+LINE      H I......8  H I......4 1.4248E5
+LINE      H I......8  H I......5 1.3884E5
+LINE      H I......8  H I......6 1.5616E5
+LINE      H I......8  H I......7 2.2730E5
+LINE      H I......9  H I......1 2.143E05
+LINE      H I......9  H I......2 1.216E05
+LINE      H I......9  H I......3 8.905E04
+LINE      H I......9  H I......4 7.459E04
+LINE      H I......9  H I......5 6.908E04
+LINE      H I......9  H I......6 7.065E04
+LINE      H I......9  H I......7 8.237E04
+LINE      H I......9  H I......8 1.233E05
+LINE      H I.....10  H I......1 1.263E05
+LINE      H I.....10  H I......2 7.122E04
+LINE      H I.....10  H I......3 5.156E04
+LINE      H I.....10  H I......4 4.235E04
+LINE      H I.....10  H I......5 3.800E04
+LINE      H I.....10  H I......6 3.688E04
+LINE      H I.....10  H I......7 3.905E04
+LINE      H I.....10  H I......8 4.676E04
+LINE      H I.....10  H I......9 7.151E04
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM H MINUS..1     1.                         H-MINUS
+CONTINUUM H I......1     7.92                       MIHALAS
+CONTINUUM H I......2    15.84                2.     SEATON
+CONTINUUM H I......3    23.76                3.     SEATON
+CONTINUUM H I......4    31.68                4.     SEATON
+CONTINUUM H I......5    39.60                5.     SEATON
+CONTINUUM H I......6    47.48                6.     SEATON
+CONTINUUM H I......7    55.40                7.     SEATON
+CONTINUUM H I......8    63.24                8.     SEATON
+CONTINUUM H I......9    71.16                9.     SEATON
+CONTINUUM H I.....10    79.08               10.     SEATON
+**************************************************************************************************
+ELEMENT     LITHIU     (Li)     3.00     2.      *
+*           ======                               *
+**************************************************
+*KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
+LEVEL       LiI------1  0    2      0.0   43487.15
+LEVEL       LiII-----1  1    1           610078.53
+*EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
+*KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
+CONTINUUM LiI------1    12.56                1.59   SEATON
