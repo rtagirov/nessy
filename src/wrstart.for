@@ -78,7 +78,7 @@
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM) ! NFDIM is known from varhminus module
 
-      call print_eion(N, levatnum, ncharg, eion - elevel)
+      call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
 
       allocate(ABXYZ(NATOM))
 
@@ -297,17 +297,17 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
  
       END SUBROUTINE
 
-      subroutine print_eion(N, levatnum, ncharg, eion)
-
-      use file_operations
+      subroutine print_eion(N, level, levatnum, ncharg, eion, elevel, E_ionization)
 
       implicit none
 
       integer, intent(in) :: N
 
+      character (len = 10), dimension(N), intent(in) :: level
+
       integer, dimension(N), intent(in) :: levatnum, ncharg
 
-      real*8,  dimension(N), intent(in) :: eion
+      real*8,  dimension(N), intent(in) :: eion, elevel, E_ionization
 
       integer :: i
 
@@ -315,7 +315,8 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       do i = 1, N
 
-         write(2764, '(i4,2x,i3,2x,i2,2x,F8.1))') i, levatnum(i), ncharg(i), eion(i)
+         write(2764, '(i4,2x,A10,2x,i3,2x,i2,3(2x,F8.1)))') i, level(i), levatnum(i), ncharg(i),
+     $                                                      eion(i), elevel(i), E_ionization(i)
 
       enddo
 

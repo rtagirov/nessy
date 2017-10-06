@@ -91,5 +91,5 @@ writmod.for:          $(addprefix $(OUT), writmsc.o writms.o writmsi.o writmsi.o
 writpop.for:          $(addprefix $(OUT), writmsc.o writms.o writmsi.o writmsi.o )
 writradc.for:         $(addprefix $(OUT), writmsc.o writms.o writmsi.o writmsi.o formats.o )
 writradl.for:         $(addprefix $(OUT), writmsc.o writms.o writmsi.o writmsi.o formats.o )
-wrstart.for:          $(addprefix $(OUT), datom.o fgrid.o gradiff.o greym.o pribla.o pridat.o prigh.o primod.o writpop.o wrvel.o jstart.o pricomp.o reblank.o writmod.o tictoc.o error.o chemeq.o decode.o vardatom_full.o vardatom_nlte.o varhminus.o geomesh.o initvel.o comblock.o fileoper.o fileoper.o fileoper.o comblock.o vardatom_full.o vardatom_lte.o vardatom_nlte.o varhminus.o comblock.o fileoper.o datom.o )
+wrstart.for:          $(addprefix $(OUT), datom.o fgrid.o gradiff.o greym.o pribla.o pridat.o prigh.o primod.o writpop.o wrvel.o jstart.o pricomp.o reblank.o writmod.o tictoc.o error.o chemeq.o decode.o vardatom_full.o vardatom_nlte.o varhminus.o geomesh.o initvel.o comblock.o fileoper.o fileoper.o comblock.o vardatom_full.o vardatom_lte.o vardatom_nlte.o varhminus.o comblock.o fileoper.o datom.o )
 xrudi.for:            $(addprefix $(OUT), tradfun.o error.o phys.o )

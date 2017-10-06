@@ -191,6 +191,8 @@
 
       ENDDO FRQS
 
+!      call print_xjc(ND, NF, xlambda, xjcarr(1 : ND, 1 : NF))
+
       print*, 'maxmin of dEDDI(1, :) = ', 
      & maxval(abs(EDDI(1, 1 : ND) / EDDI_OLD(1, :))),
      & minval(abs(EDDI(1, 1 : ND) / EDDI_OLD(1, :)))
@@ -344,6 +346,34 @@
    13 FORMAT (8(1PE10.3))
 
       return
+
+      end subroutine
+
+      subroutine print_xjc(ND, NF, wvl, xjc)
+
+      implicit none
+
+      integer, intent(in) :: ND, NF
+
+      real*8, dimension(NF), intent(in) :: wvl
+
+      real*8, dimension(ND, NF), intent(in) :: xjc
+
+      integer :: i, j
+
+      open(unit = 2767, file = 'xjc.out', action = 'write')
+
+      do j = 1, ND
+
+          do i = 1, NF
+
+             write(2767, '(i4,2x,i4,2(2x,e15.7))') j, i, wvl(i), xjc(j, i)
+
+          enddo
+
+      enddo
+
+      close(2767)
 
       end subroutine
 

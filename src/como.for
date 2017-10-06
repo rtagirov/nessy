@@ -124,6 +124,8 @@
      $             XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,
      $             WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF))
 
+!      if (lambda_iter == 0) call print_sigma(N, NF, xlambda, sigmaki(1 : NF, 1 : N))
+
 !     LOOP OVER ALL FREQUENCY POINTS
 !     SOLUTION OF THE MOMENT EQUATION AT EACH FREQUENCY POINT (FORMAL SOLUTION)
 !     WRITE OUTPUT ETA,OPA TO FILE
@@ -272,5 +274,33 @@
       close(file_unit)
 
       end subroutine print_clo
+
+      subroutine print_sigma(N, NF, wvl, sigma)
+
+      implicit none
+
+      integer, intent(in) :: N, NF
+
+      real*8, dimension(NF), intent(in) :: wvl
+
+      real*8, dimension(NF, N), intent(in) :: sigma
+
+      integer :: i, j
+
+      open(unit = 3267, file = 'sigma.out', action = 'write')
+
+      do j = 1, N
+
+          do i = 1, NF
+
+             write(3267, '(i4,2x,i4,2(2x,e15.7))') j, i, wvl(i), sigma(i, j)
+
+          enddo
+
+      enddo
+
+      close(3267)
+
+      end subroutine
 
       end module

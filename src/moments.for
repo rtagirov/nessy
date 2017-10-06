@@ -26,8 +26,6 @@ C***  FIRST STEP
 
       XJMEAN = (ZJ - ZNEXT) * XJ(1)
 
-!      write(*, '(A,2(2x,i4),4(2x,e15.7))'), 'moment0, check 1:', L, 1, zj, znext, xj(1), xjmean
-
 C***  MIDDLE STEPS
       DO J = 3, JMAX
 
@@ -37,15 +35,11 @@ C***  MIDDLE STEPS
 
          XJMEAN = XJMEAN + XJ(J - 1) * (ZLAST - ZNEXT)
 
-!         write(*, '(A,2(2x,i4),4(2x,e15.7))'), 'moment0, check 2:', L, j - 1, zlast, znext, xj(j - 1), xjmean
-
       ENDDO
 
 C***  LAST STEP, IMPLYING Z(L,JMAX)=.0
       XJMEAN=XJMEAN+XJ(JMAX)*ZJ
       XJMEAN=XJMEAN/RL2
-
-!      write(*, '(A,2(2x,i4),4(2x,e15.7))'), 'moment0, check 3:', L, jmax, zj, rl2, xj(jmax), xjmean
 
       end subroutine
 
@@ -73,8 +67,6 @@ C***  FIRST STEP
 
       XJ(1) = (ZJ - ZNEXT) / RL2
 
-!     print*, 'moment0, check 1:', zj, znext, xj(1), xjmean
-
 C***  MIDDLE STEPS
       DO J = 3, JMAX
 
@@ -84,14 +76,10 @@ C***  MIDDLE STEPS
 
          XJ(J-1)=(ZLAST-ZNEXT)/RL2
 
-!        print*, 'moment0, check 2:', xjmean
-
       ENDDO
 
 C***  LAST STEP, IMPLYING Z(L,JMAX)=.0
       XJ(JMAX) = ZJ / RL2
-
-!     print*, 'moment0, check 3:', xjmean
 
       end subroutine
 
