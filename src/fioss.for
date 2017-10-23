@@ -535,7 +535,7 @@
      $          OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $          ALPHA,SEXPO,AGAUNT,0,DUMMY2,
-     $          WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF),NF)
+     $          WAVARR,SIGARR,NF,NFDIM)
 
 !     CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
       CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z2D,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
@@ -632,8 +632,7 @@
 
       call intrfc(ncharg,weight,elevel,eion,
      *            einst,alpha,sexpo,agaunt,natom,
-     *            symbol,nfirst,nlast,
-     *            WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
+     *            symbol,nfirst,nlast, WAVARR, SIGARR, N, NFDIM)
 
       PRINT *,'FIOSS: Time elapsed after INTRFC: ',TOC()
 
@@ -675,7 +674,7 @@
 
       !*****************************************************************
    
-      call synopa(WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
+      call synopa(WAVARR, SIGARR, N, NFDIM)
   
    
       PRINT *,'FIOSS: Time elapsed after SYNOPA: ',TOC()

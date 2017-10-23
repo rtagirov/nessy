@@ -2,7 +2,7 @@
 
       contains
 
-      SUBROUTINE GREYM(ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,ENTOT,RNE,RSTAR, 
+      SUBROUTINE GREYM(ND,T,RADIUS,XLAMBDA,FWEIGHT,NF,NFDIM,ENTOT,RNE,RSTAR, 
      $                 ALPHA,SEXPO,AGAUNT,POPNUM,TAUROSS,R23,TTABLE,N,
      $                 LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,KODAT, 
      $                 NOM,NFIRST,NLAST,NATOM,WAVARR,SIGARR)
@@ -68,13 +68,9 @@ C***  PARAM(4) = NUMBER OF ALLOWED INTEGRATION STEPS
       REAL*8 :: RNEL
       character*8 :: agaunt(N)
       real*8 TL_(1)
-C******************************************************************************
-C***  CHANGES BY MARGIT HABERREITER, 20 MAY, 2002
-CMH  LEVLOW NEEDS TO BE DEFINED, AS IT IS USED AS A KEYWORD TO SELECT THE 
-CMH  ELEMENT AND LEVEL TO READ THE CONTINUUM OPACITIES FROM AN INPUT TABLE
-      !CHARACTER*10 LEVLOW
-      DIMENSION WAVARR(N,NF),SIGARR(N,NF)
-C****************************************************************************** 
+
+      DIMENSION WAVARR(N, NFDIM), SIGARR(N, NFDIM)
+
 C***************************************************************************** 
 C***  ABUNDANCES OF HELIUM AND HYDROGEN FOR THE MODIFIED START APPROXIMATION 
 C***************************************************************************** 
@@ -221,8 +217,8 @@ C*****************************************************************************
 
         CALL OPAROSS(OPARL,ENLTE,TP,RNEL,ENTOT(L),RSTAR,N,
      $               LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
-     $               ALPHA,SEXPO,AGAUNT,NF,XLAMBDA(1 : NF),FWEIGHT(1 : NF),NOM,
-     $               WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF))
+     $               ALPHA,SEXPO,AGAUNT,NF,NFDIM,XLAMBDA,FWEIGHT,NOM,
+     $               WAVARR,SIGARR)
 
 C***************************************************************************** 
 C***  COMPUTATION OF THE ROSSELAND MEAN OPACITY  AT POINT L+1 
@@ -278,7 +274,7 @@ c     IF (ABS(RNEDIF/RNEL).GT.0.01 .OR. ABS(RNEDIF).GT.0.001)
 C***************************************************************************** 
         CALL OPAROSS(OPARL1,ENLTE,TP1,RNEL,ENTOT(L+1),RSTAR,N,
      $               LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST, 
-     $               ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
+     $               ALPHA,SEXPO,AGAUNT,NF,NFDIM,XLAMBDA,FWEIGHT,NOM,
      $               WAVARR,SIGARR)
 
 C***************************************************************************** 

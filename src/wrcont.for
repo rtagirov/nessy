@@ -147,7 +147,7 @@
 
       FRQS: DO K = 1, NF
 
-!        print*, 'wrcont: ', k, xlambda(k)
+        print*, 'wrcont: ', k, xlambda(k)
 
 !       now extract XJC and EDDI for the frequency K
         CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
@@ -156,7 +156,7 @@
      $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $            N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $            ALPHA,SEXPO,AGAUNT,0,DUMMY2,
-     $            WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF),NF)
+     $            WAVARR(1 : N, 1 : NFDIM), SIGARR(1 : N, 1 : NFDIM), NF, NFDIM)
 
         CALL DIFFUS(XLAMBDA(K),T,RADIUS,ND,BCORE,DBDR)
 

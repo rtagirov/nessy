@@ -2,7 +2,7 @@
 
       contains
 
-      SUBROUTINE PHOTOCS(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,WAVARR,SIGARR,N,NF)
+      SUBROUTINE PHOTOCS(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,WAVARR,SIGARR,N,NFDIM)
 
 C***  CALCULATES SIGMA(NUE), THE FREQUENCY DEPENDENT PHOTO CROSS SECTION
 C***  Returns SIGMA
@@ -12,11 +12,12 @@ C***  Returns SIGMA
       implicit none
 
       REAL*8, intent(out) :: SIGMA
-      INTEGER,intent(in) :: N, NF, LOW
+      INTEGER,intent(in) :: N, NFDIM, LOW
       REAL*8,intent(in)  :: SIGMATH,EDGE,WAVENUM
       REAL*8,dimension(N),intent(in) :: ALPHA,SEXPO
       character*8,intent(in) :: agaunt(N)
-      REAL*8,dimension(N,NF),intent(in) :: WAVARR, SIGARR
+
+      REAL*8,dimension(N, NFDIM),intent(in) :: WAVARR, SIGARR
 
       !local variables
       REAL*8 :: CN, DEN, U, GAUNT, FLAMDA
@@ -65,7 +66,7 @@ CMH  FROM A TABLE
 CMH  else if (AGAUNT(LOW) .EQ. 7HTABLE01) THEN
       else if (AGAUNT(LOW) .EQ. 'TABLE') THEN
 
-        call cstabread(SIGMA, WAVENUM, LOW, WAVARR, SIGARR, N, NF)
+        call cstabread(SIGMA, WAVENUM, LOW, WAVARR, SIGARR, N, NFDIM)
 
 C*****************************************************************
 CMH  HIER IST DAS PROBLEM, AGAUNT(LOW) WIRD NICHT ERKANNT ??

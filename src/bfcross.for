@@ -2,7 +2,7 @@
 
       contains
 
-      SUBROUTINE BFCROSS(SIGMAKI,NF,N,NCHARG,ELEVEL,EION,EINST,XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR)
+      SUBROUTINE BFCROSS(SIGMAKI,NF,NFDIM,N,NCHARG,ELEVEL,EION,EINST,XLAMBDA,ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR)
 
 !     THIS ROUTINE PREPARES AN ARRAY SIGMAKI WITH THE BOUND-FREE CROSS SECTIONS
 !     (IN CM**2) TO AVOID UNNECCESSARY MULTIPLE CALCULATIONS
@@ -11,19 +11,19 @@
 
       implicit none
 
-      integer, intent(in) ::                   NF, N
-      integer, dimension(N), intent(in) ::     NOM, NCHARG
+      integer, intent(in) ::                     NF, NFDIM, N
+      integer, dimension(N), intent(in) ::       NOM, NCHARG
 
-      real*8, intent(in) ::                    EION(N), ELEVEL(N), EINST(N, N)
-      real*8, intent(in), dimension(N) ::      ALPHA, SEXPO
-      character*8, intent(in) ::               agaunt(N)
-      real*8, intent(in), dimension(N, NF) ::  WAVARR, SIGARR
-      real*8, intent(in), dimension(NF)   ::   XLAMBDA
+      real*8, intent(in) ::                      EION(N), ELEVEL(N), EINST(N, N)
+      real*8, intent(in), dimension(N) ::        ALPHA, SEXPO
+      character*8, intent(in) ::                 agaunt(N)
+      real*8, intent(in), dimension(N, NFDIM) :: WAVARR, SIGARR
+      real*8, intent(in), dimension(NF)       :: XLAMBDA
 
-      real*8, intent(out), dimension(NF, N) :: SIGMAKI
+      real*8, intent(out), dimension(NF, N) ::   SIGMAKI
 
-      integer ::                               NUP, K, LOW, I
-      real*8 ::                                SIGMATH, EDGE, WAVENUM, sigma
+      integer ::                                 NUP, K, LOW, I
+      real*8 ::                                  SIGMATH, EDGE, WAVENUM, sigma
 
       do 8 NUP = 2, N
 
@@ -60,7 +60,7 @@
                else
 
                   call PHOTOCS(SIGMA,SIGMATH,EDGE,WAVENUM,ALPHA,SEXPO,AGAUNT,LOW,
-     $                         WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
+     $                         WAVARR, SIGARR, N, NFDIM)
 
                   sigmaki(k, low) = sigma
 

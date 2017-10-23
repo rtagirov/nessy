@@ -2,7 +2,7 @@
 
       contains
 
-      subroutine synopa(WAVARR, SIGARR, N, NF)
+      subroutine synopa(WAVARR, SIGARR, N, NFDIM)
 
       use MOD_SYNSUBM
       use SYNTHP_CONT
@@ -15,7 +15,7 @@
 
       implicit none
 
-      integer, intent(in) :: N, NF
+      integer, intent(in) :: N, NFDIM
       real*8,  intent(in) :: WAVARR, SIGARR
       real*8 ::              ABSO, EMIS
     
@@ -25,7 +25,7 @@
       INCLUDE '../inc/SYNTHP.FOR'
       INCLUDE '../inc/MODELP.FOR'
 
-      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
+      DIMENSION WAVARR(N, NFDIM), SIGARR(N, NFDIM)
 
 CMH   MARGIT HABERREITER
 CMH   IJ:    INDEX OF FREQUENCT
@@ -39,7 +39,7 @@ CMH   ETATOT: NEW ARRAY FOR EMISSIVITY for each frequency nfreq and depth point 
 
       do 20 id = 1, nd
 
-         call opac(id, 1, abso, emis, WAVARR, SIGARR, N, NF)
+         call opac(id, 1, abso, emis, WAVARR, SIGARR, N, NFDIM)
 
 !        loop over frequency points
          do ij = 1, nfreq

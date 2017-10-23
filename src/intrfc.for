@@ -5,7 +5,7 @@
       subroutine intrfc(ncharg,weight,elevel,eion,
      *                  einst,alpha,sexpo,agaunt,natom,
      *                  symbol,nfirs0,nlast0,
-     *                  WAVARR,SIGARR,N,NF)
+     *                  WAVARR,SIGARR,N,NFDIM)
 
 !     now includes fix of quantum number of HeI lines
 
@@ -16,7 +16,7 @@
       implicit none
 
       integer,intent(in) :: n,ncharg,natom,
-     *                      nfirs0,nlast0,NF
+     *                      nfirs0,nlast0,NFDIM
 
       real*8, intent(in) :: weight,elevel,eion,
      *                      einst,alpha,sexpo,
@@ -38,7 +38,7 @@
 
       DIMENSION ALPHA(N), SEXPO(N)
       DIMENSION NFIRS0(NATOM), NLAST0(NATOM)
-      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
+      DIMENSION WAVARR(N, NFDIM), SIGARR(N, NFDIM)
 
       COMMON/INTKEY/INMOD,INTRPL,ICHANG,ICHEMC
       COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,IOPFE1
@@ -55,7 +55,7 @@ C     original input - routine START and others
          call tint
 
 C**** CHANGED BY MARGIT HABERREITER
-         call inibl(WAVARR, SIGARR, N, NF)
+         call inibl(WAVARR, SIGARR, N, NFDIM)
 C***********************************
          call hylset
          call he2set
@@ -345,7 +345,7 @@ CMH  IFB = 9: OPACITY PROJECT XS-FITS (INTERPOLATIONS)
 
       call tint
 
-      call inibl(WAVARR, SIGARR, N, NF)
+      call inibl(WAVARR, SIGARR, N, NFDIM)
 
       call hylset
 

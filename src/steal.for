@@ -149,15 +149,12 @@ c***     the new blanketing table needs to be written to the model file
      $                ELEVEL,
      $                EINST,
      $                LEVEL,
-     $                XLAMBDA,
      $                FWEIGHT,
      $                XJCARR,
      $                NF,
      $                XJL,
      $                IFRRA,
      $                ITORA,
-     $                ALPHA,
-     $                SEXPO,
      $                AGAUNT,
      $                MODHEAD,
      $                MODHOLD,
@@ -171,9 +168,7 @@ c***     the new blanketing table needs to be written to the model file
      $                NATOM,
      $                KODAT,
      $                NFIRST,
-     $                NLAST,
-     $                WAVARR,
-     $                SIGARR)
+     $                NLAST)
 
       ELSE
 
@@ -199,6 +194,7 @@ c***     the new blanketing table needs to be written to the model file
      $               FWEIGHT(1 : NF),
      $               XJCARR,
      $               NF,
+     $               NFDIM,
      $               XJL,
      $               WCHARM,
      $               EPSILON,
@@ -318,7 +314,7 @@ C***  UPDATING THE MODEL HISTORY
             CALL PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
      $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,
      $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
-     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR,NF)
+     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR,NF,NFDIM)
 
             CALL PRIH(LPRIH,ND,RADIUS,HTOT,TEFFE,T,TAUROSS,JOBNUM,MODHEAD)
             GOTO 20

@@ -5,7 +5,7 @@
       SUBROUTINE PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
      $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,
      $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
-     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR, NF)
+     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR, NF, NFDIM)
 C***********************************************************************
 C***  PRINTOUT OF THE NLTE OPTICAL DEPTH SCALES (ROSSELAND, THOMSON)
 C***********************************************************************
@@ -21,7 +21,9 @@ C***********************************************************************
       DIMENSION NOM(N)
       DIMENSION EINST(N,N)
       DIMENSION XLAMBDA(NF),FWEIGHT(NF)
-	DIMENSION WAVARR(N,NF),SIGARR(N,NF)
+
+	  DIMENSION WAVARR(N,NFDIM),SIGARR(N,NFDIM)
+
       CHARACTER*10 LEVEL(N)
       CHARACTER MODHEAD*104
       character*8,dimension(N) :: AGAUNT
@@ -62,7 +64,7 @@ C***  LOOP OVER ALL DEPTH POINTS  --------------------------------------
 C***  CHANGES BY MARGIT HABERREITER
       CALL OPAROSS(OPARL,EN,TL,RNEL,ENTOTL,RSTAR,N,
      $             LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $             ALPHA,SEXPO,AGAUNT,NF,XLAMBDA,FWEIGHT,NOM,
+     $             ALPHA,SEXPO,AGAUNT,NF,NFDIM,XLAMBDA,FWEIGHT,NOM,
      $             WAVARR,SIGARR)
 
       IF (L .GT. 1) THEN

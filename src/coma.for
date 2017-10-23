@@ -361,7 +361,7 @@ C***  NOTE THAT DUPLOW = - DLOWUP
 !     This is the derivative of the charge conservation equation with respect to the electron concentration
 !     Function eftd is the Electron Free Term (or charge conservation inhomogeniety, see V1(NPLUS1) below) Derivative (see elresp.for)
 
-      print*, 'eftd: ', L, dm(nplus1, nplus1), eftd(L, rnel, TL)
+!      print*, 'eftd: ', L, dm(nplus1, nplus1), eftd(L, rnel, TL)
 
       dm(nplus1, nplus1) = dm(nplus1, nplus1) + eftd(L, rnel, TL)
 

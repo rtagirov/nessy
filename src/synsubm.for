@@ -363,7 +363,7 @@ C
       RETURN
       END SUBROUTINE
 
-      SUBROUTINE CROSET(WAVARR, SIGARR, N, NF)
+      SUBROUTINE CROSET(WAVARR, SIGARR, N, NFDIM)
 
       use SYNTHP_CONT,only:FREQC,NFCONT
 
@@ -373,13 +373,13 @@ C     driver for evaluating photoinization cross-sections
 
       implicit real*8(a - h, o - z)
 
-      integer,intent(in) :: N, NF
-      real*8, intent(in) :: WAVARR,SIGARR
+      integer,intent(in) :: N, NFDIM
+      real*8, intent(in) :: WAVARR, SIGARR
       
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
 
-      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
+      DIMENSION WAVARR(N, NFDIM), SIGARR(N, NFDIM)
 
       common/phopar/cross(mcross,mfcont)
       COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,IOPFE1
@@ -393,7 +393,7 @@ C     driver for evaluating photoinization cross-sections
 C***  CHANGED BY MARGIT HABERREITER *****************************
 CMH	mode changed >0
 
-         CROSS(IT,IJ)=SIGK(FR, IT, 0, WAVARR, SIGARR, N, NF)
+         CROSS(IT,IJ)=SIGK(FR, IT, 0, WAVARR, SIGARR, N, NFDIM)
 
 C****************************************************************
 
@@ -4422,7 +4422,7 @@ c      INCLUDE 'IMPLIC.FOR'
       RETURN
       END FUNCTION
 
-      FUNCTION SIGK(FR, ITR, MODE, WAVARR, SIGARR, N, NF)
+      FUNCTION SIGK(FR, ITR, MODE, WAVARR, SIGARR, N, NFDIM)
 
 C     CALLED BY CROSET (AND OTHERS?)
 C     driver for evaluating the photoionization cross-sections
@@ -4437,12 +4437,12 @@ C
       use constants,only: CLIGHT_CGS,CLIGHT_SI
 
       implicit real*8(a - h, o - z)
-      integer,intent(in) :: ITR, MODE, N, NF
+      integer,intent(in) :: ITR, MODE, N, NFDIM
       real*8, intent(in) :: FR, WAVARR, SIGARR
       INCLUDE '../inc/PARAMS.FOR'
 
       real*8,parameter :: SIH0=2.815D29
-      DIMENSION WAVARR(N, NF), SIGARR(N, NF)
+      DIMENSION WAVARR(N, NFDIM), SIGARR(N, NFDIM)
       logical,save :: first=.true.
 
 CMH  INPUT FOR HMINUS BF CALCULATION TAKEN FROM THE PHOTOCS - ROUTINE
@@ -4557,7 +4557,7 @@ C
        ELSE IF(IB.EQ.9) THEN
 C*****CHANGES BY MARGIT HABERREITER
 CMH   INTERPOLATE CROSS SECTIONS WITH INTPLCS
-	    CALL intplcs(SIGK, FR, WAVARR, SIGARR, ITR, N, NF)
+	    CALL intplcs(SIGK, FR, WAVARR, SIGARR, ITR, N, NFDIM)
       END IF
       RETURN
 

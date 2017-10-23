@@ -11,7 +11,7 @@
       SUBROUTINE COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $                OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $                N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $                ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,NF)
+     $                ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,NF,NFDIM)
 
 !***  NON-LTE CONTINUOUS OPACITY AT GIVEN FREQUENCY POINT K (XLAM)
 !***  OPACITY AT DEPTH POINT L: OPAL
@@ -58,9 +58,10 @@
       implicit none
 
       !global in/out
-      INTEGER:: N, ND ! max #depthpoints, #depthpoints ! N = Number of levels
-      INTEGER, dimension(ND):: IWARN
-      INTEGER :: K, NF
+      INTEGER:: N, ND ! N = Number of levels, ND - number of depth points
+      INTEGER, dimension(ND) :: IWARN
+
+      INTEGER :: K, NF, NFDIM
       
       CHARACTER*10                        :: MAINPRO(ND), MAINLEV(ND)
 
@@ -75,7 +76,7 @@
       REAL*8,dimension(N):: WEIGHT,ELEVEL,EION,ALPHA,SEXPO
       REAL*8,dimension(ND):: T, RNE, ENTOT
 
-      real*8, dimension(N, NF) :: SIGARR, WAVARR
+      real*8, dimension(N, NFDIM) :: SIGARR, WAVARR
 
       REAL*8       :: XLAM
       character*8  :: agaunt(N) 
@@ -156,8 +157,7 @@
 !***      Changes by Margit Haberreiter
 !MH       SIGMA IN CM^2
 
-              CALL PHOTOCS(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,
-     $                     WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF), N, NF)
+              CALL PHOTOCS(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,WAVARR,SIGARR,N,NFDIM)
 
           ENDIF
 !***      RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON
@@ -308,7 +308,7 @@
       SUBROUTINE COOP_OPAROSS(XLAM,T,RNE,POPNUM,ENTOT,RSTAR,
      $                        OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $                        N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $                        ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,NF)
+     $                        ALPHA,SEXPO,AGAUNT,K,SIGMAKI,WAVARR,SIGARR,NF,NFDIM)
 
 !***  NON-LTE CONTINUOUS OPACITY AT GIVEN FREQUENCY POINT K (XLAM)
 !***  OPACITY AT DEPTH POINT L: OPAL
@@ -357,7 +357,8 @@
       !global in / out
       INTEGER :: N ! Number of levels
       INTEGER :: IWARN
-      INTEGER :: K, NF
+
+      INTEGER :: K, NF, NFDIM
       
       CHARACTER*10                        :: MAINPRO, MAINLEV
 
@@ -374,7 +375,7 @@
 
       REAL*8 :: T, RNE, ENTOT
 
-      real*8, dimension(N, NF) :: SIGARR, WAVARR
+      real*8, dimension(N, NFDIM) :: SIGARR, WAVARR
 
       REAL*8       :: XLAM
       character*8  :: agaunt(N) 
@@ -449,7 +450,7 @@
 !MH       SIGMA IN CM^2
 
               CALL PHOTOCS(SIGMA,SIGMATH,EDGE,W,ALPHA,SEXPO,AGAUNT,I,
-     $                     WAVARR(1 : N, 1 : NF),SIGARR(1 : N, 1 : NF), N, NF)
+     $                     WAVARR(1 : N, 1 : NFDIM),SIGARR(1 : N, 1 : NFDIM), N, NFDIM)
 
           ENDIF
 !***      RECIPROCAL STATISTICAL WEIGHT OF FREE ELECTRON

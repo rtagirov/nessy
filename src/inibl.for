@@ -2,7 +2,7 @@
 
        contains
 
-       subroutine inibl(wavarr, sigarr, N, NF)
+       subroutine inibl(wavarr, sigarr, N, NFDIM)
 
        use MOD_SYNSUBM
        use SYNTHP_CONT,only: FREQC,ABSOC,NFCONT
@@ -19,7 +19,7 @@
 
       implicit none
 
-      integer,intent(in) :: N,      NF
+      integer,intent(in) :: N,      NFDIM
       real*8, intent(in) :: WAVARR, SIGARR
 
       integer :: IFHE2,IHE1,IHE144,IHE2UV,IHE2RE,IHE2VI,IHE2L,ILWHE2
@@ -34,9 +34,10 @@
 
       real*8,parameter :: un=1.
       logical lwph
-      real*8,dimension(MFREQ) :: ABSO,EMIS !,SCAT(2)
+      real*8,dimension(MFREQ) :: ABSO, EMIS
 
-      DIMENSION WAVARR(N, NF),SIGARR(N, NF)
+      DIMENSION WAVARR(N, NFDIM), SIGARR(N, NFDIM)
+
       COMMON/LIMPAR/ALAM0,ALAM1,FRMIN,FRLAST,FRLI0,FRLIM
       COMMON/BLAPAR/RELOP,SPACE,CUTOF0,CUTOFS,TSTD,DSTD
       COMMON/DETLIN/ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2RE
@@ -236,36 +237,24 @@ c
 c     calculate the characteristic standard opacity
 c
       IF(IMODE.LT.2) THEN
-cmh      CALL CROSET
-C***  CHANGES BY MARGIT HABERREITER ***
-         CALL CROSET(WAVARR,SIGARR, N, NF)
-         print*, 'CROSET'
- 
-          call readmollines
-          print*, 'readmollines'
- 
-          call readMolconc(ND)
-          print*, 'readMolconc'
 
-       
-    
+         CALL CROSET(WAVARR, SIGARR, N, NFDIM)
+
+         call readmollines
+
+         call readMolconc(ND)
 
          DO ID = 1, ND
 
-            CALL OPAC(ID,0,ABSO,EMIS,WAVARR,SIGARR,N,NF)
+            CALL OPAC(ID, 0, ABSO, EMIS, WAVARR, SIGARR, N, NFDIM)
 
             ABSTD(ID)=MINVAL(ABSOC(:NFCONT()))
 
          ENDDO
 
-   
-       
-
-   
-
          IF(INLTE.GT.0) CALL NLTE(0,1,1,1,A1,A2,A3)
-         IF(cards.ABEMLIN/=card_params.ABEMLIN_READ)
-     *    CALL INILIN(INLIST)
+
+         IF(cards.ABEMLIN/=card_params.ABEMLIN_READ) CALL INILIN(INLIST)
 
       END IF
 

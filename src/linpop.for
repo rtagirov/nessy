@@ -20,6 +20,7 @@
      $                  FWEIGHT,
      $                  XJC,
      $                  NF,
+     $                  NFDIM,
      $                  XJL,
      $                  WCHARM,
      $                  EPSILON,
@@ -142,7 +143,7 @@
 
       character*10,  intent(in),     dimension(N_full)            :: level_full
 
-      real*8,        intent(in),     dimension(N_full, NF)        :: WAVARR, SIGARR
+      real*8,        intent(in),     dimension(N_full, NFDIM)     :: WAVARR, SIGARR
 
       real*8,        intent(in),     dimension(ND, N_full)        :: pop1_full
 
@@ -307,12 +308,12 @@
       ENDDO
 
 !     GENERATE ONCE FOR ALL PHOTOCROSSSECTIONS AT ALL FREQUENCIES SIGMAKI(K, LOW) IN CM**2
-      CALL BFCROSS(SIGMAKI,NF,N_full,NCHARG_full,ELEVEL_full,EION_full,EINST_full,
-     $             XLAMBDA(1 : NF),ALPHA_full,SEXPO_full,AGAUNT_full,NOM_full,
-     $             WAVARR(:, 1 : NF),SIGARR(:, 1 : NF))
+      CALL BFCROSS(SIGMAKI,NF,NFDIM,N_full,NCHARG_full,ELEVEL_full,EION_full,EINST_full,
+     $             XLAMBDA,ALPHA_full,SEXPO_full,AGAUNT_full,NOM_full,
+     $             WAVARR,SIGARR)
 
 !     DETERMINE SCOLD AT ALL DEPTH POINTS
-      CALL CCORE(NF,MODHEAD,JOBNUM,SCOLD,RADIUS,XLAMBDA,ND,T,RNE,pop1_full,ENTOT,RSTAR,
+      CALL CCORE(NF,NFDIM,MODHEAD,JOBNUM,SCOLD,RADIUS,XLAMBDA,ND,T,RNE,pop1_full,ENTOT,RSTAR,
      $           IWARN,MAINPRO,MAINLEV,NOM_full,
      $           N_full,LEVEL_full,NCHARG_full,WEIGHT_full,ELEVEL_full,EION_full,EINST_full,SIGMAKI,
      $           WAVARR,SIGARR)

@@ -4,9 +4,8 @@
 
       contains
 
-      SUBROUTINE OPAC(ID, MODE, ABSO, EMIS, WAVARR, SIGARR, N, NF)
-C     ========================================
-C
+      SUBROUTINE OPAC(ID, MODE, ABSO, EMIS, WAVARR, SIGARR, N, NFDIM)
+
 C     Absorption, emission, and scattering coefficients
 C     at depth ID and for several frequencies (some or all)
 C
@@ -40,13 +39,13 @@ CMH   BN          = 1.4388e-2 m*K (Unsoeld und Baschek, Planck-Strahlungskonstan
 CMH   BNU         = BN*(nu^3)
 CMH   CSB         = (1/2) *  (h2/(2 pi m_e k))^(3/2)
 CMH   CFF         = (4 e6/3 c h) * (2 pi/3 k m_e3)^(1/2)
-C
+
       use MOD_HMINUSFF
       use MOD_LINOP
       use MOD_SYNSUBM
       use MOD_DECF_SYN
       use UTILS
-      use SYNTHP_CONT, only: ABSOC,EMISC,FREQC,NFCONT, absoc_rayleigh!,SCATC
+      use SYNTHP_CONT, only: ABSOC,EMISC,FREQC,NFCONT, absoc_rayleigh
       use constants, only:   CLIGHT_SI, CLIGHT_CGS, BoltzmannConstantEV,
      $                       PlanckConstantEV
       use MOD_chemeq
@@ -63,10 +62,12 @@ C
       INCLUDE '../inc/SYNTHP.FOR'
       INCLUDE '../inc/LINDAT.FOR'
       
-      integer,intent(in) :: id, NF, N
+      integer,intent(in) :: id, NFDIM, N
       integer,intent(in) :: MODE
-      real*8, intent(in)   ,dimension(N, NF)  :: WAVARR,SIGARR
-      real*8, intent(inout),dimension(MFREQ) :: ABSO,EMIS
+
+      real*8, intent(in), dimension(N, NFDIM) :: WAVARR, SIGARR
+
+      real*8, intent(inout),dimension(MFREQ) :: ABSO, EMIS
 
       !*** DEBUG
       integer :: ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2RE
@@ -188,7 +189,7 @@ C     **** calculated only in the first and the last frequency *****
                     dw=1.
                 endif
                 if(dw.gt.0.) then
-                   sg=sigk(fr, ii, 1, WAVARR, SIGARR, N, NF)*dw
+                   sg=sigk(fr, ii, 1, WAVARR, SIGARR, N, NFDIM)*dw
                 endif
               Else
                 SG=CROSS(II,IJ)

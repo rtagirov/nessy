@@ -2,7 +2,7 @@
 
       contains
 
-      SUBROUTINE CCORE(NF,MODHEAD,JOBNUM,
+      SUBROUTINE CCORE(NF,NFDIM,MODHEAD,JOBNUM,
      $                 SCOLD,RADIUS,XLAMBDA,ND,T,RNE,POP1,ENTOT,RSTAR,
      $                 IWARN,MAINPRO,MAINLEV,NOM,
      $                 N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,SIGMAKI,
@@ -18,7 +18,7 @@ C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
       integer,intent(in) :: JOBNUM
       integer :: N
       integer :: NOM(N)
-      integer :: ND, NF	! Number of depth- & frequency-points
+      integer :: ND, NF, NFDIM ! Number of depth- & frequency-points
 	
       integer :: XLBKG1, XLBKG2
 
@@ -31,7 +31,9 @@ C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
 
 	!global variables, intent(in)
       character::MODHEAD*104
-      real*8,dimension(N,NF) :: WAVARR, SIGARR
+
+      real*8, dimension(N, NFDIM) :: WAVARR, SIGARR
+
       real*8,dimension(NF)    :: XLAMBDA ! Array of Wavelength
       logical :: LBKG
       real*8 ::  RSTAR
@@ -57,8 +59,7 @@ C***  LOOP OVER ALL CONTINUUM FREQUENCIES
      $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $	          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $	          DUMMY1,DUMMY1,CDUMMY1,K,
-     $            SIGMAKI,WAVARR(1 : N, 1 : NF),
-     $            SIGARR(1 : N, 1 : NF),NF)
+     $            SIGMAKI,WAVARR,SIGARR,NF,NFDIM)
 
 C***  SOURCE FUNCTION WITH OLD POP.NUMBERS (WITHOUT THOMSON OPACITY)
 	  DO L=1,ND

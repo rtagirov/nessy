@@ -2,7 +2,7 @@
 
       contains
 
-      SUBROUTINE cstabread(SIGMA, WAVENUM, LOW, WAVARR, SIGARR, N, NF)
+      SUBROUTINE cstabread(SIGMA, WAVENUM, LOW, WAVARR, SIGARR, N, NFDIM)
 
 !     CALLED BY PHOTOCS
 !     written by Margit Haberreiter to read cross section tables
@@ -12,9 +12,9 @@
 
       IMPLICIT NONE
 
-      INTEGER, intent(in) :: LOW, N, NF
+      INTEGER, intent(in) :: LOW, N, NFDIM
 
-      real*8, intent(in) :: WAVENUM, SIGARR(N, NF), WAVARR(N, NF)
+      real*8, intent(in) :: WAVENUM, SIGARR(N, NFDIM), WAVARR(N, NFDIM)
 
       real*8, intent(out) :: SIGMA
 
@@ -26,10 +26,10 @@
 
       ! find the index k in the reverse-sorted array WAVARR(low,:)
       ! such that WAVARR(low,k)>= wavenum >= WAVARR(low,k+1)
-      ! using a binary search tree. Runtime is O(ln2(NF))
+      ! using a binary search tree. Runtime is O(ln2(NFDIM))
       nlow = 1
 
-      nup = NF
+      nup = NFDIM
 
       BIN_SEARCH: DO ii = 1, 999 ! safety guard if list is unorderd
 

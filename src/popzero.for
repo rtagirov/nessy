@@ -15,15 +15,12 @@
      $                   ELEVEL,
      $                   EINST,
      $                   LEVEL,
-     $                   XLAMBDA,
      $                   FWEIGHT,
      $                   XJC,
      $                   NF,
      $                   XJL,
      $                   IFRRA,
      $                   ITORA,
-     $                   ALPHA,
-     $                   SEXPO,
      $                   AGAUNT,
      $                   MODHEAD,
      $                   MODHOLD,
@@ -37,9 +34,7 @@
      $                   NATOM,
      $                   KODAT,
      $                   NFIRST,
-     $                   NLAST,
-     $                   WAVARR,
-     $                   SIGARR)
+     $                   NLAST)
 
       !*******************************************************************************
       !***  IN CASE OF "STARTJOB" (JOB.EQ.'WRSTART'):
@@ -85,7 +80,6 @@
       CHARACTER LEVEL(N)*10
       CHARACTER*4 KEYCOL(N, N)
       character*10 cread,help
-      DIMENSION WAVARR(N, NF),SIGARR(N, NF)
 
       real*8,dimension(*) :: ALTESUM, COCO, FWEIGHT
 
@@ -93,7 +87,7 @@
 
       real*8,dimension(*) :: WEIGHT,XJC,XJL
       real*8 ELEVEL(N), EION(N), EINST(N, N)
-      real*8 XLAMBDA(NF), ALPHA(*),SEXPO(*)
+
       character*8 :: agaunt(N)
       COMMON /GIIIERR/  NTUP,NTLOW,NFUP,NFLOW,NHELP
 
