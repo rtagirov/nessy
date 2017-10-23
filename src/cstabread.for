@@ -56,6 +56,13 @@
       call assert((WAVARR(low, k) .ge. wavenum) .and. (WAVARR(low, k + 1) .le. wavenum),
      &            'cstabread: wavenum does not fit, Index not correct')
       !* End Binary search
+
+!      if (.not. ((WAVARR(low, k) .ge. wavenum) .and. (WAVARR(low, k + 1) .le. wavenum))) then
+
+!         write(*, '(A,2x,I4,2x,I4,3(2x,F10.4))'), 'cstabread: ', low, k, 1.0d8 / wavenum, 
+!     $                                           1.0d8 / wavarr(low, k), 1.0d8 / wavarr(low, k + 1)
+
+!      endif
       
       WAV1 = WAVARR(low, k)
       SIG1 = SIGARR(low, K)

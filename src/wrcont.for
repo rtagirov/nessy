@@ -147,6 +147,8 @@
 
       FRQS: DO K = 1, NF
 
+!        print*, 'wrcont: ', k, xlambda(k)
+
 !       now extract XJC and EDDI for the frequency K
         CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
 

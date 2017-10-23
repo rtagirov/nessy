@@ -200,8 +200,6 @@ C*******************************************************************************
       KEYCOL(:, :)  = '    '
       EINST (:, :)  = -one
 
-      !--------------------- Initialization Rinat Tagirov ----------------
-
       nfirst(:) = 0
       nlast(:) =  0
 
@@ -226,13 +224,15 @@ C*******************************************************************************
 
       agaunt(:) = '        '
 
-      !--------------------- Initialisation Rinat Tagirov ----------------
+      wavarr(:, :) = 0.0d0
+      sigarr(:, :) = 0.0d0
 
       OPEN(4, FILE = datom_file, status='old', readonly)
 
       IECHO = 0
 
       ! ------------- end init ------------------------------
+
     1 READ(4,'(A)',END=66) KARTE
 
       IF (KARTE(:1) .EQ. '*' ) GOTO 1     ! comment
