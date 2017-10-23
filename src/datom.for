@@ -157,7 +157,7 @@ C*******************************************************************************
       call system('rm -f lev.temp')
       call system('rm -f lin.temp')
 
-      allocate(kodat(elenum))
+      allocate(kodat(30))
       allocate(nfirst(elenum))
       allocate(nlast(elenum))
       allocate(atmass(elenum))
