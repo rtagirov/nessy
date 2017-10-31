@@ -5,7 +5,7 @@
       SUBROUTINE PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
      $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,
      $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
-     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR, NF, NFDIM)
+     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR,NF,NFDIM)
 C***********************************************************************
 C***  PRINTOUT OF THE NLTE OPTICAL DEPTH SCALES (ROSSELAND, THOMSON)
 C***********************************************************************

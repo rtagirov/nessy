@@ -2,7 +2,7 @@
 
       contains
 
-      subroutine RADNET(N, ENLTE, TL, WEIGHT, NCHARG, EION, ELEVEL, EINST,
+      subroutine RADNET(N, N_full, ENLTE, TL, WEIGHT, NCHARG, EION, ELEVEL, EINST,
      $                  SL, EN, NOM, RRATE, XLAMBDA, FWEIGHT,
      $                  XJC, NF, XJL, SIGMAKI, LASTIND, LEVEL, DP, ITNEL)
 
@@ -22,11 +22,13 @@
 
       PARAMETER (one = 1.0D0)
 
+      integer, intent(in) :: N, N_full
+
       DIMENSION EINST(N, N)
       DIMENSION NCHARG(N), ELEVEL(N)
       DIMENSION EION(N), ENLTE(N), WEIGHT(N), EN(N)
       DIMENSION NOM(N)
-      DIMENSION SIGMAKI(NF, N)
+      DIMENSION SIGMAKI(NF, N_full)
       DIMENSION XLAMBDA(NF), FWEIGHT(NF)
 
       INTEGER, INTENT(IN)                    :: DP

@@ -273,7 +273,7 @@ CMH - new: needed to calculate new collision cross sections for Hminus
 
 !     RADIATIVE RATES ARE CALCULATED WITH THE MODIFIED RADIATION FIELD
 
-      CALL RADNET(N, ENLTE, TL, WEIGHT, NCHARG, EION, ELEVEL, EINST,
+      CALL RADNET(N, N_full, ENLTE, TL, WEIGHT, NCHARG, EION, ELEVEL, EINST,
      $            SLNEW(1 : LASTIND), EN(1 : N), NOM, RRATE, XLAMBDA, FWEIGHT,
      $            XJCAPP(1 : NF), NF, XJLAPP(1 : LASTIND), SIGMAKI, LASTIND,
      $            LEVEL, L, ITNEL)
