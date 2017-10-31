@@ -72,9 +72,9 @@ for PID in `pgrep hminus.exe`; do
 
              LAMBDA_ITE=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $1}')
 
-             CORMAX_ALL=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $2}')
-             CORMAX_NHN=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $4}')
-             CORMAX_HYD=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $5}')
+             CORMAX_ALL=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $3}')
+             CORMAX_NHN=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $5}')
+             CORMAX_HYD=$(tail -1 /proc/$PID/cwd/$CONV_FILE | awk '{print $6}')
 
              echo -n "ALI = $LAMBDA_ITE; "
 
