@@ -260,8 +260,6 @@ C***  ELEMENTS ---------------------------------------------------------
       LEVSEQ = 0
       read (KARTE,FORMAT_ELEMENT) ELEMENT(NATOM),SYMBOL(NATOM),ATMASS(NATOM),STAGE(NATOM)
 
-      print*, ELEMENT(NATOM)
-
       IF ((ELEMENT(NATOM) .EQ. 'HELIUM    ') .AND. (SYMBOL(NATOM) .EQ. 'HE' .or. SYMBOL(NATOM) .EQ. 'He')) THEN
 
              KODAT(1) = NATOM; eleatnum(NATOM) = 2

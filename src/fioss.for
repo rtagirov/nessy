@@ -738,7 +738,7 @@
       !***  For the first loop, the line dependent radiation field
       !***  must be set to the continuum radiation field
 
-      XJ(:,:) = XJC(L)
+      XJ(L, :) = XJC(L)
 
       !***  Reset the (old) Profile which is used as Loop - Terminator
       !*    to be sure, that the second Loop is executed
@@ -912,9 +912,10 @@
         PRINT *,'************************************'
       ENDIF
 !***  OUTPUT FOR THE DETECTED LINE:
+
       LOW=INDLOW(LINE)
       NUP=INDNUP(LINE)
-!234567890 234567890 234567890 234567890 234567890 234567890 234567890 
+
       IF (PLOT)
      $   CALL LPPLOT (6,XOBS0,DXOBS,NFOBS,PROFILE,KARTE,MODHEAD,JOBNUM)
 

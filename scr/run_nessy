@@ -73,6 +73,8 @@ NEWWRCStringPattern='.*NEWWRC=   .*'
 
 ATM_MOD_DIR=$nessy_inp/atm/
 DATOM_DIR=$nessy_inp/ato
+FGRID_DIR=$nessy_inp/fgr
+CARDS_DIR=$nessy_inp/car
 VEL_FIELD_DIR=$nessy_inp/vel/
 
 DATOM_FILE=DATOM_NLTE
@@ -174,6 +176,8 @@ for RUN in $RUNS; do
 
  insert "$src_prof && cd $HM_DIR$RUN" "$XTERM_CMD_FILE" "r"
 
+ if [ $CARDS ]; then check_file $CARDS_DIR/$CARDS; cp -v $CARDS_DIR/$CARDS $HM_DIR$RUN/$HM_SET; echo; fi
+
  IFS='%'
  if [ $NEWWRC ]; then xterm_cmd "sed -i 's/$NEWWRCStringPattern/$NEWWRCString/' $HM_SET"; fi
  if [ $VELPAR ]; then xterm_cmd "sed -i 's/$VelParStringPattern/$VelParString/' $HM_SET"; fi
@@ -273,9 +277,11 @@ for RUN in $RUNS; do
 
  fi
 
- if [ $ATM_MOD ]; then check_file $ATM_MOD_DIR$ATM_MOD; cp -v $ATM_MOD_DIR$ATM_MOD $HM_DIR$RUN/ATM_MOD; echo; fi
+ if [ $ATM_MOD ]; then check_file $ATM_MOD_DIR$ATM_MOD; cp -v $ATM_MOD_DIR$ATM_MOD $HM_DIR$RUN/ATM_MOD;                echo; fi
 
- if [ $DATOM ];   then check_file $DATOM_DIR/$DATOM;    cp -v $DATOM_DIR/$DATOM    $HM_DIR$RUN/$DATOM_FILE;  echo; fi
+ if [ $FGRID ];   then check_file $FGRID_DIR/$FGRID;    cp -v $FGRID_DIR/$FGRID $HM_DIR$RUN/FGRID;                     echo; fi
+
+ if [ $DATOM ];   then check_file $DATOM_DIR/$DATOM;    cp -v $DATOM_DIR/$DATOM    $HM_DIR$RUN/$DATOM_FILE;            echo; fi
 
  if [ $VEL_FIELD ]; then check_file $VEL_FIELD_DIR$VEL_FIELD; cp -v $VEL_FIELD_DIR$VEL_FIELD $HM_DIR$RUN/vel_field.in; echo; fi
 
@@ -301,6 +307,8 @@ for RUN in $RUNS; do
 
  cd $HM_DIR$RUN
 
+ if [ $CARDS ] && [ "$ODF_IT" == "0" ]; then check_file $CARDS_DIR/$CARDS; cp -v $CARDS_DIR/$CARDS $HM_DIR$RUN/$HM_SET; echo; fi
+
  IFS='%'
  if [ $NEWWRC ]; then sed -i "s/$NEWWRCStringPattern/$NEWWRCString/" $HM_SET; fi
  if [ $VELPAR ]; then sed -i "s/$VelParStringPattern/$VelParString/" $HM_SET; fi
@@ -308,9 +316,11 @@ for RUN in $RUNS; do
  if [ $JOBMAX ]; then sed -i "s/$JOBMAXStringPattern/$JOBMAXString/" $HM_SET; fi
  unset IFS
 
- if [ $ATM_MOD ] &&   [ "$ODF_IT" == "0" ]; then check_file $ATM_MOD_DIR$ATM_MOD;     cp -v $ATM_MOD_DIR$ATM_MOD     $HM_DIR$RUN/ATM_MOD;       echo; fi
+ if [ $ATM_MOD ] &&   [ "$ODF_IT" == "0" ]; then check_file $ATM_MOD_DIR$ATM_MOD;     cp -v $ATM_MOD_DIR$ATM_MOD     $HM_DIR$RUN/ATM_MOD;      echo; fi
 
- if [ $DATOM ] &&     [ "$ODF_IT" == "0" ]; then check_file $DATOM_DIR/$DATOM;        cp -v $DATOM_DIR/$DATOM        $HM_DIR$RUN/$DATOM_FILE;   echo; fi
+ if [ $FGRID ] &&   [ "$ODF_IT" == "0" ];   then check_file $FGRID_DIR/$FGRID;        cp -v $FGRID_DIR/$FGRID        $HM_DIR$RUN/FGRID;        echo; fi
+
+ if [ $DATOM ] &&     [ "$ODF_IT" == "0" ]; then check_file $DATOM_DIR/$DATOM;        cp -v $DATOM_DIR/$DATOM        $HM_DIR$RUN/$DATOM_FILE;  echo; fi
 
  if [ $VEL_FIELD ] && [ "$ODF_IT" == "0" ]; then check_file $VEL_FIELD_DIR$VEL_FIELD; cp -v $VEL_FIELD_DIR$VEL_FIELD $HM_DIR$RUN/vel_field.in; echo; fi
 
@@ -843,8 +853,8 @@ MAX_PROC=1
 branch=main
 ##############################################################################################
 
-ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:xnlF:zP:HLp:D:i:OITtj:m:A:f:v:V:N:J:g:G:"\
-                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,atm:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
+ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:xnlF:zP:HLp:D:i:OITtj:m:q:b:A:f:v:V:N:J:g:G:"\
+                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,atm:,fgr:,car:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
 
 if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
@@ -903,6 +913,10 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
        -j|--job)    HM_JOB=$2;          shift 2;;
 
        -m|--atm)    ATM_MOD=$2;         shift 2;;
+
+       -q|--fgr)    FGRID=$2;           shift 2;;
+
+       -b|--car)    CARDS=$2;           shift 2;;
 
        -A|--ato)    DATOM=$2;           shift 2;;
 
