@@ -87,10 +87,10 @@
 
       enddo
 
-      dh(ND) = extrap_to_boundary(ND, h, dh, 1)
-      dr(ND) = extrap_to_boundary(ND, h, dr, 1)
-      dT(ND) = extrap_to_boundary(ND, h, dT, 1)
-      dn(ND) = extrap_to_boundary(ND, h, dn, 1)
+      dh(ND) = extrap_to_boundary(ND, h, dh, ND - 2, ND - 1, ND)
+      dr(ND) = extrap_to_boundary(ND, h, dr, ND - 2, ND - 1, ND)
+      dT(ND) = extrap_to_boundary(ND, h, dT, ND - 2, ND - 1, ND)
+      dn(ND) = extrap_to_boundary(ND, h, dn, ND - 2, ND - 1, ND)
 
       gradT = dT / dh
 
@@ -244,45 +244,56 @@
 
       real*8, allocatable, dimension(:), intent(out) :: T, entot, radius, height
 
-      real*8, allocatable, dimension(:) :: entotn, delr
+      real*8, allocatable, dimension(:) :: entotn, delr, temp, en_tot
 
       real*8, allocatable, dimension(:) :: elec_conc, rho, vturb, pressure
 
-      integer :: k, l
+      integer :: nol, k, l
 
 !     ak - Boltzmann constant
       real*8, parameter :: ak =  1.38062259d-16
-      real*8, parameter :: mun = 1.66054d-24
+      real*8, parameter :: MUN = 1.66054d-24
 
-      ND = num_of_lines(atm_mod_file)
+      nol = num_of_lines(atm_mod_file)
+
+      ND = nol - 1
 
       allocate(T(ND))
       allocate(entot(ND))
       allocate(radius(ND))
       allocate(height(ND))
 
-      allocate(rho(ND))
-      allocate(pressure(ND))
-      allocate(elec_conc(ND))
-      allocate(vturb(ND))
-
-      allocate(entotn(ND))
-      allocate(delr(ND - 1))
+      allocate(temp(nol))
+      allocate(en_tot(nol))
+      allocate(rho(nol))
+      allocate(pressure(nol))
+      allocate(elec_conc(nol))
+      allocate(vturb(nol))
+      allocate(entotn(nol))
+      allocate(delr(ND))
 
       rho =       read_atm_file_col(1)
-      T =         read_atm_file_col(2)
+      temp =      read_atm_file_col(2)
       pressure =  read_atm_file_col(3)
       elec_conc = read_atm_file_col(4)
       vturb =     read_atm_file_col(7)
 
-!     taking into account turbulent pressure
-      entotn = pressure / (ak * T + 0.5d0 * atmean * mun * vturb**2.0d0)
+      T = temp(1 : ND)
 
-      entot  = entotn - elec_conc
+!      pressure = rho * 10.0**4.44 ! this is from the old version and I do not understand what's it doing there
+!      pressure = rho * 10.0**4.5 ! this is from the old version and I do not understand what's it doing there
 
-      do l = 1, ND - 1
+!     TAKING INTO ACCOUNT TURBULEN PRESSURE
+              
+      entotn = pressure / (AK * temp + 0.5 * ATMEAN * MUN * vturb**2.)
 
-         delr(l) = (2 / (amu * atmean * rstar)) * (rho(l + 1) - rho(l)) / (entot(l + 1) + entot(l))
+      en_tot  = entotn - elec_conc
+
+      entot = en_tot(1 : ND)
+
+      do l = 1, ND
+
+         delr(l) = (2 / (amu * atmean * rstar)) * (rho(l + 1) - rho(l)) / (en_tot(l + 1) + en_tot(l))
 
       enddo
 
@@ -292,6 +303,8 @@
 
       height = (radius - radius(ND)) * rstar / 1D+5 ! height in km, rstar in cm
 
+      deallocate(temp)
+      deallocate(en_tot)
       deallocate(rho)
       deallocate(vturb)
       deallocate(elec_conc)

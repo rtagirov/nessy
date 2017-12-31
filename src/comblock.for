@@ -1,4 +1,4 @@
-      MODULE COMMON_BLOCK
+      module common_block
 
 !     HMINUS VARIABLES
 

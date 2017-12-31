@@ -337,8 +337,8 @@
 !     Be that as it may, in what follows, to obviate this irregular behavior I linearly
 !     extrapolated LO(ND) and LO(1) using the two preceding LO elements.
 
-      lo(1) =  extrap_to_boundary(ND, height, lo, 3,      2,      1)
-      lo(ND) = extrap_to_boundary(ND, height, lo, ND - 2, ND - 1, ND)
+      lo(1) =  extrap_to_boundary(ND, height, lo, 0)
+      lo(ND) = extrap_to_boundary(ND, height, lo, 1)
 
 !     XJLMEAN is stored in XJL, LO is stored for each line in LLO (which means Line Local Operator)
       CALL STORXJL(XJL, XJLMEAN, ND, lastind_nlte, IND, llo, lo)

@@ -122,34 +122,18 @@
 
       END FUNCTION ICUBE
 
-      function extrap_to_boundary(n, x, y, flag) result(yb)
+      function extrap_to_boundary(n, x, y, bm2, bm1, b) result(yb)
 
 !     linearly extrapolates the boundary value (yb) of the array y which is a 
 !     function of x using the two preceding values (y(bm1), y(bm2))
 
-      integer, intent(in)              :: n
+      integer, intent(in) ::              n
 
       real*8, dimension(n), intent(in) :: x, y
 
-      integer, intent(in)              :: flag
+      integer, intent(in) ::              b, bm1, bm2
 
-      integer                          :: b, bm1, bm2
-
-      real*8                           :: c1, c2, yb
-
-      if (flag == 1) then
-
-         bm2 = n - 2; bm1 = n - 1; b = n
-
-      elseif (flag == 0) then
-
-         bm2 = 3;     bm1 = 2;     b = 1
-
-      else
-
-         stop 'module math, function extrap_to_boundary: argument flag is not recognized. abort.'
-
-      endif
+      real*8 ::                           c1, c2, yb
 
       c1 = (y(bm2) - y(bm1)) / (x(bm2) - x(bm1))
 
