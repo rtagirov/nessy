@@ -276,7 +276,8 @@
       vturb =     read_atm_file_col(7)
 
 !     taking into account turbulent pressure
-      entotn = pressure / (ak * T + 0.5d0 * atmean * mun * vturb**2.0d0)
+!      entotn = pressure / (ak * T + 0.5d0 * atmean * mun * vturb**2.0d0)
+      entotn = pressure / ak / T
 
       entot  = entotn - elec_conc
 
