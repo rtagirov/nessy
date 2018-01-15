@@ -106,10 +106,10 @@ C*******************************************************************************
       CHARACTER*4  CEY
       CHARACTER*3  KRUDI
 
-      CHARACTER*(*),parameter ::
-     $FORMAT_LEVEL='(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)',
-     $FORMAT_ELEMENT='(12X,A10,2X,A2,4X,F6.2,3X,F5.0)',
-     $FORMAT_LTESUM='(10X,A10,1X,A8,1X,G9.0,1X,F7.0,1X,F7.0)'
+      CHARACTER*(*), parameter ::
+     $ FORMAT_LEVEL =   '(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)',
+     $ FORMAT_ELEMENT = '(12X,A10,2X,A2,4X,F6.2,3X,F5.0)',
+     $ FORMAT_LTESUM =  '(10X,A10,1X,A8,1X,G9.0,1X,F7.0,1X,F7.0)'
 
 !      CHARACTER*34 :: FORMAT_LEVEL =   '(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)'
 !      CHARACTER*31 :: FORMAT_ELEMENT = '(12X,A10,2X,A2,4X,F6.2,3X,F5.0)'
@@ -233,9 +233,9 @@ C*******************************************************************************
 
       ! ------------- end init ------------------------------
 
-    1 READ(4,'(A)',END=66) KARTE
+    1 READ(4, '(A)', END = 66) KARTE
 
-      IF (KARTE(:1) .EQ. '*' ) GOTO 1     ! comment
+      IF (KARTE(:1) .EQ. '*' ) GOTO 1 ! comment
 
       IF (KARTE(:10) .EQ. 'ELEMENT   ') GOTO 5
       IF (KARTE(:10) .EQ. 'LEVEL     ' ) GOTO 10
