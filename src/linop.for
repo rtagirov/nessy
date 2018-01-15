@@ -9,9 +9,11 @@
 
       SUBROUTINE LINOP(ID,ABLIN,EMLIN)
 
-      use MOD_SYNSUBM, only:PROFIL,PHE1,PHE2
-      use MOD_TICTOC,  only:WRITETOC
-      use MOD_ERROR,   only:ERROR
+      use MOD_SYNSUBM, only: PROFIL,PHE1,PHE2
+      use MOD_TICTOC,  only: WRITETOC
+
+      use utils,       only: error
+
       use MOD_DECF_SYN
       use MOD_chemeq
       use constants

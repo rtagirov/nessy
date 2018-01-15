@@ -1,8 +1,12 @@
       MODULE MOD_READMSI
+
       contains
+
       SUBROUTINE READMSI (ifl,iarray,n,char,ierr)
-      use MOD_ERROR
+
+      use utils
       use MOD_FORMATS
+
 !      implicit real*8(a-h,o-z)
       implicit none
       integer :: IFL,N,IERR,I
@@ -22,11 +26,12 @@
       ierr=0
 	return
 	end SUBROUTINE
+
       SUBROUTINE READMSI1(ifl,iscalar,char,ierr)
-      use MOD_ERROR
+
+      use utils
       use MOD_FORMATS
-!      use IFCORE
-!      implicit real*8(a-h,o-z)
+
       implicit none
       integer :: IFL,IERR
       integer :: iscalar

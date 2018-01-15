@@ -15,11 +15,11 @@ C***  WCHARM: The Approximated Lambda Operator, Added 13-Mar-2006(Micha)
 C*** ATTENTION: Watch Out For The 72charcters/Line Limit!
 C******************************************************************************
 
-      USE MOD_ERROR
+      use utils
+
       USE MOD_READMS
       USE MOD_READMSI
       USE MOD_FORMATS
-      USE UTILS
 
       IMPLICIT REAL*8(A-H,O-Z)
 

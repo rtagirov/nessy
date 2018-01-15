@@ -19,8 +19,9 @@
       use MOD_REBLANK
       use MOD_WRITMOD
       use MOD_TICTOC
-      use MOD_ERROR
       use MOD_chemeq
+
+      use utils
 
       use mod_decode
       use vardatom_full
@@ -72,7 +73,8 @@
       call TIC(timer)
 
 !     READ ATOMIC DATA FROM FILE DATOM
-      CALL DATOM(datom_full,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
+      call datom('full', N, LEVEL,
+     $           NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
      $           EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
      $           INDNUP,INDLOW,LASTIND,NATOM,
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
@@ -160,7 +162,7 @@
 !     type of radiative transfer scheme implemented in the code)
 !     ...the law gets extrapolated from the point of the extremum
 !     to the innermost point yelding therefore a monotonically increasing/decreasing function.
-!     The height grid in the VEL_FIELD_FILE has to be the same as in the atmosphere model file ATM_MOD.
+!     The height grid in the VEL_FIELD_FILE has to be the same as in the atmosphere model file atm.inp.
 !     The TABLE string in CARDS file was used before to
 !     control the calculation/read-out option but is obsolete now (it is still in the CARDS file though).
 !     The logical variable VEL_FIELD_FROM_FILE is declared in comblock.for and set in hminus.for.
@@ -375,7 +377,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
       use vardatom_nlte
       use varhminus
       use common_block
-      use file_operations
+!      use file_operations
       use mod_datom
 
       implicit none
@@ -384,7 +386,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       real*8  :: eground
 
-      call datom(datom_nlte,
+      call datom('nlte',
      $           N_nlte,
      $           level_nlte,
      $           ncharg_nlte,
@@ -439,8 +441,6 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
           allocate(eleisnum_lte(natom_lte))
 
       endif
-
-      print*, 'check 1'
 
       nlte_lev(1 : N) =     .false.
 
@@ -640,9 +640,11 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
                 k = k + 1
 
-                lis_weight(j, k) = weight(i)                     ! Statistical weight of level k within the lte ionization stage j
+!               statistical weight of level k within the lte ionization stage j
+                lis_weight(j, k) = weight(i)
 
-                lis_levien(j, k) = eion(i) - elevel(i) + eground ! LEVel Ionization ENergy (LEVIEN) of the ionization energy from excited state
+ !              LEVel Ionization ENergy (LEVIEN) or the ionization energy from excited state
+                lis_levien(j, k) = eion(i) - elevel(i) + eground
 
              endif
 

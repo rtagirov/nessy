@@ -8,7 +8,8 @@
 
       USE MOD_READMS
       USE MOD_READMSI
-      use MOD_ERROR
+
+      use utils
 
       IMPLICIT REAL*8(A-H,O-Z)
 

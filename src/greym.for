@@ -41,8 +41,8 @@ C***********************************************************************
       use MOD_RK
       use MOD_DTDR
       use MOD_ODEINT
-      use MOD_ERROR
 
+      use utils
       use common_block
 
       IMPLICIT REAL*8(A-H,O-Z)

@@ -32,7 +32,9 @@ C     ***********
      $        MAXITER,felsca,RWLAE,PHEAD,PROLIB,VSINI,SHIFT,
      $        LSPRO,LSDWL,NORM,TRANS,FIN,VDOP,
      $        NPHIP,LPSTI,LPENI,JFIRSI,JLASI,COROT,iTionsel,XLMIN,XLMAX)
-      use MOD_ERROR
+
+      use utils
+
       use CONSTANTS,only:CLIGHT_SI
       implicit real*8(a-h,o-z)
       !integer,intent(in   ) :: NFODIM

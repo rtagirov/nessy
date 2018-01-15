@@ -1,6 +1,6 @@
-      MODULE FILE_OPERATIONS
+      module file_operations
 
-      IMPLICIT NONE
+      implicit none
 
       CHARACTER (LEN = 9),  PARAMETER :: NLTE_DIR_1 =        'NLTE/LEV/'
       CHARACTER (LEN = 9),  PARAMETER :: NLTE_DIR_2 =        'NLTE/TRA/'
@@ -8,15 +8,11 @@
       CHARACTER (LEN = 8),  PARAMETER :: LTE_DIR_1 =         'LTE/LEV/'
       CHARACTER (LEN = 8),  PARAMETER :: LTE_DIR_2 =         'LTE/TRA/'
 
-      CHARACTER (LEN = 8),  PARAMETER :: LTE_LINE_INT_FILE = 'LINE_INT'
-      CHARACTER (LEN = 8),  PARAMETER :: LTE_CONT_INT_FILE = 'CONT_INT'
-      CHARACTER (LEN = 7),  PARAMETER :: LTE_LEV_POP_FILE =  'LEV_POP'
-
       CHARACTER (LEN = 3),  PARAMETER :: NRRM_FILE_NAME =    'RNR' ! NRRM = Net Radiative Rate Matrix
       CHARACTER (LEN = 3),  PARAMETER :: NCRM_FILE_NAME =    'CNR' ! NCRM = Net Collision Rate Matrix
       CHARACTER (LEN = 3),  PARAMETER :: NTRM_FILE_NAME =    'TNR' ! NTRM = Net Total Rate Matrix
 
-      CHARACTER (LEN = 7),  PARAMETER :: atm_mod_file     =  'ATM_MOD'
+      CHARACTER (LEN = 7),  PARAMETER :: atm_mod_file     =  'atm.inp'
 
       CHARACTER (LEN = 12), PARAMETER :: VEL_FIELD_FILE =    'vel_field.in'
 
@@ -28,14 +24,13 @@
 
       CHARACTER (LEN = 7),  PARAMETER :: NTW_FILE =          'NLTEWAV'
 
-      CHARACTER (LEN = 10), PARAMETER :: datom_full =        'DATOM_FULL'
-      CHARACTER (LEN = 10), PARAMETER :: datom_nlte =        'DATOM_NLTE'
+      CHARACTER (LEN = 9),  PARAMETER :: atomic_data_file =  'datom.inp'
 
-      PUBLIC
+      public
 
-      CONTAINS
+      contains
 
-      SUBROUTINE CLEAN_DIR(DIR)
+      subroutine clean_dir(dir)
 
       CHARACTER (LEN = *), INTENT(IN) :: DIR
 
@@ -45,7 +40,7 @@
 
       CALL SYSTEM('rm -vrf'//' '//DIRECTORY//'*')
 
-      END SUBROUTINE
+      end subroutine
 
 
       SUBROUTINE MKDIR(DIR)
@@ -144,7 +139,7 @@
 
       n = 0; io = 0
 
-      do while (io .eq. 0)
+      do while (io == 0)
 
          read(file_unit, *, iostat = io)
 
@@ -181,6 +176,104 @@
       return
 
       end function
+
+      subroutine atomic_data_file_nums(mode, elenum, levnum, linnum)
+
+      character (len = 4), intent(in) :: mode
+
+      integer, intent(out)            :: elenum, levnum, linnum
+
+      character (len = 100)           :: str
+
+      logical                         :: element, level, line, continuum
+
+      integer                         :: io, nlte_elem_flag
+
+      if (mode /= 'nlte' .and. mode /= 'full')
+     $stop 'subroutine atomic_data_file_nums: mode is not recognized. abort.'
+
+      elenum = 0
+      levnum = 0
+      linnum = 0
+
+      open(unit = 444, file = atomic_data_file, action = 'read')
+
+      io = 0
+
+      if     (mode == 'full') then
+
+          do while (io == 0)
+
+              read(444, '(A)', iostat = io) str
+
+              if (io /= 0) exit
+
+              if (str(:1) == '*' ) continue ! ignore lines startring with '*'
+
+              element =   str(:10) == 'ELEMENT   '
+              level =     str(:10) == 'LEVEL     '
+              line =      str(:10) == 'LINE      '
+              continuum = str(:10) == 'CONTINUUM '
+
+              if (element)   elenum = elenum + 1
+              if (level)     levnum = levnum + 1
+              if (line)      linnum = linnum + 1
+              if (continuum) continue
+
+              if (.not. element .and. .not. level .and. .not. line .and. .not. continuum)
+     $        call error('unrecognized data input in '//atomic_data_file//':      '//str)
+
+          enddo
+
+      elseif (mode == 'nlte') then
+
+          do while (io == 0)
+
+              read(444, '(A)', iostat = io) str
+
+              if (io /= 0) exit
+
+              if (str(:1) == '*' ) continue ! ignore lines startring with '*'
+
+              element =   str(:10) == 'ELEMENT   '
+              level =     str(:10) == 'LEVEL     '
+              line =      str(:10) == 'LINE      '
+              continuum = str(:10) == 'CONTINUUM '
+
+              if (element) then
+
+                  if (index(str, 'NLTE') /= 0) then
+
+                      nlte_elem_flag = 1
+
+                      elenum = elenum + 1
+
+                      continue
+
+                  else
+
+                      nlte_elem_flag = 0
+
+                      continue
+
+                  endif
+
+              endif
+
+              if (level     .and. nlte_elem_flag == 1) levnum = levnum + 1
+              if (line      .and. nlte_elem_flag == 1) linnum = linnum + 1
+              if (continuum .and. nlte_elem_flag == 1) continue
+
+              if (.not. element .and. .not. level .and. .not. line .and. .not. continuum)
+     $        call error('unrecognized data input in '//atomic_data_file//':      '//str)
+
+          enddo
+
+      endif
+
+      close(444)
+
+      end subroutine atomic_data_file_nums
 
       function read_atm_file_col(col) result(array)
 
@@ -244,4 +337,4 @@
 
       end function read_atm_file_col
 
-      END MODULE FILE_OPERATIONS
+      end module

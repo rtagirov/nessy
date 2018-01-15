@@ -4,9 +4,10 @@
 
       subroutine readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
+      use utils
+
       USE MOD_READMS
       USE MOD_READMSI
-      USE MOD_ERROR
 
       IMPLICIT REAL*8(A-H,O-Z)
 

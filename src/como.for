@@ -5,7 +5,6 @@
       SUBROUTINE COMO
 
       use MOD_COOP
-      use MOD_ERROR
       use MOD_MOMO
       use MOD_PRIBLA
       use MOD_PRIMINT
@@ -16,9 +15,9 @@
       use MOD_REBLANK
       use MOD_WRITMOD
       use MOD_WRITRADC
-      use UTILS
       USE MOD_BFCROSS
 
+      use utils
       use mod_decode
       use storextr
       use common_block

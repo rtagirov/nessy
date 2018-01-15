@@ -4,7 +4,6 @@
 
       subroutine etl(job)
 
-      use UTILS, only: ASSERT
       use MOD_READMOD
       use MOD_WRITMS
       use MOD_WRITMSI
@@ -25,9 +24,10 @@
       use MOD_PRIETL
       use MOD_WRITRADL
       use MOD_FORMATS
-      use MOD_ERROR
       use MOD_TICTOC
       USE CONSTANTS
+
+      use utils, only: assert, error
 
       use mod_decode
       use storextr

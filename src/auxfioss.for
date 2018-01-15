@@ -228,12 +228,16 @@ c version with fraction of integral
       END FUNCTION
 
       function getContIdx(idxFreq)
-      use MOD_ERROR
-      use UTILS, only: ASSERT
+
+      use utils
+
       use SYNTHP_CONT, only: NFCONT
+
       implicit none
+
       include '../inc/PARAMS.FOR'
-      INCLUDE '../inc/SYNTHP.FOR'
+      include '../inc/SYNTHP.FOR'
+
       integer i,getContIdx,idxFreq
       call assert(LOC(FRXIDX)/=0,'FRXIDX is not yet available')
       call assert(idxFreq>=1,'Frequency Index can not be negative')

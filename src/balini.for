@@ -119,7 +119,7 @@ C     Interpolation in temperature and electron density from the
 C     modified VCS tables for Balmer lines to the actual valus of
 C     temperature and electron density
 C
-      USE MOD_ERROR
+      use utils
 c      INCLUDE 'IMPLIC.FOR'
       INCLUDE '../inc/IMPLIC.FOR'
       integer,intent(in   ) :: IWL,ILINE

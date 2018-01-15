@@ -1,13 +1,44 @@
-      module UTILS
+      module utils
+
       implicit none
+
       contains
+
+      subroutine error(msg, p)
+!     general error routine to terminate the program after last message has been printed
+
+      use ifcore
+
+      implicit none
+
+      logical,       intent(in), optional :: P
+
+      character*(*), intent(in) ::           msg
+
+      logical ::                             P_
+
+      P_ = .false.
+
+      if (present(P)) P_ = P
+
+      print '("error: ",$)'
+
+      print*, msg
+
+      CALL TraceBackQQ(MSG, USER_EXIT_CODE= -1_4)
+
+      if (P_) pause 'PAUSED'
+
+      stop 'error: abnormal program termination'
+
+      end subroutine error
+
       !****************************************************************
       !*** asserts that TEST is true. If not print MSG and exit program
       !*** If WARN is present and /= 0 print the message and WARN, do not exit
       !*** If the opional argument P is set to true, pause after the 
       !*** printout and before the call to error if WARN==0
       subroutine assert(TEST,MSG,WARN,P)
-      use MOD_ERROR
         logical,      intent(in) :: TEST
         integer,      intent(in),optional :: WARN
         logical,      intent(in),optional :: P
@@ -42,10 +73,10 @@
         character*10 int2str
         write(int2str,'(i10)') X
       end function int2str
+
       !*** returns a free fileunit
       !*** not threadsafe
       function getFileUnit(start)
-      use MOD_ERROR
       implicit none;
       integer,optional :: start
       integer :: getFileUnit
@@ -79,5 +110,7 @@
         if(istat/=0)
      &     print '("UTILS:CP: Warning: system returned ",i0)',istat
       endif
+
       end subroutine
-      end module UTILS
+
+      end module

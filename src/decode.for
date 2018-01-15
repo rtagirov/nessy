@@ -382,6 +382,7 @@ C***  STELLAR RADIUS IN CM
      $                  NGAMR,NGAML,AGAMR,AGAML,LINE,LASTIND,
      $                  TPLOT,Y0,TEFFE,GRAD,ALDMDT,VINF,BET,PROLIB,LBLANK)
 
+      use vardatom_nlte
       use common_block
       use file_operations
 
@@ -643,15 +644,16 @@ C                          ====
 
             IF (KARTE(9:10) .EQ. 'TO') THEN
 
-               CALL SYSTEM('grep LINE'//' '//datom_nlte//' '//'> temp.out')
+!               CALL SYSTEM('grep LINE'//' '//datom_nlte//' '//'> temp.out')
 
-               IND2 = NUM_OF_LINES('temp.out')
+!               IND2 = NUM_OF_LINES('temp.out')
+               IND2 = lastind_nlte
 
-               CALL SYSTEM('rm temp.out')
+!               CALL SYSTEM('rm temp.out')
 
             ELSE
 
-                  IND2 = IND1
+               IND2 = IND1
 
             ENDIF
 
@@ -873,6 +875,7 @@ C                         ========
 
       subroutine decetl(LSOPA, LSINT, VDOP, LINE, NLINE, LINEKEY, LASTIND, LBLANK)
 
+      use vardatom_nlte
       use file_operations
 
 !     DECODES INPUT CARDS FOR MAIN PROGRAM "ETL"
@@ -941,11 +944,12 @@ C                         =====
 
         IF (KARTE(9:10) .EQ. 'TO') THEN
 
-           CALL SYSTEM('grep LINE'//' '//datom_nlte//' '//'> temp.out')
+!           CALL SYSTEM('grep LINE'//' '//datom_nlte//' '//'> temp.out')
 
-           IND2 = NUM_OF_LINES('temp.out')
+!           IND2 = NUM_OF_LINES('temp.out')
+           IND2 = lastind_nlte
 
-           CALL SYSTEM('rm temp.out')
+!           CALL SYSTEM('rm temp.out')
 
         ELSE
 

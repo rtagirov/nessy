@@ -17,12 +17,11 @@ PREV_RUN_DIR=$INIT_DIR/hminus/IT$PREV_ODF_IT/$RUN
 
 ORIG_SRC=$src
 ORIG_EXE_FILE=$PREV_RUN_DIR/hminus.exe
-DATOM_FULL=$PREV_RUN_DIR/DATOM_FULL
-DATOM_NLTE=$PREV_RUN_DIR/DATOM_NLTE
+DATOM=$PREV_RUN_DIR/datom.inp
 FGRID_FILE=$PREV_RUN_DIR/FGRID
-FALVD_FILE=$PREV_RUN_DIR/ATM_MOD
+FALVD_FILE=$PREV_RUN_DIR/atm.inp
 CROSS_SECTION_FILES=$inp/crs/002
-CHEMIN_FILE=$PREV_RUN_DIR/chem.in
+CHEMIN_FILE=$PREV_RUN_DIR/chem.inp
 RUN_DIR=$INIT_DIR/hminus/IT${ODF_IT}/$RUN
 
 if [ ${ODF_IT} != 0 ]; then
@@ -65,8 +64,7 @@ change_dir $INIT_DIR
 
 THIS_SCRIPT=$0
 echo "===================================================================================================
-DATOM_FULL =          $DATOM_FULL
-DATOM_NLTE =          $DATOM_NLTE
+DATOM =               $DATOM
 FGRID_FILE =          $FGRID_FILE
 CROSS_SECTION_FILES = $CROSS_SECTION_FILES
 PREV_RUN_DIR =        $PREV_RUN_DIR
@@ -78,7 +76,7 @@ ORIG_SRC =            $ORIG_SRC
 LBKG =                $LBKG
 ==================================================================================================="; echo
 
-error_ifunset CROSS_SECTION_FILES DATOM_FULL DATOM_NLTE FGRID_FILE FALVD_FILE RUN_DIR ORIG_SRC 
+error_ifunset CROSS_SECTION_FILES DATOM FGRID_FILE FALVD_FILE RUN_DIR ORIG_SRC 
 
 pushd . &> /dev/null
 cd        $ORIG_SRC
@@ -87,12 +85,12 @@ popd &> /dev/null
 
 rm_dir $RUN_DIR; create_dir $RUN_DIR; change_dir ${RUN_DIR}
 
-cp -v ${DATOM_FULL}            ./DATOM_FULL
-cp -v ${DATOM_NLTE}            ./DATOM_NLTE
 cp -v ${FGRID_FILE}            ./FGRID
-cp -v ${FALVD_FILE}            ./ATM_MOD
 cp -v ${CROSS_SECTION_FILES}/* ./
-cp -v ${CHEMIN_FILE}           ./chem.in
+
+cp -v ${FALVD_FILE}            ./atm.inp
+cp -v ${DATOM}                 ./datom.inp
+cp -v ${CHEMIN_FILE}           ./chem.inp
 
 cmd "cp -v ${ORIG_EXE_FILE} ./"
 cmd "cp -v ${FIOSS_DIR}/fioss.exe ./"

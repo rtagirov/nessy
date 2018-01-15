@@ -1315,7 +1315,7 @@
       CHARACTER*2 atom(4), mol(4,4)
 
       nunit1=90
-      open(nunit1, file='chem.in', status='unknown', ACTION='READ' )
+      open(nunit1, file = 'chem.inp', status = 'unknown', action = 'read')
       read(nunit1,10) N
  10   FORMAT(i2)
 !      allocate(mol(N,N))

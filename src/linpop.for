@@ -88,9 +88,10 @@
 !     V1(J) = B-VEKTOR COMPUTED IN COMA()
 !     V2 - V5(J) = HELP-VEKTOR FOR BROYDEN ALGORITHM
 
+      use utils
+
       USE MOD_BFCROSS
       use MOD_ERF_INF
-      USE MOD_ERROR
       use MOD_FLGRID
       use MOD_ISRCHFGT
       use MOD_LTEPOP

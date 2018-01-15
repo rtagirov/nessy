@@ -221,7 +221,7 @@ C***  MATRIX A
 C***  N = RANK OF SUBMATRIX (LEFT UPPER BLOCK) TO BE INVERTED
 C******************************************************************************
 
-      USE MOD_ERROR
+      use utils
 
       implicit real*8(a - h, o - z)
 

@@ -1,12 +1,39 @@
-      module MOD_DATOM
+      module mod_datom
 
       contains
 
-      subroutine DATOM(datom_file,N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,MAINQN,
-     $                 EINST,ALPHA,SEXPO,AGAUNT,COCO,KEYCOL,ALTESUM,
-     $                 INDNUP,INDLOW,LASTIND,NATOM,
-     $                 ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
-     $                 NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM)
+      subroutine datom(mode,
+     $                 N,
+     $                 LEVEL,
+     $                 NCHARG,
+     $                 WEIGHT,
+     $                 ELEVEL,
+     $                 EION,
+     $                 MAINQN,
+     $                 EINST,
+     $                 ALPHA,
+     $                 SEXPO,
+     $                 AGAUNT,
+     $                 COCO,
+     $                 KEYCOL,
+     $                 ALTESUM,
+     $                 INDNUP, 
+     $                 INDLOW,
+     $                 LASTIND,
+     $                 NATOM,
+     $                 ELEMENT,
+     $                 SYMBOL,
+     $                 NOM,
+     $                 KODAT,
+     $                 ATMASS,
+     $                 STAGE,
+     $                 NFIRST,
+     $                 NLAST,
+     $                 WAVARR,
+     $                 SIGARR,
+     $                 eleatnum,
+     $                 levatnum,
+     $                 NFDIM)
 
 C*** CALLED BY COMO, ETL, STEAL, WRCONT, WRSTART, FIOSS
 C*******************************************************************************
@@ -57,17 +84,21 @@ C***                         COPPER    (CU)           29
 C***                         ZINK      (ZN)           30
 C*********************************************************************************
 
-      use MOD_ERROR
-
+      use utils
       use file_operations
 
       implicit none
+
+      character (len = 4), intent(in)                        :: mode
+
+      integer, intent(in)                                    :: NFDIM
 
       integer, intent(out)                                   :: N, NATOM, LASTIND
 
       integer, intent(out), allocatable, dimension(:)        :: KODAT, NOM, NFIRST, NLAST, INDLOW, INDNUP, NCHARG, MAINQN
 
-      integer, intent(out), allocatable, dimension(:)        :: eleatnum, levatnum ! eleatnum - atomic number of an element, levatnum - atomic number of a level
+!     eleatnum - atomic number of an element, levatnum - atomic number of a level
+      integer, intent(out), allocatable, dimension(:)        :: eleatnum, levatnum
 
       real*8,  intent(out), allocatable, dimension(:)        :: ATMASS, ALPHA, EION, ELEVEL, SEXPO, WEIGHT, STAGE
 
@@ -83,8 +114,6 @@ C*******************************************************************************
 
       character*10, intent(out), allocatable, dimension(:)   :: level, element
 
-      integer, intent(in)                                    :: NFDIM
-
       !private variables
       integer ::     I, IND, IRANGE, IECHO, J, LEV, LEVSEQ, LOW, LOWP
       integer ::     MQN, NA, NCHG, NUP, NW
@@ -95,7 +124,7 @@ C*******************************************************************************
 
       integer ::     elenum, levnum, linnum
 
-      character(len = *) :: datom_file
+      integer ::     nlte_elem_flag
 
       !constants
       real*8, parameter :: ONE = 1.D+0
@@ -110,10 +139,6 @@ C*******************************************************************************
      $ FORMAT_LEVEL =   '(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)',
      $ FORMAT_ELEMENT = '(12X,A10,2X,A2,4X,F6.2,3X,F5.0)',
      $ FORMAT_LTESUM =  '(10X,A10,1X,A8,1X,G9.0,1X,F7.0,1X,F7.0)'
-
-!      CHARACTER*34 :: FORMAT_LEVEL =   '(12X,A10,1X,I2,1X,I4,2F10.0,1X,I2)'
-!      CHARACTER*31 :: FORMAT_ELEMENT = '(12X,A10,2X,A2,4X,F6.2,3X,F5.0)'
-!      CHARACTER*39 :: FORMAT_LTESUM =  '(10X,A10,1X,A8,1X,G9.0,1X,F7.0,1X,F7.0)'
 
 !     ---------------------- Array Allocation ------------------
 
@@ -145,17 +170,23 @@ C*******************************************************************************
       if (allocated(level))    deallocate(level)
       if (allocated(element))  deallocate(element)
 
-      call system('grep -irw ELEMENT'//' '//datom_file//' '//'> ele.temp')
-      call system('grep -irw LEVEL'  //' '//datom_file//' '//'> lev.temp')
-      call system('grep -irw LINE'   //' '//datom_file//' '//'> lin.temp')
+!      call system('grep -irw ELEMENT'//' '//atomic_data_file//' '//'> ele.temp')
+!      call system('grep -irw LEVEL'  //' '//atomic_data_file//' '//'> lev.temp')
+!      call system('grep -irw LINE'   //' '//atomic_data_file//' '//'> lin.temp')
 
-      elenum = num_of_lines('ele.temp')
-      linnum = num_of_lines('lin.temp')
-      levnum = num_of_lines('lev.temp')
+!      elenum = num_of_lines('ele.temp')
+!      linnum = num_of_lines('lin.temp')
+!      levnum = num_of_lines('lev.temp')
 
-      call system('rm -f ele.temp')
-      call system('rm -f lev.temp')
-      call system('rm -f lin.temp')
+!      call system('rm -f ele.temp')
+!      call system('rm -f lev.temp')
+!      call system('rm -f lin.temp')
+
+      call atomic_data_file_nums(mode, elenum, levnum, linnum)
+
+      print*, elenum, levnum, linnum
+
+      stop
 
       allocate(kodat(30))
       allocate(nfirst(elenum))
@@ -190,6 +221,7 @@ C*******************************************************************************
       allocate(wavarr(levnum, NFDIM))
 
       ! ------------------- Begin init -------------------------
+
       NATOM = 0
       N = 0
       LEVSEQ = 0
@@ -227,32 +259,61 @@ C*******************************************************************************
       wavarr(:, :) = 0.0d0
       sigarr(:, :) = 0.0d0
 
-      OPEN(4, FILE = datom_file, status='old', readonly)
+      open(unit = 4, file = atomic_data_file, action = 'read')
 
-      IECHO = 0
+      iecho = 0
 
       ! ------------- end init ------------------------------
 
-    1 READ(4, '(A)', END = 66) KARTE
+    1 read(4, '(A)', end = 66) karte
 
-      IF (KARTE(:1) .EQ. '*' ) GOTO 1 ! comment
+      if (karte(:1) == '*' )               goto 1 ! ignore lines startring with '*'
 
-      IF (KARTE(:10) .EQ. 'ELEMENT   ') GOTO 5
-      IF (KARTE(:10) .EQ. 'LEVEL     ' ) GOTO 10
+      if     (mode == 'full') then
 
-      IF (KARTE(:10) .EQ. 'LINE      ' ) GOTO 20
-      IF (KARTE(:10) .EQ. 'CONTINUUM ' ) GOTO 30
-      IF (KARTE(:10) .EQ. 'LTESUM    ') GOTO 40
-c     ignore dielectronic option
-      IF (KARTE(:10) .EQ. 'DIELECREC ') GOTO 1  ! ignored
-      IF (KARTE(:10) .EQ. 'DRTRANSIT ') GOTO 1  ! ignored
-      print *, 'UNRECOGNIZED DATA INPUT IN DATOM: '
-      print *,'KARTE="'//KARTE//'"'
-      CALL ERROR('UNRECOGNIZED DATA INPUT IN DATOM: "'//KARTE//'"')
-    3 IECHO=1
-      GOTO 1
+          if (karte(:10) == 'ELEMENT   ')  goto 5
 
-C***  ELEMENTS ---------------------------------------------------------
+          if (karte(:10) == 'LEVEL     ' ) goto 10
+
+          if (karte(:10) == 'LINE      ' ) goto 20
+
+          if (karte(:10) == 'CONTINUUM ' ) goto 30
+
+      elseif (mode == 'nlte') then
+
+          if (karte(:10) == 'ELEMENT   ')  then
+
+              if (index(karte, 'NLTE') /= 0) then
+
+                  nlte_elem_flag = 1
+
+                  goto 5
+
+              else
+
+                  nlte_elem_flag = 0
+
+                  goto 1
+
+              endif
+
+          endif
+
+          if (karte(:10) == 'LEVEL     ' .and. nlte_elem_flag == 1) goto 10
+
+          if (karte(:10) == 'LINE      ' .and. nlte_elem_flag == 1) goto 20
+
+          if (karte(:10) == 'CONTINUUM ' .and. nlte_elem_flag == 1) goto 30
+
+      endif
+
+      call error('unrecognized data input in datom:      '//karte)
+
+    3 iecho = 1
+
+      goto 1
+
+!     ELEMENTS ---------------------------------------------------------
     5 NATOM = NATOM + 1
 
       if (natom .gt. 30) stop 'datom: natom > 30'
@@ -390,7 +451,7 @@ CMH  MODEL ATOM OF "NICKEL" DECODED
 
       ENDIF
 
-      GOTO 1
+      goto 1
 
 !     LEVELS -----------------------------------------------------------
    10 N = N + 1
@@ -568,7 +629,7 @@ C***  FIND LOWER INDEX
       GOTO 1
      
 C***  END OF INPUT DATA REACHED  ---------------------------------------
-   66 CLOSE (4)
+   66 CLOSE(4)
      
 C***  SOME CHECKS OF THE INPUT DATA ....................
       IF(N.EQ.0) THEN

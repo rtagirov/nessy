@@ -7,8 +7,6 @@
 !     POPULATION NUMBERS IN THERMODYNAMIC EQUILIBRIUM FOR ALL ELEMENTS
 !     CALLED BY GREYM, POPZERO, LINPOP
 
-      use mod_error
-
       IMPLICIT REAL*8(A - H, O - Z)
 
       DIMENSION ENLTE(N), WEIGHT(N), NCHARG(N), EION(N), ELEVEL(N), NOM(N)
@@ -32,8 +30,7 @@ C***  BOLTZMANN FACTOR
       ENLTE(J)=EXP(C1*(ELEVEL(J-1)-ELEVEL(J))/TL)*WEIGHT(J)/WEIGHT(J-1)
      $      * ENLTE(J-1)
 
-!      print*, tl, na, j, enlte(j)
-	IF(NOM(J) .NE. NOM(NFIRNA)) STOP 'LTEPOP:WRONG ELEMENT MEMBERSHIP'
+      IF(NOM(J) .NE. NOM(NFIRNA)) STOP 'LTEPOP:WRONG ELEMENT MEMBERSHIP'
       IF (NCHARG(J) .EQ. NCHARG(J-1) ) GOTO 1
       IF (NCHARG(J) .NE. NCHARG(J-1)+1 )
      $            STOP "LTEPOP: INVALID CHARGE DIFFERENCE"
@@ -51,10 +48,10 @@ C***  NORMALIZATION
 
     3 ENLTE(J)=ENLTE(J)/SUM     
 
-    9 CONTINUE
+    9 continue
     
-      RETURN
+      return
 
-      END subroutine
+      end subroutine
 
       end module

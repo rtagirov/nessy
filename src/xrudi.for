@@ -4,9 +4,9 @@
 
       SUBROUTINE XRUDI(XJ, WAVENUM, XJC, XLAMBDA, ND, NF, L)
 
-      use MOD_TRADFUN
-      use MOD_ERROR
+      use mod_tradfun
 
+      use utils
       use phys
 
 !     INTERPOLATION OF THE CONTINUUM RADIATION FIELD AT WAVENUM

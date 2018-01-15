@@ -16,9 +16,9 @@ C******************************************************************************
 !	readrad.for, writradc
       use MOD_WRITMS,only: WRITMS1,WRITMS
       use MOD_WRITMSI,only: WRITMSI1
-      use MOD_ERROR,only:ERROR
       use MOD_FORMATS,only:FMT_KEY
 
+      use utils, only: error
       use phys
 
       implicit none

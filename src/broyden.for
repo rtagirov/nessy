@@ -79,7 +79,7 @@ C***  copy file 18 to file.19
       SUBROUTINE DBSAVE(A1, L, N)
 !     SAVE ARRAY IN A1 FORT.19
 
-      USE MOD_ERROR
+      use utils
       USE MOD_FORMATS
 
       IMPLICIT REAL*8(A - H, O - Z)
@@ -101,7 +101,7 @@ C***  copy file 18 to file.19
 
       SUBROUTINE DBLOAD(A1, L, N)
 C***  LOAD ARRAY IN A1 FORT.19
-      USE MOD_ERROR
+      use utils
       use MOD_FORMATS
 
       IMPLICIT REAL*8(A-H,O-Z)

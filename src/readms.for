@@ -14,7 +14,7 @@
 !     micha - 2007-02-01: Added support for old-style radioc files with no WCHA* Data.
 !               if no WCHA* data exist the array is filled with 0's
 
-      USE MOD_ERROR
+      use utils
       use MOD_FORMATS
 
       implicit none
@@ -84,7 +84,9 @@
 !
 !     micha - 2007-02-01: Added support for old-style radioc files with no WCHA* Data.
 !               if no WCHA* data exist the array is filled with 0's
-      USE MOD_ERROR
+
+      use utils
+
       use MOD_FORMATS
 
       implicit none

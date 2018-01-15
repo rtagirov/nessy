@@ -1,6 +1,6 @@
       MODULE MOD_COLLI
 
-      USE MOD_ERROR
+      use utils
 
       contains
 

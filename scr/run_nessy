@@ -77,9 +77,9 @@ FGRID_DIR=$nessy_inp/fgr
 CARDS_DIR=$nessy_inp/car
 VEL_FIELD_DIR=$nessy_inp/vel/
 
-DATOM_FILE=DATOM_NLTE
+DATOM_FILE=datom.inp
 
-FILES_TO_IGNORE='CARDS ATM_MOD vel_field.in'
+FILES_TO_IGNORE='CARDS atm.inp vel_field.in'
 ##############################################################################################################################
 
 function compile
@@ -277,7 +277,7 @@ for RUN in $RUNS; do
 
  fi
 
- if [ $ATM_MOD ]; then check_file $ATM_MOD_DIR$ATM_MOD; cp -v $ATM_MOD_DIR$ATM_MOD $HM_DIR$RUN/ATM_MOD;                echo; fi
+ if [ $ATM_MOD ]; then check_file $ATM_MOD_DIR$ATM_MOD; cp -v $ATM_MOD_DIR$ATM_MOD $HM_DIR$RUN/atm.inp;                echo; fi
 
  if [ $FGRID ];   then check_file $FGRID_DIR/$FGRID;    cp -v $FGRID_DIR/$FGRID $HM_DIR$RUN/FGRID;                     echo; fi
 
@@ -316,7 +316,7 @@ for RUN in $RUNS; do
  if [ $JOBMAX ]; then sed -i "s/$JOBMAXStringPattern/$JOBMAXString/" $HM_SET; fi
  unset IFS
 
- if [ $ATM_MOD ] &&   [ "$ODF_IT" == "0" ]; then check_file $ATM_MOD_DIR$ATM_MOD;     cp -v $ATM_MOD_DIR$ATM_MOD     $HM_DIR$RUN/ATM_MOD;      echo; fi
+ if [ $ATM_MOD ] &&   [ "$ODF_IT" == "0" ]; then check_file $ATM_MOD_DIR$ATM_MOD;     cp -v $ATM_MOD_DIR$ATM_MOD     $HM_DIR$RUN/atm.inp;      echo; fi
 
  if [ $FGRID ] &&   [ "$ODF_IT" == "0" ];   then check_file $FGRID_DIR/$FGRID;        cp -v $FGRID_DIR/$FGRID        $HM_DIR$RUN/FGRID;        echo; fi
 
@@ -697,7 +697,7 @@ for RUN in $RUNS; do
 
     while [ "$SSLC" -le "120" ]; do sleep $RTB; SSLC=`expr $(date +%s) - $(date +%s -r $LBKG_CONTROL_FILE)`; done
 
-    DIM=$(wc -l $FI_DIR/$RUN/ATM_MOD | awk '{print $1}')
+    DIM=$(wc -l $FI_DIR/$RUN/atm.inp | awk '{print $1}')
 
     DIM="DIM "$DIM
 

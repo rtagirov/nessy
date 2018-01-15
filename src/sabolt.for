@@ -29,8 +29,9 @@
      $ RADIUS,MODHEAD,JOBNUM,
      $ Npot,Tion_pot,dil,teff,iTionsel)
 
+      use utils
+
       use MOD_DECF_SYN,only:CARDS
-      use MOD_ERROR
 
       use common_block
       use auxfioss

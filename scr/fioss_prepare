@@ -72,14 +72,14 @@ set -v
 
 rm_dir $OUTPUT_DIR; create_dir $OUTPUT_DIR; change_dir $OUTPUT_DIR
 
-$CP ${ORIG_COSI}/ATM_MOD    ./
-$CP ${ORIG_COSI}/MODFILE    ./
-$CP ${ORIG_COSI}/FGRID	    ./
-$CP ${ORIG_COSI}/DATOM_FULL ./
-$CP ${ORIG_COSI}/DATOM_NLTE	./
-$CP ${ORIG_COSI}/RADIOC     ./
-$CP ${ORIG_COSI}/RADIOL     ./
-$CP ${ORIG_COSI}/POPNUM     ./
+$CP ${ORIG_COSI}/MODFILE   ./
+$CP ${ORIG_COSI}/FGRID	   ./
+$CP ${ORIG_COSI}/RADIOC    ./
+$CP ${ORIG_COSI}/RADIOL    ./
+$CP ${ORIG_COSI}/POPNUM    ./
+
+$CP ${ORIG_COSI}/atm.inp   ./
+$CP ${ORIG_COSI}/datom.inp ./
 
 if [ -f $NTW_FILE ]; then $CP $NTW_FILE ./; fi
 if [ -f $NTP_FILE ]; then $CP $NTP_FILE ./; fi

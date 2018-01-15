@@ -4,7 +4,7 @@
 
       function ISRCHFGT(NF, array, istep, val) result(idx)
 
-      use MOD_ERROR
+      use utils
 
       real*8, dimension(NF), intent(in) :: array
 

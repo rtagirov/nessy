@@ -1,5 +1,7 @@
       PROGRAM FIOSS
 
+      use utils
+
       use MOD_COOP
       use MOD_DATOM
       use MOD_READMOD
@@ -21,16 +23,14 @@
       use MOD_PRIPRO
       use MOD_PREF_SYN
       use MOD_TICTOC
-      use MOD_ERROR
       use OPINT
-      use UTILS
       use CONSTANTS,only:CLIGHT_SI
 
       use vardatom_full
       use vardatom_nlte
       use varhminus
       use common_block
-      use file_operations
+!      use file_operations
       use auxfioss
       use mod_synopa
       use mod_quant
@@ -165,7 +165,7 @@
 
       CALL TIC()
 
-      call DATOM(datom_full,
+      call datom('full'
      $           N,
      $           LEVEL,
      $           NCHARG,
@@ -198,7 +198,7 @@
      $           levatnum,
      $           NFDIM)
 
-      call datom(datom_nlte,
+      call datom('nlte',
      $           N_nlte,
      $           level_nlte,
      $           ncharg_nlte,
