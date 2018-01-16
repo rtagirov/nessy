@@ -4,12 +4,10 @@
 
       contains
 
-      subroutine error(msg, p)
 !     general error routine to terminate the program after last message has been printed
+      subroutine error(msg, p)
 
       use ifcore
-
-      implicit none
 
       logical,       intent(in), optional :: P
 
@@ -21,11 +19,9 @@
 
       if (present(P)) P_ = P
 
-      print '("error: ",$)'
+      print '("error: ", $)'; write(*, '(A)'), msg
 
-      print*, msg
-
-      CALL TraceBackQQ(MSG, USER_EXIT_CODE= -1_4)
+!      call TraceBackQQ(msg, user_exit_code = -1_4)
 
       if (P_) pause 'PAUSED'
 
@@ -74,30 +70,43 @@
         write(int2str,'(i10)') X
       end function int2str
 
-      !*** returns a free fileunit
-      !*** not threadsafe
-      function getFileUnit(start)
-      implicit none;
-      integer,optional :: start
+      ! returns a free fileunit
+      ! not threadsafe
+      function getFileUnit(s)
+
+      integer, optional :: s
+
       integer :: getFileUnit
-      integer :: i
-      logical :: lOPENED
-      integer :: start_
-      start_=10
-      if(present(start)) start_=start
-      do i=start_,1000
-        INQUIRE(unit=i,opened=lOPENED)
-        if(.not.lOPENED) then
-          getFileUnit=i
-          return
-        endif
+
+      integer :: i, i0
+
+      logical :: taken
+
+      i0 = 100
+
+      if (present(s)) i0 = s
+
+      do i = i0, 90000
+
+         inquire(unit = i, opened = taken)
+
+         if (.not. taken) then
+
+            getFileUnit = i
+
+            return
+
+         endif
+
       enddo
-      call error('utils:getFileUnit: no open unit found')
+
+      call error('utils.for: function getFileUnit: no free unit found. abort.')
+
       end function getFileUnit
       
       !*** Copy a file from FROMFILE to TOFILE using the opional OPTS
       !*** and set the returnstatus to the opional status
-      subroutine cp(FROMFILE,TOFILE,OPTS,status)
+      subroutine copy(FROMFILE, TOFILE, OPTS, status)
       character*(*),intent(in) :: FROMFILE,TOFILE
       character*(*),intent(in),optional :: OPTS
       integer,optional,intent(inout) :: status
@@ -108,7 +117,7 @@
         status=istat
       else
         if(istat/=0)
-     &     print '("UTILS:CP: Warning: system returned ",i0)',istat
+     &     print '("utils: copy: Warning: system returned ", i0)',istat
       endif
 
       end subroutine

@@ -122,9 +122,15 @@ C*******************************************************************************
       real*8 ::      E, ELEV, F, GFG, SLOW, SIGMA
       character*8 :: AGLOW
 
-      integer ::     elenum, levnum, linnum
+      integer ::                            elenum, levnum, linnum
 
-      integer ::     nlte_elem_flag
+      logical ::                            nlte_elem
+
+      integer ::                            un
+
+      integer ::                            num_i_stages
+
+      integer, dimension(:), allocatable :: num_stage_lev
 
       !constants
       real*8, parameter :: ONE = 1.D+0
@@ -170,23 +176,9 @@ C*******************************************************************************
       if (allocated(level))    deallocate(level)
       if (allocated(element))  deallocate(element)
 
-!      call system('grep -irw ELEMENT'//' '//atomic_data_file//' '//'> ele.temp')
-!      call system('grep -irw LEVEL'  //' '//atomic_data_file//' '//'> lev.temp')
-!      call system('grep -irw LINE'   //' '//atomic_data_file//' '//'> lin.temp')
-
-!      elenum = num_of_lines('ele.temp')
-!      linnum = num_of_lines('lin.temp')
-!      levnum = num_of_lines('lev.temp')
-
-!      call system('rm -f ele.temp')
-!      call system('rm -f lev.temp')
-!      call system('rm -f lin.temp')
-
       call atomic_data_file_nums(mode, elenum, levnum, linnum)
 
-      print*, elenum, levnum, linnum
-
-      stop
+      print*, mode, elenum, levnum, linnum
 
       allocate(kodat(30))
       allocate(nfirst(elenum))
@@ -273,11 +265,11 @@ C*******************************************************************************
 
           if (karte(:10) == 'ELEMENT   ')  goto 5
 
-          if (karte(:10) == 'LEVEL     ' ) goto 10
+!          if (karte(:10) == 'LEVEL     ' ) goto 10
 
-          if (karte(:10) == 'LINE      ' ) goto 20
+!          if (karte(:10) == 'LINE      ' ) goto 20
 
-          if (karte(:10) == 'CONTINUUM ' ) goto 30
+!          if (karte(:10) == 'CONTINUUM ' ) goto 30
 
       elseif (mode == 'nlte') then
 
@@ -285,13 +277,13 @@ C*******************************************************************************
 
               if (index(karte, 'NLTE') /= 0) then
 
-                  nlte_elem_flag = 1
+                  nlte_elem = .true.
 
                   goto 5
 
               else
 
-                  nlte_elem_flag = 0
+                  nlte_elem = .false.
 
                   goto 1
 
@@ -299,15 +291,24 @@ C*******************************************************************************
 
           endif
 
-          if (karte(:10) == 'LEVEL     ' .and. nlte_elem_flag == 1) goto 10
+          if (.not. nlte_elem) goto 1
 
-          if (karte(:10) == 'LINE      ' .and. nlte_elem_flag == 1) goto 20
+!          if (karte(:10) == 'LEVEL     ') goto 10
 
-          if (karte(:10) == 'CONTINUUM ' .and. nlte_elem_flag == 1) goto 30
+!          if (karte(:10) == 'LINE      ') goto 20
+
+!          if (karte(:10) == 'CONTINUUM ') goto 30
 
       endif
 
-      call error('unrecognized data input in datom:      '//karte)
+      if (karte(:10) == 'LEVEL     ') goto 10
+
+      if (karte(:10) == 'LINE      ') goto 20
+
+      if (karte(:10) == 'CONTINUUM ') goto 30
+
+      call error('datom: mode = '//mode//'; unrecognized data input in '//
+     $           atomic_data_file//':      '//karte)
 
     3 iecho = 1
 
@@ -745,23 +746,128 @@ C***  RYDBERG FORMULA
       ELEVEL(J)=(one-one/F/F)*EION(J)
     4 CONTINUE
 
-C***  IF AGAUNT(LOW) EQ 'TABLE' READ CROSS SECTION FROM TABLE
+!     IF AGAUNT(LOW) == 'TABLE' READ CROSS SECTION FROM TABLE
+      do j = 1, N
 
-      DO J = 1, N
+         if (AGAUNT(j) == 'TABLE') call rdcsarr(level, j, wavarr, sigarr, levnum, NFDIM)
 
-         IF (AGAUNT(J) .EQ. 'TABLE') THEN
+      enddo
 
-             call RDCSARR(LEVEL,J,WAVARR,SIGARR,levnum,NFDIM)
+      return
 
-        ENDIF
+      end subroutine
 
-      ENDDO
+      subroutine atomic_data_file_nums(mode, elenum, levnum, linnum)
 
-      RETURN
+      use utils
+      use file_operations
 
-      END subroutine
+      character (len = 4), intent(in) :: mode
 
-      SUBROUTINE RDCSARR(LEVEL, J, WAVARR, SIGARR, N, NFDIM)
+      integer, intent(out)            :: elenum, levnum, linnum
+
+      character (len = 100)           :: str
+
+      logical                         :: element, level, line, continuum
+
+      logical                         :: nlte_elem
+
+      integer                         :: un, io
+
+      if (mode /= 'nlte' .and. mode /= 'full')
+     $stop 'datom: atomic_data_file_nums: mode is not recognized. abort.'
+
+      elenum = 0
+      levnum = 0
+      linnum = 0
+
+      un = getFileUnit(100)
+
+      open(unit = un, file = atomic_data_file, action = 'read')
+
+      io = 0
+
+      if     (mode == 'full') then
+
+          do while (io == 0)
+
+    1         read(un, '(A)', iostat = io) str
+
+              if (io /= 0) exit
+
+              if (str(:1) == '*' ) goto 1 ! ignore lines startring with '*'
+
+              element =   str(:10) == 'ELEMENT   '
+              level =     str(:10) == 'LEVEL     '
+              line =      str(:10) == 'LINE      '
+              continuum = str(:10) == 'CONTINUUM '
+
+              if (element)   elenum = elenum + 1
+              if (level)     levnum = levnum + 1
+              if (line)      linnum = linnum + 1
+              if (continuum) goto 1
+
+              if (.not. element .and. .not. level .and. .not. line .and. .not. continuum)
+     $        call error('datom: atomic_data_file_nums: mode = '//mode//
+     $                   '; unrecognized data input in '//atomic_data_file//':      '//str)
+
+          enddo
+
+      elseif (mode == 'nlte') then
+
+          do while (io == 0)
+
+    2         read(un, '(A)', iostat = io) str
+
+              if (io /= 0) exit
+
+              if (str(:1) == '*' ) goto 2 ! ignore lines startring with '*'
+
+              element =   str(:10) == 'ELEMENT   '
+              level =     str(:10) == 'LEVEL     '
+              line =      str(:10) == 'LINE      '
+              continuum = str(:10) == 'CONTINUUM '
+
+              if (element) then
+
+                  if (index(str, 'NLTE') /= 0) then
+
+                      nlte_elem = .true.
+
+                      elenum = elenum + 1
+
+                      goto 2
+
+                  else
+
+                      nlte_elem = .false.
+
+                      goto 2
+
+                  endif
+
+              endif
+
+              if (.not. nlte_elem) goto 2
+
+              if (level    ) levnum = levnum + 1
+              if (line     ) linnum = linnum + 1
+              if (continuum) goto 2
+
+              if (.not. element .and. .not. level .and. .not. line .and. .not. continuum)
+     $        call error('datom: atomic_data_file_nums: mode = '//mode//
+     $                   '; unrecognized data input in '//atomic_data_file//':      '//str)
+
+          enddo
+
+      endif
+
+      close(un)
+
+      end subroutine atomic_data_file_nums
+
+
+      subroutine rdcsarr(level, j, wavarr, sigarr, N, NFDIM)
 
       IMPLICIT REAL*8(A - H, O - Z)
 
@@ -826,6 +932,6 @@ CMH   SIGARR: CROSS SECTIONS FOR EACH LEVEL
 
       return
 
-      END subroutine
+      end subroutine
 
       end module

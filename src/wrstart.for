@@ -82,6 +82,8 @@
 
       call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
 
+      call print_istageinfo(natom, N, nfirst, nlast, ncharg)
+
       allocate(ABXYZ(NATOM))
 
 !     DECODING INPUT DATA
@@ -295,9 +297,9 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
    
       close(78)
 
-      RETURN
+      return
  
-      END SUBROUTINE
+      end subroutine
 
       subroutine print_eion(N, level, levatnum, ncharg, eion, elevel, E_ionization)
 
@@ -325,6 +327,80 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
       close(2764)
 
       end subroutine
+
+      subroutine print_istageinfo(natom, N, nfirst, nlast, ncharg)
+
+      use utils
+
+      implicit none
+
+      integer, intent(in)                   :: N, natom
+
+      integer, intent(in), dimension(natom) :: nfirst, nlast
+
+      integer, intent(in), dimension(N)     :: ncharg
+
+      integer,             dimension(natom) :: num_i_stages
+
+      integer, allocatable, dimension(:)    :: num_stage_lev
+
+      integer                               :: un, i, sc, na, msc
+
+      un = getFileUnit(100)
+
+      open(unit = un, file = 'istageinfo.out', action = 'write')
+
+      do na = 1, natom
+
+!     number of ionization stsages within each element
+          num_i_stages(na) = 1
+
+          do i = nfirst(na), nlast(na) - 1
+
+              if (ncharg(i + 1) /= ncharg(i)) num_i_stages(na) = num_i_stages(na) + 1
+    
+          enddo
+
+      enddo
+
+      msc = maxval(num_i_stages)
+
+      allocate(num_stage_lev(msc))
+
+      do na = 1, natom
+
+         num_stage_lev(:) = 0
+
+         sc = 1
+
+         do i = nfirst(na), nlast(na)
+
+            num_stage_lev(sc) = num_stage_lev(sc) + 1
+
+            if (i == nlast(na)) exit
+
+            if (ncharg(i + 1) /= ncharg(i)) sc = sc + 1
+
+         enddo
+
+         write(un, '(i2,$)') num_i_stages(na)
+
+         do i = 1, msc
+
+            if (i /= msc) write(un, '(2x,i2,$)') num_stage_lev(i)
+            if (i == msc) write(un, '(2x,i2)')   num_stage_lev(i)
+
+         enddo
+
+      enddo
+
+      deallocate(num_stage_lev)
+
+      close(un)
+
+      return
+
+      end subroutine print_istageinfo
 
       FUNCTION EXTRAP_VEL_FIELD(VEL, ND) RESULT(VEL_E)
 

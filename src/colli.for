@@ -1,19 +1,19 @@
-      MODULE MOD_COLLI
+      module mod_colli
 
       use utils
 
       contains
 
-      subroutine COLLI(N, ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
+      subroutine colli(N, ENLTE, TL, ENE, NCHARG, ELEVEL, EINST, CRATE,
      $                 EION, COCO, KEYCOL, WEIGHT, ALTESUM, NATOM, NOM, KODAT,
      $                 levatnum, POPHIIL, POPHML, POPHIL, LEVEL, JOBNUM, DP)
 
-!     COLLISIONAL TRANSITION RATES STORED IN MATRIX CRATE
-!     BOUND-BOUND: DEPENDING ON THE ELEMENT (HE, H)
-!     BOUND-FREE: NOT DEPENDING ON THE ELEMENT (HE, H)
-!     CALLED BY NONLTEPOP, COMA
+!     collisional transition rates stored in matrix CRATE
+!     bound-bound: depending on the element (HE, H)
+!     bound-free: not depending on the element (HE, H)
+!     called by coma
 
-CMH   ENLTE: LTE POPULATION NUMBER FOR EACH LEVEL
+!     enlte: lte population number for each level
 
       use hyd_col_rate
       use phys

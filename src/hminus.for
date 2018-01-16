@@ -27,14 +27,12 @@
       END SUBROUTINE
       
 
-      SUBROUTINE HMINUS_LTE
+      subroutine hminus_lte
 
-      use MOD_TICTOC
-      use UTILS,only: cp
-
+      use mod_tictoc
       use file_operations
 
-      IMPLICIT NONE
+      implicit none
 
       integer itemp
       integer itsw
@@ -129,7 +127,6 @@
       use MOD_COMO
       use MOD_ETL
       use MOD_TICTOC
-      use UTILS, only: cp
       use MOD_HMINUS
 
       use common_block
