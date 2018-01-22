@@ -82,7 +82,7 @@
 
       call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
 
-      call print_istageinfo(natom, N, nfirst, nlast, ncharg)
+      call print_istageinfo(natom, N, symbol, nfirst, nlast, ncharg)
 
       allocate(ABXYZ(NATOM))
 
@@ -328,36 +328,38 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       end subroutine
 
-      subroutine print_istageinfo(natom, N, nfirst, nlast, ncharg)
+      subroutine print_istageinfo(natom, N, symbol, nfirst, nlast, ncharg)
 
       use utils
 
       implicit none
 
-      integer, intent(in)                   :: N, natom
+      integer, intent(in)                               :: N, natom
 
-      integer, intent(in), dimension(natom) :: nfirst, nlast
+      character (len = 2), intent(in), dimension(natom) :: symbol
 
-      integer, intent(in), dimension(N)     :: ncharg
+      integer, intent(in), dimension(natom)             :: nfirst, nlast
 
-      integer,             dimension(natom) :: num_i_stages
+      integer, intent(in), dimension(N)                 :: ncharg
 
-      integer, allocatable, dimension(:)    :: num_stage_lev
+      integer,             dimension(natom)             :: num_i_stages
 
-      integer                               :: un, i, sc, na, msc
+      integer, allocatable, dimension(:)                :: num_stage_lev
+
+      integer                                           :: un, i, sc, k, msc
 
       un = getFileUnit(100)
 
       open(unit = un, file = 'istageinfo.out', action = 'write')
 
-      do na = 1, natom
+      do k = 1, natom
 
 !     number of ionization stsages within each element
-          num_i_stages(na) = 1
+          num_i_stages(k) = 1
 
-          do i = nfirst(na), nlast(na) - 1
+          do i = nfirst(k), nlast(k) - 1
 
-              if (ncharg(i + 1) /= ncharg(i)) num_i_stages(na) = num_i_stages(na) + 1
+              if (ncharg(i + 1) /= ncharg(i)) num_i_stages(k) = num_i_stages(k) + 1
     
           enddo
 
@@ -367,23 +369,23 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       allocate(num_stage_lev(msc))
 
-      do na = 1, natom
+      do k = 1, natom
 
          num_stage_lev(:) = 0
 
          sc = 1
 
-         do i = nfirst(na), nlast(na)
+         do i = nfirst(k), nlast(k)
 
             num_stage_lev(sc) = num_stage_lev(sc) + 1
 
-            if (i == nlast(na)) exit
+            if (i == nlast(k)) exit
 
             if (ncharg(i + 1) /= ncharg(i)) sc = sc + 1
 
          enddo
 
-         write(un, '(i2,$)') num_i_stages(na)
+         write(un, '(A2,2x,i2,$)') symbol(k), num_i_stages(k)
 
          do i = 1, msc
 
