@@ -30,7 +30,7 @@
       use vardatom_nlte
       use varhminus
       use common_block
-!      use file_operations
+      use file_operations
       use auxfioss
       use mod_synopa
       use mod_quant
@@ -165,7 +165,7 @@
 
       CALL TIC()
 
-      call datom('full'
+      call datom('full',
      $           N,
      $           LEVEL,
      $           NCHARG,
