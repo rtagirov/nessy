@@ -1,0 +1,72 @@
+#!/bin/bash
+
+source $scr/aux_func.sh
+
+num=$1; run=$2
+
+sim=/mnt/SSD/sim
+
+atl=$sim/atlas9
+
+#------------ ATLAS input directories
+
+inp=$atl/inp
+
+gen=$inp/gen
+
+odf=$inp/odf
+
+pin=$inp/pin
+
+ain=$inp/inp
+
+#------------
+
+obj=$atl/obj
+
+runs=$sim/runs
+
+hruns=$runs/hminus
+
+aruns=$runs/atlas9
+
+hdir=$hruns/IT$num/$run
+
+adir=$aruns/$run
+
+check_dir  $hdir "e"
+rm_dir     $adir
+create_dir $adir
+
+files="${obj}/atlas9.exe           \
+       ${gen}/continua.dat         \
+       ${gen}/molecules.dat        \
+       ${odf}/atlas9.odf           \
+       ${pin}/atlas9.punched.input \
+       ${ain}/atlas9.input         \
+       ${hdir}/atm.inp             \
+       ${hdir}/istageinfo.out"
+
+if [ -d $hdir/NLTE/LEV ]; then
+
+    create_dir $adir/nltepop
+
+    message "$hdir/NLTE/LEV -> $adir/nltepop"
+
+    cmd "cp    $hdir/NLTE/LEV/* $adir/nltepop/" "Abort: NLTE populations copying failed."
+
+    cmd "cp -v $hdir/datom.inp  $adir"          "Abort: datom.inp copying failed."
+
+fi
+
+for f in $files; do
+
+    check_file $f
+
+    cmd "cp -v $f $adir" "Abort: $f copying failed."
+
+done
+
+mv -v $adir/istageinfo.out $adir/istageinfo.inp; exit_if_error
+
+message "Preparation of atlas $run run has been finished successfully."
