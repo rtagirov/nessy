@@ -111,7 +111,7 @@ C     IHE2VI    - the same for the "visible" lines, ie. 3-4, 4-8, 4-9,
 C                 4-10, 4-11, 4-12, 4-13, 4-14, and 4-15.
 C     IHE2RE    - the same for IR and "red" lines, ie. 4-5, 4-6, and 4-7.
 C
-      velw(:) = 0d0   !*** set velw to zero. It is not set anywhere else, 
+      velw(:) = 0d0   !*** set velw to zero. It is not set anywhere else,
                       !*** but used! (velw < velmax is always true) --micha
       READ(55,*) INLTE,INLIST,IFHE2  ! Read in the options from the (cryptic) file fort.55
       READ(55,*) ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2RE
@@ -238,30 +238,30 @@ cmh      CALL CROSET
 C***  CHANGES BY MARGIT HABERREITER ***
          CALL CROSET(WAVARR,SIGARR, N, NF)
          print*, 'CROSET'
- 
+
           call readmollines
           print*, 'readmollines'
- 
+
           call readMolconc(ND)
           print*, 'readMolconc'
 
-       
-    
+
+
 
          DO ID=1,ND
 
-       
+
             CALL OPAC(ID,0,ABSO,EMIS,WAVARR,SIGARR,N,NF)
 
-        
+
 
             ABSTD(ID)=MINVAL(ABSOC(:NFCONT()))
          ENDDO
 
-   
-       
 
-   
+
+
+
 
          IF(INLTE.GT.0) CALL NLTE(0,1,1,1,A1,A2,A3)
          IF(cards.ABEMLIN/=card_params.ABEMLIN_READ)
@@ -352,7 +352,7 @@ C
       INCLUDE '../inc/MODELP.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
       INCLUDE '../inc/LINDAT.FOR'
-      
+
       integer,intent(in) :: id, NF, N
       integer,intent(in) :: MODE
       real*8, intent(in)   ,dimension(N, NF)  :: WAVARR,SIGARR
@@ -509,7 +509,7 @@ C     **** calculated only in the first and the last frequency *****
 
 !******************************************************************************************************************************************
 !RINAT TAGIROV
-          xlam = CLIGHT_SI*1d10/fr ! This variable has been pulled out of the following IF condition because it was needed for output below 
+          xlam = CLIGHT_SI*1d10/fr ! This variable has been pulled out of the following IF condition because it was needed for output below
 !******************************************************************************************************************************************
 
           IF(IE.EQ.IELHM) THEN
@@ -618,7 +618,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         ABSOC(IJ)=ABF+ANE*(AFF-X*EBF)+ANE*SIGEL+ABAD+ABLY
         EMISC(IJ)=BNE*(AFF/X1+EBF)+EMAD+EMLY
         SCATC(IJ)=SCAD+SCLY+ANE*SIGEL
-        if (ij .eq. 5) then 
+        if (ij .eq. 5) then
    !     write(*, 615) ID, ANE*SIGEL,SCAD, ABSOC(IJ)+SCATC(IJ)
         endif
 
@@ -701,7 +701,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
       !***  ID: depth point
       !***  NFREQ: number of frequency points
       write (200,*) nfreq, id
-    
+
 
 ! *****************************
        freqt=(freq(1)+freq(NFREQ))/2.
@@ -714,33 +714,33 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !FUDGE REGULAR
 
        if ((lambdat .lt. 3200.) .and. (lambdat .gt. 1600.)) then
-        
-       ind=minloc(abs(wav_f(1:Nfudge)-lambdat))  
+
+       ind=minloc(abs(wav_f(1:Nfudge)-lambdat))
 
        !contf=ffactor(ind(1))
-  
-       endif 
+
+       endif
 !====================================================================
 !FUDGE BIG
 
 !       if ((lambdat .lt. 3600.) .and. (lambdat .gt. 1600.)) then
-        
-!       ind=minloc(abs(wav_f(1:Nfudge)-lambdat))  
+
+!       ind=minloc(abs(wav_f(1:Nfudge)-lambdat))
 
 !       contf = 1.0D6
-  
-!       endif 
+
+!       endif
 
 !===================================================================
 
-       totFe=popul(101,id)+popul(102,id)+popul(103,id)+popul(104,id)+popul(105,id)+popul(106,id)   
+       totFe=popul(101,id)+popul(102,id)+popul(103,id)+popul(104,id)+popul(105,id)+popul(106,id)
        totFeII=popul(106, id)
        totFeI=totFe-totFeII
 
        totH=sum(popul(1:12,id))
 
 !        open(unit=400, file='conc.txt', access='append')
-!       write(400, '(i3, 4e12.5)'), id, molconc(4, id)/totH, molconc(3, id)/totH, totFeI/totH, totFeII/totH 
+!       write(400, '(i3, 4e12.5)'), id, molconc(4, id)/totH, molconc(3, id)/totH, totFeI/totH, totFeII/totH
 !        close (unit=400)
 !       print*, "CO test", id, T, 20161.*molconc(4, id)/totH
 
@@ -751,12 +751,12 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !       contf=1.+(contf-1.)*20161.*molconc(4, id)/totH   ! CO case
 
-!        contf=1.+(contf-1.)*4.72251d+07*molconc(3, id)/totH   ! CN case       
+!        contf=1.+(contf-1.)*4.72251d+07*molconc(3, id)/totH   ! CN case
 
 
-!       contf=1.+(contf-1.)*8.986*totFeI/totFe   ! FeI case   
+!       contf=1.+(contf-1.)*8.986*totFeI/totFe   ! FeI case
 
-!       contf=1.+(contf-1.)*1.125*totFeII/totFe ! FeII case 
+!       contf=1.+(contf-1.)*1.125*totFeII/totFe ! FeII case
 
 
 
@@ -779,13 +779,13 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 
       ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+ABSO(1:NFREQ)*(contf-1.)
-       
-      
-      do i=1, NFREQ 
 
-    
+
+      do i=1, NFREQ
+
+
       EMLIN(i)=EMLIN(i)+ABSO(i)*(contf-1.)*PLAN(max(NDPMIN,id))
-    
+
 
 
       enddo
@@ -798,7 +798,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
        do i=1,nfreq
 !!!       write (200,310) ablin(i),emlin(i)
-        write (200,'(F10.4, 2X, e12.5)') (clight_cgs/freq(i))*1.d8, ablin(i) 
+        write (200,'(F10.4, 2X, e12.5)') (clight_cgs/freq(i))*1.d8, ablin(i)
         IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
           PRINT '(i0,X,i0," ",$)',I,ID
           PRINT '("inibl0: SYNSUBM, OPAC: NEGATIVE OPACITY,'//
@@ -816,7 +816,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !      if (id .eq. 66) then
 !      open (unit=100, file="../opac1_nf.txt",access="APPEND")
-!      write(100, '(f10.4, e12.5, e12.5, e12.5)'), lambdat, 
+!      write(100, '(f10.4, e12.5, e12.5, e12.5)'), lambdat,
 !     * sum(ABSO(1:NFREQ))/NFREQ, sum(ABLIN(1:NFREQ))/NFREQ,
 !     *  sum(ABSO(1:NFREQ))/sum(ABLIN(1:NFREQ))
 !      close (100)
@@ -825,7 +825,7 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !      if (id .eq. 66) then
 !      open (unit=100, file="../total_nf.txt",access="APPEND")
-!      write(100, '(f10.4, e12.5)'), lambdat, 
+!      write(100, '(f10.4, e12.5)'), lambdat,
 !     * sum(ABSO(1:NFREQ) + ABLIN(1:NFREQ))/NFREQ
 !      close (100)
 !      endif
@@ -838,8 +838,8 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !     Test for continuum calculations
 
 !      ABSO(1:NFREQ)=ABSO(1:NFREQ)*contf
-      
-!      do i=1, NFREQ 
+
+!      do i=1, NFREQ
 
 !      if (id .le. 55) then
 !      EMIS(i)=min(EMIS(i)*contf, ABSO(i)*BNUE(lambdat, 4500.))
@@ -853,17 +853,20 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !     Rinat, use it to calculate continuum
 
       FMTT = "(F8.3, 2X, F8.3, 2X, F8.3)"
-      ODF = .FALSE.
-      IF (ODF) THEN
-      reduced='.rk'
+C       ODF = .FALSE.
+C       print*, 'did we reach here 1 inibl 857'
+      IF (odf_cards) THEN
+C         reduced='.2_99'
+      reduced = trim(odf_name)
+      print*, 'odf_name fioss: ', reduced
       IF (ID.GT.9) THEN
         write(ID_string, '(i2)') ID
       ELSE
         write(ID_string, '(i1)') ID
       END IF
-      currentFile = trim(ID_string) // trim(reduced)
+      currentFile = trim(ID_string) // '.' // trim(reduced)
 !      print*, 'testMiha File: ', trim(currentFile)
-      OPEN (UNIT=1312,FILE=trim('../sB/')//trim(currentFile),STATUS='OLD', READONLY)
+      OPEN (UNIT=1312,FILE=trim('../')//trim(currentFile),STATUS='OLD', READONLY)
       READ (1312,*) beginning, ending, opacity
       DO i = NFREQ, 1, -1
  1122    wavelength = (clight_cgs/freq(i))*1.d8
@@ -879,19 +882,21 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !            write(*,FMTT),wavelength, beginning, ending
             READ (1312,*) beginning, ending, opacity
             GOTO 1122
-         END IF      
+         END IF
       ENDDO
-      
+      print*, 'odf'
+
       ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
 
       EMIS(1:NFREQ)=EMIS(1:NFREQ)+ABLIN(1:NFREQ)*PLAN(max(NDPMIN,id))
-      
+
       ELSE
+         print*, 'non odf'
          ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)
          EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)
       END IF
-      
-      
+
+
 
 
 
@@ -903,15 +908,15 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !     Test for continuum calculations
 
 !      print*, NFREQ
-    
-!      do i=1, NFREQ 
+
+!      do i=1, NFREQ
 !      print*, i, freq(i)
 !      enddo
 
  !     call readmollines
  !     call tester
  !    call calcmolopac(NFREQ, freq, T, ID, molopac, molemiss)
-      
+
 !      do i=1, NFREQ
 
 !      print*, 'ratio test', ID, molopac(i)/ABSO(i), molemiss(i)/EMIS(i)
@@ -921,15 +926,15 @@ cmh         correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
   !    print*, '************************************************'
   !    print*, 'scale test', ID, ABSO(200), molopac(200)
-  !    print*, '************************************************' 
+  !    print*, '************************************************'
 
   !    ABSO(1:NFREQ)=ABSO(1:NFREQ)+molopac(1:NFREQ)
   !    EMIS(1:NFREQ)=EMIS(1:NFREQ)+molemiss(1:NFREQ)
-      
- 
-  
 
- 
+
+
+
+
 c     write (200,310) ABSO(IJ),EMIS(IJ)
 
   225 CONTINUE
@@ -971,10 +976,10 @@ c      CALL PHTX(ID,ABSO,EMIS)
 C
 
 
-        
+
 
 !         do i=nfreq,1, -1
-!         write(100, '(i3, f10.4, e12.5)'), id, 
+!         write(100, '(i3, f10.4, e12.5)'), id,
 !     * clight_cgs/freq(i)*1.d8, ABSO(i)
 !         enddo
 
@@ -982,26 +987,26 @@ C
     !    print*, nfreq
 
     !    stop
-     
+
 !*      indo=nint(nfreq/40.)
 
 
-   
+
 
 !*      do i=1, 20
 
 !*      wav_oi(i)=clight_cgs/freq(indo+2*indo*(i-1))*1.d8
-!*      opac_oi(i)=sum(ABSO(2*indo*(i-1):2*indo*i))/(2.*indo) 
-      
+!*      opac_oi(i)=sum(ABSO(2*indo*(i-1):2*indo*i))/(2.*indo)
+
 !*      enddo
-   
-   
-   
+
+
+
 
 
       RETURN
       END SUBROUTINE
-      
+
       function getContIdx(idxFreq)
       use MOD_ERROR
       use UTILS, only: ASSERT
@@ -1026,9 +1031,9 @@ C
      &                    idxFreq,NFCONT(),FRXIDX(NFCONT())
       call error('Could not find FrxIdx')
       end function getContIdx
-      
-      
-      
+
+
+
       SUBROUTINE HYDLIN_IVANY(ID,T,ANE,ABSOH,EMISH)
       use constants
       use MOD_HYDTAB,only: WLINE, MLINH,MHWL,NWLH,ILIN0
@@ -1070,7 +1075,7 @@ C
      *             3970.07, 3889.05, 3835.38, 3797.90/
       DATA OSCB   /0.6407,  0.1193,   0.04467,  0.02209,
      *             1.27D-2, 8.036D-3, 5.429D-3, 3.851D-3/ !* Only used for checks
-      DATA FRH    /3.289017E15/ 
+      DATA FRH    /3.289017E15/
       PARAMETER (HINV=1.5092973D26)
       logical :: explicitHy
       exp10(X)=exp(2.30258509299404568402d0*X)
@@ -1303,12 +1308,12 @@ C
   210 CONTINUE
       RETURN
       END SUBROUTINE
-      
-     
+
+
 
       FUNCTION airlambda(vaclambda)
-!    translate vacuum to the airlambda lambda in A                             
-                                                                                
+!    translate vacuum to the airlambda lambda in A
+
       IMPLICIT NONE
       real*8 vaclambda, airlambda, sig, n
 
@@ -1323,5 +1328,5 @@ C
 
 
 
- 
+
       end module

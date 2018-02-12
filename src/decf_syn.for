@@ -19,7 +19,8 @@
       end type
       type(CARD_OPTS) :: CARDS
       type(CARD_PARAMS_),parameter :: CARD_PARAMS=CARD_PARAMS_(1,2,3)
-
+      logical :: odf_cards = .FALSE.
+      character*50 :: odf_name
 C     ************
 
       real*8,allocatable :: wav_f(:), ffactor(:)
@@ -49,22 +50,22 @@ C     ***********
 C    ****************
 
        Nfudge=161
-      
+
        if (.not. allocated(wav_f) ) then
- 
+
        allocate(wav_f(Nfudge))
        allocate(ffactor(Nfudge))
 
        endif
- 
+
         OPEN (UNIT=240,FILE='../fudge_As.txt',STATUS='OLD',READONLY)
-         
+
         do l=1, Nfudge
         READ (240,*) wav_f(l), ffactor(l)
 !        ffactor(l)=max(1.,ffactor(l))
 !        ffactor(l)=1.
         enddo
-       
+
 
         close (240)
 
@@ -72,7 +73,7 @@ C    ****************
 
 C    ****************
 
-      
+
       CARDS.ABEMLIN_PATH=''; CARDS.ABEMLIN=0
 
     1 READ (1,'(A)',END=66) KARTE
@@ -303,6 +304,20 @@ C                          ====
    22       FORMAT (5X,F10.0)
             GOTO 1
             ENDIF
+      IF ( KARTE(:3) .EQ. 'ODF') THEN
+C                          ===
+         odf_cards = .TRUE.
+         GOTO 1
+         ENDIF
+      IF (KARTE(:8) .EQ. 'odf_name') THEN
+C                         ========
+!          READ (1,'(A)',END=66) odf_name
+         odf_name = KARTE(10:)
+         print*, "odf_namedecfy: ", odf_name
+         GOTO 1
+         ENDIF
+
+
       GOTO 1
 
 66    CONTINUE
@@ -310,6 +325,5 @@ C***  EOF REACHED
 99    FIN=.TRUE.
       RETURN
 c	 pause
-
       END subroutine
       end module

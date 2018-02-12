@@ -13,7 +13,7 @@
       integer :: fu
 
       fu = 13745
-     
+
       open(unit = fu, file = 'MODFILE', action = 'read')
 
       ftc = '  '
@@ -57,7 +57,7 @@
       ALLOCATE(TDU(DEPTH_POINTS_NUM, NTC))
 
       TPL(:, :) = 0.0D0; TPU(:, :) = 0.0D0; TDL(:, :) = 0.0D0; TDU(:, :) = 0.0D0
- 
+
       DO I = 1, NTC
 
          OPEN(773, FILE = NTP_FILE)
@@ -179,7 +179,7 @@ C***  Constant for thermal Gauss-Profile (= m(e)/(4k)) (cgs?)
 
 C***  First Reset the Intensity Array
       XJ(:,:) = 0.0
-      
+
 C***  now convolve the mean intensity
 C***  with the Gauss profile of thermal electrons
 C***  output: array XJ
@@ -214,8 +214,8 @@ c version with fraction of integral
       END subroutine
 
       FUNCTION airlambda(vaclambda)
-!    translate vacuum to the airlambda lambda in A                             
-                                                                                
+!    translate vacuum to the airlambda lambda in A
+
       IMPLICIT NONE
       real*8 vaclambda, airlambda, sig, n
 
@@ -285,7 +285,7 @@ c version with fraction of integral
 !  difference between fioss3 and fioss4 is mainly in the interpolation of between
 !  2 grid points:
 !                fioss3: interpolate between the nearest grid points
-!                fioss4: take nearest grid point 
+!                fioss4: take nearest grid point
 !                (to find the location in the code search for "nearest")
 !                also in fioss4: modified TRAPLO: prints nr of entries
 !
@@ -353,10 +353,10 @@ c version with fraction of integral
       COMMON / COMOLAP / INDLAP(NBLEND),XLAMLAP(NBLEND),DELXLAP(NBLEND)
       !***  CHANGES MARGIT HABERREITER
       !MH  LBKG - KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
-      !MH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF	
+      !MH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       DIMENSION VERTVELO(NDDIM),VELOVAR(NDDIM)
-      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2	
+      COMMON /COMLBKG/ LBKG,XLBKG1,XLBKG2
       INTEGER XLBKG1,XLBKG2
       LOGICAL LBKG,LOPA
       !***  END OF CHANGES MARGIT HABERREITER
@@ -393,9 +393,9 @@ c version with fraction of integral
       real*8,allocatable :: dummy2(:,:) ! do not allocate - make sure noone uses it
 
 !      integer, allocatable, dimension(:) :: NFIRST, NLAST
-     
+
       REAL*8, ALLOCATABLE :: WAV_CLV(:), FLUX_CLV(:, :)
-       
+
       real*8 dummy0
       integer ndummy0
 
@@ -409,14 +409,14 @@ c version with fraction of integral
       real, allocatable :: sub_bin_wavelength(:)
       integer :: sub_bin_number
       real :: beginning, ending, opacity
-      logical :: found_sub_bin 
+      logical :: found_sub_bin
       character :: reduced*12
       !*******************************************************************
 
       !MH   VARIABILITY OF VELOCITY ACTIV/NONACTIVE
       !MH var = true then variation of Doppler velocity considered
       ! VAR = .TRUE.
-      VAR	= .FALSE. 
+      VAR	= .FALSE.
       !MH ADDVELO TRUE then ASPLUND 2000, A&A 359, 729 is considered
       ADDVELO = .FALSE.
       ! ADDVELO = .TRUE.
@@ -427,7 +427,7 @@ c version with fraction of integral
 !***  XMAX = width in doppler units added to the line interval
 !     only for line line index selections
 !***  XN = RESOLUTION ELEMENTS WITHIN (MINIMUM) TURBULENCE VELOCITY
-!     so far, in all tests there was no significant improvement by 
+!     so far, in all tests there was no significant improvement by
 !     using more than 3 points per V-DOP
       XN = 2.
 
@@ -535,7 +535,8 @@ c version with fraction of integral
       Z = RESHAPE(Z1D, (/ND, NP/))
 
       !***  PRINTOUT OF THE ATOMIC DATA
-      AKEY(1:NF)=8H             
+C        AKEY(1:NF)=8H
+
 
 
       idat=1
@@ -593,7 +594,7 @@ c version with fraction of integral
 
           DO IND = 1, NUMTRA
 
-             IF (WAVTRA(IND) .GE. XLMIN .AND. WAVTRA(IND) .LE. XLMAX) THEN 
+             IF (WAVTRA(IND) .GE. XLMIN .AND. WAVTRA(IND) .LE. XLMAX) THEN
 
                  NTC = NTC + 1
 
@@ -603,7 +604,7 @@ c version with fraction of integral
 
           ENDDO
 
-          IF (NTF) THEN 
+          IF (NTF) THEN
 
 !              ALLOCATE(NLTE_ABS(NTC))
 !              ALLOCATE(NLTE_EMI(NTC))
@@ -660,7 +661,7 @@ c version with fraction of integral
       print *
       print *,' Macro turbulence used to calculate the profile:'
       !***  VDOP IS USED AS REFERENCE TO CALCULATE FREQUENCY GRID
-      !***  VDOPP IS PHYSICAL VELOCITY 
+      !***  VDOPP IS PHYSICAL VELOCITY
 
 
       vdop=vdopp
@@ -744,13 +745,13 @@ c version with fraction of integral
 !            sub_bin_wavelength(j)  = (beginning + ending) / 2
 !!             print *, 'b: ', beginning, ' e: ', ending, ' mid: ', sub_bin_wavelength(j)
 !           ENDDO
-!           found_sub_bin = .TRUE. 
+!           found_sub_bin = .TRUE.
 !         END IF
 !         IF (found_sub_bin == .TRUE.) THEN
 !           EXIT
 !         END IF
 !      ENDDO
-!        
+!
 !      print *, 'sub_bin_wavelenghts: '
 !      do i = 1, SIZE(sub_bin_wavelength)
 !        print *, sub_bin_wavelength(i)
@@ -762,7 +763,7 @@ c version with fraction of integral
 !      allocate(PROFN(NFOBS))
 !      allocate(DLAM(NFOBS))
 !      allocate(EMINT(NFOBS))
-!      
+!
 !      print *, 'dlam:'
 !      do i = 1, sub_bin_number
 !        DLAM(i) = sub_bin_wavelength(i) - XLAM
@@ -791,7 +792,7 @@ c version with fraction of integral
          PRINT *,' ',XLAM,' replaced by ',RWLAE
          XLAM=RWLAE
       ENDIF
-    
+
       !***  DEFINING ZERO-POINT OF THE OBSERVER'S FRAME FREQUENCY
       xobs0 = FREMAX-DXOBS
 !      xobs0 = clight/dlam(1)
@@ -827,15 +828,15 @@ c version with fraction of integral
 !       note: the dlam array starts with the zero element
 !             the vopa array with the first
 !***  CHANGES by Margit Haberreiter 22.8.03
-!***  Fehler bei neg vel:      !     vopa0 = xobs0+dxobs       + vdu(1) + 1./xn/1000. + vsidu 
+!***  Fehler bei neg vel:      !     vopa0 = xobs0+dxobs       + vdu(1) + 1./xn/1000. + vsidu
 !***  negative velocities: vdu(1) not max. value
 !***  instead of vdu(1) use amaxvdu
 !***  groesster abs Wert von VDU
       vopa0 = xobs0 + dxobs + vdu(1) + 1./xn/1000. + vsidu
-      nvopa = vopa0*xn 
+      nvopa = vopa0*xn
       nvopa = nvopa + 1
       print *, '1. FIOSS8 NVOPA=', NVOPA
-      vopa0 = real(nvopa)/xn 
+      vopa0 = real(nvopa)/xn
 !***  changed by MH 22.8.03
 !      vopam = xobs0+dxobs*NFOBS - vdu(1) - vsidu
       vopam = xobs0+dxobs*NFOBS -amaxvdu - vsidu
@@ -849,7 +850,7 @@ c version with fraction of integral
       print *, '2. FIOSS8 NVOPA=', NVOPA
       print *,' vopa0,   vopam,   dvopa,    nvopa,   nvdim'
       print *,vopa0,vopam,dvopa,nvopa,nvdim()
-      
+
       print *, '2. FIOSS8 NVOPA=', NVOPA
 
       NVD = NVDIM()
@@ -945,10 +946,10 @@ c version with fraction of integral
       end select
 
       !*****************************************************************
-   
+
       call synopa(WAVARR(1 : N, 1 : NF), SIGARR(1 : N, 1 : NF), N, NF)
-  
-   
+
+
       PRINT *,'FIOSS8: Time elapsed after SYNOPA: ',TOC()
       close (unit=200)
       close (unit=201)
@@ -975,13 +976,13 @@ c version with fraction of integral
 
         !MH   WAVELENGTH FOR EACH POINT FROM 1 TO NVOPA
         !MH   WLRANGE: WAVELENGTH RANGE OVER HALF THE LINE PROFILE
-        !MH   DLAM: DELTA LAMBDA BETWEEN EACH OF NVOPA POINTS   
+        !MH   DLAM: DELTA LAMBDA BETWEEN EACH OF NVOPA POINTS
         WL =0.
         WLRANGE = xlam*fmax*vdop/clight
         xlam0  = xlam-WLRANGE
         dlmbd =    2.*WLRANGE/(nvopa-1)
-        do k=1,nvopa 
-          WL = xlam0+(k-1)*dlmbd     
+        do k=1,nvopa
+          WL = xlam0+(k-1)*dlmbd
           ! write (9996,*) WL,l,opatot(k,l)
           opatot(k,l)=opatot(k,l)*rstar
           if (opatot(k,l).gt.opamax) then
@@ -1029,10 +1030,10 @@ c version with fraction of integral
         PROFILE(:)=0.
 
         !***  LOOP FOR EACH IMPACT PARAMETER ===========================
-    
-     
 
-         open(250, file='../contr.txt',access='append')  
+
+
+         open(250, file='../contr.txt',access='append')
          write(250,*), rwlae
 
 !         N_CLV = 100
@@ -1051,7 +1052,7 @@ c version with fraction of integral
           !***  RESET EMINT
           DO LPHI=LPSTA,LPEND
 
-       
+
 
             EMINT(1:NFOBS)=0.
             !***  Reset DINT (Stored EMINT for Computation of Moment 0 (COMPXJ))
@@ -1114,7 +1115,7 @@ c version with fraction of integral
                    MP = FP
                    SP = 1
                    EP = NFOBS
-                
+
                 ELSE IF (N_CLV .EQ. NFOBS) THEN
 
                    MP = K
@@ -1190,7 +1191,7 @@ c version with fraction of integral
 !***  OUTPUT FOR THE DETECTED LINE:
       LOW=INDLOW(LINE)
       NUP=INDNUP(LINE)
-!234567890 234567890 234567890 234567890 234567890 234567890 234567890 
+!234567890 234567890 234567890 234567890 234567890 234567890 234567890
       IF (PLOT)
      $   CALL LPPLOT (6,XOBS0,DXOBS,NFOBS,PROFILE,KARTE,MODHEAD,JOBNUM)
 
@@ -1201,11 +1202,11 @@ c version with fraction of integral
          endif
 
          ! write the <wl>.mdisp & <wl>.title file
-         
+
          CALL TRAPLO(PROFILE,DLAM,NFOBS,KARTE,MODHEAD,JOBNUM,RWLAE,PHEAD,PROLIB)
 
       endif
- 
+
 
     !   stop
 
@@ -1221,27 +1222,30 @@ c version with fraction of integral
 !***  ENDLOOP    -------------------------------------------------------
 !   20 CONTINUE
       PRINT *,' END OF INPUT REACHED'
-      ! CLOSE (UNIT=880) 
-      ! CLOSE (UNIT=890) 
+      ! CLOSE (UNIT=880)
+      ! CLOSE (UNIT=890)
       ! CLOSE (UNIT=870)
       ! close (unit=9996)
       ! close (unit=9997)
       if(CARDS%PRINT_TAU) close (unit=9998)
+
       IF (TRANS.OR.PROLIB) THEN
         CLOSE (1)
         ! CALL JSYMSET (2LG1,'TRANSFER')
         ! CALL REMARK ('PLOT DATA TO BE ROUTED')
       ENDIF
- 
+
       WRITE(CLVFLNAM, '(F14.0)') XLAM; CLVFLNAM = ADJUSTL(TRIM(CLVFLNAM)//'clv')
 
       CALL OPEN_TO_APPEND(100, CLVFLNAM)
 
       DO K = 1, N_CLV
+      print*, 'end od fioss8 2'
 
           WRITE(100, '(E15.7,1x,$)'), WAV_CLV(K)
 
           DO JP = JFIRST, LP
+      print*, 'end od fioss8 3'
 
              IF (JP .LT. LP) WRITE(100, '(E15.7,1x,$)'), FLUX_CLV(JP, K)
              IF (JP .EQ. LP) WRITE(100, '(E15.7)'),      FLUX_CLV(JP, K)
@@ -1249,9 +1253,10 @@ c version with fraction of integral
           ENDDO
 
       ENDDO
+      print*, 'end od fioss8 4'
 
       CLOSE(100)
- 
+      print*, 'end od fioss8'
       STOP 'O.K.'
 
       END
