@@ -8,8 +8,8 @@ ELEMENT     HYDROGEN   (H )     1.00     2. NLTE *
 *           ========                             *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       H MINUS..1 -1    1      0.00   6090.50
-LEVEL       H I......1  0    2      0.00 109677.38
+LEVEL       H MINUS..1 -1    1      0.00   6083.07
+LEVEL       H I......1  0    2      0.00 109678.77
 LEVEL       H I......2  0    8                      2
 LEVEL       H I......3  0   18                      3
 LEVEL       H I......4  0   32                      4
@@ -187,9 +187,9 @@ ELEMENT     CARBON     (C )     6.00     2. NLTE *
 *           ======                               *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
-LEVEL       CI-------1  0    9     29.57  90820.42
-LEVEL       CI-------2  0    5  10192.63
-LEVEL       CI-------3  0    1  21648.01
+LEVEL       CI-------1  0    9     29.59  90820.35
+LEVEL       CI-------2  0    5  10192.66
+LEVEL       CI-------3  0    1  21648.03
 LEVEL       CII------1  1    6     42.28 196674.00
 *KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 LINE      CI-------2  CI-------1   1.00E-8   X CARB   1.E2
@@ -319,9 +319,9 @@ ELEMENT     MAGNES     (Mg)    12.00     2. NLTE *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
 *NIST Atomic Spectra Database Levels Data http://physlab2.nist.gov/, levels database
-LEVEL       MgI------1  0    1      0.00  61671.02
-LEVEL       MgI------2  0    9  21877.30
-LEVEL       MgI------3  0    3  35051.26 
+LEVEL       MgI------1  0    1      0.00  61671.05
+LEVEL       MgI------2  0    9  21890.85
+LEVEL       MgI------3  0    3  35051.26
 LEVEL       MgII-----1  1    2      0.00 121267.64
 *KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 LINE      MgI------2  MgI------1   1.00E-8   X CARB   1.E2
@@ -337,7 +337,7 @@ ELEMENT     ALUMIN     (Al)    13.00     2.      *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
 *NIST Atomic Spectra Database Levels Data http://physlab2.nist.gov/, levels database
-LEVEL       AlI------1  0    6     74.71  48278.20
+LEVEL       AlI------1  0    6     74.71  48278.48
 LEVEL       AlII-----1  1    1      0.00 151862.50
 *EYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 *KEYWORD  LOWERLEVEL ----SIGMA ----ALPHA ----SEXPO -IGAUNT-
@@ -351,10 +351,10 @@ ELEMENT     SILICON    (Si)    14.00     2.      *
 LEVEL       SiI------1  0    9    149.68  65747.76
 LEVEL       SiI------2  0    5   6298.85
 LEVEL       SiI------3  0    1  15394.37
-LEVEL       SiI------4  0    5  33326.04
-LEVEL       SiI------5  0    9  39799.50
+LEVEL       SiI------4  0    5  33326.05
+LEVEL       SiI------5  0    9  39859.92
 LEVEL       SiI------6  0    3  40991.88
-LEVEL       SiII-----1  1    6    191.49 131838.10
+LEVEL       SiII-----1  1    6    191.49 131838.14
 *KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 LINE      SiI------2  SiI------1  1.00E-8    X CARB   1.E2
 LINE      SiI------3  SiI------1  1.00E-8    X CARB   1.E2
@@ -580,11 +580,11 @@ ELEMENT     IRON       (Fe)    26.00     2.      *
 **************************************************
 *KEYWORD--  ---NAME--- CH WEIG--ENERGY-- EION----- QN
 *Physical and Chemical Reference Data, 1975, Vol. 4, No2, p.353
-LEVEL       FeI------1  0   25    402.96  63737.00
-LEVEL       FeI------2  0   35   7457.82
-LEVEL       FeI------3  0   21  12408.10
-LEVEL       FeI------4  0   15  17761.40
-LEVEL       FeI------5  0    9  19232.20
+LEVEL       FeI------1  0   25    402.96  63737.70
+LEVEL       FeI------2  0   35   7459.75
+LEVEL       FeI------3  0   21  12407.40
+LEVEL       FeI------4  0   15  17684.56
+LEVEL       FeI------5  0    9  18954.02
 LEVEL       FeII-----1  1   30    416.30 130655.40
 *KEYWORD--UPPERLEVEL  LOWERLEVEL--EINSTEIN  RUD-CEY --COLLISIONAL COEFFICIENTS-
 LINE      FeI------2  FeI------1   1.00E-8   X CARB   1.E2

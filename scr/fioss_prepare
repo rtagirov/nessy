@@ -191,7 +191,7 @@ cat > fort.56 << eof
    30      -1.000
 eof
 
-echo -e "\nThe FIOSS run $OUTPUT_DIR/ has been prepared.\n"
+echo -e "\nFIOSS run $OUTPUT_DIR/ has been prepared.\n"
 
 chmod u+rwx -R $OUTPUT_DIR
 

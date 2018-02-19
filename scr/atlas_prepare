@@ -20,6 +20,8 @@ pin=$inp/pin
 
 ain=$inp/inp
 
+dat=$inp/dat
+
 #------------
 
 obj=$atl/obj
@@ -44,8 +46,8 @@ files="${obj}/atlas9.exe           \
        ${odf}/atlas9.odf           \
        ${pin}/atlas9.punched.input \
        ${ain}/atlas9.input         \
-       ${hdir}/atm.inp             \
-       ${hdir}/istageinfo.out"
+       ${dat}/FeI.NIST.dat         \
+       ${hdir}/atm.inp"
 
 if [ -d $hdir/NLTE/LEV ]; then
 
@@ -67,6 +69,6 @@ for f in $files; do
 
 done
 
-mv -v $adir/istageinfo.out $adir/istageinfo.inp; exit_if_error
+#mv -v $adir/istageinfo.out $adir/istageinfo.inp; exit_if_error
 
 message "Preparation of atlas $run run has been finished successfully."
