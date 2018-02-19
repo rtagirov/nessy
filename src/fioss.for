@@ -1,6 +1,6 @@
       PROGRAM FIOSS
 
-      use utils
+!      use utils
 
       use MOD_COOP
       use MOD_DATOM

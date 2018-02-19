@@ -21,7 +21,7 @@
       use MOD_TICTOC
       use MOD_chemeq
 
-      use utils
+!      use utils
 
       use mod_decode
       use vardatom_full
@@ -80,9 +80,9 @@
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM) ! NFDIM is known from varhminus module
 
-      call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
+!      call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
 
-      call print_istageinfo(natom, N, symbol, nfirst, nlast, ncharg)
+!      call print_istageinfo(natom, N, symbol, nfirst, nlast, ncharg)
 
       allocate(ABXYZ(NATOM))
 
@@ -330,7 +330,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       subroutine print_istageinfo(natom, N, symbol, nfirst, nlast, ncharg)
 
-      use utils
+!      use utils
 
       implicit none
 
@@ -348,9 +348,7 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       integer                                           :: un, i, sc, k, msc
 
-      un = getFileUnit(100)
-
-      open(unit = un, file = 'istageinfo.out', action = 'write')
+      un = 1047; open(unit = un, file = 'istageinfo.out', action = 'write')
 
       do k = 1, natom
 

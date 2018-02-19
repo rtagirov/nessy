@@ -128,9 +128,9 @@ C*******************************************************************************
 
       integer ::                            un
 
-      integer ::                            num_i_stages
+!      integer ::                            num_i_stages
 
-      integer, dimension(:), allocatable :: num_stage_lev
+!      integer, dimension(:), allocatable :: num_stage_lev
 
       !constants
       real*8, parameter :: ONE = 1.D+0
@@ -176,7 +176,7 @@ C*******************************************************************************
       if (allocated(level))    deallocate(level)
       if (allocated(element))  deallocate(element)
 
-      call atomic_data_file_nums(mode, elenum, levnum, linnum)
+      call datom_nums(mode, elenum, levnum, linnum)
 
       print*, mode, elenum, levnum, linnum
 
@@ -307,7 +307,7 @@ C*******************************************************************************
 
       if (karte(:10) == 'CONTINUUM ') goto 30
 
-      call error('datom: mode = '//mode//'; unrecognized data input in '//
+      call error('datom.for: mode = '//mode//'; unrecognized data input in '//
      $           atomic_data_file//':      '//karte)
 
     3 iecho = 1
@@ -757,7 +757,7 @@ C***  RYDBERG FORMULA
 
       end subroutine
 
-      subroutine atomic_data_file_nums(mode, elenum, levnum, linnum)
+      subroutine datom_nums(mode, elenum, levnum, linnum)
 
       use utils
       use file_operations
@@ -775,15 +775,13 @@ C***  RYDBERG FORMULA
       integer                         :: un, io
 
       if (mode /= 'nlte' .and. mode /= 'full')
-     $stop 'datom: atomic_data_file_nums: mode is not recognized. abort.'
+     $stop 'datom.for: subroutine datom_nums: mode is not recognized. Abort.'
 
       elenum = 0
       levnum = 0
       linnum = 0
 
-      un = getFileUnit(100)
-
-      open(unit = un, file = atomic_data_file, action = 'read')
+      un = 1743; open(unit = un, file = atomic_data_file, action = 'read')
 
       io = 0
 
@@ -808,7 +806,7 @@ C***  RYDBERG FORMULA
               if (continuum) goto 1
 
               if (.not. element .and. .not. level .and. .not. line .and. .not. continuum)
-     $        call error('datom: atomic_data_file_nums: mode = '//mode//
+     $        call error('datom.for: subroutine datom_nums: mode = '//mode//
      $                   '; unrecognized data input in '//atomic_data_file//':      '//str)
 
           enddo
@@ -855,7 +853,7 @@ C***  RYDBERG FORMULA
               if (continuum) goto 2
 
               if (.not. element .and. .not. level .and. .not. line .and. .not. continuum)
-     $        call error('datom: atomic_data_file_nums: mode = '//mode//
+     $        call error('datom.for: subroutine datom_nums: mode = '//mode//
      $                   '; unrecognized data input in '//atomic_data_file//':      '//str)
 
           enddo
@@ -864,7 +862,7 @@ C***  RYDBERG FORMULA
 
       close(un)
 
-      end subroutine atomic_data_file_nums
+      end subroutine datom_nums
 
 
       subroutine rdcsarr(level, j, wavarr, sigarr, N, NFDIM)
