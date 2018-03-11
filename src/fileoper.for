@@ -187,7 +187,7 @@
 
       integer ::                           i, file_unit
 
-      real*8, dimension(:), allocatable :: c1, c2, c3, c4, c5, c6, c7
+      real*8, dimension(:), allocatable :: c1, c2, c3, c4, c5, c6, c7, c8, c9, c10
 
       file_unit = 1834
 
@@ -202,16 +202,22 @@
       allocate(c5(nol))
       allocate(c6(nol))
       allocate(c7(nol))
+      allocate(c8(nol))
+      allocate(c9(nol))
+      allocate(c10(nol))
 
       open(unit = file_unit, file = atm_mod_file, action = 'read')
 
       selectcase(num_of_columns(atm_mod_file))
 
-          case(4); do i = 1, nol; read(file_unit, *) c1(i), c2(i), c3(i), c4(i);                      enddo ! MURAM format
+          case(4);  read(file_unit, *) (c1(i), c2(i), c3(i), c4(i),                      i = 1, nol) ! MURAM format
 
-          case(5); do i = 1, nol; read(file_unit, *) c1(i), c2(i), c3(i), c4(i), c5(i);               enddo ! FAL format
+          case(5);  read(file_unit, *) (c1(i), c2(i), c3(i), c4(i), c5(i),               i = 1, nol) ! FAL format
 
-          case(7); do i = 1, nol; read(file_unit, *) c1(i), c2(i), c3(i), c4(i), c5(i), c6(i), c7(i); enddo ! Kurucz format
+          case(7);  read(file_unit, *) (c1(i), c2(i), c3(i), c4(i), c5(i), c6(i), c7(i), i = 1, nol) ! Kurucz 7  column format
+
+          case(10); read(file_unit, *) (c1(i), c2(i), c3(i), c4(i), c5(i),
+     $                                  c6(i), c7(i), c8(i), c9(i), c10(i), i = 1, nol)              ! Kurucz 10 column format
 
           case default; stop 'Function read_atm_file_col: Atmosphere model format is not recognized. Abort.'
 
@@ -233,7 +239,7 @@
 
       endselect
 
-      deallocate(c1, c2, c3, c4, c5, c6, c7)
+      deallocate(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10)
 
       return
 

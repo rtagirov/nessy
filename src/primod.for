@@ -97,16 +97,16 @@ c    3 FORMAT(I3, 1X,G14.7,G10.3,3X,A8,F15.4,F15.4,F22.3,F20.0,F13.4)
 
       GRAD_KMSKM(ND) = VEL_DIFF(ND) / (HEIGHT(ND) - HEIGHT(ND - 1))
 
-      OPEN(UNIT = 7, FILE = 'vel_field.out', ACTION = 'WRITE', STATUS = 'REPLACE')
+!      OPEN(UNIT = 7, FILE = 'vel_field.out', ACTION = 'WRITE', STATUS = 'REPLACE')
 
-      WRITE(7, 30) 'DI', 'HEIGHT, [km]', 'VEL, [km/s]', 'VEL_DIFF, [km/s]', 'GRAD, [km/s/km]'
+!      WRITE(7, 30) 'DI', 'HEIGHT, [km]', 'VEL, [km/s]', 'VEL_DIFF, [km/s]', 'GRAD, [km/s/km]'
 
-      DO L = 1, ND; WRITE(7, 40) L, HEIGHT(L), VELO(L), -VEL_DIFF(L), GRAD_KMSKM(L); ENDDO
+!      DO L = 1, ND; WRITE(7, 40) L, HEIGHT(L), VELO(L), -VEL_DIFF(L), GRAD_KMSKM(L); ENDDO
 
-      CLOSE(7)
+!      CLOSE(7)
 
-30    FORMAT(1x,A,8x,A,8x,A,7x,A,4x,A,/)
-40    FORMAT(I3,5x,ES15.7,5x,ES15.7,5x,ES15.7,5x,ES15.7)
+!30    FORMAT(1x,A,8x,A,8x,A,7x,A,4x,A,/)
+!40    FORMAT(I3,5x,ES15.7,5x,ES15.7,5x,ES15.7,5x,ES15.7)
      
       RETURN
 

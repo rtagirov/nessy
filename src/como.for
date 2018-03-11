@@ -122,7 +122,7 @@
       CALL BFCROSS(SIGMAKI,NF,NFDIM,N,NCHARG,ELEVEL,EION,EINST,
      $             XLAMBDA(1 : NF),ALPHA,SEXPO,AGAUNT,NOM,WAVARR,SIGARR)
 
-      if (lambda_iter == 0) call print_sigma(N, NF, xlambda, sigmaki)
+!      if (lambda_iter == 0) call print_sigma(N, NF, xlambda, sigmaki)
 
 !     LOOP OVER ALL FREQUENCY POINTS
 !     SOLUTION OF THE MOMENT EQUATION AT EACH FREQUENCY POINT (FORMAL SOLUTION)

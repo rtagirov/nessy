@@ -28,16 +28,18 @@
 
 !     height: height in km
 !     T:      Temperature in K
-!     entot:  HEAVY PARTICLE DENSITY
-!     radius: HEIGHT IN UNITS OF SOLAR RADII
+!     entot:  heavy particle density
+!     radius: height in units of solar radii
 
       selectcase(num_of_columns(atm_mod_file))
 
-          case(4); call read_mur_mod(rstar, height, radius, T, entot, ND) ! Atmosphere model in MURAM format
+          case(4);  call read_mur_mod(rstar, height, radius, T, entot, ND)              ! Atmosphere model in MURAM format
 
-          case(5); call read_fal_mod(rstar, height, radius, T, entot, ND) ! Atmosphere model in FAL format
+          case(5);  call read_fal_mod(rstar, height, radius, T, entot, ND)              ! Atmosphere model in FAL format
 
-          case(7); call read_kur_mod(amu, atmean, rstar, height, radius, T, entot, ND) ! Atmosphere model in Kurucz format
+          case(7);  call read_kur_mod(amu, atmean, rstar, height, radius, T, entot, ND) ! Atmosphere model in Kurucz 7  columns format
+
+          case(10); call read_kur_mod(amu, atmean, rstar, height, radius, T, entot, ND) ! Atmosphere model in Kurucz 10 columns format
 
           case default; stop 'Function read_atm_file_col: col argument is not recognized. Abort.'
 
@@ -96,7 +98,7 @@
 
       gradn = dn * maxval(abs(dr)) / dr / maxval(abs(dn))
 
-      fu = 1242; open(unit = fu, file = 'ATM_STR', action = 'write')
+      fu = 1242; open(unit = fu, file = 'strat.out', action = 'write')
 
       write(fu, fmt_head) 'idx', 'h', 'T', 'n', 'dh', 'r', 'dT/dh', 'dn/dr'
 
@@ -238,7 +240,7 @@
 
       real*8,  intent(in)  :: rstar
 
-      real*8, intent(in) :: amu, atmean
+      real*8,  intent(in)  :: amu, atmean
 
       integer, intent(out) :: ND
 

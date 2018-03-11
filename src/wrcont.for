@@ -193,7 +193,7 @@
 
       ENDDO FRQS
 
-      call print_xjc(ND, NF, xlambda, xjcarr(1 : ND, 1 : NF))
+!      call print_xjc(ND, NF, xlambda, xjcarr(1 : ND, 1 : NF))
 
       print*, 'maxmin of dEDDI(1, :) = ', 
      & maxval(abs(EDDI(1, 1 : ND) / EDDI_OLD(1, :))),
