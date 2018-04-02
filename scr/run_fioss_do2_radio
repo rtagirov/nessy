@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ~/sim-rinat/sync_pool/aux_func.sh
+if [ -z "$scr" ]; then echo "run_fioss_do2_radio: variable scr must be declared in .bashrc!"; exit; fi
+
+source $scr/aux_func.sh
 
 # Setting the working variables
 ##############################################################################################

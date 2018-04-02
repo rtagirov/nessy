@@ -765,7 +765,8 @@
 
 !         N_CLV = 100
 !         N_CLV = 20
-         N_CLV = 1
+         N_CLV = 10
+!         N_CLV = 1
 !         N_CLV = NFOBS
          LP = NP - ND
 
@@ -855,7 +856,9 @@
 
                 WAV_CLV(K) = DLAM(MP) + RWLAE
 
-                FLUX_CLV(JP, K) = SUM(emint(SP : EP)) / IS
+                if (wav_clv(k) <= 290.0d0) FLUX_CLV(JP, K) = 0.0d0
+
+                if (wav_clv(k) > 290.0d0)  FLUX_CLV(JP, K) = SUM(emint(SP : EP)) / IS
 
              ENDDO
 

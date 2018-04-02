@@ -120,21 +120,26 @@
 
       real*8, dimension(13) :: cp
 
+      real*8, dimension(11) :: mu
+
       integer :: NC, L, J
 
-      data cp /0.0d0, 0.1d0, 0.2d0, 0.3d0, 0.4d0, 0.5d0, 0.6d0, 0.7d0, 0.8d0, 
+      data cp /0.0d0, 0.1d0, 0.2d0, 0.3d0, 0.4d0, 0.5d0, 0.6d0, 0.7d0, 0.8d0,
      $         0.91652d0, 0.97980d0, 0.99499d0, 0.99875d0/
+
+      data mu /1.0d0, 0.9d0, 0.8d0, 0.7d0, 0.6d0, 0.5d0, 0.4d0, 0.3d0, 0.2d0, 0.1d0, 0.05d0/
 
 !     NC = NUMBER OF CORE-INTERSECTING RAYS
 
-      NC = 13; NP = ND + NC
+!      NC = 13; NP = ND + NC
+      NC = 11; NP = ND + NC
 
       allocate(P(NP))
 
-      P(1 : NC) = cp(1 : NC)
+!      P(1 : NC) = cp(1 : NC)
+      P(1 : NC) = sqrt(1.0d0 - mu**2.0d0)
 
-!     CORE RAYS EQUELLY SPACED
-
+!     CORE RAYS EQUALLY SPACED
       do L = 1, ND; J = NP + 1 - L; P(J) = R(L); enddo
 
       return
