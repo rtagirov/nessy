@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 TO=${BASH_ARGV[0]} # the last argument
 

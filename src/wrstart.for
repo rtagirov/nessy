@@ -21,8 +21,6 @@
       use MOD_TICTOC
       use MOD_chemeq
 
-!      use utils
-
       use mod_decode
       use vardatom_full
       use vardatom_nlte
@@ -80,7 +78,7 @@
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM) ! NFDIM is known from varhminus module
 
-!      call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
+      call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
 
 !      call print_istageinfo(natom, N, symbol, nfirst, nlast, ncharg)
 

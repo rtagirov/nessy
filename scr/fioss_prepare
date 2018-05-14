@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 [[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
 

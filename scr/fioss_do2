@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ -z "$scr" ]; then echo "Variable scr must be declared in .bashrc!"; exit; fi
 

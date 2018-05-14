@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Make a copy of a directory with all files linked to the old one but a few
 #

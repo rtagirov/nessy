@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ $(hostname) == "ph-rtagirov" ]; then NESSY_DIR=/mnt/SSD/sim/nessy; tac=tac;       fi
 if [ $(hostname) == "schiphol" ];    then NESSY_DIR=~/nessy;            tac='tail -r'; fi
