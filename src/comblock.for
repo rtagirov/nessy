@@ -26,8 +26,8 @@
 
       logical, dimension(:, :), allocatable ::   damp_line, damp_cont
 
-      logical ::                                 damp_acc = .true.
-!      logical ::                                 damp_acc = .false.
+!      logical ::                                 damp_acc = .true.
+      logical ::                                 damp_acc = .false.
 
 !      logical ::                                 rayleigh = .true.
       logical ::                                 rayleigh = .false.

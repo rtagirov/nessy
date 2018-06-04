@@ -147,7 +147,7 @@
 
       FRQS: DO K = 1, NF
 
-        print*, 'wrcont: ', k, xlambda(k)
+!        print*, 'wrcont: ', k, xlambda(k)
 
 !       now extract XJC and EDDI for the frequency K
         CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
@@ -308,7 +308,7 @@
 
       call cpu_time(wrcont_finish)
 
-      call open_to_append(261, 'cpu_time.wrcont'); write(261, '(F6.3)') wrcont_finish - wrcont_start; close(261)
+      call open_to_append(261, 'cpu_time.wrcont'); write(261, '(F7.3)') wrcont_finish - wrcont_start; close(261)
 
       return
 

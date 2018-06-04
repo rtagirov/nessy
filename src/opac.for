@@ -259,8 +259,9 @@ C     **** calculated only in the first and the last frequency *****
             X1=UN-X
 !***********************************************************************************
 !RINAT TAGIROV, ALEXANDER SHAPIRO
-            SFF = X1 * SF1 * SF2 !!! X1 has been added to account for the induced emission for every element except H^- (the induced emission for H^- was taken into account in hminusff)
-!            SFF = SF1 * SF2 !!! X1 has been added to account for the induced emission for every element except H^- (the induced emission for H^- was taken into account in hminusff)
+!X1 has been added to account for the induced emission for every element except H^-
+!the induced emission for H^- had been taken into account in hminusff
+            SFF = X1 * SF1 * SF2 
 !***********************************************************************************
           ENDIF ! IE==IELHM
 
