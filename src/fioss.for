@@ -143,6 +143,8 @@
       real*8, allocatable, dimension(:,:) :: XJK,CWK,DINT,XJ
       real*8, allocatable, dimension(:) :: XNU
 
+      character (len = 8) :: rwlae_str
+
       !MH   VARIABILITY OF VELOCITY ACTIV/NONACTIVE
       !MH var = true then variation of Doppler velocity considered
       ! VAR = .TRUE.
@@ -757,10 +759,13 @@
         PROFILE(:)=0.
 
         !***  LOOP FOR EACH IMPACT PARAMETER ===========================
-    
-     
 
-         open(250, file='../contr.txt',access='append')  
+         call system('mkdir -p contr')
+
+         write(rwlae_str, '(i8)') int(rwlae)
+
+!         open(250, file='../contr.txt',access='append')
+         open(250, file='./contr/'//trim(adjustl(rwlae_str))//'.contr')
          write(250,*), rwlae
 
 !         N_CLV = 100
