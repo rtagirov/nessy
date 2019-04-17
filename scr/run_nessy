@@ -65,9 +65,11 @@ CONV_DIR=CONV
 EDDI_FILE=EDDIES
 
 HM_SET=CARDS
+FI_SET=CARDS.TEMPLATE
 
 VelParStringPattern='.*VELPAR:.*'
-VDOPStringPattern='.*VDOP=   .*'
+VDHStringPattern='.*VDOP=   .*'
+VDFStringPattern='.*VDOP=  .*'
 JOBMAXStringPattern='.*JOBMAX=   .*'
 NEWWRCStringPattern='.*NEWWRC=   .*'
 
@@ -181,7 +183,7 @@ for RUN in $RUNS; do
  IFS='%'
  if [ $NEWWRC ]; then xterm_cmd "sed -i 's/$NEWWRCStringPattern/$NEWWRCString/' $HM_SET"; fi
  if [ $VELPAR ]; then xterm_cmd "sed -i 's/$VelParStringPattern/$VelParString/' $HM_SET"; fi
- if [ $VDOP ];   then xterm_cmd "sed -i 's/$VDOPStringPattern/$VDOPString/'     $HM_SET"; fi
+ if [ $VDH ];    then xterm_cmd "sed -i 's/$VDHStringPattern/$VDHString/'       $HM_SET"; fi
  if [ $JOBMAX ]; then xterm_cmd "sed -i 's/$JOBMAXStringPattern/$JOBMAXString/' $HM_SET"; fi
  unset IFS
 
@@ -312,7 +314,7 @@ for RUN in $RUNS; do
  IFS='%'
  if [ $NEWWRC ]; then sed -i "s/$NEWWRCStringPattern/$NEWWRCString/" $HM_SET; fi
  if [ $VELPAR ]; then sed -i "s/$VelParStringPattern/$VelParString/" $HM_SET; fi
- if [ $VDOP ];   then sed -i "s/$VDOPStringPattern/$VDOPString/"     $HM_SET; fi
+ if [ $VDH ];    then sed -i "s/$VDHStringPattern/$VDHString/"       $HM_SET; fi
  if [ $JOBMAX ]; then sed -i "s/$JOBMAXStringPattern/$JOBMAXString/" $HM_SET; fi
  unset IFS
 
@@ -490,6 +492,10 @@ if [ "$RANGE" == "rad" ]; then
 
        insert "$src_prof && cd $FI_DIR$RUN; echo -e DIRECTORY: $FI_DIR$RUN'\n'" "$XTERM_CMD_FILE" "r"
 
+       IFS='%'
+       if [ $VDF ]; then xterm_cmd "sed -i 's/$VDFStringPattern/$VDFString/' $FI_SET"; fi
+       unset IFS
+
        xterm_cmd "$RadioShellScriptName --grid='$GRID'"
 
        xterm $XTERM_SET_FRE -title "IT$ODF_IT/$RUN (fioss_rad@$(hostname))" -e "bash --rcfile $XTERM_CMD_FILE -i" &
@@ -505,6 +511,10 @@ elif [ $RANGE == "uvi" ]; then
        XTERM_CMD_FILE=$FI_DIR$RUN/$XTERM_CMD_FILE_NAME
  
        insert "$src_prof && cd $FI_DIR$RUN; echo -e DIRECTORY: $FI_DIR$RUN'\n'" "$XTERM_CMD_FILE" "r"
+
+       IFS='%'
+       if [ $VDF ]; then xterm_cmd "sed -i 's/$VDFStringPattern/$VDFString/' $FI_SET"; fi
+       unset IFS
 
        xterm_cmd "echo -e MAX_PROC = $MAX_PROC'\n'"
 
@@ -539,7 +549,13 @@ if [ "$RANGE" == "rad" ]; then
 
    for RUN in $RUNS; do
 
-       cd $FI_DIR$RUN; echo -e DIRECTORY: $(pwd)'\n' > $FI_LOG_RAD
+       cd $FI_DIR$RUN
+
+       IFS='%'
+       if [ $VDF ]; then sed -i "s/$VDFStringPattern/$VDFString/" $FI_SET; fi
+       unset IFS
+
+       echo -e DIRECTORY: $(pwd)'\n' > $FI_LOG_RAD
 
        $RadioShellScriptName --grid='$GRID' >> $FI_LOG_RAD &
 
@@ -551,7 +567,13 @@ elif [ "$RANGE" == "uvi" ]; then
 
    for RUN in $RUNS; do
  
-       cd $FI_DIR$RUN; echo -e DIRECTORY: $(pwd)'\n' > $FI_LOG_UVI
+       cd $FI_DIR$RUN
+
+       IFS='%'
+       if [ $VDF ]; then sed -i "s/$VDFStringPattern/$VDFString/" $FI_SET; fi
+       unset IFS
+
+       echo -e DIRECTORY: $(pwd)'\n' > $FI_LOG_UVI
 
        echo -e MAX_PROC = $MAX_PROC'\n' >> $FI_LOG_UVI
 
@@ -854,8 +876,8 @@ MAX_PROC=1
 branch=main
 ##############################################################################################
 
-ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:xnlF:zP:HLp:D:i:OITtj:m:q:b:A:f:v:V:N:J:g:G:"\
-                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,atm:,fgr:,car:,ato:,vfield:,vel:,VDOP:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
+ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:xnlF:zP:HLp:D:i:OITtj:m:q:b:A:f:v:B:C:N:J:g:G:"\
+                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,clean,rmlopa,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,atm:,fgr:,car:,ato:,vfield:,vel:,VDH:,VDF:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
 
 if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
@@ -927,7 +949,9 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
                     VFINAL=${VELPAR[0]}
                     VMIN=${VELPAR[1]};  shift 2;;
 
-       -V|--VDOP)   VDOP=$2;            shift 2;;
+       -B|--VDH)   VDH=$2;             shift 2;;
+
+       -C|--VDF)   VDF=$2;             shift 2;;
 
        -N|--NEWWRC) NEWWRC=$2;          shift 2;;
 
@@ -976,9 +1000,13 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 # Variables for $HM_SET file adjustment
 ##############################################################################################
    VelParString='VELPAR: VFINAL (KM\/S)='$VFINAL'VMIN='$VMIN'BETA= 1. RMAX= 1.01 X'
-   VDOPString='VDOP='"   "$VDOP
+   VDHString='VDOP='"   "$VDH
    JOBMAXString='JOBMAX='"   "$JOBMAX
    NEWWRCString='NEWWRC='"   "$NEWWRC
+##############################################################################################
+# Variables for $FI_SET file adjustment
+##############################################################################################
+   VDFString='VDOP='"  "$VDF
 ##############################################################################################
 
    if [ $HM_RUN ]; then
