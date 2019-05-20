@@ -383,7 +383,9 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
       real*8 :: LAMBDA,y,dy     ! Freq point, tau=1,tau=1 error
       real*8 :: coeff
       real*8 :: FH(NFOBR), FHA(40)
+
       real*8 :: ZZ1,ZZ2, tau1, tau2
+
       integer :: K,L, iFROM,iTO ! loop variables, index
       character*(*),parameter :: FORMAT = '(3(e18.10e4,x),i1,x,i3)'
       if(JP/=1) return
@@ -392,7 +394,6 @@ c*** call PRINTTAU only for the central ray
         print *,'obsint: printTAU: warning: ZFINE to small' 
         return
       endif
-
 
       !*** 1) calculate the depth-grid.
       !***  !!! This only works for the central ray !!!

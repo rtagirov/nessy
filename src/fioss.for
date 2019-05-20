@@ -99,6 +99,8 @@
 
       real*8, allocatable, dimension(:) ::       VERTVELO, VELOVAR
 
+      real*8 :: mu
+
       integer :: NVD
 
       LOGICAL :: LOPA
@@ -290,6 +292,26 @@
      $             ABXYZ,NATOM,MODHEAD,JOBNUM,LBLANK)
 
       close(IFL)
+
+      open(unit = 3, file = '../mu')
+
+      read(3, *) mu
+
+      close(3)
+
+      R = R - 1.0
+
+      R = R / mu
+
+      R = R + 1.0
+
+      Z1D = Z1D - 1.0
+
+      Z1D = Z1D / mu
+
+      Z1D = Z1D + 1.0
+
+      GRADI = mu * GRADI
 
       IFL = 3; open(IFL, file = 'POPNUM', STATUS='OLD')
 !     also reads number of depth points, temperature, rne
