@@ -163,8 +163,8 @@ C***  NEGINTL COUNTS THE ERROR MESSAGES  FROM SUBR. LINPOP
       ENDDO
 
 !      CORMAX_FIN = CORMAX_ELE(1); DCM_FIN = DCM_ELE(1)
-      CORMAX_FIN = CORMAX_NHN; DCM_FIN = DCM_NHN
-!      CORMAX_FIN = CORMAX_ALL; DCM_FIN = DCM_ALL
+!      CORMAX_FIN = CORMAX_NHN; DCM_FIN = DCM_NHN
+      CORMAX_FIN = CORMAX_ALL; DCM_FIN = DCM_ALL
 
 !----------------------------------------------------------------------------------
 ! PRINT OUT BLOCK START

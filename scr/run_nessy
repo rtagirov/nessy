@@ -725,7 +725,10 @@ for RUN in $RUNS; do
 
     sed -i "s/.*DIM.*/$DIM/" $LBKG_CONTROL_FILE
 
-    sed -i '5,6d' $LBKG_CONTROL_FILE
+    num_times=$(echo $(wc -l $LBKG_CONTROL_FILE | awk '{print $1}') - 4 | bc)
+
+#    sed -i '5,6d' $LBKG_CONTROL_FILE
+    for k in $(seq 1 $num_times); do sed -i '5d' $LBKG_CONTROL_FILE; done
 
     INPUT_PATH="INPUT PATH "$FI_DIR/$RUN/lopa/; OUTPUT_PATH="OUTPUT PATH IT"${ODF_IT}_IT$NEXT_ODF_IT/$RUN/
 
@@ -861,8 +864,7 @@ RAD_GRID="0.001 18 0.01 38 0.2"
 #RAD_GRID="0.09 2 0.1 18 1.0 40 5.0 25 30.0 23 99.0"
 #RAD_GRID="0.1 18 1.0 40 5.0 25 30.0 23 99.0"
 
-#UVI_GRID="1000 10 10000"
-UVI_GRID="1000 10 11000"
+UVI_GRID="1000 10 10000"
 
 HM_JOB=wrstart
 

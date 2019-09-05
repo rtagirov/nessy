@@ -77,6 +77,7 @@ $CP ${ORIG_COSI}/FGRID	   ./
 $CP ${ORIG_COSI}/RADIOC    ./
 $CP ${ORIG_COSI}/RADIOL    ./
 $CP ${ORIG_COSI}/POPNUM    ./
+$CP ${ORIG_COSI}/mu        ./
 
 $CP ${ORIG_COSI}/atm.inp   ./
 $CP ${ORIG_COSI}/datom.inp ./
