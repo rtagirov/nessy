@@ -1,9 +1,9 @@
-# The ICL version of the code
+# ICL version
 
-The state of the code on 25.12.2016, when it started running at ICL, i.e. with the latest (17th) version of the IFORT compiler.
-The code also runs with the 15th version at MPS.
-Below 70 nm this version yields a discrepancy of the resulting high resolution 3 ODF spectrum with the pmod branch.
-The discrepancy is within about 8%, its origin is unknown.
+The state of the code on 25.12.2016, when it started running on my machine at ICL
+(IFORT version 17.0.0 20160721).
+Below 70 nm the resulting spectrum produced by this version yields a discrepancy of about 8%
+with the pmod branch spectrum.
 
 Compilation:
 
