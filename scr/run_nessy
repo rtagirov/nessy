@@ -725,7 +725,7 @@ for RUN in $RUNS; do
 
     sed -i "s/.*DIM.*/$DIM/" $LBKG_CONTROL_FILE
 
-    num_times=$(echo $(wc -l CARDS.LOPA | awk '{print $1}') - 4 | bc)
+    num_times=$(echo $(wc -l $LBKG_CONTROL_FILE | awk '{print $1}') - 4 | bc)
 
 #    sed -i '5,6d' $LBKG_CONTROL_FILE
     for k in $(seq 1 $num_times); do sed -i '5d' $LBKG_CONTROL_FILE; done
