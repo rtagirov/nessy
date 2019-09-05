@@ -222,8 +222,6 @@
 
 !      print*, 'etl: NL = ', NL, ' out of ', NLINE
 
-      print*, 'etl: LN = ', LineNumber
- 
 !***  RATES AND POPNUMBERS ARE UPDATED !
 !***  THIS ROUTINE IS SKIPPED FOR SUBSEQUENT "FORMAL" LINES
 !***  EXCEPT OF THE FIRST FORMAL LINE WHICH FOLLOWS AN ETL LINE

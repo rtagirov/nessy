@@ -40,8 +40,6 @@
 !     ************************************************************************************
       DND = VDOP / XLAM * 1.0D+13
 
-      print*, 'liop_rte VDOP: ', VDOP
-
 !     RINAT TAGIROV:
 !     VDOP = sqrt(V_therm^2 + V_turb^2), where V_therm is the
 !     thermal velocity of atoms and V_turb is the turbulent velocity
@@ -112,7 +110,7 @@
 !     ************************************************************************************
       DND = VDOP / XLAM * 1.0D+13
 
-      print*, 'liop_sbe VDOP: ', VDOP
+!      print*, 'liop_sbe VDOP: ', VDOP
 
 !     RINAT TAGIROV:
 !     VDOP = sqrt(V_therm^2 + V_turb^2), where V_therm is the
