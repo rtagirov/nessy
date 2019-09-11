@@ -2,7 +2,7 @@
 
 !     HMINUS VARIABLES
 
-      INTEGER ::                                 DPN
+      integer ::                                 dpn
 
       REAL*8 ::                                  CORMAX_ELEC
  
@@ -86,10 +86,13 @@
 
       real*8, allocatable, dimension(:) :: tabt, tabp
 
-      integer, parameter :: nsizebig = 90
-      integer, parameter :: isubbin =  10
+      integer, parameter :: nbins = 90
+      integer, parameter :: nsubbins = 10
 
-      integer(kind = 2), allocatable, dimension(:, :, :, :) :: iodfrecvb
-      real*8,            allocatable, dimension(:)          :: freqgrid
+      integer(kind = 2), allocatable, dimension(:, :, :, :) :: odf
+      real*8,            allocatable, dimension(:)          :: wvlgrid
+
+      real*8,            allocatable, dimension(:)          :: co1, co2, co3, co4
+      integer,           allocatable, dimension(:)          :: ipj, itj
 
       end module

@@ -1,42 +1,42 @@
-      MODULE PHYS
+      module phys
 
-      IMPLICIT NONE
+      implicit none
 
-      REAL*8, PARAMETER :: pai = 3.1415926
+      real*8, parameter :: pai = 3.1415926
 
-      REAL*8, PARAMETER :: boltz = 1.3806488D-16       ! Boltzmann constant, erg / K
+      real*8, parameter :: boltz = 1.3806488D-16       ! Boltzmann constant, erg / K
 
-      REAL*8, PARAMETER :: elec_mass = 9.1093829D-28   ! Electron mass, g
+      real*8, parameter :: elec_mass = 9.1093829D-28   ! Electron mass, g
 
-      REAL*8, PARAMETER :: prot_mass = 1.6726217D-24   ! Proton mass, g
+      real*8, parameter :: prot_mass = 1.6726217D-24   ! Proton mass, g
 
-      REAL*8, PARAMETER :: bohr_rad = 5.29D-9          ! Bohr radius, cm
+      real*8, parameter :: bohr_rad = 5.29D-9          ! Bohr radius, cm
 
-      REAL*8, PARAMETER :: fine_str = 7.2973525D-3     ! Fine structure constant
+      real*8, parameter :: fine_str = 7.2973525D-3     ! Fine structure constant
 
-      REAL*8, PARAMETER :: light_speed = 2.9979245D+10 ! Speed of light, cm / s
+      real*8, parameter :: light_speed = 2.9979245D+10 ! Speed of light, cm / s
 
-      REAL*8, PARAMETER :: planck = 6.6260688D-27      ! Planck constant, erg * s
+      real*8, parameter :: planck = 6.6260688D-27      ! Planck constant, erg * s
 
       real*8, parameter :: elec_charg = 4.80320425d-10 ! Electron charge in statcoulombs
 
       real*8, parameter :: sigma_thomson = 6.65d-25    ! Thomson cross-section in cm^{-2}
 
-      PUBLIC
+      public
 
-      CONTAINS
+      contains
 
-      REAL*8 FUNCTION HYD_LEV_ENERGY(n) ! Energy of a hydrogen level with principal quantum number n (in CGS units)
+      real*8 function hyd_lev_energy(n) ! Energy of a hydrogen level with principal quantum number n (in CGS units)
 
-      USE MATH
+      use math
 
-      INTEGER, INTENT(IN) :: n
+      integer, intent(in) :: n
 
-      HYD_LEV_ENERGY = -elec_mass * DSQ(light_speed * fine_str)  / ISQ(n) / 2.0D0
+      hyd_lev_energy = -elec_mass * dsq(light_speed * fine_str)  / isq(n) / 2.0D0
 
-      RETURN
+      return
 
-      END FUNCTION HYD_LEV_ENERGY
+      end function hyd_lev_energy
 
       REAL*8 FUNCTION PLANCK_FUNC(nu, T) ! Planck intensity per unit frequency (in CGS units)
 
