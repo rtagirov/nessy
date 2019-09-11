@@ -79,6 +79,4 @@
 
       REAL*8,  ALLOCATABLE, DIMENSION(:, :) ::   NTPL, NTPU, NTDL, NTDU
 
-      real*8,  allocatable, dimension(:, :, :) :: odf
-
       end module

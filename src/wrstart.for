@@ -29,7 +29,6 @@
       use init_vel
       use common_block
       use file_operations
-      use readodf
 
 !     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
 !     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
@@ -193,8 +192,6 @@
          DO L = 1, ND; VELO(L) = WRVEL(RADIUS(L)); ENDDO
 
       ENDIF
-
-      call read_odf(90, 900, 100, 100, odf)
 
       CALL GRADIFF(ND,VELO,GRADI,RADIUS)
  
