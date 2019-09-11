@@ -1,6 +1,6 @@
       module vardatom_full
 
-!     subroutine datom variables (both for fioss and hminus); mode = 'full'
+!     variables for subroutine datom (both for fioss and hminus); mode = 'full'
 
       integer                                   :: N, NATOM, LASTIND
 

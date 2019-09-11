@@ -62,7 +62,7 @@
 
       real*8,                allocatable ::      ABXYZ_nlte(:), ABXYZn_nlte(:, :)
 
-      logical ::                                 LBKG           ! KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTIONS
+      logical ::                                 LBKG           ! KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTION (ODF)
       integer ::                                 XLBKG1, XLBKG2 ! WAVELENTH RANGE FOR THE ODF
 
 !     FIOSS VARIABLES
@@ -78,5 +78,7 @@
       REAL*8,  ALLOCATABLE, DIMENSION(:) ::      WAVTRA, AUL
 
       REAL*8,  ALLOCATABLE, DIMENSION(:, :) ::   NTPL, NTPU, NTDL, NTDU
+
+      real*8,  allocatable, dimension(:, :, :) :: odf
 
       end module

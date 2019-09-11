@@ -586,7 +586,7 @@
       real*8, intent(in)  :: XLAM
       integer,intent(in)  :: XLBKG1,XLBKG2,NDPMIN
       integer             :: LAM
-      character*50        :: FLNAM
+      character*50        :: flnam
       integer             :: i,IDX, nLINOP
 
       if(.not.allocated(ROWS)) allocate(ROWS(0))
@@ -600,8 +600,8 @@
 !      if (xlbkg1 .ne. 0) print*, 'xlbkg1 = ', xlbkg1
 !      if (xlbkg2 .ne. 0) print*, 'xlbkg2 = ', xlbkg2
 
-      IF (XLAM < XLBKG1) RETURN
-      IF (XLAM > XLBKG2) RETURN
+      if (XLAM < XLBKG1) return
+      if (XLAM > XLBKG2) return
 
       nLINOP = size(LINOP)
       LAM = XLAM
@@ -616,10 +616,16 @@
           return !** if found and correct size, return
         endif
       enddo SEARCH_IDX
-      write(flnam,'(i6)') LAM
-      flnam=adjustl(adjustr(flnam)//'.lbkg')
-      open (300,file=flnam,status='old',action='read', err=999)
-      read (300,'(A)')           ! read the header
+
+      write(flnam, '(i6)') LAM
+
+      flnam = './lbkg/'//trim(adjustl(flnam))//'.lbkg'
+
+      write(*, '(A5,1x,F9.3,1x,I4,1x,A16)'), 'check', xlam, lam, flnam
+
+      open(300, file = trim(adjustl(flnam)), status = 'old', action = 'read', err = 999)
+
+      read(300, '(A)')           ! read the header
       !***********************************************************
       !*  L = 1 : MOST OUTWARD DEPTH POINT
       !*  L = ND: MOST INWARD DEPTH POINT

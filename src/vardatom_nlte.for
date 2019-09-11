@@ -1,6 +1,6 @@
       module vardatom_nlte
 
-!     subroutine datom variables (both for fioss and hminus); mode = 'nlte'
+!     variables for subroutine datom (both for fioss and hminus); mode = 'nlte'
 
       integer                                   :: N_nlte, natom_nlte, lastind_nlte
 

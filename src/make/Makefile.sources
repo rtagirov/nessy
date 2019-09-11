@@ -207,4 +207,5 @@ vardatom_full.for\
 vardatom_lte.for\
 vardatom_nlte.for\
 elresp.for\
-comblock.for
+comblock.for\
+readodf.for
