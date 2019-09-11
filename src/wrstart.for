@@ -29,7 +29,7 @@
       use init_vel
       use common_block
       use file_operations
-      use readodf
+      use odf_table
 
 !     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
 !     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
@@ -170,33 +170,35 @@
 !     The units of velocity in the VEL_FIELD_FILE are km/s, height is in km.
 !     The first column is height, the second is velocity.
 
-      IF (VEL_FIELD_FROM_FILE) THEN
+      if (vel_field_from_file) then
 
-         ALLOCATE(VELO_NE(ND))
-         ALLOCATE(VELO_E(ND))
+         allocate(velo_ne(nd))
+         allocate(velo_e(nd))
 
-         FILE_UNIT = 1832
+         open(unit = 1832, file = vel_field_file, action = 'read')
 
-         OPEN(UNIT = FILE_UNIT, FILE = VEL_FIELD_FILE, ACTION = 'READ')
+         do i = 1, ND; read(1832, *) h, velo_ne(i); enddo
 
-         DO I = 1, ND; READ(FILE_UNIT, *) H, VELO_NE(I); ENDDO
-
-         CLOSE(FILE_UNIT)
+         close(1832)
 
 !        Extrapolation of the velocity law. If there is no local minimum/maximum then VELO_E = VELO_NE.
-         VELO_E = EXTRAP_VEL_FIELD(VELO_NE(1 : ND), ND)
+         velo_e = extrap_vel_field(velo_ne(1 : ND), ND)
 
-         VELO(1 : ND) = VELO_E(1 : ND)
+         velo(1 : ND) = velo_e(1 : ND)
 
-      ELSE
+      else
 
-         DO L = 1, ND; VELO(L) = WRVEL(RADIUS(L)); ENDDO
+         do L = 1, ND; velo(L) = wrvel(radius(L)); enddo
 
-      ENDIF
+      endif
 
-      call read_odf(90, 900, 100, 100, odf)
+!      call read_TP_grid(ntemp, nrhox, tabt, tabp)
+      call read_tp_grid()
 
-      CALL GRADIFF(ND,VELO,GRADI,RADIUS)
+!      call read_odf_table(90, 10, ntemp, nrhox, freqgrid, iodfrecvb)
+      call read_odf_table()
+
+      call gradiff(ND, velo, gradi, radius)
  
 C***  STAPEL: NUMBER OF FREE ELECTRONS PER ATOM
 C***  S T A R T   A P P R O X I M A T I O N

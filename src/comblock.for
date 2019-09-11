@@ -79,6 +79,17 @@
 
       REAL*8,  ALLOCATABLE, DIMENSION(:, :) ::   NTPL, NTPU, NTDL, NTDU
 
-      real*8,  allocatable, dimension(:, :, :) :: odf
+!     ------------------------------------------------------------------------------------
+!     variables and parameters for the odf_table module
+
+      integer :: ntemp, nrhox
+
+      real*8, allocatable, dimension(:) :: tabt, tabp
+
+      integer, parameter :: nsizebig = 90
+      integer, parameter :: isubbin =  10
+
+      integer(kind = 2), allocatable, dimension(:, :, :, :) :: iodfrecvb
+      real*8,            allocatable, dimension(:)          :: freqgrid
 
       end module
