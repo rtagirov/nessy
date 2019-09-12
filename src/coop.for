@@ -255,9 +255,10 @@
       SUM=RNE(L)*SIGMAE
 !     WRITE (990,*) L,'RNE(L)*SIGMAE = ',RNE(L)*SIGMAE
 !     add line-blanketing enhancement
-      IF (XLAM.GT.227.83d0 .AND. XLAM.LE.3100d0 ) THEN
 
-         ELDEN=RNE(L)*ENTOT(L)
+      IF (XLAM .GT. 227.83d0 .AND. XLAM .LE. 3100d0 ) THEN
+
+         ELDEN = RNE(L) * ENTOT(L)
 
          CALL LINSCA(XLAM, ELDEN, SCAFAC, ABSFAC)
 
@@ -265,11 +266,15 @@
          OPAL = OPAL * ABSFAC
         ! MULTIPLY SUM TO ACOUNT FOR LINE-SCATTERING
          SUM = SUM * SCAFAC
-        ENDIF
-        IF (SUM.GE.OPAMAX) THEN
-          MAINPRO(L)='THOMSON'
-          MAINLEV(L)='ELECTRON'
-        ENDIF
+
+      ENDIF
+
+      IF (SUM .GE. OPAMAX) THEN
+
+          MAINPRO(L) = 'THOMSON'
+          MAINLEV(L) = 'ELECTRON'
+
+      ENDIF
 
         OPAL = OPAL + SUM
 
@@ -277,28 +282,32 @@
 !MH    RDOPAC: READS BINNED LINE OPACITY DATA FROM *.LBKG FILES
 !MH    LINOP, LINEM AT DEPTHPOINT L AND FREQUENCY XLAM
 !MH    IF coop IS CALLED FROM WRCONT
-!        IF (LBKG) THEN
+       IF (LBKG) THEN
 
 !MH    OUTWARD OF TEMPERATURE MINIMUM EMISSION AND ABSORPTION SET TO ZERO
           if (l .le. NDPMIN) then
-            !alemis =0.
-            alcross=linop(L)/ENTOT(L)
+
+            alcross = linop(L)/ENTOT(L)
             alemis = BNUE(XLAM,T(NDPMIN))*alcross
+
           else
           !MH**  INWARD OF TEMPERATURE MINIMUM
 
             alcross = linop(L)/ENTOT(L)
             alemis  = BNUE(XLAM,T(L))*alcross
+
           endif
+
           OPAL=OPAL+alcross
           ETAL=ETAL+alemis
 
-        ENDIF
+       ENDIF
 
         ! THOMSON = RELATIVE FRACTION FROM THE TOTAL OPACITY
         THOMSON(L) = SUM / OPAL
         OPA(L) = OPAL * ENTOT(L) * RSTAR
         ETA(L) = ETAL * ENTOT(L) * RSTAR
+
       ENDDO
 
       return

@@ -159,6 +159,8 @@
 
       real*8, dimension(nsubbins + 1) :: subgrid
 
+      real*8  :: delta
+
       integer :: k, j, ip, it, bn, sbn
 
 !---------------------------------- EXECUTION --------------------------
@@ -197,7 +199,8 @@
 
       end subroutine
 
-      integer function bin_index(n, grid, w) result(idx)
+
+      function bin_index(n, grid, w) result(idx)
 
       use common_block
 
@@ -206,6 +209,8 @@
       integer              :: n
 
       real*8, dimension(n) :: grid
+
+      real*8               :: w
 
       integer              :: idx
 
