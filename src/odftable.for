@@ -12,15 +12,18 @@
 
       open(unit = 1409, file = 'tp.grid')
 
-      read(1409, *) ntemp
-      read(1409, *) nrhox
+      read(1409, *) numt
+      read(1409, *) nump
 
-      allocate(tabt(ntemp), tabp(nrhox))
+      allocate(tabt(numt), tabp(nump))
 
-      read (1409, *) (tabt(j), j = 1, ntemp)
-      read (1409, *) (tabp(j), j = 1, nrhox)
+      read (1409, *) (tabt(j), j = 1, numt)
+      read (1409, *) (tabp(j), j = 1, nump)
 
       close(unit = 1409)
+
+      tabt = log10(tabt)
+      tabp = log10(tabp)
 
       return
 
@@ -35,7 +38,7 @@
 
       integer :: inu, istep, it, ip
 
-      allocate(odf(nsubbins, nbins, nrhox, ntemp))
+      allocate(odf(nsubbins, nbins, nump, numt))
       allocate(wvlgrid(nbins + 1))
 
       open(unit = 1408, file = 'odf.table')
@@ -44,9 +47,9 @@
 
          read(1408, *) wvlgrid(inu), wvlgrid(inu + 1)
 
-            do ip = 1, nrhox
+            do ip = 1, nump
 
-               do it = 1, ntemp
+               do it = 1, numt
 
 !                 odf = 1000 * log10(opacity), which is integer(kind = 2)
                   read(1408, *) (odf(istep, inu, ip, it), istep = 1, nsubbins)
@@ -92,36 +95,30 @@
       allocate(itj(dpn), ipj(dpn))
       allocate(co1(dpn), co2(dpn), co3(dpn), co4(dpn))
 
-!     tlog(j) = log(T(j)), where j is the depth index
-!
-!      do j = 1, nrhox
       do j = 1, dpn
 
-!         tlog = min(max(tlog(j) / tenlog, tabt(1)), tabt(numt))
-         tlog = min(max(log(T(j)) / tenlog, tabt(1)), tabt(ntemp))
+         tlog = min(max(log10(T(j)), tabt(1)), tabt(numt))
+
          it = 2
-!
-!         do while (tabt(it) .le. tlog .and. it .lt. numt)
-         do while (tabt(it) .le. tlog .and. it .lt. ntemp)
+
+         do while (tabt(it) .le. tlog .and. it .lt. numt)
 
             it = it + 1
 
          enddo
-!
-!         plog = min(max(log10(p(j)), tabp(1)), tabp(numpres))
 
          p = entot(j) * boltz * T(j)
 
-         plog = min(max(log10(p), tabp(1)), tabp(nrhox))
-         ip   = 2
-!
-!         do while (tabp(ip) .le. plog .and. ip .lt. numpres)
-         do while (tabp(ip) .le. plog .and. ip .lt. nrhox)
+         plog = min(max(log10(p), tabp(1)), tabp(nump))
+
+         ip = 2
+
+         do while (tabp(ip) .le. plog .and. ip .lt. nump)
 
             ip = ip + 1
 
          enddo
-!
+
          ipj(j) = ip
          itj(j) = it
 

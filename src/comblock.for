@@ -82,7 +82,7 @@
 !     ------------------------------------------------------------------------------------
 !     variables and parameters for the odf_table module
 
-      integer :: ntemp, nrhox
+      integer :: numt, nump
 
       real*8, allocatable, dimension(:) :: tabt, tabp
 
