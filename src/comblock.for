@@ -93,6 +93,6 @@
       real*8,            allocatable, dimension(:)          :: wvlgrid
 
       real*8,            allocatable, dimension(:)          :: co1, co2, co3, co4
-      integer,           allocatable, dimension(:)          :: ipj, itj
+      integer,           allocatable, dimension(:)          :: idx_pres, idx_temp
 
       end module

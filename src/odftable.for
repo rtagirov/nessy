@@ -92,7 +92,7 @@
 
 !---------------------------------- EXECUTION --------------------------
 
-      allocate(itj(dpn), ipj(dpn))
+      allocate(idx_temp(dpn), idx_pres(dpn))
       allocate(co1(dpn), co2(dpn), co3(dpn), co4(dpn))
 
       do j = 1, dpn
@@ -119,8 +119,8 @@
 
          enddo
 
-         ipj(j) = ip
-         itj(j) = it
+         idx_pres(j) = ip
+         idx_temp(j) = it
 
          x      = (tlog - tabt(it - 1)) / (tabt(it) - tabt(it - 1))
          y      = (plog - tabp(ip - 1)) / (tabp(ip) - tabp(ip - 1))
@@ -185,8 +185,8 @@
 
       do j = 1, dpn
 
-         it = itj(j)
-         ip = ipj(j)
+         it = idx_temp(j)
+         ip = idx_pres(j)
 
          linop(j) = dexp(co1(j) * dble(odf(sbn, bn, ip - 1, it - 1)) +
      &                   co2(j) * dble(odf(sbn, bn, ip  ,   it - 1)) +
