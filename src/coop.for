@@ -54,6 +54,7 @@
       use common_block
       use file_operations
       use phys
+      use odf_table
 
       implicit none
 
@@ -117,8 +118,24 @@
 !     W = wavenumber in cm^(-1)
       W = 1.d8 / XLAM; W3 = W * W * W
 
-!     Read in all LINOP at once
-      CALL RDOPAC(XLAM, LINOP, NDPMIN, XLBKG1, XLBKG2)
+      linop = 0.0d0
+
+      if (lbkg) then
+
+          if (odf_from_table) then
+
+!            Interpolate ODF using the table given in
+!            the odf.table and odf.table.grid files
+             call odf_interpolation(xlam, linop)
+
+          else
+
+!            Read ODF from the ./lbkg/*.lbkg files
+             call rdopac(xlam, linop, ndpmin, xlbkg1, xlbkg2)
+
+          endif
+
+      endif
 
 !**********************************************************************
 !***  LOOP OVER ALL DEPTH POINTS
@@ -582,6 +599,7 @@
       return
 
       end subroutine
+
 
       subroutine RDOPAC(XLAM,LINOP,NDPMIN,XLBKG1,XLBKG2)
 

@@ -100,9 +100,24 @@
      $             INDLOW,INDNUP)
 
 !     GENERATION OF THE CONTINUOUS FREQUENCY GRID
-      CALL FGRID(NFDIM,NF,XLAMBDA,FWEIGHT,AKEY,NOM,SYMBOL,NATOM,N,NCHARG,ELEVEL,EION,EINST)
+      call fgrid(nfdim,nf,xlambda,fweight,akey,nom,symbol,natom,n,ncharg,elevel,eion,einst)
 
-      CALL GEOMESH(RADIUS, ENTOT, T, P, Z, RSTAR, AMU, ATMEAN, ND, NP)
+      call geomesh(radius, entot, T, P, Z, rstar, amu, atmean, ND, NP)
+
+      if (odf_from_table) then
+
+!         read odf.table and odf.table.grid files
+!         odf.table.grid --- grid of temperature and pressures
+!         at which the opacities in the odf.table file are given
+          call read_odf_table()
+
+!         calculate the odf interpolation coefficients to the T - entot grid (atm.inp file)
+          call odf_interpolation_coef(entot, T)
+
+!         interpolate the odf.table opacities from the odf.table.grid to the T - entot grid
+!          call odf_interpolation(xlambda, nf)
+
+      endif
 
 !     INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
       call initvel(maxval(radius), t_eff, glog, rstar, xmass)

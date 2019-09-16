@@ -2,15 +2,15 @@
 
       contains
 
-      subroutine read_tp_grid()
+      subroutine read_odf_table()
 
       use common_block
 
       implicit none
 
-      integer :: j
+      integer :: j, inu, istep, it, ip
 
-      open(unit = 1409, file = 'tp.grid')
+      open(unit = 1409, file = 'odf.table.grid')
 
       read(1409, *) numt
       read(1409, *) nump
@@ -25,19 +25,6 @@
       tabt = log10(tabt)
       tabp = log10(tabp)
 
-      return
-
-      end subroutine
-
-
-      subroutine read_odf_table()
-
-      use common_block
-
-      implicit none
-
-      integer :: inu, istep, it, ip
-
       allocate(odf(nsubbins, nbins, nump, numt))
       allocate(wvlgrid(nbins + 1))
 
@@ -51,7 +38,6 @@
 
                do it = 1, numt
 
-!                 odf = 1000 * log10(opacity), which is integer(kind = 2)
                   read(1408, *) (odf(istep, inu, ip, it), istep = 1, nsubbins)
 
                enddo
@@ -67,7 +53,7 @@
       end subroutine
 
 
-      subroutine tp_inter_coef(entot, T)
+      subroutine odf_interpolation_coef(entot, T)
 
       use phys
       use common_block
@@ -139,9 +125,10 @@
       end subroutine
 
 
-      subroutine tp_inter(xlam, linop)
+      subroutine odf_interpolation(xlam, linop)
 
       use common_block
+      use utils
 
       implicit none
 
@@ -151,9 +138,9 @@
 
 !------------------------------- IN-OUT -------------------------------
 
-      real*8, intent(in)                  :: xlam
+      real*8, intent(in)                   :: xlam
 
-      real*8, intent(out), dimension(dpn) :: linop
+      real*8, intent(out), dimension(dpn)  :: linop
 
 !------------------------------- LOCAL VARIABLES -----------------------
 
@@ -195,6 +182,16 @@
 
       enddo
 
+      linop(1 : ndpmin) = linop(ndpmin)
+
+      if (any(linop < 0.0d0)) then
+
+          print*, xlam, 'linop = ', linop
+
+          call error('odf_interpolation: negative opacity')
+
+      endif
+
       return
 
       end subroutine
@@ -220,7 +217,7 @@
 
 !     grid contains borders of the bins, such that grid(idx + 1) corresponds to the bin's upper wavelength
 !     for wvlgrid this is read from the odf.table, which gives the beginning and the end wavelength of each bin
-!     for subgrid this is calculated in the tp_inter subroutine
+!     for subgrid this is calculated in the odf_interpolation subroutine
 
       if (n == nbins)    cond = grid(idx + 1) .le. w
       if (n == nsubbins) cond = grid(idx + 1) .lt. w

@@ -9,7 +9,8 @@
       use common_block
       use file_operations
 
-!     THIS SUBROUTINE GENERATES THE GEOMETRICAL POINT MESH IN RADIUS, P AND Z
+!     this subroutine reads the atmosphere model file
+!     it also generates the geometrical point mesh in radius, P and Z
 !     P and Z mesh is needed for the ray-by-ray solution of the radiative transfer equation in spherical symmetry
 
       integer, intent(out) ::  ND, NP

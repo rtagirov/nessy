@@ -62,8 +62,8 @@
 
       real*8,                allocatable ::      ABXYZ_nlte(:), ABXYZn_nlte(:, :)
 
-      logical ::                                 LBKG           ! KEYWORD FOR NON-LTE OPACITY DISTRIBUTION FUNCTION (ODF)
-      integer ::                                 XLBKG1, XLBKG2 ! WAVELENTH RANGE FOR THE ODF
+      logical ::                                 LBKG           ! keyword for non-lte opacity distribution function (ODF)
+      integer ::                                 XLBKG1, XLBKG2 ! wavelenth range for the ODF
 
 !     FIOSS VARIABLES
 
@@ -82,6 +82,8 @@
 !     ------------------------------------------------------------------------------------
 !     variables and parameters for the odf_table module
 
+      logical :: odf_from_table = .true.
+
       integer :: numt, nump
 
       real*8, allocatable, dimension(:) :: tabt, tabp
@@ -94,5 +96,7 @@
 
       real*8,            allocatable, dimension(:)          :: co1, co2, co3, co4
       integer,           allocatable, dimension(:)          :: idx_pres, idx_temp
+
+!      real*8,            allocatable, dimension(:, :)       :: odf_ti_opac
 
       end module
