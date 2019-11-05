@@ -183,7 +183,7 @@
 
              write(*, '(I4,3(2x,e15.7))') l, eddi(1, l), xk, xjc(l)
 
-             stop 'elimin eddi(1, l) is nan'
+             stop 'elimin: eddi(1, l) is nan'
 
          endif
 
@@ -232,7 +232,7 @@
 
              write(*, '(I4,4(2x,e15.7))') l, eddi(2, l), rrq, dexp(fl - flp), bas**pow
 
-             stop 'elimin eddi(2, l) is nan'
+             stop 'elimin: eddi(2, l) is nan'
 
          endif
 
