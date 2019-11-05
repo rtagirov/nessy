@@ -207,10 +207,6 @@
 
       endif
 
-!      call read_TP_grid(ntemp, nrhox, tabt, tabp)
-      call read_tp_grid()
-
-!      call read_odf_table(90, 10, ntemp, nrhox, freqgrid, iodfrecvb)
       call read_odf_table()
 
       call gradiff(ND, velo, gradi, radius)

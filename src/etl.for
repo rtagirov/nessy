@@ -272,7 +272,7 @@
 !***     DATA FOR THAT LINE NOT PRESENT - CALCULATE IT NEW ...
 
       CALL ELIMIN(XLAM,DUMMY1,DUMMY0,U,Z,XJCIND,RADIUS,P,
-     $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+     $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP,rstar / 1.0d5)
 
 !***     ... and write it for use in the next iteration
       CALL WRITMS(ifl,U,ND*NP,NAMEU,-1,IERR)
