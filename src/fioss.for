@@ -245,7 +245,7 @@
 
       allocate(entot(ND))
       allocate(T(ND), RNE(ND))
-      allocate(XJC(ND), XJCARR(ND, NF), WCHARM(ND, NF), XJL(ND, lastind_nlte))
+      allocate(xjc(nd), xjc2(nd, nf), WCHARM(ND, NF), XJL(ND, lastind_nlte))
       allocate(R(ND), TAUROSS(ND))
       allocate(VELO(ND), GRADI(ND), VDU(ND))
 
@@ -321,7 +321,7 @@
       NDPMIN = tempmin(T, ND)
 
 !     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
-      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+      CALL READRAD(NF,ND,POP1,xjc2,xjc,xjl,
      $             HTOT,GTOT,XTOT,ETOT,dummy4_nf,TOTIN,TOTOUT,
      $             NCHARG_nlte,EDDARR,EDDI,NOM_nlte,WCHARM,N_nlte,lastind_nlte,
      $             EINST_nlte,MODHEAD,JOBNUM)
@@ -562,7 +562,8 @@
      $          WAVARR,SIGARR,NF,NFDIM)
 
 !     CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
-      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z2D,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z2D,XJC,R,P,BCORE,
+     $            DBDR,OPA,ETA,THOMSON,EDDI,ND,NP, rstar / 1.0d5)
 
       print *,' Continuum Flux interpolated from the model: ',FNUEC
       print *,'      "      "  from ELIMIN ',FNUCONT,

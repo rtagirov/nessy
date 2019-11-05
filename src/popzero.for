@@ -1,8 +1,8 @@
-      MODULE MOD_POPZERO
+      module mod_popzero
 
-      CONTAINS
+      contains
 
-      SUBROUTINE POPZERO(T,
+      subroutine popzero(T,
      $                   RNE,
      $                   POPNUM,
      $                   DEPART,
@@ -15,10 +15,6 @@
      $                   ELEVEL,
      $                   EINST,
      $                   LEVEL,
-     $                   FWEIGHT,
-     $                   XJC,
-     $                   NF,
-     $                   XJL,
      $                   IFRRA,
      $                   ITORA,
      $                   AGAUNT,
@@ -81,11 +77,11 @@
       CHARACTER*4 KEYCOL(N, N)
       character*10 cread,help
 
-      real*8,dimension(*) :: ALTESUM, COCO, FWEIGHT
+      real*8,dimension(*) :: ALTESUM, COCO
 
       real*8, dimension(N, N) :: CRATE, RRATE, ratco
 
-      real*8,dimension(*) :: WEIGHT,XJC,XJL
+      real*8,dimension(*) :: WEIGHT
       real*8 ELEVEL(N), EION(N), EINST(N, N)
 
       character*8 :: agaunt(N)

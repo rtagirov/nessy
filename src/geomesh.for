@@ -9,8 +9,7 @@
       use common_block
       use file_operations
 
-!     this subroutine reads the atmosphere model file
-!     it also generates the geometrical point mesh in radius, P and Z
+!     THIS SUBROUTINE GENERATES THE GEOMETRICAL POINT MESH IN RADIUS, P AND Z
 !     P and Z mesh is needed for the ray-by-ray solution of the radiative transfer equation in spherical symmetry
 
       integer, intent(out) ::  ND, NP
@@ -68,15 +67,17 @@
 
       real*8, dimension(ND), intent(in) :: h, T, n, r
 
-      real*8, dimension(ND) :: dT, dh, dn, dr, gradT, gradn
+      real*8, dimension(ND) :: dT, dh, dn, dr
+
+      real*8, dimension(ND) :: gradT_abs, gradn_abs, gradT_rel, gradn_rel
 
       integer :: fu, i
 
       character(len = 1000) :: fmt_head, fmt_body
 
-      fmt_head = '(A,8x,A,13x,A,11x,A,14x,A,13x,A,14x,A,8x,A,/)'
+      fmt_head = '(A,8x,A,13x,A,11x,A,14x,A,13x,A,13x,A,8x,A,4x,A,2x,A)'
 
-      fmt_body = '(i3,4x,2(F9.2,4x),es9.3,4x,F9.2,4x,es15.7,4x,F9.2,4x,es10.3))'
+      fmt_body = '(i3,4x,2(F9.2,4x),es9.3,4x,F9.2,4x,es15.7,2(4x,F9.2,4x,es10.3))'
 
       do i = 1, ND - 1
 
@@ -95,15 +96,22 @@
       dT(ND) = extrap_to_boundary(ND, h, dT, 1)
       dn(ND) = extrap_to_boundary(ND, h, dn, 1)
 
-      gradT = dT / dh
-
-      gradn = dn * maxval(abs(dr)) / dr / maxval(abs(dn))
+      gradT_abs = dT / dh
+      gradn_abs = dn / dh
+      gradT_rel = dT / dr / maxval(T)
+      gradn_rel = dn / dr / maxval(n)
 
       fu = 1242; open(unit = fu, file = 'strat.out', action = 'write')
 
-      write(fu, fmt_head) 'idx', 'h', 'T', 'n', 'dh', 'r', 'dT/dh', 'dn/dr'
+      write(fu, fmt_head) 'idx', 'h', 'T', 'n', 'dh', 'r', 'dT/dh',
+     $                    'dn/dh', 'dT/max(T)/dr', 'dn/max(n)/dr'
 
-      do i = 1, ND; write(fu, fmt_body) i, h(i), T(i), n(i), abs(dh(i)), r(i), gradT(i), gradn(i); enddo
+      do i = 1, ND
+
+         write(fu, fmt_body) i, h(i), T(i), n(i), abs(dh(i)), r(i),
+     $                       gradT_abs(i), gradn_abs(i), gradT_rel(i), gradn_rel(i)
+
+      enddo
 
       close(fu)
 

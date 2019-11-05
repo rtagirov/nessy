@@ -2,7 +2,7 @@
 
       contains
 
-      subroutine writradc(xjcarr,xjc,eddarr,eddi,emflux,totin,totout,HTOT,GTOT,XTOT,ETOT,wcharm,nd,nf,MODHEAD,JOBNUM)
+      subroutine writradc(xjc2,xjc1,eddarr,eddi,emflux,totin,totout,HTOT,GTOT,XTOT,ETOT,wcharm,nd,nf,MODHEAD,JOBNUM)
 
       use MOD_WRITMS
       use MOD_WRITMSI
@@ -12,7 +12,7 @@
 
       real*8, dimension(ND, NF) :: wcharm
 
-      real*8 :: xjcARR(nd, nf), xjc(nd), eddARR(3, nd, nf), eddi(3, nd)
+      real*8 :: xjc2(nd, nf), xjc1(nd), eddARR(3, nd, nf), eddi(3, nd)
 
       real*8 :: emflux(NF), HTOT(ND), GTOT(ND), XTOT(ND), ETOT(ND)
 
@@ -44,13 +44,13 @@
 
       WRITE(CNAME, FMT_KEY) 'XJC ', K
 
-      xjc(1 : ND) = xjcarr(1 : ND, K)
+      xjc1(1 : ND) = xjc2(1 : ND, K)
 
       eddi(1,1:ND)=eddARR(1,1:ND,K)
       eddi(2,1:ND)=eddARR(2,1:ND,K)
       eddi(3,1:ND)=eddARR(3,1:ND,K)
 
-      CALL WRITMS (IFL,XJC,ND,CNAME,-1,IERR)
+      CALL WRITMS (IFL,xjc1,ND,CNAME,-1,IERR)
 
 !     EDDI IS A DUMMY-WRITE
       WRITE(CNAME, FMT_KEY) 'EDDI', K

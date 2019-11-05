@@ -120,11 +120,15 @@
 
       close (ifl)
 
+      allocate(dummy2(nd, nf))
+
 !***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
-      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+      CALL READRAD(NF,ND,POP1,dummy2,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,N_nlte,lastind_nlte,
      $             einst_nlte,MODHEAD,JOBNUM)
+
+      deallocate(dummy2)
 
       JOBNUM = JOBNUM + 1
 
@@ -238,6 +242,8 @@
  
 !***  INNER BOUNDARY VALUES
       CALL DIFFUS (XLAM,T,RADIUS,ND,BCORE,DBDR)
+
+      allocate(dummy2(NF, N))
  
 !***  CONTINUUM AND LINE OPACITIES
       CALL COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
@@ -245,6 +251,8 @@
      $          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
      $          ALPHA,SEXPO,AGAUNT,0,DUMMY2,
      $          WAVARR,SIGARR,NF,NFDIM)
+
+      deallocate(dummy2)
 
 !***  BACKGROUND CONTINUUM RADIATION FIELD
 

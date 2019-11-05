@@ -105,7 +105,7 @@ c***  pop1 is dummy read because it will be overwritten below
 
 c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)	
 
-      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+      CALL READRAD(NF,ND,POP1,xjc2,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,
      $             N_nlte,lastind_nlte,einst_nlte,MODHEAD,JOBNUM)
@@ -149,10 +149,6 @@ c***     the new blanketing table needs to be written to the model file
      $                ELEVEL,
      $                EINST,
      $                LEVEL,
-     $                FWEIGHT,
-     $                XJCARR,
-     $                NF,
-     $                XJL,
      $                IFRRA,
      $                ITORA,
      $                AGAUNT,
@@ -192,7 +188,7 @@ c***     the new blanketing table needs to be written to the model file
      $               level_nlte,
      $               XLAMBDA,
      $               FWEIGHT(1 : NF),
-     $               XJCARR,
+     $               xjc2,
      $               NF,
      $               NFDIM,
      $               XJL,

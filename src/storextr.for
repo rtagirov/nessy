@@ -4,59 +4,59 @@
 
       contains
 
-      subroutine extrxjc(XJCREA, XJC, EDDREA, EDDI, nd, nf, K)
+      subroutine extrxjc(xjc2, xjc1, eddi3, eddi2, nd, nf, k)
 
-      integer, intent(in) :: nd, nf, K
+      integer, intent(in) :: nd, nf, k
 
-      real*8,  intent(in)  :: xjcrea(nd, nf), eddrea(3, nd, nf)
+      real*8,  intent(in)  :: xjc2(nd, nf), eddi3(3, nd, nf)
 
-      real*8,  intent(out) :: xjc(nd), eddi(3, nd)
+      real*8,  intent(out) :: xjc1(nd), eddi2(3, nd)
 
-      xjc(1 : ND) =     xjcrea(1 : ND, K)
+      xjc1(1 : ND) =     xjc2(1 : ND, k)
 
-      eddi(1, 1 : ND) = eddrea(1, 1 : ND, K)
-      eddi(2, 1 : ND) = eddrea(2, 1 : ND, K)
-      eddi(3, 1 : ND) = eddrea(3, 1 : ND, K)
-
-      return
-
-      end subroutine
-
-      subroutine storxjc(XJCREA, XJC, EDDREA, EDDI, nd, nf, K)
-
-      integer, intent(in) :: nd, nf, K
-
-      real*8,  intent(in) :: xjc(nd), eddi(3, nd)
-
-      real*8,  intent(out)  :: xjcrea(nd, nf), eddrea(3, nd, nf)
-
-      xjcrea(1 : ND, K) =    xjc(1 : ND)
-
-      eddrea(1, 1 : ND, K) = eddi(1, 1 : ND)
-      eddrea(2, 1 : ND, K) = eddi(2, 1 : ND)
-      eddrea(3, 1 : ND, K) = eddi(3, 1 : ND)
+      eddi2(1, 1 : ND) = eddi3(1, 1 : ND, k)
+      eddi2(2, 1 : ND) = eddi3(2, 1 : ND, k)
+      eddi2(3, 1 : ND) = eddi3(3, 1 : ND, k)
 
       return
 
       end subroutine
 
-      subroutine storxjl(XJL, XJLMEAN, ND, LASTIND, IND, LLO, LO)
+      subroutine storxjc(xjc2, xjc1, eddi3, eddi2, nd, nf, k)
 
-      integer, intent(in) ::            ND, IND, LASTIND
+      integer, intent(in) :: nd, nf, k
 
-      real*8, dimension(ND, LASTIND) :: XJL
+      real*8,  intent(in) :: xjc1(nd), eddi2(3, nd)
 
-      real*8, dimension(ND) ::          XJLMEAN
+      real*8,  intent(out)  :: xjc2(nd, nf), eddi3(3, nd, nf)
+
+      xjc2(1 : ND, k) =    xjc1(1 : ND)
+
+      eddi3(1, 1 : ND, k) = eddi2(1, 1 : ND)
+      eddi3(2, 1 : ND, k) = eddi2(2, 1 : ND)
+      eddi3(3, 1 : ND, k) = eddi2(3, 1 : ND)
+
+      return
+
+      end subroutine
+
+      subroutine storxjl(xjl2, xjl1, nd, lastind, ind, lo2, lo1)
+
+      integer, intent(in) ::            nd, ind, lastind
+
+      real*8, dimension(nd, lastind) :: xjl2
+
+      real*8, dimension(nd) ::          xjl1
 
 !     the Local approximate lambda-Operator for the line with index IND
-      real*8, dimension(ND) ::          LO
+      real*8, dimension(nd) ::          lo1
 
 !     the Local approximate lambda-Operator for all lines (Overall)
-      real*8, dimension(ND, LASTIND) :: LLO
+      real*8, dimension(nd, lastind) :: lo2
 
-      XJL(1 : ND, IND) = XJLMEAN(1 : ND)
+      xjl2(1 : ND, IND) = xjl1(1 : ND)
 
-      LLO(1 : ND, IND) = LO(1 : ND)
+      lo2(1 : ND, IND) =  lo1(1 : ND)
 
       return
 

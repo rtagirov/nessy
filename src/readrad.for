@@ -2,7 +2,7 @@
 
       contains
 
-      SUBROUTINE READRAD(NF,ND,DUMMY,XJCREA,XJC,
+      SUBROUTINE READRAD(NF,ND,DUMMY,xjc2,xjc,
      $                   XJL,HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $                   NCHARG,EDDREA,EDDI,NOM,WCHARM,N,
      $                   lastind,EINST,MODHEAD,JOBNUM)
@@ -25,7 +25,7 @@ C******************************************************************************
 
       PARAMETER ( ONE = 1.D+0, TWO = 2.D+0 )
       Real*8,Dimension(ND,NF)  :: WCHARM
-      DIMENSION XJCREA(ND,NF), XJC(ND), EDDREA(3,ND,NF), EDDI(3,ND), DUMMY(ND)
+      DIMENSION xjc2(nd,nf), xjc(nd), EDDREA(3,ND,NF), EDDI(3,ND), DUMMY(ND)
       Real*8  TOTIN,TOTOUT
       Real*8,Dimension(NF)::EMFLUX
       Real*8,Dimension(ND):: HTOT,GTOT,XTOT,ETOT
@@ -90,7 +90,7 @@ C         Print *,' Jobnum Updated From File RADIOC'
 
          CALL READMS(IFL,XJC,ND,cname8,IERR)
 
-         DO L = 1, ND; XJCREA(L,K) = XJC(L); ENDDO
+         DO L = 1, ND; xjc2(L, K) = xjc(L); ENDDO
 
          write(cname8, FMT_KEY) 'EDDI',K
 
