@@ -93,7 +93,7 @@
       WCHARM(1 : ND, 1 : NF) = 0.0d0
 
 !     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
-      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
+      CALL READRAD(NF,ND,POP1,XJC2,XJC,XJL,HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,N_nlte,lastind_nlte,
      $             einst_nlte,MODHEAD,JOBNUM)
 
@@ -140,26 +140,42 @@
          IF (LSOPA .GT. 0) CALL PRIOPA(XLAMBDA(K),K,ND,LSOPA,RADIUS,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,JOBNUM,MODHEAD)
 
 !        now extract XJC and EDDI for the frequency K
-         call extrxjc(XJCARR,XJC,EDDARR,EDDI,nd,nf,K)
+         call extrxjc(XJC2,XJC,EDDARR,EDDI,nd,nf,K)
 
          CALL MOMO(OPA,ETA,THOMSON,EDDI,RADIUS,XJC,ND)
 
-         IF (LSINT.GT.0) CALL PRIMINT(XJCARR,ND,XLAMBDA,NF,K,LSINT,EDDI,JOBNUM,MODHEAD)
+!         do L = 1, ND
+
+!            print*, 'after momo xjc check: ', L, K, xjc(L)
+
+!         enddo
+
+!         stop
+
+         IF (LSINT.GT.0) CALL PRIMINT(XJC2,ND,XLAMBDA,NF,K,LSINT,EDDI,JOBNUM,MODHEAD)
 
          WCHARM(1 : ND, K) = cont_loc_oper(OPA, RADIUS, EDDI, ND)
+
+!         do L = 1, ND
+
+!            write(*, '(A,1x,I4,1x,e15.7)') 'check wcharm: ', L, WCHARM(L, K)
+
+!         enddo
 
          tau_cont(1 : ND, K) = opt_dep(opa(1 : ND) / RSTAR, 1.0D+5 * height(1 : ND), ND)
 
 !        UPDATING THE CONTINUOUS RADIATION FIELD ON THE MODEL FILE
 !        XJC and EDDI are stored for later write to file RADIOC
 
-         call storxjc(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
+         call storxjc(XJC2, XJC, EDDARR, EDDI, nd, nf, K)
           
-!         IF (LTE_RUN) XJC_LTE(1 : ND, K) = XJCARR(1 : ND, K)
+!         IF (LTE_RUN) XJC_LTE(1 : ND, K) = XJC2(1 : ND, K)
 !
 !         IF (LTE_RUN) CALL PRINT_LTE_CONT(XLAMBDA(K), K, XJC_LTE(1 : ND, K))
 
       ENDDO
+
+!      stop
 
       call assert(.not.any(isnan(WCHARM)),'COMO: WCHARM is NaN')
 
@@ -188,7 +204,7 @@
 !     ENDLOOP  ---------------------------------------------------------
  
 !     NOTE THAT THE POPNUMBERS ARE NOT UPDATED BY THIS PROGRAM  !!!!!
-      call writradc(xjcarr,xjc,eddarr,eddi,emflux,totin,totout,
+      call writradc(xjc2,xjc,eddarr,eddi,emflux,totin,totout,
      $              HTOT,GTOT,XTOT,ETOT,WCHARM,nd,nf,MODHEAD,JOBNUM)
  
 !     UPDATING THE MODEL HISTORY

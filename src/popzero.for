@@ -16,9 +16,7 @@
      $                   EINST,
      $                   LEVEL,
      $                   FWEIGHT,
-     $                   XJC,
      $                   NF,
-     $                   XJL,
      $                   IFRRA,
      $                   ITORA,
      $                   AGAUNT,
@@ -85,7 +83,7 @@
 
       real*8, dimension(N, N) :: CRATE, RRATE, ratco
 
-      real*8,dimension(*) :: WEIGHT,XJC,XJL
+      real*8,dimension(*) :: WEIGHT
       real*8 ELEVEL(N), EION(N), EINST(N, N)
 
       character*8 :: agaunt(N)

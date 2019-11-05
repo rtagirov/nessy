@@ -64,7 +64,9 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       REAL*8 :: CORMAX
 
-      real*8 :: steal_start,  steal_finish
+      real*8 :: steal_start, steal_finish
+
+      real*8, dimension(DPN) :: dummy
 
       call cpu_time(steal_start); call system("echo -n $(date +%s) >> wall_time.steal")
 
@@ -105,10 +107,20 @@ c***  pop1 is dummy read because it will be overwritten below
 
 c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)	
 
-      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+      CALL READRAD(NF,ND,POP1,XJC2,dummy,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,
      $             N_nlte,lastind_nlte,einst_nlte,MODHEAD,JOBNUM)
+
+!      do L = 1, ND
+
+!         do K = 1, NF
+
+!            print*, 'steal xjc2 check: ', L, K, xjc2(L, K)
+
+!         enddo
+
+!      enddo
 
 !      stop 'steal stop'
 
@@ -150,9 +162,7 @@ c***     the new blanketing table needs to be written to the model file
      $                EINST,
      $                LEVEL,
      $                FWEIGHT,
-     $                XJCARR,
      $                NF,
-     $                XJL,
      $                IFRRA,
      $                ITORA,
      $                AGAUNT,
@@ -192,7 +202,7 @@ c***     the new blanketing table needs to be written to the model file
      $               level_nlte,
      $               XLAMBDA,
      $               FWEIGHT(1 : NF),
-     $               XJCARR,
+     $               XJC2,
      $               NF,
      $               NFDIM,
      $               XJL,

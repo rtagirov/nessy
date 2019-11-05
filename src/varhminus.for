@@ -20,7 +20,7 @@
       real*8, allocatable, dimension(:)       :: P, Z
 
       real*8, allocatable, dimension(:)       :: XJC
-      real*8, allocatable, dimension(:, :)    :: XJCARR, XJL
+      real*8, allocatable, dimension(:, :)    :: xjc2, XJL
       real*8, allocatable, dimension(:, :)    :: EDDI
       real*8, allocatable, dimension(:, :, :) :: EDDARR
 

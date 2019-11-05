@@ -45,12 +45,18 @@
       NDM = ND - 1
 
       DO L=2,ND-1
+
+!         print*, 'momo loop: ', opa(l)
+
          FL=EDDI(1,L)
          QL=EDDI(2,L)
          FP=EDDI(1,L+1)
          QP=EDDI(2,L+1)
          FM=EDDI(1,L-1)
          QM=EDDI(2,L-1)
+
+!         print*, 'momo eddies: ', EDDI(1, L), EDDI(2, L)
+
          X=OPA(L)
          RL=R(L)
          DR=(R(L-1)-R(L+1))/two
@@ -60,6 +66,7 @@
          C(L)=QP*FP/DC
          B(L)=QL*FL*(one/DA+one/DC)+X*(one-THOMSON(L))
          W(L)=RL*RL*ETA(L)
+
       ENDDO
      
 !     INNER BOUNDARY
@@ -76,9 +83,33 @@
       B(ND)=two*QL*QL*FL*X/DX/DX+two*QL*X*H/DX+X*(one-THOMSON(ND))
       W(ND)=RL*RL*(ETA(ND)+two*QL*X*HPLUS/DX)
      
+!      do l = 1, nd
+
+!         print*, 'momo inside 1: ', A(L), B(L)
+
+!      enddo
+
+!      stop
+
       call invtri(A, B, C, W, ND)
 
+!      do l = 1, nd
+
+!         print*, 'momo inside 2: ', W(L), R(L)
+
+!      enddo
+
+!      stop
+
       XJC(1 : ND) = W(1 : ND) / R(1 : ND) / R(1 : ND)
+
+!      do l = 1, nd
+
+!         print*, 'momo inside 3: ', XJC(L)
+
+!      enddo
+
+!      stop
 
       return
 

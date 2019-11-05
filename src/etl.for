@@ -120,11 +120,15 @@
 
       close (ifl)
 
+      allocate(dummy2(ND, NF))
+
 !***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
-      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+      CALL READRAD(NF,ND,POP1,dummy2,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,N_nlte,lastind_nlte,
      $             einst_nlte,MODHEAD,JOBNUM)
+
+      deallocate(dummy2)
 
       JOBNUM = JOBNUM + 1
 
@@ -238,13 +242,17 @@
  
 !***  INNER BOUNDARY VALUES
       CALL DIFFUS (XLAM,T,RADIUS,ND,BCORE,DBDR)
+
+      allocate(dummy2(NF, N))
  
 !***  CONTINUUM AND LINE OPACITIES
       CALL COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $          OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $          ALPHA,SEXPO,AGAUNT,0,DUMMY2,
+     $          ALPHA,SEXPO,AGAUNT,0,dummy2,
      $          WAVARR,SIGARR,NF,NFDIM)
+
+      deallocate(dummy2)
 
 !***  BACKGROUND CONTINUUM RADIATION FIELD
 
@@ -264,7 +272,7 @@
 !***     DATA FOR THAT LINE NOT PRESENT - CALCULATE IT NEW ...
 
       CALL ELIMIN(XLAM,DUMMY1,DUMMY0,U,Z,XJCIND,RADIUS,P,
-     $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+     $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP,rstar / 1.0d5)
 
 !***     ... and write it for use in the next iteration
       CALL WRITMS(ifl,U,ND*NP,NAMEU,-1,IERR)

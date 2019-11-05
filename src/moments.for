@@ -26,6 +26,8 @@ C***  FIRST STEP
 
       XJMEAN = (ZJ - ZNEXT) * XJ(1)
 
+!      if (L == 29) print*, 'moment0 1', (ZJ - ZNEXT), XJ(1)
+
 C***  MIDDLE STEPS
       DO J = 3, JMAX
 
@@ -35,7 +37,11 @@ C***  MIDDLE STEPS
 
          XJMEAN = XJMEAN + XJ(J - 1) * (ZLAST - ZNEXT)
 
+!         if (L == 29) print*, 'moment0 2', xjmean
+
       ENDDO
+
+!      stop
 
 C***  LAST STEP, IMPLYING Z(L,JMAX)=.0
       XJMEAN=XJMEAN+XJ(JMAX)*ZJ

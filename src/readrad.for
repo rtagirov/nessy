@@ -2,14 +2,15 @@
 
       contains
 
-      SUBROUTINE READRAD(NF,ND,DUMMY,XJCREA,XJC,
+      SUBROUTINE READRAD(NF,ND,DUMMY,XJC2,xjc,
      $                   XJL,HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $                   NCHARG,EDDREA,EDDI,NOM,WCHARM,N,
      $                   lastind,EINST,MODHEAD,JOBNUM)
 
 C******************************************************************************
 C***  READ THE RADIATION FIELD
-C***  XJC: CONTINUUM RADIATION FIELD
+C***  xjc: CONTINUUM RADIATION FIELD as a function of depth
+C***  XJC2: CONTINUUM RADIATION FIELD as a function of depth and frequency
 C***  XJL: LINE RADIATION FIELD
 C***  WCHARM: The Approximated Lambda Operator, Added 13-Mar-2006(Micha)
 C*** ATTENTION: Watch Out For The 72charcters/Line Limit!
@@ -25,7 +26,7 @@ C******************************************************************************
 
       PARAMETER ( ONE = 1.D+0, TWO = 2.D+0 )
       Real*8,Dimension(ND,NF)  :: WCHARM
-      DIMENSION XJCREA(ND,NF), XJC(ND), EDDREA(3,ND,NF), EDDI(3,ND), DUMMY(ND)
+      DIMENSION XJC2(ND, NF), xjc(ND), EDDREA(3,ND,NF), EDDI(3,ND), DUMMY(ND)
       Real*8  TOTIN,TOTOUT
       Real*8,Dimension(NF)::EMFLUX
       Real*8,Dimension(ND):: HTOT,GTOT,XTOT,ETOT
@@ -38,7 +39,7 @@ C******************************************************************************
       character (len = 7) :: cname7
       character (len = 6) :: cname6
 
-C***  CONTINUUM RADIATION FIELD XJC  *****************************************
+C***  CONTINUUM RADIATION FIELD xjc  *****************************************
 C***  LOOP OVER ALL CONTINUUM FREQUENCY POINTS
 
       IFL = 2; open (IFL,File='RADIOC',STATUS='OLD', ACTION='READ')
@@ -88,9 +89,9 @@ C         Print *,' Jobnum Updated From File RADIOC'
 
          write(cname8, FMT_KEY) 'XJC ', K
 
-         CALL READMS(IFL,XJC,ND,cname8,IERR)
+         CALL READMS(IFL,xjc,ND,cname8,IERR)
 
-         DO L = 1, ND; XJCREA(L,K) = XJC(L); ENDDO
+         DO L = 1, ND; XJC2(L, K) = xjc(L); ENDDO
 
          write(cname8, FMT_KEY) 'EDDI',K
 

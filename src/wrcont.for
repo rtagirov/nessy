@@ -105,7 +105,7 @@
       close(ifl)
 
 !     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage) 
-      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+      CALL READRAD(NF,ND,POP1,xjc2,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,EMFLUX,TOTIN,TOTOUT,
      $             ncharg_nlte,EDDARR,EDDI,nom_nlte,WCHARM,
      $             N_nlte,lastind_nlte,einst_nlte,MODHEAD,JOBNUM)
@@ -150,7 +150,7 @@
 !        print*, 'wrcont: ', k, xlambda(k)
 
 !       now extract XJC and EDDI for the frequency K
-        CALL EXTRXJC(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
+        CALL EXTRXJC(xjc2, XJC, EDDARR, EDDI, nd, nf, K)
 
         CALL COOP(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $            OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
@@ -164,7 +164,16 @@
      $                                OPA,ETA,THOMSON,IWARN,MAINPRO,
      $                                MAINLEV,JOBNUM,MODHEAD)
 
-        CALL ELIMIN(XLAMBDA(K),EMFLUX(K),FLUXIN,U,Z,XJC,RADIUS,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+        CALL ELIMIN(XLAMBDA(K),EMFLUX(K),FLUXIN,U,Z,XJC,RADIUS,P,BCORE,
+     $              DBDR,OPA,ETA,THOMSON,EDDI,ND,NP,rstar / 1.0d5)
+
+!        stop
+
+!        do L = 1, ND
+ 
+!           write(*, *) 'wrcont check', K, L, XJC(L)
+
+!        enddo
 
 !       INTEGRATION OF THE TOTAL INCIDENT AND EMERGENT FLUX
         TOTIN =  TOTIN  + FLUXIN    * FWEIGHT(K)
@@ -181,7 +190,7 @@
         HTOT(1 : ND) = HTOT(1 : ND) + HNU(1 : ND) * FWEIGHT(K)
 
 !       XJC and EDDI are stored for later write to file RADIOC
-        call storxjc(XJCARR, XJC, EDDARR, EDDI, nd, nf, K)
+        call storxjc(xjc2, XJC, EDDARR, EDDI, nd, nf, K)
 
 !       PRINTOUT OF FREQUENCY DEPENDEND VARIABLES
         IF (LPRIV.GT.0.AND.(K.LT.68 .OR. K.EQ.111)) CALL PRIV(K,XLAMBDA(K),LPRIV,ND,NP,RADIUS,Z,VJL,RSTAR)
@@ -193,7 +202,17 @@
 
       ENDDO FRQS
 
-!      call print_xjc(ND, NF, xlambda, xjcarr(1 : ND, 1 : NF))
+!      stop
+
+!      do K = 1, NF      
+  
+!         write(*, *) 'wrcont check', K, XJC(K)
+
+!      enddo
+
+!      stop
+
+!      call print_xjc(ND, NF, xlambda, xjc2(1 : ND, 1 : NF))
 
       print*, 'maxmin of dEDDI(1, :) = ', 
      & maxval(abs(EDDI(1, 1 : ND) / EDDI_OLD(1, :))),
@@ -239,7 +258,7 @@
 !     store the new continuum radiation field
       IF (LASTK.EQ.NF) ETOT(1:ND)=ETOT(1:ND)/XTOT(1:ND)
 
-      call writradc(xjcarr,xjc,eddarr,eddi,emflux,totin,totout,HTOT,GTOT,XTOT,ETOT,wcharm,nd,nf,MODHEAD,JOBNUM)
+      call writradc(xjc2,xjc,eddarr,eddi,emflux,totin,totout,HTOT,GTOT,XTOT,ETOT,wcharm,nd,nf,MODHEAD,JOBNUM)
 
 !     if a new LB table is read then store a new model file
       if (lblank.lt.0) then
@@ -272,7 +291,7 @@
 
       !***  PRINTOUTS
       IF (LSINT.GT.0 .AND. LASTK .EQ. NF)
-     $   CALL PRIINT (XJC,XJCARR,EDDI,EDDARR,RADIUS,ND,XLAMBDA,NF,
+     $   CALL PRIINT (XJC,xjc2,EDDI,EDDARR,RADIUS,ND,XLAMBDA,NF,
      $                LSINT,JOBNUM,MODHEAD)
       IF (IFLUX.GT.0 .AND. LASTK .EQ. NF)
      $   CALL PRIFLUX (NF,XLAMBDA,EMFLUX,TOTIN,TOTOUT,RSTAR,JOBNUM,

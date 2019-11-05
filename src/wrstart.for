@@ -106,7 +106,7 @@
 !     INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
       call initvel(maxval(radius), t_eff, glog, rstar, xmass)
 
-      allocate(XJCARR(ND, NF))
+      allocate(xjc2(ND, NF))
       allocate(EDDI(3, ND))
       allocate(EDDARR(3, ND, NF))
       allocate(TAUROSS(ND))

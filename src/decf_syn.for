@@ -24,14 +24,13 @@ C     ************
 
       real*8,allocatable :: wav_f(:), ffactor(:)
       integer :: Nfudge
-C     ***********
-
 
       contains
-      SUBROUTINE DECF_SYN (KARTE,PLOT,NFOBS,LSOPA,FMAX,FMIN,
-     $        MAXITER,felsca,RWLAE,PHEAD,PROLIB,VSINI,SHIFT,
-     $        LSPRO,LSDWL,NORM,TRANS,FIN,VDOP,
-     $        NPHIP,LPSTI,LPENI,JFIRSI,JLASI,COROT,iTionsel,XLMIN,XLMAX)
+
+      SUBROUTINE DECF_SYN(KARTE,PLOT,NFOBS,LSOPA,FMAX,FMIN,
+     $                    MAXITER,felsca,RWLAE,PHEAD,PROLIB,VSINI,SHIFT,
+     $                    LSPRO,LSDWL,NORM,TRANS,FIN,VDOP,
+     $                    NPHIP,LPSTI,LPENI,JFIRSI,JLASI,COROT,iTionsel,XLMIN,XLMAX)
 
       use utils
 

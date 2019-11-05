@@ -37,6 +37,12 @@
       dX = dXl*EDDI(2,1)  ! EDDI(2,L) = q(l)
       A(1) =  0d0
       C(1) =  2./(dX*dXl)
+
+
+!      print*, 'check C(1)', dX, dXl
+
+!      stop
+
       !***===  NON-BOUNDARY POINTS ==========================================
       !*** from G.B. Rybicki and D.G. Hummer, "An accelerated lambda
       !***   iteration method for multilevel radiative transfer", A&A 254,
@@ -64,10 +70,18 @@
 
       cont_loc_oper = INVTRIDIAG(A, B, C)
 
+!      print*, 'check clo 1', A(1), B(1), C(1)
+!      print*, 'check clo 2', A(2), B(2), C(2)
+!      print*, 'check clo', cont_loc_oper(1)
+
+!      stop
+
       END FUNCTION
 
 
       FUNCTION INVTRIDIAG(A, B, C)
+
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
 
       !***  ==== DIAGONAL ELEMENTS OF THE INVERSE OF A TRIDIAGONAL MATRIX ====
       !*  W(LMAX)=RL*RL*(ETA(LMAX)+two*QL*X*HPLUS/DX)
@@ -103,9 +117,11 @@
       E(LMAX + 1) = 0.0d0
       E(LMAX) = A(LMAX) / B(LMAX)
 
-      DO L = LMAX - 1, 2, -1; E(L) = A(L) / (B(L) - C(L) * E(L + 1)); ENDDO
+      do L = LMAX - 1, 2, -1; E(L) = A(L) / (B(L) - C(L) * E(L + 1)); ENDDO
 
-      DO L = 1, LMAX
+      do L = 1, LMAX
+
+!         print*, 'check E', L, E(L)
 
          DL = C(L) / (B(L) - A(L) * DLM);
 
@@ -118,9 +134,10 @@
 !        Feautrier matrix are infinite which in turn means that we're in the optically
 !        thin case => no need for acceleration.
 
-         if (isnan(INVTRIDIAG(L))) INVTRIDIAG(L) = 0.0D0
+         if (isnan(INVTRIDIAG(L)) .or. .not. ieee_is_finite(INVTRIDIAG(L))) INVTRIDIAG(L) = 0.0D0
+!         if (isnan(INVTRIDIAG(L))) INVTRIDIAG(L) = 0.0D0
 
-      ENDDO
+      enddo
 
       END FUNCTION
 

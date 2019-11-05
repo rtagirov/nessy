@@ -2,19 +2,22 @@
 
       contains
 
-      SUBROUTINE ELIMIN(XLAM,EMFLUX,FLUXIN,U,Z,XJC,RADIUS,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+      SUBROUTINE ELIMIN(XLAM,EMFLUX,FLUXIN,U,Z,XJC,RADIUS,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP,rstar)
 
 !     CALLED BY FORMAL, ETL, FIOSS, WRCONT
 !     FEAUTRIER SCHEME FOR CONTINUOUS RADIATION TRANSFER IN SPHERICAL SYMMETRY
 
       use MOMENTS
       use MATOPER
+      use common_block
+      use file_operations
 
       implicit none
 
       integer, intent(in) :: ND, NP
 
       real*8, intent(in) ::                BCORE, DBDR
+      real*8, intent(in) ::                rstar
       real*8, intent(in) ::                P(NP), XLAM, Z(ND, NP)
       real*8, dimension(ND), intent(in) :: ETA, RADIUS, OPA, THOMSON
 
@@ -34,7 +37,14 @@
       real*8  :: FL, FLP, H, HPLUS, RL, RLP, RRQ, XK
       integer :: J, JC, JMAX, L, NC2
 
+      real*8, dimension(ND) :: hei
+
+      real*8 :: bas, pow, pow1, pow2
+
       real*8, parameter :: ONE = 1.D+0, TWO = 2.D0, THREE = 3.D0
+
+!      hei = height * 1.0d5 ! height in cm
+      hei = height
 
       allocate(A(NP), C(NP), W(NP))
       allocate(B(NP, NP))
@@ -95,6 +105,14 @@
 !     RECENT WX IS THE FEAUTRIER-INTENSITY U AT THE INNER BOUNDARY
     2 CALL MOMENT0_ELIMIN(ND, RADIUS, ND, JMAX, Z(1 : ND, 1 : JMAX), WX(1 : JMAX, ND), XJC(ND))
 
+      if (isnan(XJC(ND))) then 
+
+         write(*, *) 'elimin 0', XLAM, ND, XJC(ND)
+
+         stop
+
+      endif
+
       CALL MOMENT1(RADIUS(ND), JMAX, P(1 : JMAX), WX(1 : JMAX, ND), H)
 
       HPLUS = BCORE / two + DBDR / three / OPA(ND)
@@ -121,6 +139,17 @@
      
       RRQ = one
 
+!      call system('rm eddi.out')
+
+!      open(unit = 18368, file = 'eddi.out', status = 'new')
+      call open_to_append(18368, 'eddi.out')
+
+!      do l = 1, nd
+
+!      enddo
+
+!      stop
+
 !     L = ND-1 ... 1
       DO JMAX = NC2, NP
 
@@ -136,15 +165,25 @@
 
          CALL MOMENT0_ELIMIN(ND, RADIUS, L, JMAX, Z(1 : ND, 1 : JMAX), WX(1 : JMAX, L), XJC(L))
 
+!         if (isnan(XJC(L))) then 
+!         if (L == 1) then 
+!         if (XJC(L) < 0.0) then 
+
+!            write(*, *) 'elimin negative', XLAM, L, XJC(L)
+
+!            stop
+
+!         endif
+
          CALL MOMENT2(RL, JMAX, P(1 : JMAX), WX(1 : JMAX, L), XK)
 
          EDDI(1, L) = XK / XJC(L)
 
          if (isnan(eddi(1, L))) then
 
-            write(*, '(I4,3(2x,e15.7))') l, eddi(1, l), xk, xjc(l)
+             write(*, '(I4,3(2x,e15.7))') l, eddi(1, l), xk, xjc(l)
 
-            stop 'elimin eddi(1, l) is nan'
+             stop 'elimin eddi(1, l) is nan'
 
          endif
 
@@ -152,11 +191,56 @@
          RLP = RADIUS(L + 1)
          FLP = FL
          FL = three - one / EDDI(1, L)
-         RRQ = RRQ * EXP(FL - FLP) * (RL / RLP)**((FLP * RL - FL * RLP) / (RL - RLP))
+
+         if (xlam == 350.0) write(18368, '(e15.7,1x,i3,6(2x,e15.7))')
+     $                      xlam, l, height(l), eddi(1, l), fl,
+     $                      flp, fl - flp, dexp(fl - flp)
+
+         bas = RL / RLP
+
+         pow1 = (FLP * RL - FL * RLP) / (RL - RLP)
+
+!         pow2 = (flp * (rstar + hei(l))     * (hei(l) + hei(l + 1)) - 
+!     $          fl  * (rstar + hei(l + 1)) * (hei(l) + hei(l + 1))) /
+!     $          (hei(l)**2.0 - hei(l + 1)**2.0)
+
+         pow2 = (flp * (rstar + hei(l)) - fl  * (rstar + hei(l + 1))) / (hei(l) - hei(l + 1))
+
+         pow = pow1
+
+!         RRQ = RRQ * dexp(FL - FLP) * (RL / RLP)**((FLP * RL - FL * RLP) / (RL - RLP))
+!         RRQ = RRQ * dexp(FL - FLP) * bas**pow2
+         RRQ = RRQ * dexp(FL - FLP) * bas**pow
+
          EDDI(2, L) = RRQ / RL / RL
          A(1 : JMAX) = WX(1 : JMAX, L)
 
+!         write(*, '(a,1x,i2,5(1x,e15.7))'), 'elimin eddi', L, rrq,
+!     $                                                     dexp(fl - flp),
+!     $                                                     fl, flp,
+!     $                                                     fl - flp
+
+!     $                                                     bas, pow2,
+!     $                                                     bas**pow2
+!     $                                                     bas, pow1, pow2,
+!     $                                                     bas**pow1, bas**pow2
+!     $                                                     flp, fl
+
+!         print*, 'elimin height: ', l, height(l), rstar
+
+         if (isnan(eddi(2, L))) then
+
+             write(*, '(I4,4(2x,e15.7))') l, eddi(2, l), rrq, dexp(fl - flp), bas**pow
+
+             stop 'elimin eddi(2, l) is nan'
+
+         endif
+
       ENDDO
+
+      close(18368)
+
+!      stop
      
       CALL MOMENT1(RADIUS(1), NP, P(1 : NP), WX(1 : NP, 1), H)
 
@@ -211,12 +295,39 @@ C***  EVERY L = 1 ... ND
 C***  MEAN INTENSITY INTEGRATION WEIGHTS FROM SUBROUTINE MOMENT0 (VEKTOR W)
       CALL MOMENT0_SETUP(ND, RADIUS, L, JMAX, Z(1 : ND, 1 : JMAX), W(1 : JMAX))
 
-      DO 1 J=1,JMAX
-      WJG=W(J)*G
-      DO 1 JS=1,JMAX
-    1 B(JS,J)=WJG
-      DO 3 J=1,JMAX
-    3 W(J)=ETAL
+      do J = 1, JMAX
+
+         WJG = W(J) * G
+
+         do JS = 1, JMAX
+
+            B(JS, J) = WJG
+
+!            if (wjg < 0.0) then
+
+!                print*, 'subroutine setup: wjg < 0.0', JS, J, w(j), G
+
+!                stop
+
+!            endif
+
+         enddo
+
+      enddo
+
+      do J = 1, JMAX
+
+         W(J) = ETAL
+
+!         if (etal < 0.0) then
+
+!            print*, 'subroutine setup: etal < 0.0', J, etal
+
+!            stop
+
+!         endif
+
+      enddo
      
       IF(L.EQ.1) GOTO 9
       IF(L.EQ.ND) GOTO 10

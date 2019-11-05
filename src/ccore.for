@@ -20,8 +20,6 @@ C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
       integer :: NOM(N)
       integer :: ND, NF, NFDIM ! Number of depth- & frequency-points
 	
-      integer :: XLBKG1, XLBKG2
-
 	! gobal variables, intent(inout)  (inout because of subprocedures)
       real*8,dimension(ND) :: OPA,ETA,THOMSON
       real*8,dimension(ND) :: RADIUS  ! = [1+delta, ... ,1] given in relative solar units
@@ -35,7 +33,6 @@ C***  THE CONT. SOURCE FUNCTION IS CALCULATED FROM OLD POP.NUMBERS (=SCOLD)
       real*8, dimension(N, NFDIM) :: WAVARR, SIGARR
 
       real*8,dimension(NF)    :: XLAMBDA ! Array of Wavelength
-      logical :: LBKG
       real*8 ::  RSTAR
 	
 	! local variables

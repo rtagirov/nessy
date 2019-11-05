@@ -243,7 +243,7 @@
 
       allocate(entot(ND))
       allocate(T(ND), RNE(ND))
-      allocate(XJC(ND), XJCARR(ND, NF), WCHARM(ND, NF), XJL(ND, lastind_nlte))
+      allocate(XJC(ND), xjc2(ND, NF), WCHARM(ND, NF), XJL(ND, lastind_nlte))
       allocate(R(ND), TAUROSS(ND))
       allocate(VELO(ND), GRADI(ND), VDU(ND))
 
@@ -299,7 +299,7 @@
       NDPMIN = tempmin(T, ND)
 
 !     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)
-      CALL READRAD(NF,ND,POP1,XJCARR,XJC,XJL,
+      CALL READRAD(NF,ND,POP1,xjc2,XJC,XJL,
      $             HTOT,GTOT,XTOT,ETOT,dummy4_nf,TOTIN,TOTOUT,
      $             NCHARG_nlte,EDDARR,EDDI,NOM_nlte,WCHARM,N_nlte,lastind_nlte,
      $             EINST_nlte,MODHEAD,JOBNUM)
@@ -362,10 +362,11 @@
       vdop =vdopp
       FMAX = 0.
       FMIN = 0.
-      CALL DECF_SYN (KARTE,PLOT,NFOBS,LSOPA,FMAX,FMIN,
-     $        MAXITER,felsca,RWLAE,PHEAD,PROLIB,VSINI,SHIFT,
-     $        LSPRO,LSDWL,NORM,TRANS,FIN,VDOP,
-     $        NPHIP,LPSTI,LPENI,JFIRSI,JLASI,COROT,iTionsel,XLMIN,XLMAX)
+
+      CALL DECF_SYN(KARTE,PLOT,NFOBS,LSOPA,FMAX,FMIN,
+     $              MAXITER,felsca,RWLAE,PHEAD,PROLIB,VSINI,SHIFT,
+     $              LSPRO,LSDWL,NORM,TRANS,FIN,VDOP,
+     $              NPHIP,LPSTI,LPENI,JFIRSI,JLASI,COROT,iTionsel,XLMIN,XLMAX)
 
 !RT:  BLOCK FOR CALCULATION OF NLTE LINES LISTED IN THE DATOM FILE
 !RT:  FOR FURTHER DETAILS SEE LINOP.FOR
@@ -530,9 +531,12 @@
       ENDIF
     
       !***  DEFINING ZERO-POINT OF THE OBSERVER'S FRAME FREQUENCY
-      xobs0 = FREMAX-DXOBS
-      CALL DIFFUS (XLAM,T,R,ND,BCORE,DBDR)   !BCORE=Plank (XLAM, T) at R(ND), DBDR=d(BCORE)/dR at R=ND
-      ncoop=n
+      xobs0 = FREMAX - DXOBS
+
+      CALL DIFFUS(XLAM,T,R,ND,BCORE,DBDR)   !BCORE=Plank (XLAM, T) at R(ND), DBDR=d(BCORE)/dR at R=ND
+
+      ncoop = n
+
       CALL COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $          OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $          N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
@@ -540,7 +544,7 @@
      $          WAVARR,SIGARR,NF,NFDIM)
 
 !     CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
-      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z2D,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP)
+      CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z2D,XJC,R,P,BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP, rstar / 1.0d5)
 
       print *,' Continuum Flux interpolated from the model: ',FNUEC
       print *,'      "      "  from ELIMIN ',FNUCONT,
@@ -938,18 +942,17 @@
          CALL TRAPLO(PROFILE,DLAM,NFOBS,KARTE,MODHEAD,JOBNUM,RWLAE,PHEAD,PROLIB)
 
       endif
- 
 
-    !   stop
+      IF (LSDWL .LE. 1)
 
-      IF (LSDWL.LE.1)
-     $CALL       PRIPRO (XLAM,VDOP,NFOBS,PROFILE,XOBS0,DXOBS,JOBNUM,
-     $     VSINI,REFCON,MODHEAD,DLAM,LSPRO,IFIRST,NPHI,LPSTA,LPEND,
-     $          XN,XMAX,JFIRST,JLAST,P,WE,PHEAD,PROLIB,
-     $          KARTE,WEIGHT(LOW),WEIGHT(NUP),LEVEL(LOW),LEVEL(NUP),
-     $          EINST(NUP,LOW),FNUEC,RSTAR2,VELO(1)
-     $         ,EQWI)
+     $    CALL PRIPRO(XLAM,VDOP,NFOBS,PROFILE,XOBS0,DXOBS,JOBNUM,
+     $                VSINI,REFCON,MODHEAD,DLAM,LSPRO,IFIRST,NPHI,LPSTA,LPEND,
+     $                XN,XMAX,JFIRST,JLAST,P,WE,PHEAD,PROLIB,
+     $                KARTE,WEIGHT(LOW),WEIGHT(NUP),LEVEL(LOW),LEVEL(NUP),
+     $                EINST(NUP,LOW),FNUEC,RSTAR2,VELO(1),EQWI)
+
       ENDDO MAIN_LOOP
+
       !GOTO 1
 !***  ENDLOOP    -------------------------------------------------------
 !   20 CONTINUE

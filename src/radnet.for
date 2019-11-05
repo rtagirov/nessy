@@ -124,6 +124,8 @@
 
              XJ = XJL(IND)
 
+             print*, 'check 1', NUP, LOW, IND, XJ
+
              EMINDU = EINST(NUP, LOW) * XJ / C2 / W3
 
              RRATE(LOW, NUP) = EMINDU * WEIGHT(NUP) / WEIGHT(LOW)

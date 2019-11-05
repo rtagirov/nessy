@@ -178,6 +178,8 @@
 
          XJCAPP(K) = XJC(L, K) + WCHARM(L, K) * (SCNEW(K) - SCOLD(K, L))
 
+         write(*, '(A,2(1x,I4),4(1x,e15.7))') 'check coma xjc: ', L, K, XJC(L, K), WCHARM(L, K), SCNEW(K), SCOLD(K, L)
+
       ENDDO
 
 !     ENDLOOP ---------------------------------------------------------
@@ -318,6 +320,16 @@ C***  DERIVATIVE MATRIX DM
 C***  FIRST TERMS : THE ORIGINAL MATRIX RATCO
 
       DM(1 : NRANK, 1 : NRANK) = RATCO(1 : NRANK, 1 : NRANK)
+
+!      do i = 1, NPLUS1
+
+!         do j = 1, NPLUS1
+
+!            if (isnan(ratco(i, j))) write(*, '(i3,1x,i3,3(1x,e15.7))'), i, j, ratco(i, j), rrate(i, j), crate(i, j)
+
+!         enddo
+
+!      enddo
 
       if (any(isnan(ratco))) stop 'coma: ratco NaN'
 
