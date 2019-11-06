@@ -161,8 +161,6 @@ c***     the new blanketing table needs to be written to the model file
      $                ELEVEL,
      $                EINST,
      $                LEVEL,
-     $                FWEIGHT,
-     $                NF,
      $                IFRRA,
      $                ITORA,
      $                AGAUNT,

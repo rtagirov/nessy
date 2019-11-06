@@ -1,8 +1,8 @@
-      MODULE MOD_POPZERO
+      module mod_popzero
 
-      CONTAINS
+      contains
 
-      SUBROUTINE POPZERO(T,
+      subroutine popzero(T,
      $                   RNE,
      $                   POPNUM,
      $                   DEPART,
@@ -15,8 +15,6 @@
      $                   ELEVEL,
      $                   EINST,
      $                   LEVEL,
-     $                   FWEIGHT,
-     $                   NF,
      $                   IFRRA,
      $                   ITORA,
      $                   AGAUNT,
