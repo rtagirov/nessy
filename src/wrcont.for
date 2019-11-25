@@ -202,7 +202,7 @@
 
       ENDDO FRQS
 
-!      stop
+!      stop 'wrcont: stop after freq cycle'
 
 !      do K = 1, NF      
   
