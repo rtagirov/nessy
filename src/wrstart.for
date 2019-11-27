@@ -130,7 +130,7 @@
 
 !      stop 'stop abundances'
 
-      apm = atomic_mass_unit * sum(abxyz * atomic_mass)
+      apm = atomic_mass_unit * sum(abxyz * atomic_mass) ! average particle mass
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
