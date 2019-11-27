@@ -126,7 +126,7 @@
 
 !            Interpolate ODF using the table given in
 !            the odf.table and odf.table.grid files
-             call odf_interpolation(xlam, linop)
+             call odf_interpolation(xlam, entot, linop)
 
           else
 

@@ -30,6 +30,7 @@
       use common_block
       use file_operations
       use odf_table
+      use phys
 
 !     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
 !     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
@@ -66,7 +67,40 @@
 
       REAL*8 :: H
 
-      DATA AMU /1.660531d-24/
+      real*8, dimension(30) :: atomic_mass ! atomic masses of the first 30 elements in atomic mass units
+
+      data amu /1.660531d-24/
+
+      data atomic_mass /1.0080,
+     $                  4.0026,
+     $                  6.9400,
+     $                  9.0122,
+     $                  10.810,
+     $                  12.011,
+     $                  14.007,
+     $                  15.999,
+     $                  18.998,
+     $                  20.180,
+     $                  22.990,
+     $                  24.305,
+     $                  26.982,
+     $                  28.085,
+     $                  30.974,
+     $                  32.060,
+     $                  35.450,
+     $                  39.948,
+     $                  39.098,
+     $                  40.078,
+     $                  44.956,
+     $                  47.867,
+     $                  50.942,
+     $                  51.996,
+     $                  54.938,
+     $                  55.845,
+     $                  58.933,
+     $                  58.693,
+     $                  63.546,
+     $                  65.380/
 
       call FDATE(fstring)
       call TIC(timer)
@@ -87,6 +121,16 @@
 
 !     DECODING INPUT DATA
       CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,TPLOT,NATOM,KODAT,IDAT,LBLANK,ATMEAN,AMU)
+
+!      do j = 1, 30
+
+!         print*, 'adundances', j, abxyz(j ), sum(abxyz)
+
+!      enddo
+
+!      stop 'stop abundances'
+
+      apm = atomic_mass_unit * sum(abxyz * atomic_mass)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
@@ -113,9 +157,6 @@
 
 !         calculate the odf interpolation coefficients to the T - entot grid (atm.inp file)
           call odf_interpolation_coef(entot, T)
-
-!         interpolate the odf.table opacities from the odf.table.grid to the T - entot grid
-!          call odf_interpolation(xlambda, nf)
 
       endif
 
@@ -206,8 +247,6 @@
          do L = 1, ND; velo(L) = wrvel(radius(L)); enddo
 
       endif
-
-      call read_odf_table()
 
       call gradiff(ND, velo, gradi, radius)
  

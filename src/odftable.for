@@ -78,7 +78,7 @@
 
 !---------------------------------- EXECUTION --------------------------
 
-      allocate(idx_temp(dpn), idx_pres(dpn))
+      allocate(idxt(dpn), idxp(dpn))
       allocate(co1(dpn), co2(dpn), co3(dpn), co4(dpn))
 
       do j = 1, dpn
@@ -105,11 +105,11 @@
 
          enddo
 
-         idx_pres(j) = ip
-         idx_temp(j) = it
+         idxp(j) = ip
+         idxt(j) = it
 
-         x      = (tlog - tabt(it - 1)) / (tabt(it) - tabt(it - 1))
-         y      = (plog - tabp(ip - 1)) / (tabp(ip) - tabp(ip - 1))
+         x = (tlog - tabt(it - 1)) / (tabt(it) - tabt(it - 1))
+         y = (plog - tabp(ip - 1)) / (tabp(ip) - tabp(ip - 1))
 
 !        the coefficients are scaled back by 0.001 by ttenlg because opacities 
 !        are read from odf.table as 1000 * log10(opacity)
@@ -125,10 +125,12 @@
       end subroutine
 
 
-      subroutine odf_interpolation(xlam, linop)
+      subroutine odf_interpolation(xlam, entot, linop)
 
+      use file_operations
       use common_block
       use utils
+      use phys
 
       implicit none
 
@@ -140,13 +142,17 @@
 
       real*8, intent(in)                   :: xlam
 
+      real*8, intent(in), dimension(dpn)   :: entot
+
       real*8, intent(out), dimension(dpn)  :: linop
 
 !------------------------------- LOCAL VARIABLES -----------------------
 
       real*8, dimension(nsubbins + 1) :: subgrid
 
-      real*8  :: delta
+      real*8 :: delta
+
+      real*8 :: rho ! density at a given depth point
 
       integer :: k, j, ip, it, bn, sbn
 
@@ -170,17 +176,25 @@
 
       sbn = bin_index(nsubbins + 1, subgrid, xlam / 10.0)
 
+!      call open_to_append(1435, 'linop.out')
+
       do j = 1, dpn
 
-         it = idx_temp(j)
-         ip = idx_pres(j)
+         it = idxt(j)
+         ip = idxp(j)
 
-         linop(j) = dexp(co1(j) * dble(odf(sbn, bn, ip - 1, it - 1)) +
-     &                   co2(j) * dble(odf(sbn, bn, ip  ,   it - 1)) +
-     &                   co3(j) * dble(odf(sbn, bn, ip - 1, it)) +
-     &                   co4(j) * dble(odf(sbn, bn, ip  ,   it)))
+         rho = entot(j) * apm
+
+         linop(j) = rho * dexp(co1(j) * dble(odf(sbn, bn, ip - 1, it - 1)) +
+     &                         co2(j) * dble(odf(sbn, bn, ip  ,   it - 1)) +
+     &                         co3(j) * dble(odf(sbn, bn, ip - 1, it)) +
+     &                         co4(j) * dble(odf(sbn, bn, ip  ,   it)))
+
+!         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
 
       enddo
+
+!      close(1435)
 
       linop(1 : ndpmin) = linop(ndpmin)
 
@@ -219,15 +233,15 @@
 !     for wvlgrid this is read from the odf.table, which gives the beginning and the end wavelength of each bin
 !     for subgrid this is calculated in the odf_interpolation subroutine
 
-      if (n == nbins)    cond = grid(idx + 1) .le. w
-      if (n == nsubbins) cond = grid(idx + 1) .lt. w
+      if (n == nbins + 1)    cond = grid(idx + 1) .le. w
+      if (n == nsubbins + 1) cond = grid(idx + 1) .lt. w
 
       do while (cond)
 
          idx = idx + 1
 
-         if (n == nbins)    cond = grid(idx + 1) .le. w
-         if (n == nsubbins) cond = grid(idx + 1) .lt. w
+         if (n == nbins + 1)    cond = grid(idx + 1) .le. w
+         if (n == nsubbins + 1) cond = grid(idx + 1) .lt. w
 
       enddo
 

@@ -22,6 +22,10 @@
 
       real*8, parameter :: sigma_thomson = 6.65d-25    ! Thomson cross-section in cm^{-2}
 
+      real*8, parameter :: atomic_mass_unit = 1.66053906660d-24 ! atomic mass unit, g
+
+      real*8 :: apm ! average particle mass
+
       public
 
       contains

@@ -262,7 +262,7 @@
 
       real*8, allocatable, dimension(:) :: entotn, delr
 
-      real*8, allocatable, dimension(:) :: elec_conc, rho, vturb, pressure
+      real*8, allocatable, dimension(:) :: elec_conc, clmn_den, vturb, pressure
 
       integer :: k, l
 
@@ -277,7 +277,7 @@
       allocate(radius(ND))
       allocate(height(ND))
 
-      allocate(rho(ND))
+      allocate(clmn_den(ND))
       allocate(pressure(ND))
       allocate(elec_conc(ND))
       allocate(vturb(ND))
@@ -285,7 +285,7 @@
       allocate(entotn(ND))
       allocate(delr(ND - 1))
 
-      rho =       read_atm_file_col(1)
+      clmn_den =  read_atm_file_col(1)
       T =         read_atm_file_col(2)
       pressure =  read_atm_file_col(3)
       elec_conc = read_atm_file_col(4)
@@ -299,7 +299,7 @@
 
       do l = 1, ND - 1
 
-         delr(l) = (2 / (amu * atmean * rstar)) * (rho(l + 1) - rho(l)) / (entot(l + 1) + entot(l))
+         delr(l) = (2 / (amu * atmean * rstar)) * (clmn_den(l + 1) - clmn_den(l)) / (entot(l + 1) + entot(l))
 
       enddo
 
@@ -309,7 +309,7 @@
 
       height = (radius - radius(ND)) * rstar / 1D+5 ! height in km, rstar in cm
 
-      deallocate(rho)
+      deallocate(clmn_den)
       deallocate(vturb)
       deallocate(elec_conc)
       deallocate(pressure)

@@ -82,8 +82,8 @@
 !     ------------------------------------------------------------------------------------
 !     variables and parameters for the odf_table module
 
-!      logical :: odf_from_table = .true.
-      logical :: odf_from_table = .false.
+      logical :: odf_from_table = .true.
+!      logical :: odf_from_table = .false.
 
       integer :: numt, nump
 
@@ -96,8 +96,6 @@
       real*8,            allocatable, dimension(:)          :: wvlgrid
 
       real*8,            allocatable, dimension(:)          :: co1, co2, co3, co4
-      integer,           allocatable, dimension(:)          :: idx_pres, idx_temp
-
-!      real*8,            allocatable, dimension(:, :)       :: odf_ti_opac
+      integer,           allocatable, dimension(:)          :: idxp, idxt
 
       end module
