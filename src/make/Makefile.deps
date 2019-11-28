@@ -41,7 +41,7 @@ linpop.for:           $(addprefix $(OUT), utils.o bfcross.o erf_inf.o flgrid.o i
 matoper.for:          $(addprefix $(OUT), utils.o )
 momo.for:             $(addprefix $(OUT), invtri.o )
 obsint.for:           $(addprefix $(OUT), cubic.o decf_syn.o opint.o utils.o )
-odftable.for:         $(addprefix $(OUT), comblock.o phys.o comblock.o fileoper.o comblock.o utils.o phys.o comblock.o )
+odftable.for:         $(addprefix $(OUT), comblock.o phys.o phys.o comblock.o fileoper.o comblock.o utils.o comblock.o )
 opac.for:             $(addprefix $(OUT), hminusff.o linop.o synsubm.o decf_syn.o utils.o synthp_cont.o constants.o chemeq.o gff_temp.o comblock.o phys.o constants.o hydtab.o synsubm.o )
 opaross.for:          $(addprefix $(OUT), coop.o coopfrq.o )
 opint.for:            $(addprefix $(OUT), utils.o utils.o )

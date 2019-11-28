@@ -5,25 +5,31 @@
       subroutine read_odf_table()
 
       use common_block
+      use phys
 
       implicit none
 
       integer :: j, inu, istep, it, ip
+
+      real*8, allocatable, dimension(:) :: temp, pres
+
+      real*8 :: rho ! density for a given pair of pressure and temperature
 
       open(unit = 1409, file = 'odf.table.grid')
 
       read(1409, *) numt
       read(1409, *) nump
 
+      allocate(temp(numt), pres(nump))
       allocate(tabt(numt), tabp(nump))
 
-      read (1409, *) (tabt(j), j = 1, numt)
-      read (1409, *) (tabp(j), j = 1, nump)
+      read (1409, *) (temp(j), j = 1, numt)
+      read (1409, *) (pres(j), j = 1, nump)
 
       close(unit = 1409)
 
-      tabt = log10(tabt)
-      tabp = log10(tabp)
+      tabt = dlog10(temp)
+      tabp = dlog10(pres)
 
       allocate(odf(nsubbins, nbins, nump, numt))
       allocate(wvlgrid(nbins + 1))
@@ -38,7 +44,11 @@
 
                do it = 1, numt
 
+                  rho = pres(ip) * apm / boltz / temp(it)
+
                   read(1408, *) (odf(istep, inu, ip, it), istep = 1, nsubbins)
+
+                  odf(1 : nsubbins, inu, ip, it) =  1d+3 * dlog10(rho * 1.0d+1**(odf(1 : nsubbins, inu, ip, it) / 1d+3))
 
                enddo
 
@@ -47,6 +57,9 @@
       enddo
 
       close(unit = 1408)
+
+      deallocate(temp)
+      deallocate(pres)
 
       return
  
@@ -125,12 +138,11 @@
       end subroutine
 
 
-      subroutine odf_interpolation(xlam, entot, linop)
+      subroutine odf_interpolation(xlam, linop)
 
       use file_operations
       use common_block
       use utils
-      use phys
 
       implicit none
 
@@ -142,8 +154,6 @@
 
       real*8, intent(in)                   :: xlam
 
-      real*8, intent(in), dimension(dpn)   :: entot
-
       real*8, intent(out), dimension(dpn)  :: linop
 
 !------------------------------- LOCAL VARIABLES -----------------------
@@ -151,8 +161,6 @@
       real*8, dimension(nsubbins + 1) :: subgrid
 
       real*8 :: delta
-
-      real*8 :: rho ! density at a given depth point
 
       integer :: k, j, ip, it, bn, sbn
 
@@ -176,27 +184,25 @@
 
       sbn = bin_index(nsubbins + 1, subgrid, xlam / 10.0)
 
-!      call open_to_append(1435, 'linop.out')
+      call open_to_append(1435, 'linop.out')
 
       do j = 1, dpn
 
          it = idxt(j)
          ip = idxp(j)
 
-         rho = entot(j) * apm
+         linop(j) = dexp(co1(j) * dble(odf(sbn, bn, ip - 1, it - 1)) +
+     &                   co2(j) * dble(odf(sbn, bn, ip  ,   it - 1)) +
+     &                   co3(j) * dble(odf(sbn, bn, ip - 1, it)) +
+     &                   co4(j) * dble(odf(sbn, bn, ip  ,   it)))
 
-         linop(j) = rho * dexp(co1(j) * dble(odf(sbn, bn, ip - 1, it - 1)) +
-     &                         co2(j) * dble(odf(sbn, bn, ip  ,   it - 1)) +
-     &                         co3(j) * dble(odf(sbn, bn, ip - 1, it)) +
-     &                         co4(j) * dble(odf(sbn, bn, ip  ,   it)))
-
-!         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
+         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
 
       enddo
 
-!      close(1435)
+      close(1435)
 
-      linop(1 : ndpmin) = linop(ndpmin)
+!      linop(1 : ndpmin) = linop(ndpmin)
 
       if (any(linop < 0.0d0)) then
 
