@@ -411,7 +411,16 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
        do i = 1, nfreq
 
-        write (200,FMT_LOPA) ablin(i)
+!       here the line opacity is written to the *.lopa files
+!       this opacity is pure line opacity except for the 160 -- 320 nm region
+!       in which the SORCE fudging is performed
+!       (continuum opacity added to the line opacity in order for the agreement
+!       with the observed spectrum to be attained)
+!       the units of the opacity is cm^{-1}
+!       this can be verified by analysing the formulas for
+!       the molecular lines in linop.for (which is called by opac.for) and chemeq.for
+        write (200, FMT_LOPA) ablin(i)
+
         IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
           PRINT '(i0,X,i0," ",$)',I,ID
           PRINT '("opac: NEGATIVE OPACITY,'//

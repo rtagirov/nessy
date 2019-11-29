@@ -194,7 +194,7 @@
 
       ENDDO FRQS
 
-      stop 'wrcont stop after frqs'
+!      stop 'wrcont stop after frqs'
 
 !      call print_xjc(ND, NF, xlambda, xjc2(1 : ND, 1 : NF))
 

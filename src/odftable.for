@@ -45,6 +45,11 @@
                do it = 1, numt
 
                   rho = pres(ip) * apm / boltz / temp(it)
+!                  rho = pres(ip) * apm / (boltz * temp(it) + apm * 1d+10 / 2.0d0)
+
+!                  print*, 'lalala', apm
+
+!                  stop
 
                   read(1408, *) (odf(istep, inu, ip, it), istep = 1, nsubbins)
 
@@ -184,7 +189,7 @@
 
       sbn = bin_index(nsubbins + 1, subgrid, xlam / 10.0)
 
-      call open_to_append(1435, 'linop.out')
+!      call open_to_append(1435, 'linop.out')
 
       do j = 1, dpn
 
@@ -196,13 +201,13 @@
      &                   co3(j) * dble(odf(sbn, bn, ip - 1, it)) +
      &                   co4(j) * dble(odf(sbn, bn, ip  ,   it)))
 
-         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
+!         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
 
       enddo
 
-      close(1435)
+!      close(1435)
 
-!      linop(1 : ndpmin) = linop(ndpmin)
+      linop(1 : ndpmin) = linop(ndpmin)
 
       if (any(linop < 0.0d0)) then
 
