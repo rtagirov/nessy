@@ -95,7 +95,7 @@
       integer(kind = 2), allocatable, dimension(:, :, :, :) :: odf
       real*8,            allocatable, dimension(:)          :: wvlgrid
 
-      real*8,            allocatable, dimension(:)          :: co1, co2, co3, co4
-      integer,           allocatable, dimension(:)          :: idxp, idxt
+!      real*8,            allocatable, dimension(:)          :: c1, c2, c3, c4
+!      integer,           allocatable, dimension(:)          :: idxp, idxt
 
       end module

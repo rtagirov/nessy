@@ -102,6 +102,9 @@ cmd "cp -v $PREV_RUN_DIR/CARDS ./"
 cmd "cp -v $PREV_RUN_DIR/Uitenbroek_H_CE.dat ./"
 cmd "cp -v $PREV_RUN_DIR/Uitenbroek_H_CI.dat ./"
 
+cmd "cp -v $PREV_RUN_DIR/odf.table ./"
+cmd "cp -v $PREV_RUN_DIR/odf.table.grid ./"
+
 cp_file "$PREV_RUN_DIR/vel_field.in" "./" "v"
 
 insert "wrstart" "fort.99" "r"

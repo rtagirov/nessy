@@ -166,6 +166,18 @@ c***     the new blanketing table needs to be written to the model file
      $                NFIRST,
      $                NLAST)
 
+!         call open_to_append(1975, 'inine.out')
+
+!         do j = 1, ND
+
+!            write(1975, *) rne(j)
+
+!         enddo
+
+!         close(1975)
+
+!         stop
+
       ELSE
 
 !     RATE EQUATION WITH APPROXIMATE RADIATION TRANSFER
@@ -291,8 +303,8 @@ C***  UPDATING THE MODEL HISTORY
  
       IF (JOBNUM .EQ. 1) GOTO 15
 
-!      IF (CORMAX .LT. EPSILON) THEN
-      IF (CORMAX .LT. 1e-10 * EPSILON) THEN
+      IF (CORMAX .LT. EPSILON) THEN
+!      IF (CORMAX .LT. 1e-10 * EPSILON) THEN
 
          PRINT *,' REPEAT CYCLE IS CONVERGED'
          JOBDIFF=JOBNUM-LASTWRC

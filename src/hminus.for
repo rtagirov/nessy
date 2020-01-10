@@ -220,6 +220,7 @@
       CALL RM_FILE('cpu_time.wrcont',  '-vf')
 
       call rm_file('linop.out', '-vf')
+!      call rm_file('inine.out', '-vf')
 
       CALL WRSTART; call finish('WRSTART', timer2, .true.)
 

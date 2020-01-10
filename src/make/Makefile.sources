@@ -64,6 +64,7 @@ opac.for\
 synopa.for\
 quant.for\
 auxfioss.for\
+odftable.for\
 fioss.for
 
 HMINUS_PROG=$(OUT)/hminus.exe

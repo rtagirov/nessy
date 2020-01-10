@@ -4,8 +4,11 @@
 
       subroutine read_odf_table()
 
+!     reads the ODF table as given by DFSYNTHE calculations
+!     the ODF is given for a fixed value of turbulent velocity
+
       use common_block
-      use phys
+!      use phys
 
       implicit none
 
@@ -13,7 +16,7 @@
 
       real*8, allocatable, dimension(:) :: temp, pres
 
-      real*8 :: rho ! density for a given pair of pressure and temperature
+!      real*8 :: rho ! density for a given pair of pressure and temperature
 
       open(unit = 1409, file = 'odf.table.grid')
 
@@ -44,7 +47,7 @@
 
                do it = 1, numt
 
-                  rho = pres(ip) * apm / boltz / temp(it)
+!                  rho = pres(ip) * apm / boltz / temp(it)
 !                  rho = pres(ip) * apm / (boltz * temp(it) + apm * 1d+10 / 2.0d0)
 
 !                  print*, 'lalala', apm
@@ -53,7 +56,7 @@
 
                   read(1408, *) (odf(istep, inu, ip, it), istep = 1, nsubbins)
 
-                  odf(1 : nsubbins, inu, ip, it) =  1d+3 * dlog10(rho * 1.0d+1**(odf(1 : nsubbins, inu, ip, it) / 1d+3))
+!                  odf(1 : nsubbins, inu, ip, it) =  1d+3 * dlog10(rho * 1.0d+1**(odf(1 : nsubbins, inu, ip, it) / 1d+3))
 
                enddo
 
@@ -71,7 +74,7 @@
       end subroutine
 
 
-      subroutine odf_interpolation_coef(entot, T)
+      subroutine odf_interpolation_coef(n, ne, T, idxt, idxp, c1, c2, c3, c4)
 
       use phys
       use common_block
@@ -86,7 +89,11 @@
 
 !------------------------------- IN-OUT -------------------------------
 
-      real*8, intent(in), dimension(dpn) :: T, entot
+      real*8, intent(in), dimension(dpn) ::   T, n, ne
+
+      integer, intent(out), dimension(dpn) :: idxt, idxp
+
+      real*8, intent(out), dimension(dpn) ::  c1, c2, c3, c4
 
 !------------------------------- LOCAL VARIABLES -----------------------
 
@@ -96,8 +103,13 @@
 
 !---------------------------------- EXECUTION --------------------------
 
-      allocate(idxt(dpn), idxp(dpn))
-      allocate(co1(dpn), co2(dpn), co3(dpn), co4(dpn))
+!      if (.not. allocated(idxt)) allocate(idxt(dpn))
+!      if (.not. allocated(idxp)) allocate(idxp(dpn))
+
+!      if (.not. allocated(c1)) allocate(c1(dpn))
+!      if (.not. allocated(c2)) allocate(c2(dpn))
+!      if (.not. allocated(c3)) allocate(c3(dpn))
+!      if (.not. allocated(c4)) allocate(c4(dpn))
 
       do j = 1, dpn
 
@@ -111,7 +123,7 @@
 
          enddo
 
-         p = entot(j) * boltz * T(j)
+         p = (n(j) + ne(j)) * boltz * T(j)
 
          plog = min(max(log10(p), tabp(1)), tabp(nump))
 
@@ -131,10 +143,10 @@
 
 !        the coefficients are scaled back by 0.001 by ttenlg because opacities 
 !        are read from odf.table as 1000 * log10(opacity)
-         co1(j) = (1.0d0 - x) * (1.0d0 - y) * ttenlg
-         co2(j) = (1.0d0 - x) * y * ttenlg
-         co3(j) = x * (1.0d0 - y) * ttenlg
-         co4(j) = x * y * ttenlg
+         c1(j) = (1.0d0 - x) * (1.0d0 - y) * ttenlg
+         c2(j) = (1.0d0 - x) * y * ttenlg
+         c3(j) = x * (1.0d0 - y) * ttenlg
+         c4(j) = x * y * ttenlg
 
       enddo
 
@@ -143,27 +155,37 @@
       end subroutine
 
 
-      subroutine odf_interpolation(xlam, linop)
+      subroutine odf_interpolation(xlam, n, idxt, idxp, c1, c2, c3, c4, linop)
 
       use file_operations
       use common_block
       use utils
+      use phys
 
       implicit none
 
-!     Assumes that vturb is constant and that the opacity file is given only for that vturb
-!     ODF have been already read into odf array (which is a global variable, see comblock.for) 
-!     from the odf.table file
+!     ODF interpolation for all depth points and single wavelength value (xlam)
+!     using the precalculated interpolation coefficients (see above, odf_interpolation_coef)
+!     ODF has been read into the odf array from the file odf.table (see above subroutine read_odf_table)
+!     The odf array is a global variable (see comblock.for)
 
 !------------------------------- IN-OUT -------------------------------
 
-      real*8, intent(in)                   :: xlam
+      real*8, intent(in)                  :: xlam
 
-      real*8, intent(out), dimension(dpn)  :: linop
+      real*8, intent(in), dimension(dpn)  :: n
+
+      integer, intent(in), dimension(dpn) :: idxt, idxp
+
+      real*8, intent(in), dimension(dpn)  :: c1, c2, c3, c4
+
+      real*8, intent(out), dimension(dpn) :: linop
 
 !------------------------------- LOCAL VARIABLES -----------------------
 
       real*8, dimension(nsubbins + 1) :: subgrid
+
+      real*8, dimension(dpn) :: rho
 
       real*8 :: delta
 
@@ -189,23 +211,34 @@
 
       sbn = bin_index(nsubbins + 1, subgrid, xlam / 10.0)
 
-!      call open_to_append(1435, 'linop.out')
-
       do j = 1, dpn
 
          it = idxt(j)
          ip = idxp(j)
 
-         linop(j) = dexp(co1(j) * dble(odf(sbn, bn, ip - 1, it - 1)) +
-     &                   co2(j) * dble(odf(sbn, bn, ip  ,   it - 1)) +
-     &                   co3(j) * dble(odf(sbn, bn, ip - 1, it)) +
-     &                   co4(j) * dble(odf(sbn, bn, ip  ,   it)))
-
-!         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
+         linop(j) = dexp(c1(j) * dble(odf(sbn, bn, ip - 1, it - 1)) +
+     &                   c2(j) * dble(odf(sbn, bn, ip  ,   it - 1)) +
+     &                   c3(j) * dble(odf(sbn, bn, ip - 1, it)) +
+     &                   c4(j) * dble(odf(sbn, bn, ip  ,   it)))
 
       enddo
 
-!      close(1435)
+!     n is the total particle concentration (everything except electrons)
+!     apm is the average particle mass
+!     rho is density
+      rho = n * apm
+
+      linop = rho * linop
+
+      call open_to_append(1435, 'linop.out')
+
+      do j = 1, dpn
+
+         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
+
+      enddo
+
+      close(1435)
 
       linop(1 : ndpmin) = linop(ndpmin)
 

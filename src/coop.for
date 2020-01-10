@@ -99,6 +99,10 @@
       INTEGER :: L_H0, IG
       REAL*8 :: SIGMAE, SIGMA, SIGMATH, SIGMAFF, SIGHMFF
 
+      integer, dimension(ND) :: idxt, idxp
+
+      real*8,  dimension(ND) :: co1, co2, co3, co4
+
 !     C1 = H * C / K    (CM * ANGSTROEM)
       DATA AK_BOL, C1 /1.38062259d-16, 1.4388d0/
 
@@ -124,13 +128,16 @@
 
           if (odf_from_table) then
 
-!            Interpolate ODF using the table given in
+!            calculate the odf interpolation coefficients for the entot, T and current rne
+             call odf_interpolation_coef(entot, rne * entot, T, idxt, idxp, co1, co2, co3, co4)
+
+!            interpolate ODF using the table given in
 !            the odf.table and odf.table.grid files
-             call odf_interpolation(xlam, linop)
+             call odf_interpolation(xlam, entot, idxt, idxp, co1, co2, co3, co4, linop)
 
           else
 
-!            Read ODF from the ./lbkg/*.lbkg files
+!            read ODF from the ./lbkg/*.lbkg files
              call rdopac(xlam, linop, ndpmin, xlbkg1, xlbkg2)
 
           endif
@@ -648,7 +655,7 @@
 
       flnam = './lbkg/'//trim(adjustl(flnam))//'.lbkg'
 
-      write(*, '(A5,1x,F9.3,1x,I4,1x,A16)'), 'check', xlam, lam, flnam
+!      write(*, '(A5,1x,F9.3,1x,I4,1x,A16)'), 'check', xlam, lam, flnam
 
       open(300, file = trim(adjustl(flnam)), status = 'old', action = 'read', err = 999)
 

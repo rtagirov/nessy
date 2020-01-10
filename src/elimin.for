@@ -9,7 +9,7 @@
 
       use MOMENTS
       use MATOPER
-      use common_block
+!      use common_block
       use file_operations
 
       implicit none
@@ -43,13 +43,20 @@
 
       real*8, parameter :: ONE = 1.D+0, TWO = 2.D0, THREE = 3.D0
 
+!      print*, 'check elimin 0'
+
 !      hei = height * 1.0d5 ! height in cm
-      hei = height
+!      hei = height
+      hei = (radius - 1.0) * rstar
+
+!      print*, 'check elimin 01'
 
       allocate(A(NP), C(NP), W(NP))
       allocate(B(NP, NP))
 
       allocate(BX(NP, NP, ND)); allocate(WX(NP, ND))
+
+!      print*, 'check elimin 1'
 
       A(1 : NP) = 0.0D0
       C(1 : NP) = 0.0D0
@@ -193,7 +200,7 @@
          FL = three - one / EDDI(1, L)
 
          if (xlam == 350.0) write(18368, '(e15.7,1x,i3,6(2x,e15.7))')
-     $                      xlam, l, height(l), eddi(1, l), fl,
+     $                      xlam, l, hei(l), eddi(1, l), fl,
      $                      flp, fl - flp, dexp(fl - flp)
 
          bas = RL / RLP
@@ -239,6 +246,8 @@
       ENDDO
 
       close(18368)
+
+!      print*, 'check elimin 2'
 
 !      stop
      

@@ -98,8 +98,10 @@ CMH   CFF         = (4 e6/3 c h) * (2 pi/3 k m_e3)^(1/2)
       real*8  :: SPACE,TSTD,DSTD
       logical :: lwph
       real*8,dimension(MFREQ) :: ABLIN,EMLIN
+      real*8,dimension(MFREQ) :: totop
       real*8 molopac(NFREQ), molemiss(NFREQ)
-      real*8 :: freqt, lambdat, contf, totFe, totFeI, totFeII, totH
+      real*8 :: freqt, lambdat, contf
+!      real*8 :: totFe, totFeI, totFeII, totH
       integer :: ind(1)
 
 !******************************************************
@@ -382,30 +384,33 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
     
 
 ! *****************************
-       freqt=(freq(1)+freq(NFREQ))/2.
+       freqt = (freq(1) + freq(NFREQ)) / 2.0
 
-       lambdat=(clight_cgs/freqt)*1.d8
+       lambdat = (clight_cgs / freqt) * 1.0d8
 
-       contf=1.
+       contf = 1.0
 
 !====================================================================
 !FUDGE REGULAR
 
-       if ((lambdat .lt. 3200.) .and. (lambdat .gt. 1600.)) then
+!       if ((lambdat .gt. 1600.0) .and. (lambdat .lt. 3200.0)) then
         
-       ind=minloc(abs(wav_f(1:Nfudge)-lambdat))  
+!          ind = minloc(abs(wav_f(1 : Nfudge) - lambdat))
 
-       contf=ffactor(ind(1))
+!          contf = ffactor(ind(1))
   
-       endif
+!       endif
+!====================================================================
 
-       totFe=popul(101,id)+popul(102,id)+popul(103,id)+popul(104,id)+popul(105,id)+popul(106,id)   
-       totFeII=popul(106, id)
-       totFeI=totFe-totFeII
+!       totFe=popul(101,id)+popul(102,id)+popul(103,id)+popul(104,id)+popul(105,id)+popul(106,id)   
+!       totFeII=popul(106, id)
+!       totFeI=totFe-totFeII
 
-       totH=sum(popul(1:12,id))
+!       totH=sum(popul(1:12,id))
 
        ABLIN(1 : NFREQ) = ABLIN(1 : NFREQ) + ABSO(1 : NFREQ) * (contf - 1.0d0)
+
+       totop(1 : NFREQ) = ABLIN(1 : NFREQ) + ABSO(1 : NFREQ)
 
        EMLIN(1 : NFREQ) = EMLIN(1 : NFREQ) + ABSO(1 : NFREQ) * (contf - 1.0d0) * PLAN(max(NDPMIN, id))
 
@@ -419,7 +424,9 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !       the units of the opacity is cm^{-1}
 !       this can be verified by analysing the formulas for
 !       the molecular lines in linop.for (which is called by opac.for) and chemeq.for
+
         write (200, FMT_LOPA) ablin(i)
+!        write (200, FMT_LOPA) totop(i)
 
         IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
           PRINT '(i0,X,i0," ",$)',I,ID

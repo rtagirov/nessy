@@ -130,7 +130,7 @@
 
 !      stop 'stop abundances'
 
-      apm = atomic_mass_unit * sum(abxyz * atomic_mass) ! average particle mass
+      apm = atomic_mass_unit * sum(abxyz * atomic_mass) ! average particle mass (cgs)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
       IF (IDAT.EQ.1)
@@ -148,17 +148,10 @@
 
       call geomesh(radius, entot, T, P, Z, rstar, amu, atmean, ND, NP)
 
-      if (odf_from_table) then
-
-!         read odf.table and odf.table.grid files
-!         odf.table.grid --- grid of temperature and pressures
-!         at which the opacities in the odf.table file are given
-          call read_odf_table()
-
-!         calculate the odf interpolation coefficients to the T - entot grid (atm.inp file)
-          call odf_interpolation_coef(entot, T)
-
-      endif
+!     read odf.table and odf.table.grid files
+!     odf.table.grid --- grid of temperature and pressures
+!     at which the opacities in the odf.table file are given
+      if (odf_from_table) call read_odf_table()
 
 !     INITIALISATION OF THE VELOCITY-FIELD PARAMETERS
       call initvel(maxval(radius), t_eff, glog, rstar, xmass)

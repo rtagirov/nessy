@@ -738,7 +738,7 @@ for RUN in $RUNS; do
 
     if [ "$MODE" == "xt" ]; then
 
-       echo -n "DIM for $RUN ODF run equals to: "; tail -4 $LBKG_CONTROL_FILE | head -1 | awk '{print $2}'
+       echo -n "DIM for $RUN ODF run equals to "; tail -4 $LBKG_CONTROL_FILE | head -1 | awk '{print $2}'
 
        message "The following input and output paths will be used to calculate ODFs for $RUN run:"; tail -2 $LBKG_CONTROL_FILE; echo
 
@@ -952,9 +952,9 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
                     VFINAL=${VELPAR[0]}
                     VMIN=${VELPAR[1]};  shift 2;;
 
-       -B|--VDH)   VDH=$2;             shift 2;;
+       -B|--VDH)    VDH=$2;             shift 2;;
 
-       -C|--VDF)   VDF=$2;             shift 2;;
+       -C|--VDF)    VDF=$2;             shift 2;;
 
        -N|--NEWWRC) NEWWRC=$2;          shift 2;;
 
