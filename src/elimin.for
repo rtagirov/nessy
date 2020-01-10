@@ -9,7 +9,7 @@
 
       use MOMENTS
       use MATOPER
-      use common_block
+!      use common_block
       use file_operations
 
       implicit none
@@ -46,7 +46,9 @@
       real*8, parameter :: ONE = 1.D+0, TWO = 2.D0, THREE = 3.D0
 
 !      hei = height * 1.0d5 ! height in cm
-      hei = height
+!      hei = height
+
+      hei = (radius - 1.0) * rstar
 
       allocate(A(NP), C(NP), W(NP))
       allocate(B(NP, NP))
