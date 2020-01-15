@@ -77,7 +77,7 @@
       CHARACTER*4 KEYCOL(N, N)
       character*10 cread,help
 
-      real*8,dimension(*) :: ALTESUM, COCO, FWEIGHT
+      real*8,dimension(*) :: ALTESUM, COCO
 
       real*8, dimension(N, N) :: CRATE, RRATE, ratco
 

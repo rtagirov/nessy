@@ -774,8 +774,8 @@
 
 !         N_CLV = 100
 !         N_CLV = 20
-         N_CLV = 10
-!         N_CLV = 1
+!         N_CLV = 10
+         N_CLV = 1
 !         N_CLV = NFOBS
          LP = NP - ND
 

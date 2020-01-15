@@ -103,7 +103,7 @@
 
       ENDDO
 
-      stop
+!      stop
 
 !     BACK SUBSTITUTION
 !     RECENT WX IS THE FEAUTRIER-INTENSITY U AT THE INNER BOUNDARY
@@ -143,10 +143,10 @@
      
       RRQ = one
 
-      call system('rm eddi.out')
+!      call system('rm eddi.out')
 
 !      open(unit = 18368, file = 'eddi.out', status = 'new')
-      call open_to_append(18368, 'eddi.out')
+!      call open_to_append(18368, 'eddi.out')
 
 !      do l = 1, nd
 
@@ -167,15 +167,15 @@
 !        WX(J) IS THE FEAUTRIER-INTENSITY U AT RADIUS R(L)
          U(L, 1 : JMAX) = WX(1 : JMAX, L)
 
-         if (xlam == 350.0) then
+!         if (xlam == 350.0) then
 
-            do i = 1, jmax
+!            do i = 1, jmax
 
-               print*, 'before moment0: ', wx(i, l)
+!               print*, 'before moment0: ', wx(i, l)
 
-            enddo
+!            enddo
 
-         endif
+!         endif
 
          CALL MOMENT0_ELIMIN(ND, RADIUS, L, JMAX, Z(1 : ND, 1 : JMAX), WX(1 : JMAX, L), XJC(L))
 
@@ -206,9 +206,9 @@
          FLP = FL
          FL = three - one / EDDI(1, L)
 
-         if (xlam == 350.0) write(18368, '(e15.7,1x,i3,8(2x,e15.7))')
-     $                      xlam, l, height(l), eddi(1, l), fl,
-     $                      flp, fl - flp, dexp(fl - flp), xk, xjc(l)
+!         if (xlam == 350.0) write(18368, '(e15.7,1x,i3,8(2x,e15.7))')
+!     $                      xlam, l, hei(l), eddi(1, l), fl,
+!     $                      flp, fl - flp, dexp(fl - flp), xk, xjc(l)
 
          bas = RL / RLP
 
@@ -252,9 +252,9 @@
 
       ENDDO
 
-      close(18368)
+!      close(18368)
 
-      if (xlam == 350.0) stop 'elimin: stop after depths cycle'
+!      if (xlam == 350.0) stop 'elimin: stop after depths cycle'
 
 !      stop
      
