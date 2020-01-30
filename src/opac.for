@@ -381,9 +381,8 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
       !***  ID: depth point
       !***  NFREQ: number of frequency points
       write (200,*) nfreq, id
-    
 
-! *****************************
+!*****************************
        freqt = (freq(1) + freq(NFREQ)) / 2.0
 
        lambdat = (clight_cgs / freqt) * 1.0d8
@@ -393,13 +392,14 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !====================================================================
 !FUDGE REGULAR
 
-!       if ((lambdat .gt. 1600.0) .and. (lambdat .lt. 3200.0)) then
+       if ((lambdat .gt. 1600.0) .and. (lambdat .lt. 3200.0)) then
         
-!          ind = minloc(abs(wav_f(1 : Nfudge) - lambdat))
+          ind = minloc(abs(wav_f(1 : Nfudge) - lambdat))
 
-!          contf = ffactor(ind(1))
+          contf = ffactor(ind(1))
   
-!       endif
+       endif
+
 !====================================================================
 
 !       totFe=popul(101,id)+popul(102,id)+popul(103,id)+popul(104,id)+popul(105,id)+popul(106,id)   

@@ -120,10 +120,10 @@ if [ $ODF_IT -ge 1 ]; then
 
    create_dir $RUN_DIR/lbkg/
 
-   process_message "Copying the ODFs from $LBKG to $RUN_DIR" "cp $LBKG/* ./lbkg/"
-
    if [ $ODF_IT -eq 1 ]; then insert "LBKG 1000 9990" CARDS "a"; fi
    if [ $ODF_IT -eq 1 ]; then insert "OLDSTART"       CARDS "a"; fi
+
+   process_message "Copying the ODFs from $LBKG to $RUN_DIR" "cp $LBKG/* ./lbkg/"
 
 fi
 

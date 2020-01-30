@@ -103,6 +103,7 @@
       JOB_COND = JOB .EQ. 'wrstart'
 
       IF (JOB_COND .AND. OLDSTART) THEN
+
 !***  START WITH POPNUMBERS WHICH ARE READ FROM AN APPLICABLE OLD MODEL FILE
 
         print *,' population numbers copied from an existing model'

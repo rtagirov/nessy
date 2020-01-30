@@ -293,6 +293,8 @@
 
       close(IFL)
 
+      print*, 'vdop after readmod', vdop
+
       open(unit = 3, file = '../mu')
 
       read(3, *) mu
@@ -377,6 +379,9 @@
 
       !***  LOOP FOR EVERY DETECTED LINE - OPTION CARD   ---------------
       open (1,file='CARDS',STATUS='OLD')
+
+      print*, 'vdop before decf_syn', vdop, vdopp
+
       vdopp=vdop
       VSINI=0.
       MLC = 0
@@ -388,6 +393,8 @@
      $        MAXITER,felsca,RWLAE,PHEAD,PROLIB,VSINI,SHIFT,
      $        LSPRO,LSDWL,NORM,TRANS,FIN,VDOP,
      $        NPHIP,LPSTI,LPENI,JFIRSI,JLASI,COROT,iTionsel,XLMIN,XLMAX)
+
+      print*, 'vdop after decf_syn', vdop
 
 !RT:  BLOCK FOR CALCULATION OF NLTE LINES LISTED IN THE DATOM FILE
 !RT:  FOR FURTHER DETAILS SEE LINOP.FOR
@@ -799,8 +806,8 @@
 
 !         N_CLV = 100
 !         N_CLV = 20
-         N_CLV = 10
-!         N_CLV = 1
+!         N_CLV = 10
+         N_CLV = 1
 !         N_CLV = NFOBS
          LP = NP - ND
 

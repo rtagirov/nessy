@@ -251,6 +251,16 @@ c***     the new blanketing table needs to be written to the model file
      $               nfirst,
      $               nlast)
 
+!         call open_to_append(1975, 'inine.out')
+
+!         do j = 1, ND
+
+!            write(1975, *) rne(j)
+
+!         enddo
+
+!         close(1975)
+
       ENDIF
  
 C***  REDUCED CORRECTIONS, IF OPTION IS SET

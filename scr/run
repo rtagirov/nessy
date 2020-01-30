@@ -6,11 +6,12 @@ dir=`pwd`
 
 src=/mnt/SSD/sim/nessy/src
 obj=/mnt/SSD/sim/nessy/obj
+inp=/mnt/SSD/sim/nessy/inp
 
 file=''
 
-ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "cdov:"\
-                --longoptions "comp,ndep,nobj,view:" -- "$@")
+ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "cdoh:v:"\
+                --longoptions "comp,ndep,nobj,odft:,view:" -- "$@")
 
 if [ $? -ne 0 ]; then 
 
@@ -29,6 +30,8 @@ else
        -d|--ndep) new_deps=yes;      shift;;
 
        -o|--nobj) new_obj_files=yes; shift;;
+
+       -h|--odft) odft=$2;           shift 2;;
 
        -v|--view) file=$2;           shift 2;;
 
@@ -68,6 +71,12 @@ if [ "$compilation" ]; then
 
    cd $dir
 
+   rm -rf src
+
+   mkdir src
+
+   cp $src/*.for -t ./src/
+
    if [ "$1" == "hminus" ]; then cp $obj/hminus.exe ./; fi
    if [ "$1" == "fioss" ];  then cp $obj/fioss.exe  ./; fi
 
@@ -75,7 +84,22 @@ if [ "$compilation" ]; then
 
 fi
 
-if [ "$1" == "hminus" ]; then echo wrstart > fort.99; ./hminus.exe | tee hminus.log; fi
-if [ "$1" == "fioss" ];  then                         ./fioss.exe |  tee fioss.log;  fi
+if [ "$1" == "hminus" ]; then 
+
+   echo wrstart > fort.99
+
+   if [ ${odft} ]; then
+
+      if [ -z ${inp}/odf/${odft} ]; then abort "ODF table name incorrect. Abort."; fi
+
+      cp ${inp}/odf/${odft} ./odf.table
+
+   fi
+
+   ./hminus.exe | tee hminus.log
+
+fi
+
+if [ "$1" == "fioss" ]; then ./fioss.exe | tee fioss.log; fi
 
 if [ ! -z ${file} ]; then vim ${file}; fi

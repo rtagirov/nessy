@@ -82,8 +82,8 @@
 !     ------------------------------------------------------------------------------------
 !     variables and parameters for the odf_table module
 
-      logical :: odf_from_table = .true.
-!      logical :: odf_from_table = .false.
+!      logical :: odf_from_table = .true.
+      logical :: odf_from_table = .false.
 
       integer :: numt, nump
 

@@ -304,26 +304,29 @@
 
 !MH    CHANGES BY MARGIT HABERREITER
 !MH    RDOPAC: READS BINNED LINE OPACITY DATA FROM *.LBKG FILES
-!MH    LINOP, LINEM AT DEPTHPOINT L AND FREQUENCY XLAM
+!RT    LINOP is binned and sorted background (i.e. passed on from FIOSS)
+!RT    line opacity at depthpoint L and frequency XLAM
 !MH    IF coop IS CALLED FROM WRCONT
        IF (LBKG) THEN
 
-!MH    OUTWARD OF TEMPERATURE MINIMUM EMISSION AND ABSORPTION SET TO ZERO
+          alcross = linop(L) / ENTOT(L)
+
+!RT    outward of temperature minimum emission (just like absorption)
+!      is set to its temperature minimum value
           if (l .le. NDPMIN) then
 
-            alcross = linop(L)/ENTOT(L)
-            alemis = BNUE(XLAM,T(NDPMIN))*alcross
+            alemis = BNUE(XLAM, T(NDPMIN)) * alcross
+!            alemis = 0.0d0
 
           else
-          !MH**  INWARD OF TEMPERATURE MINIMUM
+!MH    INWARD OF TEMPERATURE MINIMUM
 
-            alcross = linop(L)/ENTOT(L)
-            alemis  = BNUE(XLAM,T(L))*alcross
+            alemis  = BNUE(XLAM, T(L)) * alcross
 
           endif
 
-          OPAL=OPAL+alcross
-          ETAL=ETAL+alemis
+          OPAL = OPAL + alcross
+          ETAL = ETAL + alemis
 
        ENDIF
 
@@ -666,7 +669,10 @@
       !*  If depth point is outward of temperature minimum,
       !*  use LINOP of temperature minimum
       read(300,'(1pe12.5)') LINOP
-      LINOP(1:NDPMIN) = LINOP(NDPMIN)
+
+      LINOP(1 : NDPMIN) = LINOP(NDPMIN)
+!      LINOP(1 : NDPMIN) = 0.0d0
+
       close (300)
       !************************************************************
       if(IDX>0) then 
