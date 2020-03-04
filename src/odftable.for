@@ -223,6 +223,10 @@
 
       enddo
 
+!      print*, 'lalala', apm
+
+!      stop
+
 !     n is the total particle concentration (everything except electrons)
 !     apm is the average particle mass
 !     rho is density
@@ -230,15 +234,15 @@
 
       linop = rho * linop
 
-!      call open_to_append(1435, 'linop.out')
+      call open_to_append(1435, 'linop.out')
 
-!      do j = 1, dpn
+      do j = 1, dpn
 
-!         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
+         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
 
-!      enddo
+      enddo
 
-!      close(1435)
+      close(1435)
 
       linop(1 : ndpmin) = linop(ndpmin)
 !      linop(1 : ndpmin) = 0.0d0
@@ -257,7 +261,7 @@
       end subroutine
 
 
-      function bin_index(n, grid, w) result(idx)
+      function bin_index(n, grid, w) result(i)
 
       use common_block
 
@@ -269,27 +273,27 @@
 
       real*8               :: w
 
-      integer              :: idx
+      integer              :: i
 
       logical              :: cond
 
-      idx = 1
+!     return the index of the bin which wavelength w belongs to
+!     grid contains borders of the bins
 
-!     grid contains borders of the bins, such that grid(idx + 1) corresponds to the bin's upper wavelength
-!     for wvlgrid this is read from the odf.table, which gives the beginning and the end wavelength of each bin
-!     for subgrid this is calculated in the odf_interpolation subroutine
+      i = minloc(dabs(grid - w), dim = 1)
 
-      if (n == nbins + 1)    cond = grid(idx + 1) .le. w
-      if (n == nsubbins + 1) cond = grid(idx + 1) .lt. w
+      if (i == n) then
 
-      do while (cond)
+          i = i - 1
 
-         idx = idx + 1
+          return
 
-         if (n == nbins + 1)    cond = grid(idx + 1) .le. w
-         if (n == nsubbins + 1) cond = grid(idx + 1) .lt. w
+      endif
 
-      enddo
+!     here we find out which side of the grid wavelength w is on
+!     the side determines the number of the bin that w belongs to
+      if (w >= grid(i)     .and. w < grid(i + 1)) return
+      if (w >  grid(i - 1) .and. w < grid(i)    ) i = i - 1
 
       return
 

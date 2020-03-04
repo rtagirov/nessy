@@ -1,6 +1,7 @@
       module mod_opac
 
-      character*(*), private, parameter :: FMT_LOPA = '(1pe12.5)'
+!      character*(*), private, parameter :: FMT_LOPA = '(1pe12.5)'
+      character*(*), private, parameter :: FMT_LOPA = '(1pe12.5,1x,1pe12.5)'
 
       contains
 
@@ -377,7 +378,7 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
       !***********************************************************
       !***  MARGIT HABERREITER
       !***  WRITING OUTPUT FOR NON-LTE BLANKETING
-      !***  WHICH WILL BE THE INBUT FOR HMINUS-ROUTINE
+      !***  WHICH WILL BE THE INPUT FOR HMINUS-ROUTINE
       !***  ID: depth point
       !***  NFREQ: number of frequency points
       write (200,*) nfreq, id
@@ -415,6 +416,7 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
        EMLIN(1 : NFREQ) = EMLIN(1 : NFREQ) + ABSO(1 : NFREQ) * (contf - 1.0d0) * PLAN(max(NDPMIN, id))
 
        do i = 1, nfreq
+!       do i = nfreq, 1, -1
 
 !       here the line opacity is written to the *.lopa files
 !       this opacity is pure line opacity except for the 160 -- 320 nm region
@@ -426,6 +428,7 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !       the molecular lines in linop.for (which is called by opac.for) and chemeq.for
 
         write (200, FMT_LOPA) ablin(i)
+!        write (200, FMT_LOPA) (clight_cgs / freq(i)) * 1.0d8, ablin(i)
 !        write (200, FMT_LOPA) totop(i)
 
         IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN

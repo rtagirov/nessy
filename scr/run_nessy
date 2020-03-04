@@ -328,6 +328,7 @@ for RUN in $RUNS; do
 
  if [ $DATOM ]     && [ "$ODF_IT" == "0" ]; then check_file $DATOM_DIR/$DATOM;         cp -v $DATOM_DIR/$DATOM         $HM_DIR$RUN/$DATOM_FILE;     echo; fi
 
+ if [ $ODF_TABLE ] && [ "$ODF_IT" == "0" ]; then check_file $ODF_TABLE_DIR/$ODF_TABLE; cp -v $ODF_TABLE_DIR/$ODF_TABLE $HM_DIR$RUN/$ODF_TABLE_FILE; echo; fi
  if [ $ODF_TABLE ] && [ "$ODF_IT" == "1" ]; then check_file $ODF_TABLE_DIR/$ODF_TABLE; cp    $ODF_TABLE_DIR/$ODF_TABLE $HM_DIR$RUN/$ODF_TABLE_FILE; echo; fi
 
  if [ $VEL_FIELD ] && [ "$ODF_IT" == "0" ]; then check_file $VEL_FIELD_DIR$VEL_FIELD;  cp -v $VEL_FIELD_DIR$VEL_FIELD  $HM_DIR$RUN/vel_field.in;    echo; fi
