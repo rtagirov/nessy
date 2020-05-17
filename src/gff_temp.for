@@ -268,7 +268,8 @@
 
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
 
-      ALAMBDA = 0.5D0 * (ETA_i _ ETA_f)
+!      ALAMBDA = 0.5D0 * (ETA_i _ ETA_f)
+      ALAMBDA = 0.5D0 * (ETA_i - ETA_f)
 
       AALPHA = L * (L + 1) + 2.D0 * ALAMBDA**2 + ETA_i * ETA_f
 

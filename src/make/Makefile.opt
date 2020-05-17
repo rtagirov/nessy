@@ -1,6 +1,7 @@
 #DEBUG_FLAGS= -traceback -debug inline-debug-info,all
 #DEBUG_FLAGS= -check all -fpe0 -warn none -traceback -debug extended
 DEBUG_FLAGS= -warn none
+#DEBUG_FLAGS= -traceback -check all -check bounds
 #F90FLAGS=-O3 -g -warn ignore_loc,nodeclarations, -fp-model fast=1 -r8 -real-size 64 -integer-size 32 -warn all -132 ${DEBUG_FLAGS} $(PROFILING) 
 F90FLAGS=-O3 -g -fp-model fast=1 -r8 -real-size 64 -integer-size 32 -132 ${DEBUG_FLAGS} $(PROFILING)
 LDFLAGS=-O -X $(PROFILING)
@@ -14,7 +15,9 @@ F90             =ifort
 LIBRARY_PATH    =/opt/intel/Compiler/current/lib/intel64/
 LD_LIBRARY_PATH =/opt/intel/Compiler/current/lib/intel64/
 F90FLAGS       += -mkl=sequential -diag-disable=cpu-dispatch -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2 -mcmodel medium -shared-intel
+#F90FLAGS       += -traceback -check-all -check-bounds
 LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -mkl=sequential -mcmodel medium -shared-intel
+#LDFLAGS        += -traceback -check-all -check-bounds
 #F90FLAGS       += -mkl=sequential -diag-disable=cpu-dispatch -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2 -mcmodel medium -shared-intel -check all
 #LDFLAGS        += -L/opt/intel/Compiler/current/lib/intel64/ -Belf64-x86-64 -mkl=sequential -mcmodel medium -shared-intel -check all
 #F90FLAGS       += -mkl=sequential -diag-disable=cpu-dispatch -fPIC -xSSE4.2 -axAVX,CORE-AVX-I,CORE-AVX2

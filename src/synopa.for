@@ -21,6 +21,8 @@
     
       integer :: ID, IJ, i
 
+      real*8 :: opac_start, opac_finish
+
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/SYNTHP.FOR'
       INCLUDE '../inc/MODELP.FOR'
@@ -36,6 +38,13 @@ CMH   OUTPUT PARAMETERS:
 CMH   OPATOT: NEW ARRAY FOR OPACITY for each frequency nfreq and depth point nd
 CMH   ETATOT: NEW ARRAY FOR EMISSIVITY for each frequency nfreq and depth point nd
       dimension abso(mfreq), emis(mfreq)
+
+      call cpu_time(opac_start)
+
+      open(unit = 18765, file = 'linop_cycles.time')
+
+      write(18765, '(5(3x,A),3(6x,A))'), 'dp', 'total', 'ommited', 'diff',
+     $                                   'voigt', 'cycle1', 'cycle2', 'cycle3'
 
       do 20 id = 1, nd
 
@@ -55,6 +64,12 @@ c         freq(nvopa-kopa+1) = cl8/wlam(nvopa-kopa+1)
          enddo
 
    20 continue
+
+      call cpu_time(opac_finish)
+
+      close(18765)
+
+      print*, 'synopa: opac execution time = ', (opac_finish - opac_start)
 
   310 format (1pe12.5, 1pe12.5)
 

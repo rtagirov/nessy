@@ -128,8 +128,19 @@
 
           if (odf_from_table) then
 
+!             if (lambda_iter .le. 1) then
+
+!                 print*, 'elec conc rne1'
+
+!                 if (.not. allocated(rne1)) allocate(rne1(nd))
+
+!                 rne1 = rne
+
+!             endif
+
 !            calculate the odf interpolation coefficients for the entot, T and current rne
              call odf_interpolation_coef(entot, rne * entot, T, idxt, idxp, co1, co2, co3, co4)
+!             call odf_interpolation_coef(entot, rne1 * entot, T, idxt, idxp, co1, co2, co3, co4)
 
 !            interpolate ODF using the table given in
 !            the odf.table and odf.table.grid files
@@ -670,8 +681,8 @@
       !*  use LINOP of temperature minimum
       read(300,'(1pe12.5)') LINOP
 
-      LINOP(1 : NDPMIN) = LINOP(NDPMIN)
-!      LINOP(1 : NDPMIN) = 0.0d0
+!      LINOP(1 : NDPMIN) = LINOP(NDPMIN)
+      LINOP(1 : NDPMIN - 1) = 0.0d0
 
       close (300)
       !************************************************************

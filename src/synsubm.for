@@ -2484,7 +2484,7 @@ c      IF(NLIN.EQ.0) RETURN
             IF(AMAS(IAT).GT.0.)
      *      DOPA1(IAT,ID)=UN/(XX*DP0*SQRT(DP1*T/AMAS(IAT)+VTURB(ID)))  ! 1/(Delta nu_D)
       
-            print*, 'test vdop', ID, VTURB(ID)
+!            print*, 'test vdop', ID, VTURB(ID)
 
            if(IAT>30)write(991,*)  IAT,ID,DOPA1(IAT,ID)
 

@@ -361,7 +361,9 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
       !*** sum over the depthpoints and when > 1 print out
 
       IF(CARDS.PRINT_TAU) call PRINTTAU(NFOBR,TAUSUM,ZFINE_SUM,ND,RSTAR,RWLAE,DLAM,JP)
+
       if(allocated(ZFINE_SUM)) deallocate(ZFINE_SUM)
+
       if(allocated(TAUSUM)   ) deallocate(TAUSUM)
 
       RETURN
@@ -374,106 +376,131 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
 
       implicit none
 
-      integer,intent(in):: NFOBR,ND,JP  !# of Freq/Depth points, Impact Parameter
-      real*8, intent(in):: TAUSUM(:,:),RSTAR ! L,K
+      integer,intent(in):: NFOBR,ND,JP       ! # of Freq/Depth points, Impact Parameter
+      real*8, intent(in):: TAUSUM(:,:),RSTAR ! L, K
       real*8, intent(in):: RWLAE,DLAM(:)     ! central frequency, delta to RWLAE
-      real*8, intent(in):: ZFINE_SUM(:) ! fine radial grid(LTOT)
-      real*8 :: Z(ND)           ! Fine corrected grid
-      real*8 :: TAUSSUM(ND)     ! accumulated tau
-      real*8 :: LAMBDA,y,dy     ! Freq point, tau=1,tau=1 error
+      real*8, intent(in):: ZFINE_SUM(:)      ! fine radial grid(LTOT)
+      real*8 :: Z(ND)                        ! fine corrected grid
+      real*8 :: TAUSSUM(ND)                  ! accumulated tau
+      real*8 :: LAMBDA, y, dy                ! freq point, tau=1, tau=1 error
       real*8 :: coeff
       real*8 :: FH(NFOBR), FHA(40)
 
-      real*8 :: ZZ1,ZZ2, tau1, tau2
+      real*8 :: ZZ1, ZZ2, tau1, tau2
 
-      integer :: K,L, iFROM,iTO ! loop variables, index
-      character*(*),parameter :: FORMAT = '(3(e18.10e4,x),i1,x,i3)'
-      if(JP/=1) return
-      if(size(ZFINE_SUM)<ND) then
-c*** call PRINTTAU only for the central ray
-        print *,'obsint: printTAU: warning: ZFINE to small' 
-        return
+      integer :: K, L, ll, iFROM, iTO        ! loop variables, index
+
+      character*(*), parameter :: FORMAT = '(3(e18.10e4,x),i1,x,i3)'
+
+      if (JP /= 1) return
+
+      if (size(ZFINE_SUM) < ND) then
+
+!        call PRINTTAU only for the central ray
+         print*, 'obsint: printTAU: warning: ZFINE to small' 
+
+         return
+
       endif
 
-      !*** 1) calculate the depth-grid.
-      !***  !!! This only works for the central ray !!!
-      Z(1:ND)=(ZFINE_SUM(1:ND)-ZFINE_SUM(ND))*RSTAR/1e5  ! RSTAR in cm to km
+!     1) calculate the depth-grid
+!        this only works for the central ray
+      Z(1 : ND) = (ZFINE_SUM(1 : ND) - ZFINE_SUM(ND)) * RSTAR / 1e5 ! RSTAR in cm to km
 
-      !*** 2) Calculate the tau=1 for every frequency point
-      DO K=1,NFOBR
-        !*** 1) add up the opacities  taus(l) = \int_depth(l)^\inf tau(l)
-        TAUSSUM(1)=0.
-        do L=2,ND
-          TAUSSUM(L)=TAUSSUM(L-1)+TAUSUM(L,K)
-          if(TAUSSUM(L)==TAUSSUM(L-1)) then
-            print *,'obsint: warning: TAUSUM(L,K) < eps'
-            return
-          endif
-        enddo
-        !*** 2) find the point where TAU switches to 1
-        do L=1,ND  
-          if(TAUSSUM(L)>1.) exit
-        enddo
-        ZZ1=Z(L-1)
-        ZZ2=Z(L)
-        tau1=taussum(L-1)
-        tau2=taussum(L)
-        FH(K)=ZZ1-(tau1-1.)/(tau1-tau2)*(ZZ1-ZZ2)
+!     2) calculate the tau = 1 for every frequency point
+      do K = 1, NFOBR
 
+!        1) add up the opacities taus(l) = \int_depth(l)^\inf tau(l)
+         TAUSSUM(1) = 0.0
+
+         do L = 2, ND
+
+            TAUSSUM(L) = TAUSSUM(L - 1) + TAUSUM(L, K)
+
+            if (TAUSSUM(L) == TAUSSUM(L - 1)) then
+
+               print*, 'obsint: warning: TAUSUM(L, K) < eps'
+
+               return
+
+            endif
+
+         enddo
+
+!        2) find the point where TAU switches to 1
+         do L = 1, ND  
+
+            if (TAUSSUM(L) > 1.0) exit
+
+         enddo
+
+         ZZ1 = Z(L - 1)
+
+         ZZ2 = Z(L)
+
+         tau1 = taussum(L - 1)
+
+         tau2 = taussum(L)
+
+         FH(K) = ZZ1 - (tau1 - 1.0) / (tau1 - tau2) * (ZZ1 - ZZ2)
 
          if ((JP .eq. 1) .and. (K .eq. 1000)) then
 
-         open(270, file='atmosinfo.txt',status='unknown') 
-         do L=1, ND         
+            open(270, file = 'atmosinfo.txt', status = 'unknown')
 
-         write(270,*), L, Z(L), TAUSSUM(L)
+            do ll = 1, ND
 
-         enddo
-         close(270)
-      
+               write(270, *), L, Z(ll), TAUSSUM(ll)
 
+            enddo
+
+            close(270)
 
          endif
 
+!        3) write the TAU = 1 to file
+         lambda = RWLAE + DLAM(K) ! the frequency point
+!        the file format is Frequency, Formation height,
+!        error-estimate, status (1 is highest depth point, 2 lowest, 0 in between)
+!        i. e. if status == 1 then the atmosphere did not go high up
+!        enough if status == 2 then the atmosphere is transparent
+!        and otherwise at some point in the atmosphere there is absorption
+         if (L <= 2) then
 
-        !*** 3) write the TAU=1 to file
-        LAMBDA = RWLAE+DLAM(K) ! The frequency point
-        !*** The file format is Frequency, Formation height,
-        !***      error-estimate, status (1 is highest depth point,
-        !***                              2 lowest, 0 in between)
-        !*** i.e. if status==1  then the atmosphere did not go high up
-        !*** enough if status == 2 then the atmosphere is transparent
-        !*** and otherwise at some point in the atmosphere there is
-        !*** absorption.
-        IF(L<=2)THEN
-          write(9998,FORMAT)  LAMBDA,Z(L),0. , 1,L
-        ELSEIF(L==ND)THEN
-          write(9998,FORMAT)  LAMBDA,Z(L),0. , 2,L
-        ELSE
+            write(9998, format) lambda, Z(L), 0.0, 1, L
+
+         elseif (L == ND) then
+
+            write(9998, format) lambda, Z(L), 0.0, 2, L
+
+         else
           
-          coeff=((TAUSSUM(L))-1.)/(1.-TAUSSUM(L-1.))
+            coeff = ((TAUSSUM(L)) - 1.0) / (1.0 - TAUSSUM(L - 1.0))
             
-   !       iFROM=max(L-3,1);  iTO=min(L+1,ND)
-   !       call assert(TAUSSUM(iFROM)/= TAUSSUM(iTo))
-   !       call polint(TAUSSUM(iFROM:iTO), Z(iFROM:iTO),1.,y,dy)
-           dy=0.
-           y=(Z(L)+Z(L-1)*coeff)/(1.+coeff)
+!           iFROM = max(L - 3, 1)
+!           iTO =   min(L + 1, ND)
+!           call assert(TAUSSUM(iFROM)/= TAUSSUM(iTo))
+!           call polint(TAUSSUM(iFROM:iTO), Z(iFROM:iTO),1.,y,dy)
 
-         write(9998,FORMAT)  LAMBDA,    y   ,dy , 0,L
-        ENDIF
-      ENDDO
+            dy = 0.0
+            y = (Z(L) + Z(L - 1) * coeff) / (1.0 + coeff)
 
+            write(9998, FORMAT) LAMBDA, y, dy, 0, L
 
-      open(unit=200, file='../form.height', access='append')
+         endif
+
+      enddo
+
+      open(unit = 200, file = '../form.height', access = 'append')
    
-      do k=1, 100
+      do k = 1, 100
 
-      write(200, *), RWLAE+DLAM(k*20-10), sum(FH(20*(k-1)+1:20*k))/20.
+         write(200, *), RWLAE + DLAM(k * 20 - 10), sum(FH(20 * (k - 1) + 1 : 20 * k)) / 20.0
 
       enddo
 
       close(200)
 
-
       end subroutine PRINTTAU
+
       end module

@@ -147,6 +147,10 @@
 
       character (len = 8) :: rwlae_str
 
+      real*8 :: fioss_start, fioss_finish
+
+      call cpu_time(fioss_start)
+
       !MH   VARIABILITY OF VELOCITY ACTIV/NONACTIVE
       !MH var = true then variation of Doppler velocity considered
       ! VAR = .TRUE.
@@ -254,6 +258,8 @@
       allocate(eddi(3, ND), eddarr(3, ND, NF))
 
       allocate(dummy1_nf(NF), dummy2_nf(NF), dummy3_nf(NF), dummy4_nf(NF))
+
+      allocate(dummy2(NF, N))
 
       allocate(P(NP), Z1D(ND * NP), Z2D(ND, NP))
 
@@ -380,7 +386,7 @@
       !***  LOOP FOR EVERY DETECTED LINE - OPTION CARD   ---------------
       open (1,file='CARDS',STATUS='OLD')
 
-      print*, 'vdop before decf_syn', vdop, vdopp
+!      print*, 'vdop before decf_syn', vdop, vdopp
 
       vdopp=vdop
       VSINI=0.
@@ -725,17 +731,7 @@
       endif
 
 
-
-
-      DO L=1,ND
-
-
-
-
-
-
-
-
+      DO L = 1, ND
 
         opamax=0.
 
@@ -756,7 +752,7 @@
             kmax=k
           endif
         enddo
-!test
+
 !         write(91,692) l,opamax
  692     format(i5,1p7e10.2)
         etamax=0.
@@ -768,15 +764,16 @@
         enddo
         !test
         ! write(92,692) l,etamax/opamax
+
+        !***  For the first loop, the line dependent radiation field
+        !***  must be set to the continuum radiation field
+
+        XJ(L, :) = XJC(L)
+
       ENDDO
 
 !***  Compute Integration Weights for Moment0
       CALL WMOM0_F (ND,NP,R,p,WLK)
-
-      !***  For the first loop, the line dependent radiation field
-      !***  must be set to the continuum radiation field
-
-      XJ(L, :) = XJC(L)
 
       !***  Reset the (old) Profile which is used as Loop - Terminator
       !*    to be sure, that the second Loop is executed
@@ -1021,6 +1018,10 @@
 
       CLOSE(100)
  
+      call cpu_time(fioss_finish)
+
+      print*, 'fioss execution time: ', (fioss_finish - fioss_start)
+
       STOP 'O.K.'
 
       END

@@ -64,7 +64,7 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       REAL*8 :: CORMAX
 
-      real*8 :: steal_start,  steal_finish
+      real*8 :: steal_start, steal_finish
 
       call cpu_time(steal_start); call system("echo -n $(date +%s) >> wall_time.steal")
 
@@ -136,6 +136,20 @@ c***     the new blanketing table needs to be written to the model file
  
       IF (JOBNUM .LE. 1) THEN
 
+!         if (.not. oldstart) then
+
+!             print*, 'xne_struct'
+
+!             open(unit = 1975, file = 'xne_struct_Nessy_noheader.dat')
+
+!             read(1975, *) (v1, v2, v3, rne(j), v5, v6, j = 1, nd)
+
+!             rne = rne / entot
+
+!             close(1975)
+
+!         endif
+
          CALL POPZERO(T,
      $                RNE,
      $                POPNUM,
@@ -170,7 +184,7 @@ c***     the new blanketing table needs to be written to the model file
 
 !         do j = 1, ND
 
-!            write(1975, *) rne(j)
+!            write(1975, *) rne(j) * entot(j)
 
 !         enddo
 

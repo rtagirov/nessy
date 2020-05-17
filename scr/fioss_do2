@@ -216,7 +216,7 @@ done
 [[ "$CTRL_SET" ]] || ln -s "`pwd`" "$CTRL-wd"
 
 MAX_PROC=${MAX_PROC:-1}
-#echo MAX_PROC = $MAX_PROC
+echo MAX_PROC = $MAX_PROC
 ABEMLIN_DIR=$(egrep '^ABEMLIN .*' CARDS.TEMPLATE | sed 's/^ABEMLIN [A-Z]* *//')
 #echo ABEMLIN_DIR=\"$ABEMLIN_DIR\"
 # mkdir lopa title tau mdisp || true

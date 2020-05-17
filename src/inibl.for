@@ -49,6 +49,11 @@
       real*8  :: WLHYD(MLINH,MHWL)
       real*8  :: PRFHYD(MLINH,MDEPTH,MHWL)
       integer :: j
+
+
+      real*8 :: opac_start, opac_finish
+
+
       COMMON/HYDVCS/PRFHYD,WLHYD,NWLHYD
       !*** DEBUG END
 C
@@ -244,6 +249,8 @@ c
 
          call readMolconc(ND)
 
+         call cpu_time(opac_start)
+
          DO ID = 1, ND
 
             CALL OPAC(ID, 0, ABSO, EMIS, WAVARR, SIGARR, N, NFDIM)
@@ -251,6 +258,10 @@ c
             ABSTD(ID)=MINVAL(ABSOC(:NFCONT()))
 
          ENDDO
+
+         call cpu_time(opac_finish)
+
+         print*, 'inibl: opac execution time = ', (opac_finish - opac_start)
 
          IF(INLTE.GT.0) CALL NLTE(0,1,1,1,A1,A2,A3)
 

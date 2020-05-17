@@ -19,10 +19,15 @@
       end subroutine
       
       function NFCONT()
-        use utils
+
+!        use utils
+
         integer :: NFCONT
-        if(NFCONT==-1) stop 'NFCONT not set'
-        NFCONT=NFCONT__
+
+!        if (NFCONT == -1) stop 'NFCONT not set'
+
+        NFCONT = NFCONT__
+
       end function
 
       subroutine SYNTHP_CONT_INIT(NFCONT_VAL)

@@ -234,18 +234,18 @@
 
       linop = rho * linop
 
-      call open_to_append(1435, 'linop.out')
+!      call open_to_append(1435, 'linop.out')
 
-      do j = 1, dpn
+!      do j = 1, dpn
 
-         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
+!         write(1435, '(e15.7,3(1x,i4),1x,e15.7)') xlam, bn, sbn, j, linop(j)
 
-      enddo
+!      enddo
 
-      close(1435)
+!      close(1435)
 
-      linop(1 : ndpmin) = linop(ndpmin)
-!      linop(1 : ndpmin) = 0.0d0
+!      linop(1 : ndpmin) = linop(ndpmin)
+      linop(1 : ndpmin - 1) = 0.0d0
 !      linop = linop * 1.0d-10
 
       if (any(linop < 0.0d0)) then

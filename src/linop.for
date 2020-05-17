@@ -7,7 +7,8 @@
       ! Calculate the line absorption and emission for every frequency point
       ! (ABLIN, EMLIN) based on the line profile, the depthpoint ID
 
-      SUBROUTINE LINOP(ID,ABLIN,EMLIN)
+!      SUBROUTINE LINOP(ID,ABLIN,EMLIN)
+      SUBROUTINE LINOP(ID, ABSO, ABLIN, EMLIN)
 
       use MOD_SYNSUBM, only: PROFIL,PHE1,PHE2
       use MOD_TICTOC,  only: WRITETOC
@@ -31,6 +32,8 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
       integer,intent(in) :: ID
       logical :: LPR,ltrad
+
+      real*8, dimension(NFREQ) :: ABSO
 
       real*8,dimension(MFREQ) :: ABLIN,EMLIN, abs_her
       real*8,allocatable,dimension(:) :: ABLINN,XFR, xfr1
@@ -73,11 +76,16 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       integer :: mn, j, ii, i
 
       integer :: idx
+      integer :: wlc
 
       real*8, dimension(nfreq) :: wvl
 
       real*8, allocatable :: ABLIN_old(:)
       real*8 :: testint
+
+      real*8 :: cycle1_start,  cycle2_start,  cycle3_start
+      real*8 :: cycle1_finish, cycle2_finish, cycle3_finish
+      real*8 :: cycle1_time,   cycle2_time,   cycle3_time
 
       AB0_COUNTER = 0
       print '("linop: NLIN0 = ",i7,",  ID=",i3,'//
@@ -124,6 +132,9 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       CALL calcmolopac(NFREQ, freq, temp(ID), ID)
 
 !     **********   Molecular loop       *************************                             
+
+      call cpu_time(cycle1_start)
+
       DO mn = 1, Nmol
 
          IF (imax(mn) .GT. imin(mn)) THEN
@@ -167,6 +178,10 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
       ENDDO
 
+      call cpu_time(cycle1_finish)
+
+      cycle1_time = cycle1_finish - cycle1_start
+
       ILmin = -1
       opres =  0.
       opres1 = 0.
@@ -174,6 +189,8 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       PRINT*, 'NLIN0 = ', NLIN0
 
       ALLOCATE(AB0(NLIN0))
+
+      call cpu_time(cycle2_start)
 
       DO IL = 1, NLIN0
 
@@ -267,31 +284,41 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
       ENDDO
 
+      call cpu_time(cycle2_finish)
+
+      cycle2_time = cycle2_finish - cycle2_start
+
       AB0mean=sum(AB0(ILmin:ILmax))/(ILmax-ILmin+1)
 
       Nc=0
 
+        wlc = 0
+
+        call cpu_time(cycle3_start)
+
         LINE_LOOP: DO IL=ILmin, ILmax
 
         agam=profil(il,indat(il)/100,id)
+
         INNLT=INDNLT(IL)
+
         tem1=1d0/trad(ipotl(il),id)
 
         IAT=INDAT(IL)/100
+
         ION=MOD(INDAT(IL),100)
+
         DOP1=DOPA1(IAT,ID)
 
+        ISP = ISPRF(IL)
 
+        IF (ISP .GE. 6) cycle LINE_LOOP     ! If    ISP > 5 goto end of loop (why the LPR >=5 above?)
 
-
-        ISP=ISPRF(IL)
-        IF (ISP.GE.6) cycle LINE_LOOP     ! If    ISP > 5 goto end of loop (why the LPR >=5 above?)
         agam=profil(il,indat(il)/100,id)
     
-        if(IAT<=0) print *,IAT
-        LPR=.NOT.(ISP.GT.1.AND.ISP.LE.5)  ! LPR = ISP not in (1,5] 
-        
-     
+        if (IAT <= 0) print*, IAT
+
+        LPR = .not. (ISP .gt. 1 .and. ISP .le. 5)  ! LPR = ISP not in (1,5] 
 
         freqb1=FREQ0(IL)-4./dop1
 
@@ -299,60 +326,58 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
         xb=4.
 
-
-
         XFR(:)=ABS(FREQ(1:NFREQ)-FREQ0(IL))*DOP1
 
         XFR1(:)=(FREQ(1:NFREQ)-FREQ0(IL))*DOP1
 
         Delta=(XFR1(NFREQ)-XFR1(1))/(NFREQ-1)
 
+        if (AB0(IL) .gt. 10.0 * AB0mean) then
 
+!            Nc = Nc + 1
 
-        if (AB0(IL) .gt. 10.*AB0mean) then
-        Nc=Nc+1
+            if (INNLT .eq. 0 .and. ltrad) then
 
-       IF(INNLT.EQ.0.and.ltrad) THEN
+               if (LPR) then
 
+                   Nc = Nc + 1
+                   ABLIN(1 : NFREQ) = ABLIN(1 : NFREQ) + AB0(IL) * VOIGTK_MS(AGAM, XFR(1 : NFREQ), NFREQ)
 
-               IF(LPR) THEN
+               else
 
+                   do l = 1, nfreq
 
-            ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+ AB0(IL)*VOIGTK_MS(AGAM,XFR(1:NFREQ),NFREQ)
+                      ABLIN(l) = ABLIN(l)+AB0(IL)*PHE1(ID,FREQ(l),ISP-1)
 
-          ELSE
+                   enddo
 
-            do l=1,nfreq
-              ABLIN(l)=ABLIN(l)+AB0(IL)*PHE1(ID,FREQ(l),ISP-1)
-            enddo
-          END IF
+               endif
 
+!            else
 
+            endif
 
-
-          ELSE
-
-        ENDIF
-
-        cycle LINE_LOOP
+            cycle LINE_LOOP
 
         endif
         
-        iD1=max(int((freq1*freqN/freqb1-freqN)*(Nfreq-1)
-     *  /(freq1-freqN)),1)
-        iD2=min(int((freq1*freqN/freqb2-freqN)*(Nfreq-1)/
-     *  (freq1-freqN))+1, Nfreq)
+        iD1 = max(int((freq1 * freqN / freqb1 - freqN) * (Nfreq - 1) / (freq1 - freqN)), 1)
+        iD2 = min(int((freq1 * freqN / freqb2 - freqN) * (Nfreq - 1) / (freq1 - freqN)) + 1, Nfreq)
   
-         iD2=max(iD2,iD1)
-      
-
+        iD2 = max(iD2, iD1)
  
-        if(IAT<=0) print *,IAT
-        LPR=.NOT.(ISP.GT.1.AND.ISP.LE.5)  ! LPR = ISP not in (1,5]
+        if (IAT <= 0) print*, IAT
 
+        LPR = .not. (ISP .gt. 1 .and. ISP .le. 5) ! LPR = ISP not in (1,5]
  
-        if(AB0(IL)==0.) cycle LINE_LOOP !** only do all the work if its worth it
+!        if (AB0(IL) <= 0.001 * minval(ABSO)) then !** only do all the work if its worth it
+        if (AB0(IL) == 0.0d0) then                 !** only do all the work if its worth it
 
+            wlc = wlc + 1
+
+            cycle LINE_LOOP !** only do all the work if its worth it
+
+        endif
     
         AB0_COUNTER = AB0_COUNTER + 1
 
@@ -439,13 +464,23 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
         ENDIF
       enddo LINE_LOOP ! Main loop over all lines
 
+      call cpu_time(cycle3_finish)
+
+      cycle3_time = cycle3_finish - cycle3_start
+
+      write(18765, '(5(2x,I5),1x,3(2x,E15.7))'), id, ILmax - ILmin, wlc,
+     $                                               AB0_COUNTER, Nc,
+     $                                               cycle1_time,
+     $                                               cycle2_time,
+     $                                               cycle3_time
+
       Ffudge=0.
       ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+(opres)/(NFREQ-1)
 
       ABLINmean=sum(ABLIN)/NFREQ
       ABLINmin=minval(ABLIN)
 
-      print '(i7)', AB0_COUNTER
+!      print '(i7)', AB0_COUNTER
 
 !     LTE line emissivity
 

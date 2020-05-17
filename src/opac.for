@@ -115,8 +115,12 @@ CMH   CFF         = (4 e6/3 c h) * (2 pi/3 k m_e3)^(1/2)
 
       integer :: idx
 
-      real*8 :: wvl
+      real*8  :: wvl
 !******************************************************
+
+      real*8  :: linop_finish, linop_start, opac_start, opac_finish
+
+      call cpu_time(opac_start)
 
 !******************************************************************************************************************************************
 !RINAT TAGIROV
@@ -365,7 +369,13 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         read(201,*) EMLIN(1:NFREQ)
       ELSE
 
-        CALL LINOP(ID, ABLIN, EMLIN)
+      call cpu_time(linop_start)
+
+      call linop(id, abso(1 : nfreq), ablin, emlin)
+
+      call cpu_time(linop_finish)
+
+      print*, 'linop execution time: ', (linop_finish - linop_start)
 
         if(cards.ABEMLIN==card_params.ABEMLIN_WRITE) then
           write(201,*) NFREQ,ID
@@ -393,13 +403,13 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 !====================================================================
 !FUDGE REGULAR
 
-       if ((lambdat .gt. 1600.0) .and. (lambdat .lt. 3200.0)) then
+!       if ((lambdat .gt. 1600.0) .and. (lambdat .lt. 3200.0)) then
         
-          ind = minloc(abs(wav_f(1 : Nfudge) - lambdat))
+!          ind = minloc(abs(wav_f(1 : Nfudge) - lambdat))
 
-          contf = ffactor(ind(1))
+!          contf = ffactor(ind(1))
   
-       endif
+!       endif
 
 !====================================================================
 
@@ -430,6 +440,7 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         write (200, FMT_LOPA) ablin(i)
 !        write (200, FMT_LOPA) (clight_cgs / freq(i)) * 1.0d8, ablin(i)
 !        write (200, FMT_LOPA) totop(i)
+!        write (200, FMT_LOPA) abso(i)
 
         IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
           PRINT '(i0,X,i0," ",$)',I,ID
@@ -480,6 +491,10 @@ C
 C    COMMENTED OUT HERE !!!
 c      CALL PHTION(ID,ABSO,EMIS)
 c      CALL PHTX(ID,ABSO,EMIS)
+
+      call cpu_time(opac_finish)
+
+      print*, 'opac: execution time = ', (opac_finish - opac_start)
 
       return
 

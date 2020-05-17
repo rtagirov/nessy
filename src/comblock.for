@@ -63,7 +63,7 @@
       real*8,                allocatable ::      ABXYZ_nlte(:), ABXYZn_nlte(:, :)
 
       logical ::                                 LBKG           ! keyword for non-lte opacity distribution function (ODF)
-      integer ::                                 XLBKG1, XLBKG2 ! wavelenth range for the ODF
+      integer ::                                 XLBKG1, XLBKG2 ! wavelength range for the ODF
 
 !     FIOSS VARIABLES
 
@@ -97,5 +97,7 @@
 
 !      real*8,            allocatable, dimension(:)          :: c1, c2, c3, c4
 !      integer,           allocatable, dimension(:)          :: idxp, idxt
+
+!      real*8, allocatable, dimension(:) :: rne1
 
       end module
