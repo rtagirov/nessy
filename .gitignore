@@ -1,5 +1,6 @@
 obj/
 inp/lin/
+inp/odf/
 *.swp
 src/*.swp
 src/make/Makefile.deps
