@@ -244,8 +244,8 @@ fioss_mv_results $DIRS .
 #catenate $contr_dir $contr_temp_file $contr_file
 
 catenate $CLV_DIR $CLV_TEMP_FILE $CLV_FILE
-catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
-catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
+#catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
+#catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
 
 for DIR in $DIRS; do cat $DIR/frequencies.log >> log.uvi; done
 

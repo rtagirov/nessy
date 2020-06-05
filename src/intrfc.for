@@ -30,6 +30,8 @@
       integer :: JJ,ID,INMOD,INTRPL,ICHANG,NCH
       real*8  :: SIG
 
+      real*8 :: inibl_end_1, inibl_start_1, inibl_end_2, inibl_start_2
+
       INCLUDE '../inc/PARAMS.FOR'
       INCLUDE '../inc/MODELP.FOR'
 
@@ -46,21 +48,32 @@
       open(555, file = 'input_sun', STATUS='OLD')
       read(555, *) incode
 
-C     original input - routine START and others
+!     original input - routine START and others
 
-      if(incode.eq.0) then
-         print *,' ***** original form of input!'
+      if (incode .eq. 0) then
+
+         print*, 'original form of input'
 
          call inimod
          call tint
 
-C**** CHANGED BY MARGIT HABERREITER
-         call inibl(WAVARR, SIGARR, N, NFDIM)
-C***********************************
+!     changed by Margit Haberreiter
+!     *****************************
+         call cpu_time(inibl_start_1)
+
+         call inibl(wavarr, sigarr, n, nfdim)
+
+         call cpu_time(inibl_end_1)
+
+         print*, 'intrfc: inibl time 1 = ', inibl_end_1 - inibl_start_1
+!     *****************************
+
          call hylset
          call he2set
          call inibla
+
          return
+
       end if
 C
 C     New input - atomic data obtained form Werner's input
@@ -345,7 +358,13 @@ CMH  IFB = 9: OPACITY PROJECT XS-FITS (INTERPOLATIONS)
 
       call tint
 
+      call cpu_time(inibl_start_2)
+
       call inibl(WAVARR, SIGARR, N, NFDIM)
+
+      call cpu_time(inibl_end_2)
+
+      print*, 'intrfc: inibl time 2 = ', inibl_end_2 - inibl_start_2
 
       call hylset
 

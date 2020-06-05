@@ -674,11 +674,19 @@
       rewind 55
       rewind 56
 
+      call cpu_time(before_intrfc)
+
+      print*, 'fioss: time taken before intrfc starts = ', before_intrfc - fioss_start
+
       call intrfc(ncharg,weight,elevel,eion,
      *            einst,alpha,sexpo,agaunt,natom,
      *            symbol,nfirst,nlast, WAVARR, SIGARR, N, NFDIM)
 
-      PRINT *,'FIOSS: Time elapsed after INTRFC: ',TOC()
+      call cpu_time(after_intrfc)
+
+      print*, 'fioss: time taken by intrfc = ', after_intrfc - before_intrfc
+
+      print*, 'fioss: time elapsed after intrfc: ', TOC()
 
       !$$$ calculate opacities
       !*****************************************************************
@@ -717,10 +725,15 @@
       end select
 
       !*****************************************************************
-   
-      call synopa(WAVARR, SIGARR, N, NFDIM)
-  
-   
+
+      call cpu_time(synopa_start)
+
+      call synopa(wavarr, sigarr, n, nfdim)
+
+      call cpu_time(synopa_end)
+
+      print*, 'fioss: time taken by synopa = ', synopa_end - synopa_start
+
       PRINT *,'FIOSS: Time elapsed after SYNOPA: ',TOC()
       close (unit=200)
       close (unit=201)

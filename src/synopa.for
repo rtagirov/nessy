@@ -39,12 +39,16 @@ CMH   OPATOT: NEW ARRAY FOR OPACITY for each frequency nfreq and depth point nd
 CMH   ETATOT: NEW ARRAY FOR EMISSIVITY for each frequency nfreq and depth point nd
       dimension abso(mfreq), emis(mfreq)
 
+      call system('rm -vf linop_loops.time')
+
+      open(unit = 18765, file = 'linop_loops.time')
+
+!     see linop.for; look for 18765
+      write(18765, '(7(3x,A),3(6x,A))'), 'dp', 'total', 'ommited', 'diff',
+     $                                   'voigt', 'svc', 'dvc', 
+     $                                   'cycle1', 'cycle2', 'cycle3'
+
       call cpu_time(opac_start)
-
-      open(unit = 18765, file = 'linop_cycles.time')
-
-      write(18765, '(5(3x,A),3(6x,A))'), 'dp', 'total', 'ommited', 'diff',
-     $                                   'voigt', 'cycle1', 'cycle2', 'cycle3'
 
       do 20 id = 1, nd
 

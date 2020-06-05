@@ -371,7 +371,7 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
       call cpu_time(linop_start)
 
-      call linop(id, abso(1 : nfreq), ablin, emlin)
+      call linop(id, 0.001 * minval(abso(1 : nfreq)), ablin, emlin)
 
       call cpu_time(linop_finish)
 

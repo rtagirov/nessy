@@ -8,7 +8,7 @@
       ! (ABLIN, EMLIN) based on the line profile, the depthpoint ID
 
 !      SUBROUTINE LINOP(ID,ABLIN,EMLIN)
-      SUBROUTINE LINOP(ID, ABSO, ABLIN, EMLIN)
+      SUBROUTINE LINOP(ID, cnt_cut_off, ABLIN, EMLIN)
 
       use MOD_SYNSUBM, only: PROFIL,PHE1,PHE2
       use MOD_TICTOC,  only: WRITETOC
@@ -33,7 +33,7 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       integer,intent(in) :: ID
       logical :: LPR,ltrad
 
-      real*8, dimension(NFREQ) :: ABSO
+      real*8, intent(in) :: cnt_cut_off
 
       real*8,dimension(MFREQ) :: ABLIN,EMLIN, abs_her
       real*8,allocatable,dimension(:) :: ABLINN,XFR, xfr1
@@ -71,7 +71,7 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       real*8 :: freqBN1, freqBN2
       real*8 :: xtest(1000)
       real*8 :: ABLINmean, ABLINmin
-      integer :: iD1, iD2, Nc
+      integer :: iD1, iD2, vc, svc, dvc
       integer :: iL1, iL2, ILmin, ILmax
       integer :: mn, j, ii, i
 
@@ -88,6 +88,7 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
       real*8 :: cycle1_time,   cycle2_time,   cycle3_time
 
       AB0_COUNTER = 0
+
       print '("linop: NLIN0 = ",i7,",  ID=",i3,'//
      *      '", time=",A," C(AB0) = ",$)',
      *        NLIN0,ID,writeTOC()
@@ -288,188 +289,197 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
       cycle2_time = cycle2_finish - cycle2_start
 
-      AB0mean=sum(AB0(ILmin:ILmax))/(ILmax-ILmin+1)
+      AB0mean = sum(AB0(ILmin : ILmax)) / (ILmax - ILmin + 1)
 
-      Nc=0
+      vc = 0
+      svc = 0
+      dvc = 0
+      wlc = 0
 
-        wlc = 0
+      call cpu_time(cycle3_start)
 
-        call cpu_time(cycle3_start)
+      LINE_LOOP: do IL = ILmin, ILmax
 
-        LINE_LOOP: DO IL=ILmin, ILmax
+                    agam = profil(il, indat(il) / 100, id)
 
-        agam=profil(il,indat(il)/100,id)
+                    INNLT = INDNLT(IL)
 
-        INNLT=INDNLT(IL)
+                    tem1 = 1.0d0 / trad(ipotl(il), id)
 
-        tem1=1d0/trad(ipotl(il),id)
+                    IAT = INDAT(IL) / 100
 
-        IAT=INDAT(IL)/100
+                    ION = mod(INDAT(IL), 100)
 
-        ION=MOD(INDAT(IL),100)
+                    DOP1 = DOPA1(IAT, ID)
 
-        DOP1=DOPA1(IAT,ID)
+                    ISP = ISPRF(IL)
 
-        ISP = ISPRF(IL)
+                    if (ISP .ge. 6) cycle LINE_LOOP ! if ISP > 5 goto end of loop (why the LPR >= 5 above?)
 
-        IF (ISP .GE. 6) cycle LINE_LOOP     ! If    ISP > 5 goto end of loop (why the LPR >=5 above?)
-
-        agam=profil(il,indat(il)/100,id)
+                    agam = profil(il, indat(il) / 100, id)
     
-        if (IAT <= 0) print*, IAT
+                    if (IAT <= 0) print*, IAT
 
-        LPR = .not. (ISP .gt. 1 .and. ISP .le. 5)  ! LPR = ISP not in (1,5] 
+                    LPR = .not. (ISP .gt. 1 .and. ISP .le. 5)  ! LPR = ISP not in (1,5] 
 
-        freqb1=FREQ0(IL)-4./dop1
+                    freqb1 = FREQ0(IL) - 4.0 / dop1
+                    freqb2 = FREQ0(IL) + 4.0 / dop1
 
-        freqb2=FREQ0(IL)+4./dop1
+                    xb = 4.0
 
-        xb=4.
+                    XFR(:)=ABS(FREQ(1:NFREQ)-FREQ0(IL))*DOP1
 
-        XFR(:)=ABS(FREQ(1:NFREQ)-FREQ0(IL))*DOP1
+                    XFR1(:)=(FREQ(1:NFREQ)-FREQ0(IL))*DOP1
 
-        XFR1(:)=(FREQ(1:NFREQ)-FREQ0(IL))*DOP1
+                    Delta=(XFR1(NFREQ)-XFR1(1))/(NFREQ-1)
 
-        Delta=(XFR1(NFREQ)-XFR1(1))/(NFREQ-1)
+                    if (AB0(IL) .gt. 10.0 * AB0mean) then
 
-        if (AB0(IL) .gt. 10.0 * AB0mean) then
+                        if (INNLT .eq. 0 .and. ltrad) then
 
-!            Nc = Nc + 1
+                           if (LPR) then
 
-            if (INNLT .eq. 0 .and. ltrad) then
+                               vc = vc + 1
+                               svc = svc + 1
+                               ABLIN(1 : NFREQ) = ABLIN(1 : NFREQ) + AB0(IL) * VOIGTK_MS(AGAM, XFR(1 : NFREQ), NFREQ)
 
-               if (LPR) then
+                           else
 
-                   Nc = Nc + 1
-                   ABLIN(1 : NFREQ) = ABLIN(1 : NFREQ) + AB0(IL) * VOIGTK_MS(AGAM, XFR(1 : NFREQ), NFREQ)
+                               do l = 1, nfreq
 
-               else
+                                  ABLIN(l) = ABLIN(l)+AB0(IL)*PHE1(ID,FREQ(l),ISP-1)
 
-                   do l = 1, nfreq
+                               enddo
 
-                      ABLIN(l) = ABLIN(l)+AB0(IL)*PHE1(ID,FREQ(l),ISP-1)
+                           endif
 
-                   enddo
+                        endif
 
-               endif
+                        cycle LINE_LOOP
 
-!            else
-
-            endif
-
-            cycle LINE_LOOP
-
-        endif
+                    endif
         
-        iD1 = max(int((freq1 * freqN / freqb1 - freqN) * (Nfreq - 1) / (freq1 - freqN)), 1)
-        iD2 = min(int((freq1 * freqN / freqb2 - freqN) * (Nfreq - 1) / (freq1 - freqN)) + 1, Nfreq)
+                    iD1 = max(int((freq1 * freqN / freqb1 - freqN) * (Nfreq - 1) / (freq1 - freqN)), 1)
+                    iD2 = min(int((freq1 * freqN / freqb2 - freqN) * (Nfreq - 1) / (freq1 - freqN)) + 1, Nfreq)
   
-        iD2 = max(iD2, iD1)
+                    iD2 = max(iD2, iD1)
  
-        if (IAT <= 0) print*, IAT
+                    if (IAT <= 0) print*, IAT
 
-        LPR = .not. (ISP .gt. 1 .and. ISP .le. 5) ! LPR = ISP not in (1,5]
- 
-!        if (AB0(IL) <= 0.001 * minval(ABSO)) then !** only do all the work if its worth it
-        if (AB0(IL) == 0.0d0) then                 !** only do all the work if its worth it
+                    LPR = .not. (ISP .gt. 1 .and. ISP .le. 5) ! LPR = ISP not in (1,5]
 
-            wlc = wlc + 1
+!                    if (AB0(IL) == 0.0d0) then      !** only do all the work if its worth it
+                    if (AB0(IL) <= cnt_cut_off) then !** only do all the work if its worth it
 
-            cycle LINE_LOOP !** only do all the work if its worth it
+                        wlc = wlc + 1
 
-        endif
+                        cycle LINE_LOOP !** only do all the work if its worth it
+
+                    endif
     
-        AB0_COUNTER = AB0_COUNTER + 1
+                    AB0_COUNTER = AB0_COUNTER + 1
 
-        IF (INNLT .EQ. 0 .and. ltrad) THEN
+                    if (INNLT .eq. 0 .and. ltrad) then
 
-          !*************
-          !* LTE lines *
-          !*************
+                        !*************
+                        !* LTE LINES *
+                        !*************
 
-!       test - no background
+!                       test no background start
 
-            if (iD1 .le. NFREQ) then
+                        if (iD1 .le. NFREQ) then
 
-                if (iD2 .gt. NFREQ) iD2 = NFREQ
+                            if (iD2 .gt. NFREQ) iD2 = NFREQ
 
-                ABLIN(iD1 : iD2) = ABLIN(iD1:iD2)+AB0(IL)*VOIGTK_MS(AGAM, XFR(ID1:iD2), iD2-iD1+1)
+                            vc = vc + 1
+                            ABLIN(iD1 : iD2) = ABLIN(iD1:iD2)+AB0(IL)*VOIGTK_MS(AGAM, XFR(ID1:iD2), iD2-iD1+1)
 
-            endif
+                        endif
 
+                        if (AGAM .gt. 0.01) then
 
-        if (AGAM .gt. 0.01) then
+                            freqb1=FREQ0(IL)-400*agam/dop1
 
-        freqb1=FREQ0(IL)-400*agam/dop1
+                            freqb2=FREQ0(IL)+400.*agam/dop1
 
-        freqb2=FREQ0(IL)+400.*agam/dop1
+                            xb=400.*agam
 
-        xb=400.*agam
+                            iL1=int((freq1*freqN/freqb1-freqN)*(Nfreq-1)/(freq1-freqN))+1   
+                            iL2=int((freq1*freqN/freqb2-freqN)*(Nfreq-1)/(freq1-freqN)) 
 
-        iL1=int((freq1*freqN/freqb1-freqN)*(Nfreq-1)/(freq1-freqN))+1   
-        iL2=int((freq1*freqN/freqb2-freqN)*(Nfreq-1)/(freq1-freqN)) 
+                            iL1=max(1,iL1)
+                            iL2=min(iL2,NFREQ)
 
-        iL1=max(1,iL1)
-        iL2=min(iL2,NFREQ)
+                            if ((iL1 .lt. iD1) .and. (iL2 .gt. iD2)) then
 
-        if ((iL1 .lt. iD1) .and. (iL2 .gt. iD2)) then
+!                                test - no background
+                                 vc = vc + 2
+                                 dvc = dvc + 1
+                                 ABLIN(iL1:iD1)=ABLIN(iL1:iD1)+AB0(IL)*VOIGTK_MS(AGAM, XFR(IL1:iD1), iD1-iL1+1)
+                                 ABLIN(iD2:iL2)=ABLIN(iD2:iL2)+AB0(IL)*VOIGTK_MS(AGAM, XFR(ID2:iL2), iL2-iD2+1)
 
-!           test - no background
-            ABLIN(iL1:iD1)=ABLIN(iL1:iD1)+AB0(IL)*VOIGTK_MS(AGAM, XFR(IL1:iD1), iD1-iL1+1)
-      
-            ABLIN(iD2:iL2)=ABLIN(iD2:iL2)+AB0(IL)*VOIGTK_MS(AGAM, XFR(ID2:iL2), iL2-iD2+1)
-
-        endif
+                            endif
      
-        endif
+                        endif
 
+!                       test no background end
 
-
-!       test - no background
-
-
-!          opres=opres+2.*AB0(IL)*agam/(Pi*xb*Delta)
+!                       opres=opres+2.*AB0(IL)*agam/(Pi*xb*Delta)
  
-!        CHECK!!!
-         opres=opres+2.*AB0(IL)*agam/(sqrp*xb*Delta)
-!        CHECK!!!         
-         
+!                       CHECK!!!
+                        opres = opres + 2.0 * AB0(IL) * agam / (sqrp * xb * Delta)
+!                       CHECK!!!         
 
-    !     if (AB0(IL) .lt. 100.*AB0mean) then
-         opres1=opres1+2.*AB0(IL)/(Delta)
-    !     endif
+!                       if (AB0(IL) .lt. 100.*AB0mean) then
+                        opres1 = opres1 + 2.0 * AB0(IL) / (Delta)
+!                       endif
 
+                    else
 
-        !**************
-        !* NLTE LINES *
-        !**************
-        ELSE
-          IF_LPR: if(LPR) then  !{
-            ! ABLINN(:)=ABLINN(:)+AB0*VOIGTK_MS(AGAM,XFR(1:NFREQ),NFREQ)
-            ABL_A = AB0(IL)*VOIGTK_MS(AGAM,XFR,NFREQ)
-            ABLINN=ABLINN+ABL_A
-            ! if(.not. lne) then
-            EMLIN(1:NFREQ)=EMLIN(1:NFREQ)+ABL_A*SL0
-            !endif
-            !again, special expressions for 4 selected He I lines
-          else IF_LPR
-            do l=1,nfreq
-              ABL=AB0(IL)*PHE1(ID,FREQ(l),ISP-1)
-              ABLINN(l)=ABLINN(l)+ABL
-              ! if(.not. lne) then
-              EMLIN(l)=EMLIN(l)+ABL*SL0
-              ! endif
-            enddo
-          endif IF_LPR      !}
-        ENDIF
-      enddo LINE_LOOP ! Main loop over all lines
+                        !**************
+                        !* NLTE LINES *
+                        !**************
+
+                        IF_LPR: if (LPR) then
+
+                          ! ABLINN(:)=ABLINN(:)+AB0*VOIGTK_MS(AGAM,XFR(1:NFREQ),NFREQ)
+                                   vc = vc + 1
+                                   ABL_A = AB0(IL)*VOIGTK_MS(AGAM,XFR,NFREQ)
+
+                                   ABLINN=ABLINN+ABL_A
+
+                          ! if(.not. lne) then
+
+                                   EMLIN(1:NFREQ)=EMLIN(1:NFREQ)+ABL_A*SL0
+
+                          !endif
+                          !again, special expressions for 4 selected He I lines
+
+                                else IF_LPR
+
+                                   do l = 1, nfreq
+
+                                      ABL=AB0(IL)*PHE1(ID,FREQ(l),ISP-1)
+
+                                      ABLINN(l)=ABLINN(l)+ABL
+                            ! if(.not. lne) then
+                                      EMLIN(l)=EMLIN(l)+ABL*SL0
+                            ! endif
+                                   enddo
+
+                        endif IF_LPR
+
+                    endif
+
+                 enddo LINE_LOOP ! Main loop over all lines
 
       call cpu_time(cycle3_finish)
 
       cycle3_time = cycle3_finish - cycle3_start
 
-      write(18765, '(5(2x,I5),1x,3(2x,E15.7))'), id, ILmax - ILmin, wlc,
-     $                                               AB0_COUNTER, Nc,
+      write(18765, '(7(2x,I5),1x,3(2x,E15.7))'), id, ILmax - ILmin, wlc,
+     $                                               AB0_COUNTER, 
+     $                                               vc, svc, dvc,
      $                                               cycle1_time,
      $                                               cycle2_time,
      $                                               cycle3_time

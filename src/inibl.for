@@ -50,9 +50,9 @@
       real*8  :: PRFHYD(MLINH,MDEPTH,MHWL)
       integer :: j
 
+      real*8 :: inilin_start, inilin_finish
 
       real*8 :: opac_start, opac_finish
-
 
       COMMON/HYDVCS/PRFHYD,WLHYD,NWLHYD
       !*** DEBUG END
@@ -265,7 +265,19 @@ c
 
          IF(INLTE.GT.0) CALL NLTE(0,1,1,1,A1,A2,A3)
 
-         IF(cards.ABEMLIN/=card_params.ABEMLIN_READ) CALL INILIN(INLIST)
+         if (cards.ABEMLIN /= card_params.ABEMLIN_READ) then
+
+            call cpu_time(inilin_start)
+
+!            print*, 'before inilin: ', inlist
+
+            call inilin(inlist)
+
+            call cpu_time(inilin_finish)
+
+            print*, 'inibl: inilin execution time = ', (inilin_finish - inilin_start)
+
+         endif
 
       END IF
 

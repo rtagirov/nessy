@@ -2648,6 +2648,10 @@ c      INCLUDE 'LINDAT.FOR'
 	INCLUDE '../inc/MODELP.FOR'
 	INCLUDE '../inc/SYNTHP.FOR'
 	INCLUDE '../inc/LINDAT.FOR'
+
+      real*8 :: read1_start, read1_finish
+      real*8 :: read2_start, read2_finish
+
       COMMON/LIMPAR/ALAM0,ALAM1,FRMIN,FRLAST,FRLI0,FRLIM
       COMMON/BLAPAR/RELOP,SPACE,CUTOF0,CUTOFS,TSTD,DSTD
       COMMON/DETLIN/ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2IR
@@ -2690,47 +2694,62 @@ C
          CALL NLTSET(0,IL,IAT,ION,EXCL,EXCU,IEVEN,INNLT0)
          INLSET=1
       END IF
-C
-C     first part of reading line list - read only lambda, and
-C     skip all lines with wavelength below ALAM0-CUTOFF
-C
+
+!     first part of reading line list - read only lambda, and
+!     skip all lines with wavelength below ALAM0-CUTOFF
+
+      call cpu_time(read1_start)
+      call cpu_time(read2_start)
+
       ALAM=0.
     7 READ(19,*,END=100) ALAM
       IF(ALAM.LT.ALAM0-CUTOFF) GO TO 7
+
       BACKSPACE(19)
+
+      call cpu_time(read1_finish)
+
+      print*, 'inilin: read1 execution time = ', (read1_finish - read1_start)
+
       GO TO 10
-c
+
     8 write(6,688) alam
   688 format(' error in line list, lambda= ',f12.4/)
+
    10 ILWN=0
       IUN=0
       IPRF=0
       GS=0.
       GW=0.
-      IF(INLIST.EQ.0) THEN
-         READ(19,*,END=100,err=8) ALAM,ANUM,GF,EXCL,QL,EXCU,QU,AGAM,
-     *                        GS,GW,INEXT
-cmh
-cmh	if (ANUM.gt.100) then
-c	print * ,ALAM,ANUM,GF,EXCL,QL,EXCU,QU,AGAM,
-c     *                        GS,GW,INEXT
-c	pause
-cmh	endif
 
-         IF(INEXT.NE.0) READ(19,*) ILWN,IUN,IPRF,WGR1,WGR2,WGR3,WGR4
-       ELSE IF(INLIST.EQ.1) THEN
-         READ(19,511,END=100) ALAM,ANUM,GF,EXCL,QL,EXCU,QU,AGAM,
-     *                        IPRF,ILWN,IUN
-         IF(IPRF.LT.0) READ(19,*) WGR1,WGR2,WGR3,WGR4
+      if (inlist .eq. 0) then
+
+         read(19, *, end = 100, err = 8) ALAM, ANUM, GF, EXCL, QL,
+     *                                   EXCU, QU, AGAM, GS, GW, INEXT
+
+         if (inext .ne. 0) read(19, *) ILWN, IUN, IPRF, WGR1, WGR2, WGR3, WGR4
+
+      elseif (inlist .eq. 1) then
+
+         read(19, 511, end = 100) ALAM,ANUM,GF,EXCL,QL,EXCU,QU,AGAM,
+     *                            IPRF,ILWN,IUN
+
+         if (iprf .lt. 0) read(19, *) WGR1, WGR2, WGR3, WGR4
+
   511    FORMAT(F10.4,2F6.2,F11.3,F4.1,F12.3,F4.1,E10.3,3I3)
-       ELSE IF(INLIST.EQ.2) THEN
-         READ(19,521,END=100) ALAM,GF,ANUM,EXCL,QL,XLBL,EXCU,QU
-  521    FORMAT(F10.4,F7.3,F6.2,F11.3,F5.1,A11,F11.3,F5.1)
-         AGAM=0.
-      END IF
-C
-C     first selection : for a given interval a atomic number
-C
+
+      elseif (inlist .eq. 2) then
+
+         read(19, 521, end = 100) ALAM, GF, ANUM, EXCL, QL, XLBL, EXCU, QU
+
+  521    format(F10.4,F7.3,F6.2,F11.3,F5.1,A11,F11.3,F5.1)
+
+         AGAM = 0.0
+
+      endif
+
+!     first selection : for a given interval a atomic number
+
 !       db410=.false.
 !       IF(ALAM.EQ.410.9447d0.and.GF==3d-1) THEN
 !       PRINT *,ALAM,GF
@@ -2986,9 +3005,14 @@ CMH-original     IF(ILWN.EQ.IUN) THEN
       END IF
       GO TO 10
   100 continue
-C
-      NLIN0=IL
-C
+
+      call cpu_time(read2_finish)
+
+      print*, 'inilin: read2 execution time = ',
+     $        (read2_finish - read2_start) - (read1_finish - read1_start)
+
+      NLIN0 = IL
+
       NSP=0
       DO 260 IL=1,NLIN0
          ISP=ISPRF(IL)
