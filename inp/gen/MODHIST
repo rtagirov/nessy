@@ -1,2 +1,147 @@
- WRSTART - Fri May 24 16:47:17 2013   run time:            8
-/  1. STEAL   COR.=UNDEF.                                                          NOTEMP             RTime:       1 sec
+ WRSTART - Thu Jul 16 20:35:40 2020 run time:            4
+/  1. STEAL   COR.=UNDEF.                                                                             RTime:       0 sec
+/  1. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         13 sec                              
+/  2. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/  3. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:       21 sec                                        
+/  4. STEAL   COR.= 10.2713                                                                           RTime:       3 sec
+/  4. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         14 sec                              
+/  5. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/  6. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:       41 sec                                        
+/  7. STEAL   COR.=  0.3510                                                                           RTime:       3 sec
+/  7. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         13 sec                              
+/  8. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/  9. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:       61 sec                                        
+/ 10. STEAL   COR.= -0.0044                                                                           RTime:      13 sec
+/ 10. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         14 sec                              
+/ 11. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 12. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:       92 sec                                        
+/ 13. STEAL   COR.= -0.3195                                                                           RTime:       2 sec
+/ 13. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         14 sec                              
+/ 14. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 15. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      111 sec                                        
+/ 16. STEAL   COR.= -0.4566                                                                           RTime:       2 sec
+/ 16. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         13 sec                              
+/ 17. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 18. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      130 sec                                        
+/ 19. STEAL   COR.= -0.5288                                                                           RTime:       2 sec
+/ 19. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         14 sec                              
+/ 20. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 21. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      150 sec                                        
+/ 22. STEAL   COR.= -0.5801                                                                           RTime:       3 sec
+/ 22. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         13 sec                              
+/ 23. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 24. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      170 sec                                        
+/ 25. STEAL   COR.= -0.6237                                                                           RTime:       2 sec
+/ 25. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         14 sec                              
+/ 26. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 27. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      189 sec                                        
+/ 28. STEAL   COR.= -0.6891                                                                           RTime:       7 sec
+/ 28. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 29. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      198 sec                                        
+/ 30. STEAL   COR.= -0.7650                                                                           RTime:       2 sec
+/ 30. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 31. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      202 sec                                        
+/ 32. STEAL   COR.= -0.7983                                                                           RTime:       2 sec
+/ 32. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 33. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      206 sec                                        
+/ 34. STEAL   COR.= -0.8412                                                                           RTime:       3 sec
+/ 34. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 35. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      211 sec                                        
+/ 36. STEAL   COR.= -0.8776                                                                           RTime:       2 sec
+/ 36. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 37. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      215 sec                                        
+/ 38. STEAL   COR.= -0.8992                                                                           RTime:       3 sec
+/ 38. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 39. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      220 sec                                        
+/ 40. STEAL   COR.= -0.9313                                                                           RTime:       2 sec
+/ 40. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 41. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      224 sec                                        
+/ 42. STEAL   COR.= -0.9606                                                                           RTime:       2 sec
+/ 42. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 43. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      228 sec                                        
+/ 44. STEAL   COR.= -0.9780                                                                           RTime:       3 sec
+/ 44. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 45. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      233 sec                                        
+/ 46. STEAL   COR.= -0.9970                                                                           RTime:       2 sec
+/ 46. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 47. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      237 sec                                        
+/ 48. STEAL   COR.= -1.0139                                                                           RTime:       3 sec
+/ 48. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 49. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      242 sec                                        
+/ 50. STEAL   COR.= -1.0264                                                                           RTime:       2 sec
+/ 50. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 51. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      246 sec                                        
+/ 52. STEAL   COR.= -1.0426                                                                           RTime:       2 sec
+/ 52. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 53. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      250 sec                                        
+/ 54. STEAL   COR.= -1.0629                                                                           RTime:       3 sec
+/ 54. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         14 sec                              
+/ 55. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 56. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      270 sec                                        
+/ 57. STEAL   COR.= -1.0809                                                                           RTime:       2 sec
+/ 57. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 58. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      274 sec                                        
+/ 59. STEAL   COR.= -1.1040                                                                           RTime:       2 sec
+/ 59. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 60. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      278 sec                                        
+/ 61. STEAL   COR.= -1.1290                                                                           RTime:       3 sec
+/ 61. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 62. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      283 sec                                        
+/ 63. STEAL   COR.= -1.1578                                                                           RTime:       2 sec
+/ 63. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 64. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      287 sec                                        
+/ 65. STEAL   COR.= -1.1868                                                                           RTime:       3 sec
+/ 65. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 66. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      292 sec                                        
+/ 67. STEAL   COR.= -1.2200                                                                           RTime:       2 sec
+/ 67. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 68. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      296 sec                                        
+/ 69. STEAL   COR.= -1.2570                                                                           RTime:       2 sec
+/ 69. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 70. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      301 sec                                        
+/ 71. STEAL   COR.= -1.2977                                                                           RTime:       2 sec
+/ 71. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 72. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      305 sec                                        
+/ 73. STEAL   COR.= -1.3400                                                                           RTime:       2 sec
+/ 73. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 74. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      309 sec                                        
+/ 75. STEAL   COR.= -1.3854                                                                           RTime:       3 sec
+/ 75. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 76. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      314 sec                                        
+/ 77. STEAL   COR.= -1.4336                                                                           RTime:       2 sec
+/ 77. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 78. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      318 sec                                        
+/ 79. STEAL   COR.= -1.4845                                                                           RTime:       2 sec
+/ 79. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 80. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      322 sec                                        
+/ 81. STEAL   COR.= -1.5375                                                                           RTime:       2 sec
+/ 81. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 82. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      326 sec                                        
+/ 83. STEAL   COR.= -1.5926                                                                           RTime:       3 sec
+/ 83. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         14 sec                              
+/ 84. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 85. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      346 sec                                        
+/ 86. STEAL   COR.= -1.6967                                                                           RTime:       2 sec
+/ 86. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 87. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      350 sec                                        
+/ 88. STEAL   COR.= -1.7037                                                                           RTime:       2 sec
+/ 88. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 89. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      354 sec                                        
+/ 90. STEAL   COR.= -1.7628                                                                           RTime:       2 sec
+/ 90. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 91. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      358 sec                                        
+/ 92. STEAL   COR.= -1.8227                                                                           RTime:       2 sec
+/ 92. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 93. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      362 sec                                        
+/ 94. STEAL   COR.= -1.8836                                                                           RTime:       3 sec
+/ 94. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 95. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      367 sec                                        
+/ 96. STEAL   COR.= -1.9454                                                                           RTime:       2 sec
+/ 96. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/ 97. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      371 sec                                        
+/ 98. STEAL   COR.= -2.0080                                                                           RTime:       3 sec
+/ 98. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         13 sec                              
+/ 99. COMO   1 -559 COMPLETE  -  run time all K:       0.00 sec                                     
+/100. ETL        FORMAL:  69      3- 45  50  58  64  67- 69  Rtime:      391 sec                                        
+/101. STEAL   COR.= -2.0909                                                                           RTime:       2 sec
+/101. WRCONT   LASTK=  559 COMPLETE  -  run time all K:         14 sec                              

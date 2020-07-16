@@ -80,17 +80,125 @@ CMH	CP: cross section for collisions of Hminus with protons
       CH = 10.**(-10.9+0.5*THETA)/THETA32
 
       if (natom.gt.30) stop "colli - natom"
+      TROOT=SQRT(TL)
+      T32=TL*TROOT
 
-      TROOT = SQRT(TL)
+      IF (JOBNUM .EQ. 0) THEN
 
-      T32 = TL * TROOT
+      OPEN(UNIT = 357, FILE = 'Uitenbroek_H_CE.dat', ACTION = 'READ')
+      OPEN(UNIT = 358, FILE = 'Uitenbroek_H_CI.dat', ACTION = 'READ')
+
+      OPEN(UNIT = 457, FILE = 'col_rates.out', ACTION = 'WRITE', STATUS = 'REPLACE')
+
+      DO m = 1, 10; WRITE(457, '(13x,F7.0,$)') Temp(m); ENDDO
+
+      WRITE(457, '(/)')
+
+      DO nl = 0, 8
+
+         DO nu = nl + 1, 9
+
+          WRITE(457,'(I2,2x,I2,$)') nu, nl
+
+          x = 1.0D0 - (ISQ(nl + 1) / ISQ(nu + 1))
+
+          DO m = 1, 10
+
+             CRJohnNorm = HYDCOLRATE(nl + 1, nu + 1, Temp(m))
+             CRJohnUite = CRJohnNorm * DEXP(x * DABS(HYD_LEV_ENERGY(nl + 1)) / boltz / Temp(m)) / DSQRT(Temp(m))
+
+             WAVENUM = ELEVEL(nu + 2) - ELEVEL(nl + 2)
+             WN2 = WAVENUM * WAVENUM
+             
+             T32 = Temp(m) * DSQRT(Temp(m))
+
+             CRJeff = 3.24D0 * EINST(nu + 2, nl + 2) / WN2 / T32 / (C1 * WAVENUM / Temp(m))**1.68D0
+
+             CRJeff = CRJeff * ENLTE(nu + 2) / ENLTE(nl + 2)
+
+             IF (m .LE. 6) THEN
+
+                IF (m .EQ. 1) READ(357, '(6(ES9.3,2x))') CRUite(1), CRUite(2), CRUite(3), CRUite(4), CRUite(5), CRUite(6)
+
+                CRUite(m) = CRUite(m) * 1D6
+
+                RatioUJ = CRUite(m) / CRJohnUite
+
+             ENDIF
+
+             RatioJJ = CRJeff / CRJohnNorm
+
+             IF (m .LE. 6)                 WRITE(457, '(4x,ES7.1,2x,ES7.1,$)') RatioUJ,  RatioJJ
+             IF (m .GT. 6 .AND. m. NE. 10) WRITE(457, '(4x,A7,2x,ES7.1,$)')   '   -   ', RatioJJ
+             IF (m .EQ. 10)                WRITE(457, '(4x,A7,2x,ES7.1)')     '   -   ', RatioJJ
+
+          ENDDO
+
+         ENDDO
+
+      ENDDO
+
+      WRITE(457, '(/)')
+
+      nu = 10
+
+      DO nl = 0, 9
+
+          WRITE(457,'(I2,2x,I2,$)') nl, nu
+
+          DO m = 1, 10
+
+             CRJohnNorm = HYDCOLRATE(nl + 1, nu + 1, Temp(m))
+             CRJohnUite = CRJohnNorm * DEXP(DABS(HYD_LEV_ENERGY(nl + 1)) / boltz / Temp(m)) / DSQRT(Temp(m))
+
+             TROOT = DSQRT(Temp(m))
+      
+             G = .1
+             EDGE = EION(nl + 2) - ELEVEL(nl + 2)
+             EXPFAC = EXP(-C1 * EDGE / Temp(m))
+             CRJeff = G * 1.08E-5 * TROOT * EINST(nl + 2, nu + 2) * EXPFAC / EDGE
+
+             IF (ALTESUM(1, nl + 2) .GT. 0.0D0) THEN
+                X = 1000.0D0 / Temp(m)
+                FOFT = (ALTESUM(3, nl + 2) * X + ALTESUM(2, nl + 2)) * X
+                FOFT = 10.0D0**FOFT
+                AOFT = ALTESUM(1, nl + 2) * FOFT
+                OMSUM = 4.06D0 / TROOT * EXPFAC / EDGE / EDGE / EDGE * AOFT
+                CRJeff = CRJeff + OMSUM
+             ENDIF
+
+             IF (m .LE. 6) THEN
+
+                IF (m. EQ. 1) READ(358, '(6(ES9.3,2x))') CRUite(1), CRUite(2), CRUite(3), CRUite(4), CRUite(5), CRUite(6)
+
+                CRUite(m) = CRUite(m) * 1D6
+
+                RatioUJ = CRUite(m) / CRJohnUite
+
+             ENDIF
+
+             RatioJJ = CRJeff / CRJohnNorm
+
+             IF (m .LE. 6)                 WRITE(457, '(4x,ES7.1,2x,ES7.1,$)') RatioUJ,  RatioJJ
+             IF (m .GT. 6 .AND. m .NE. 10) WRITE(457, '(4x,A7,2x,ES7.1,$)')   '   -   ', RatioJJ
+             IF (m .EQ. 10)                WRITE(457, '(4x,A7,2x,ES7.1)')     '   -   ', RatioJJ
+
+          ENDDO
+
+      ENDDO
+
+      CLOSE(357)
+      CLOSE(358)
+      CLOSE(457)
+
+      ENDIF
 
       CRATE(1 : N, 1 : N) = 0D0
 
 C***  LOOP OVER ALL TRANSITIONS  ---------------------------------------
       DO 1 NUP = 2, N
 	
-      DO 1 LOW = 1, NUP - 1
+	DO 1 LOW = 1, NUP - 1
 
       IF (NOM(LOW) .NE. NOM(NUP)) GOTO 14
       IF (NCHARG(LOW).NE.NCHARG(NUP)) GOTO 8

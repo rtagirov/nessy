@@ -17,7 +17,7 @@
       use MOD_PRIOPA
       use MOD_PRIV
       use MOD_READMOD
-      use MOD_READPOP
+!      use MOD_READPOP
       use MOD_READRAD
       use MOD_REBLANK
       use MOD_TICTOC
@@ -37,7 +37,7 @@
  
 !     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
 !     THE CONTINUOUS RADIATION TRANSFER IS SOLVED WITH GIVEN POPULATION NUMBERS.
-!     IT MAKES USE OF THE FREQUENCY GRID (FILE FGRID).
+!     IT MAKES USE OF THE FREQUENCY GRID (FILE fgrid.inp).
 !     FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS: MODIFY SUBROUTINES DATOM, DECSTAR.
 !     INSERT CORRESPONDING ATOMIC DATA INTO SUBROUTINES COLLI AND PHOTOCS.
 
@@ -96,13 +96,13 @@
 
       IF (JOBNUM .GE. 1000) JOBNUM = JOBNUM - 100
 
-      IFL = 3
+!      IFL = 3
 
-      open(IFL, file = 'POPNUM', STATUS = 'OLD')
+!      open(IFL, file = 'POPNUM', STATUS = 'OLD')
 
-      call readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
+!      call readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
-      close(ifl)
+!      close(ifl)
 
 !     read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage) 
       CALL READRAD(NF,ND,POP1,xjc2,XJC,XJL,

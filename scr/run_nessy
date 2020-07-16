@@ -89,7 +89,7 @@ VEL_FIELD_DIR=$nessy_inp/vel/
 DATOM_FILE=datom.inp
 ODF_TABLE_FILE=odf.table
 
-FILES_TO_IGNORE='CARDS atm.inp vel_field.in'
+#FILES_TO_IGNORE='CARDS atm.inp vel_field.in'
 ##############################################################################################################################
 
 function compile
@@ -138,25 +138,25 @@ for RUN in $1; do
 
           create_dir $HM_DIR$RUN
 
-          process_message "Copying $HM_GENERIC_DIR -> $HM_DIR$RUN" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
+          ln -s $HM_GENERIC_DIR/* $HM_DIR$RUN
 
           if [ ! $COMPILATION ]; then copy "$exes" "$HM_DIR$RUN"; echo; fi
 
           echo !!; echo
 
-       elif [ $CLEAN ]; then
+#       elif [ $CLEAN ]; then
 
-          check_dir $HM_DIR$RUN; check_dir $HM_DIR$RUN "e"
+#          check_dir $HM_DIR$RUN; check_dir $HM_DIR$RUN "e"
 
-          for FILE in $FILES_TO_IGNORE; do GLOBIGNORE=${GLOBIGNORE}:*$FILE; done
+#          for FILE in $FILES_TO_IGNORE; do GLOBIGNORE=${GLOBIGNORE}:*$FILE; done
 
-          process_message "Cleaning $HM_DIR$RUN/" "rm -r $HM_DIR$RUN/*"
+#          process_message "Cleaning $HM_DIR$RUN/" "rm -r $HM_DIR$RUN/*"
 
-          process_message "Copying $HM_GENERIC_DIR -> $HM_DIR$RUN" "cp -r $HM_GENERIC_DIR/* $HM_DIR$RUN"
+#          ln -s $HM_GENERIC_DIR/* $HM_DIR$RUN
 
-          if [ ! $COMPILATION ]; then copy $exes $HM_DIR$RUN; echo; fi
+#          if [ ! $COMPILATION ]; then copy $exes $HM_DIR$RUN; echo; fi
 
-          echo !!; echo; GLOBIGNORE=''
+#          echo !!; echo; GLOBIGNORE=''
 
        fi
 
@@ -289,7 +289,7 @@ for RUN in $RUNS; do
 
  if [ $ATM_MOD ];   then check_file $ATM_MOD_DIR$ATM_MOD;      cp -v $ATM_MOD_DIR$ATM_MOD      $HM_DIR$RUN/atm.inp;         echo; fi
 
- if [ $FGRID ];     then check_file $FGRID_DIR/$FGRID;         cp -v $FGRID_DIR/$FGRID         $HM_DIR$RUN/FGRID;           echo; fi
+ if [ $FGRID ];     then check_file $FGRID_DIR/$FGRID;         cp -v $FGRID_DIR/$FGRID         $HM_DIR$RUN/fgrid.inp;       echo; fi
 
  if [ $DATOM ];     then check_file $DATOM_DIR/$DATOM;         cp -v $DATOM_DIR/$DATOM         $HM_DIR$RUN/$DATOM_FILE;     echo; fi
 
@@ -332,7 +332,7 @@ for RUN in $RUNS; do
 
  if [ $ATM_MOD ]   && [ "$ODF_IT" == "0" ]; then check_file $ATM_MOD_DIR$ATM_MOD;      cp -v $ATM_MOD_DIR$ATM_MOD      $HM_DIR$RUN/atm.inp;         echo; fi
 
- if [ $FGRID ]     && [ "$ODF_IT" == "0" ]; then check_file $FGRID_DIR/$FGRID;         cp -v $FGRID_DIR/$FGRID         $HM_DIR$RUN/FGRID;           echo; fi
+ if [ $FGRID ]     && [ "$ODF_IT" == "0" ]; then check_file $FGRID_DIR/$FGRID;         cp -v $FGRID_DIR/$FGRID         $HM_DIR$RUN/fgrid.inp;       echo; fi
 
  if [ $DATOM ]     && [ "$ODF_IT" == "0" ]; then check_file $DATOM_DIR/$DATOM;         cp -v $DATOM_DIR/$DATOM         $HM_DIR$RUN/$DATOM_FILE;     echo; fi
 
@@ -916,7 +916,7 @@ branch=main
 ##############################################################################################
 
 ParsedOptions=$(getopt --name "$0" --shell bash --alternative --options "ckdseoR:xnlrF:zP:HLp:D:i:OITtj:m:q:b:A:h:f:v:B:C:N:J:g:G:"\
-                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,clean,rmlopa,rmjob,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,atm:,fgr:,car:,ato:,odf:,vfield:,vel:,VDH:,VDF:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
+                --longoptions "comp,nobj,ndep,src,exe,old,rep:,xterm,rmlopa,rmjob,fio:,co,mp:,hmi,LTE,prep:,del:,it:,lodf,nodf,hmfi,fite,job:,atm:,fgr:,car:,ato:,odf:,vfield:,vel:,VDH:,VDF:,NEWWRC:,JOBMAX:,radgr:,uvigr:" -- "$@")
 
 if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
@@ -942,7 +942,7 @@ if [ $? -ne 0 ]; then abort "$0: An invalid option has been provided."; else
 
        -x|--xterm)  MODE="xt";          shift;;
 
-       -n|--clean)  CLEAN=Yes;          shift;;
+#       -n|--clean)  CLEAN=Yes;          shift;;
 
        -l|--rmlopa) RMLOPA=Yes;         shift;;
 

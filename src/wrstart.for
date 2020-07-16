@@ -12,7 +12,7 @@
       use MOD_PRIDAT
       use MOD_PRIGH
       use MOD_PRIMOD
-      use MOD_WRITPOP
+!      use MOD_WRITPOP
       use MOD_WRVEL
       use MOD_JSTART
       use MOD_PRICOMP
@@ -35,7 +35,7 @@
 !     THIS PROGRAM IS TO INITIALIZE THE MODEL FILE FOR SUBSEQUENT
 !     CALCULATION OF THE NON-LTE MULTI-LEVEL LINE FORMATION.
 !     IT MAKES USE OF THE ATOMIC DATA (FILE DATOM)
-!     AND THE FREQUENCY GRID (FILE FGRID)
+!     AND THE FREQUENCY GRID (FILE fgrid.inp)
 !     PRESENT VERSION: MODEL ATMOSPHERE OF HELIUM (CODE NR. "1") WITH
 !                                          HYDROGEN         "2"
 !     FOR IMPLEMENTATION OF ADDITIONAL ELEMENTS:
@@ -319,11 +319,11 @@ C***  TEMPERATURE STRATIFICATION AND INITIAL POPNUMBERS (LTE)
 
       CLOSE(ifl)
 
-      ifl = 3; open(ifl, file = 'POPNUM', status = 'unknown')
+!      ifl = 3; open(ifl, file = 'POPNUM', status = 'unknown')
 
-      call writpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
+!      call writpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
-      close(ifl)
+!      close(ifl)
 
 !     START APPROXIMATION FOR THE RADIATION FIELD
 !     JSTART writes the files RADIOC and RADIOL

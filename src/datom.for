@@ -893,7 +893,7 @@ CMH   SIGARR: CROSS SECTIONS FOR EACH LEVEL
 
       FILENAME = LEVEL(J)
 
-      open(unit = 1, file=FILENAME, STATUS='OLD', IOSTAT=IOSTATUS, err=888, action='read')
+      open(unit = 1, file = './crs/'//FILENAME, STATUS='OLD', IOSTAT=IOSTATUS, err=888, action='read')
 
       do while (IOSTATUS .eq. 0)
 

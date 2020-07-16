@@ -7,7 +7,7 @@
       use MOD_READMOD
       use MOD_WRITMS
       use MOD_WRITMSI
-      use MOD_READPOP
+!      use MOD_READPOP
       use MOD_COOP
       use MOD_READMS
       use MOD_READMSI
@@ -114,11 +114,11 @@
 
       If (vdop .le. 0.) vdop = vdopold
 
-      IFL = 3; open(IFL, file = 'POPNUM', STATUS = 'OLD')
+!      IFL = 3; open(IFL, file = 'POPNUM', STATUS = 'OLD')
 
-      call readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
+!      call readpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum)
 
-      close (ifl)
+!      close (ifl)
 
       allocate(dummy2(nd, nf))
 

@@ -19,7 +19,7 @@
       use MOD_PRIPOP
       use MOD_PRITAU
       use MOD_READMOD
-      use MOD_READPOP
+!      use MOD_READPOP
       use MOD_READRAD
       use MOD_REDCOR
       use MOD_STHIST
@@ -96,12 +96,12 @@ C***  READING OF THE MODEL FILE ----------------------------------------
 
       if (allocated(depart))  deallocate(depart);  allocate(depart(ND, N))
 
-      IFL = 3; open(IFL, file='POPNUM', STATUS='OLD')
+!      IFL = 3; open(IFL, file='POPNUM', STATUS='OLD')
 
-c***  pop1 is dummy read because it will be overwritten below
-      call readpop(ifl, T, popnum, pop2, pop3, pop1, rne, n, nd, modhead, jobnum)
+!     pop1 is dummy read because it will be overwritten below
+!      call readpop(ifl, T, popnum, pop2, pop3, pop1, rne, n, nd, modhead, jobnum)
 
-      close(IFL)
+!      close(IFL)
 
 c***  read the radiation field from files RADIOC and RADIOL (pop1 is used as dummy storage)	
 
@@ -289,9 +289,9 @@ C***  REDUCED CORRECTIONS, IF OPTION IS SET
       IF (LSEXPO .GT. 0.AND.JOBNUM.GT.3) CALL PRIEXPO(POPNUM,POP1,POP2,LEVEL,N,ND,MODHEAD,JOBNUM,LSEXPO)
  
 C***  UPDATING THE MODEL FILE
-      ifl = 2; OPEN(ifl, FILE = 'POPNUM', STATUS = 'unknown')
+!      ifl = 2; OPEN(ifl, FILE = 'POPNUM', STATUS = 'unknown')
 
-      call writpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum); CLOSE(ifl)
+!      call writpop(ifl,T,popnum,pop1,pop2,pop3,rne,n,nd,modhead,jobnum); CLOSE(ifl)
 
 c***  if a new LB table is read then store a new model file
       if (lblank.lt.0) then
@@ -343,6 +343,17 @@ C***  UPDATING THE MODEL HISTORY
             LPRIH=1
 
             CALL PRIPOP(LSPOP,WEIGHT,NCHARG,NOM,ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
+
+!           write out NLTE populations for fioss
+!----------------------------------------------------------------------------
+
+            open(2, file = 'POPNUM', status = 'unknown')
+
+            call writpop(2, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
+
+            close(2)
+
+!----------------------------------------------------------------------------
 
             CALL PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
      $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,

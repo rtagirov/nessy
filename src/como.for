@@ -10,7 +10,7 @@
       use MOD_PRIMINT
       use MOD_PRIOPA
       use MOD_READMOD
-      use MOD_READPOP
+!      use MOD_READPOP
       use MOD_READRAD
       use MOD_REBLANK
       use MOD_WRITMOD
@@ -74,11 +74,11 @@
 
       close(IFL)
 
-      IFL = 3; open(IFL, file = 'POPNUM', STATUS = 'OLD')
+!      IFL = 3; open(IFL, file = 'POPNUM', STATUS = 'OLD')
 
-      call readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
+!      call readpop(ifl, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
 
-      close(ifl)
+!      close(ifl)
 
       if (allocated(wcharm))    deallocate(wcharm);    allocate(WCHARM(ND, NF))
 
