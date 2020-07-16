@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-if [ -z "$scr" ]; then echo "Variable scr must be declared in .bashrc!"; exit; fi
+if [[ $HOME == /rds/general/user/rtagirov/home ]]; then hpc=yes; scr=$HOME/nessy/scr;        fi
+if [[ $HOME == /home/rtagirov ]];                  then icl=yes; scr=/mnt/SSD/sim/nessy/scr; fi
+
+#if [ -z "$scr" ]; then echo "Variable scr must be declared in .bashrc!"; exit; fi
 
 source $scr/aux_func.sh
 source $scr/helper_scripts
@@ -225,10 +228,12 @@ for ((A=1;A<=MAX_PROC;A++)); do
   if [[ -e "$DIR" ]]; then
     DIR="`mktemp -d ${DIR}_XX`"
 #    echo "Start Job $DIR"
-    fioss_cplink_dir . $DIR --force
+    if [ $icl ]; then      fioss_cplink_dir . $DIR --force; fi
+    if [ $hpc ]; then bash fioss_cplink_dir . $DIR --force; fi
   else
 #    echo "Start Job $DIR"
-    fioss_cplink_dir . $DIR 
+    if [ $icl ]; then      fioss_cplink_dir . $DIR; fi
+    if [ $hpc ]; then bash fioss_cplink_dir . $DIR; fi
   fi
   [[ $ABEMLIN_DIR ]] &&  mkdir -p $DIR/${ABEMLIN_DIR}
   fioss_runProg "$CTRL/" "$DIR" &
@@ -239,7 +244,9 @@ wait
 
 rmdir $CTRL &> /dev/null || true
 rm $CTRL-wd || true
-fioss_mv_results $DIRS .
+
+if [ $icl ]; then      fioss_mv_results $DIRS .; fi
+if [ $hpc ]; then bash fioss_mv_results $DIRS .; fi
 
 #catenate $contr_dir $contr_temp_file $contr_file
 

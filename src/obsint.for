@@ -491,15 +491,15 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
 
       enddo
 
-      open(unit = 200, file = '../form.height', access = 'append')
+!      open(unit = 200, file = '../form.height', access = 'append')
    
-      do k = 1, 100
+!      do k = 1, 100
 
-         write(200, *), RWLAE + DLAM(k * 20 - 10), sum(FH(20 * (k - 1) + 1 : 20 * k)) / 20.0
+!         write(200, *), RWLAE + DLAM(k * 20 - 10), sum(FH(20 * (k - 1) + 1 : 20 * k)) / 20.0
 
-      enddo
+!      enddo
 
-      close(200)
+!      close(200)
 
       end subroutine PRINTTAU
 

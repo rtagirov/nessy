@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
-[[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
+if [[ $HOME == /rds/general/user/rtagirov/home ]]; then scr=$HOME/nessy/scr;        fi
+if [[ $HOME == /home/rtagirov ]];                  then scr=/mnt/SSD/sim/nessy/scr; fi
+
+#[[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
+
+#scripts=$HOME/nessy/scr
+
+#echo fioss_prepare: $scripts
 
 source $scr/fioss.settings
 source $scr/aux_func.sh
@@ -106,17 +113,17 @@ $CP $dat/fudge_As.txt ./
 
 if [ $ODF_IT -eq 0 ]; then
 	
-   cmd "$CP $F_DIR/CARDS.FIOSS.TEMPLATE  ./CARDS.TEMPLATE"
+   cmd "$CP $inp/car/CARDS.FIOSS.TEMPLATE ./CARDS.TEMPLATE"
    
 else
 
    if [ -f $F_DIR/IT$PREV_ODF_IT/$RUN/CARDS.TEMPLATE ]; then
 
-      cmd "$CP $F_DIR/IT$PREV_ODF_IT/$RUN/CARDS.TEMPLATE  ./CARDS.TEMPLATE"
+      cmd "$CP $F_DIR/IT$PREV_ODF_IT/$RUN/CARDS.TEMPLATE ./CARDS.TEMPLATE"
 
    else
 
-      cmd "$CP $F_DIR/CARDS.FIOSS.TEMPLATE  ./CARDS.TEMPLATE"
+      cmd "$CP $inp/car/CARDS.FIOSS.TEMPLATE ./CARDS.TEMPLATE"
 
    fi
 
@@ -141,9 +148,10 @@ ls ${LINELISTS}* &> /dev/null
 
 exit_if_error "The linelists have not been found. The directory $LINELISTS is empty."
 
-if [ ! -L "$F_DIR/ITx/fort.19.d" ]; then abort "The symbolic link $F_DIR/ITx/fort.19.d to the directory $LINELISTS with the linelists does not exist."; fi
+#if [ ! -L "$F_DIR/ITx/fort.19.d" ]; then abort "The symbolic link $F_DIR/ITx/fort.19.d to the directory $LINELISTS with the linelists does not exist."; fi
 
-ln -sv $F_DIR/ITx/fort.19.d fort.19.d
+#ln -sv $F_DIR/ITx/fort.19.d fort.19.d
+ln -sv $LINELISTS fort.19.d
 
 if ( isSet $ORIG_COSI2 ); then
   echo "Overwriting files from $ORIG_COSI with files from $ORIG_COSI2 in `pwd`"

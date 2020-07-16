@@ -59,7 +59,8 @@ C    ****************
 
        endif
  
-        OPEN (UNIT=240,FILE='../fudge_As.txt',STATUS='OLD',READONLY)
+!        OPEN (UNIT=240,FILE='../fudge_As.txt',STATUS='OLD',READONLY)
+        OPEN(UNIT = 240, FILE='fudge_As.txt', STATUS='OLD', READONLY)
          
         do l=1, Nfudge
         READ (240,*) wav_f(l), ffactor(l)

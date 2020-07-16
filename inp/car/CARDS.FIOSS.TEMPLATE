@@ -1,0 +1,11 @@
+PROLIB=xxx
+SHIFT=  0.
+NFOBS=      2000
+VDOP=  1.5
+MAXITER= 1.
+#PFIRST=    1.
+#PLAST=     1.
+#ABEMLIN READ abemlin/
+#ABEMLIN WRITE abemlin/
+#ABEMLIN AUTO ../abemlin/
+PRINT TAU

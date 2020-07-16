@@ -4,7 +4,8 @@ PREV_ODF_IT=$(echo $ODF_IT-1 | bc -l)
 
 RUN=$2
 
-sim=/mnt/SSD/sim
+if [[ $HOME == /rds/general/user/rtagirov/home ]]; then sim=$HOME;        fi
+if [[ $HOME == /home/rtagirov ]];                  then sim=/mnt/SSD/sim; fi
 
 nes=$sim/nessy
 

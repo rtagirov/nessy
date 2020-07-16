@@ -301,7 +301,8 @@
 
       print*, 'vdop after readmod', vdop
 
-      open(unit = 3, file = '../mu')
+!      open(unit = 3, file = '../mu')
+      open(unit = 3, file = 'mu')
 
       read(3, *) mu
 
