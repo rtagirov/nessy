@@ -122,14 +122,6 @@
 !     DECODING INPUT DATA
       CALL DECSTAR(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,TPLOT,NATOM,KODAT,IDAT,LBLANK,ATMEAN,AMU)
 
-!      do j = 1, 30
-
-!         print*, 'adundances', j, abxyz(j ), sum(abxyz)
-
-!      enddo
-
-!      stop 'stop abundances'
-
       apm = atomic_mass_unit * sum(abxyz * atomic_mass) ! average particle mass (cgs)
 
 !     if PRINT DATOM option in CARDS is set, printout the atomic data
