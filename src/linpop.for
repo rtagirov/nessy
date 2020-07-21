@@ -557,8 +557,8 @@
 
          CALL VSUB(V1, V2, NRANK) ! V1 = V1 - V2
 
-!         CALL INV(NRANK, DM)
-         CALL inv_lapack(NRANK, DM)
+         CALL INV(NRANK, DM)
+!         CALL inv_lapack(NRANK, DM)
 
          CALL VMF(ENDELTA, V1, DM, NRANK) ! ENDELTA = DM * V1a
 
@@ -576,8 +576,8 @@
          IF (ITNE(L) .EQ. 1 .and. nofile(L)) THEN
 
 !           IF FORT.19 NOT FOUND AND THE FIRST ITERATION STEP, DB IS DM^T
-!            CALL INV(NRANK, DM)
-            CALL inv_lapack(NRANK, DM)
+            CALL INV(NRANK, DM)
+!            CALL inv_lapack(NRANK, DM)
 
             CALL ACOPY(DB, DM, NRANK)
 

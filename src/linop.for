@@ -368,8 +368,8 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
                     LPR = .not. (ISP .gt. 1 .and. ISP .le. 5) ! LPR = ISP not in (1,5]
 
-                    if (AB0(IL) == 0.0d0) then      !** only do all the work if its worth it
-!                    if (AB0(IL) <= cnt_cut_off) then !** only do all the work if its worth it
+!                    if (AB0(IL) == 0.0d0) then      !** only do all the work if its worth it
+                    if (AB0(IL) <= cnt_cut_off) then !** only do all the work if its worth it
 
                         wlc = wlc + 1
 

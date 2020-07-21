@@ -128,21 +128,25 @@ HM_DIR=${HM_BASE_DIR}/IT$ODF_IT/
 
 for RUN in $1; do
 
-    if [ $ODF_IT -ne "0" ]; then
+#    if [ $ODF_IT -ne "0" ]; then
 
-       check_dir $HM_DIR$RUN; check_dir $HM_DIR$RUN "e"
+#       check_dir $HM_DIR$RUN; check_dir $HM_DIR$RUN "e"
 
-    else
+#    else
  
-       if [ ! -d $HM_DIR$RUN ] || [ ! -n "$(echo `ls $HM_DIR$RUN`)" ]; then
+     if [ ! -d $HM_DIR$RUN ] || [ ! -n "$(echo `ls $HM_DIR$RUN`)" ]; then
 
-          create_dir $HM_DIR$RUN
+        create_dir $HM_DIR$RUN
 
-          ln -s $HM_GENERIC_DIR/* $HM_DIR$RUN
+        create_dir ${HM_DIR}/gen
 
-          if [ ! $COMPILATION ]; then copy "$exes" "$HM_DIR$RUN"; echo; fi
+        cp -r $HM_GENERIC_DIR/* -t ${HM_DIR}gen
 
-          echo !!; echo
+        ln -s ${HM_DIR}gen/* $HM_DIR$RUN
+
+        if [ ! $COMPILATION ]; then copy "$exes" "$HM_DIR$RUN"; echo; fi
+
+        echo !!; echo
 
 #       elif [ $CLEAN ]; then
 
@@ -158,9 +162,9 @@ for RUN in $1; do
 
 #          echo !!; echo; GLOBIGNORE=''
 
-       fi
+     fi
 
-    fi
+#    fi
 
 done
 }
