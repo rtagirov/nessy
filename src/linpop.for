@@ -557,7 +557,8 @@
 
          CALL VSUB(V1, V2, NRANK) ! V1 = V1 - V2
 
-         CALL INV(NRANK, DM)
+!         CALL INV(NRANK, DM)
+         CALL inv_lapack(NRANK, DM)
 
          CALL VMF(ENDELTA, V1, DM, NRANK) ! ENDELTA = DM * V1a
 
@@ -575,7 +576,8 @@
          IF (ITNE(L) .EQ. 1 .and. nofile(L)) THEN
 
 !           IF FORT.19 NOT FOUND AND THE FIRST ITERATION STEP, DB IS DM^T
-            CALL INV(NRANK, DM)
+!            CALL INV(NRANK, DM)
+            CALL inv_lapack(NRANK, DM)
 
             CALL ACOPY(DB, DM, NRANK)
 
@@ -810,40 +812,40 @@
 
          ENDDO
 
-         CALL RM_FILE(NTP_FILE, '-vf')
+!         CALL RM_FILE(NTP_FILE, '-vf')
 
-         IF (LAMBDA_ITER .EQ. 1) THEN
+!         IF (LAMBDA_ITER .EQ. 1) THEN
 
-             CALL RM_FILE(NTW_FILE, '-vf')
+!             CALL RM_FILE(NTW_FILE, '-vf')
 
-             CALL OPEN_TO_APPEND(195, NTW_FILE)
+!             CALL OPEN_TO_APPEND(195, NTW_FILE)
 
-         ENDIF
+!         ENDIF
 
-         DO IND = 1, LASTIND
+!         DO IND = 1, LASTIND
 
-            LOW = INDLOW(IND)
-            NUP = INDNUP(IND)
+!            LOW = INDLOW(IND)
+!            NUP = INDNUP(IND)
 
-            XLAM = 1.0D8 / (ELEVEL(NUP) - ELEVEL(LOW))
+!            XLAM = 1.0D8 / (ELEVEL(NUP) - ELEVEL(LOW))
 
-            IF (LAMBDA_ITER .EQ. 1) WRITE(195, '(2(A10,2x),I2,2x,I2,2(2x,I3),2(2x,E15.7))') LEVEL(LOW),
-     $                                                                                      LEVEL(NUP),
-     $                                                                                      NOM(LOW),
-     $                                                                                      NCHARG(LOW),
-     $                                                                                      INT(WEIGHT(LOW)),
-     $                                                                                      INT(WEIGHT(NUP)),
-     $                                                                                      EINST(NUP, LOW),
-     $                                                                                      XLAM
+!            IF (LAMBDA_ITER .EQ. 1) WRITE(195, '(2(A10,2x),I2,2x,I2,2(2x,I3),2(2x,E15.7))') LEVEL(LOW),
+!     $                                                                                      LEVEL(NUP),
+!     $                                                                                      NOM(LOW),
+!     $                                                                                      NCHARG(LOW),
+!     $                                                                                      INT(WEIGHT(LOW)),
+!     $                                                                                      INT(WEIGHT(NUP)),
+!     $                                                                                      EINST(NUP, LOW),
+!     $                                                                                      XLAM
 
-            CALL PRINT_NLTETRAPOP(POPNUM_nlte(1 : ND, LOW) * ENTOT(1 : ND),
-     $                            POPNUM_nlte(1 : ND, NUP) * ENTOT(1 : ND),
-     #                            DEPART(1 : ND, LOW),
-     $                            DEPART(1 : ND, NUP))
+!            CALL PRINT_NLTETRAPOP(POPNUM_nlte(1 : ND, LOW) * ENTOT(1 : ND),
+!     $                            POPNUM_nlte(1 : ND, NUP) * ENTOT(1 : ND),
+!     $                            DEPART(1 : ND, LOW),
+!     $                            DEPART(1 : ND, NUP))
 
-         ENDDO
+!         ENDDO
 
-         IF (LAMBDA_ITER .EQ. 1) CLOSE(195)
+!         IF (LAMBDA_ITER .EQ. 1) CLOSE(195)
 
       ENDIF
 

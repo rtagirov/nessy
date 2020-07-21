@@ -1,0 +1,49 @@
+#!/bin/sh
+
+rm -f $HOME/log/*
+
+#nums=`seq 0 1`
+nums=0
+
+#mode=lte
+mode=1
+#mode=0
+
+wt=00:30:00
+
+ncpus=1
+
+mem=2gb
+
+#for n in $nums; do
+
+#    name=test$n
+
+#    qsub -v mode=$mode,run=$name -o $HOME/log/$JOB_ID -e $HOME/log/$JOB_ID -N $name -lwalltime=$wt -lselect=1:ncpus=$ncpus:mem=$mem fioss.pbs
+
+#done
+
+#name=nlte_test
+#name=inv_lapack
+name=inv_lapack_lines
+#name=inv_regular
+#name=lte_test
+
+qsub -v mode=$mode,run=$name -o $HOME/log/$JOB_ID -e $HOME/log/$JOB_ID -N $name -lwalltime=$wt -lselect=1:ncpus=$ncpus:mem=$mem fioss.pbs
+
+#str=$(ls ./log/*.ER)
+
+#i=0
+
+#for elem in $str; do
+
+#    if [ $i == 0 ]; then jobids=${elem//[^0-9]/};         fi
+#    if [ $i != 0 ]; then jobids=$jobids:${elem//[^0-9]/}; fi
+
+#    i=$(echo $i+1 | bc)
+
+#done
+
+#echo $jobids
+
+#qsub -W afterany:$jobids -o $HOME/log/$JOB_ID -e $HOME/log/$JOB_ID -N sleep sleep.pbs

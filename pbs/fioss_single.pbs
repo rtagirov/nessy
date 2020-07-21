@@ -1,0 +1,46 @@
+#!/bin/sh
+
+#mode is parsed by qsub
+#run  is parsed by qsub
+
+module load intel-suite
+
+scr=$HOME/nessy/scr
+inp=$HOME/nessy/inp
+obj=$HOME/nessy/obj
+
+#if [ "$mode" == "0" ]; then base=$HOME/runs/fioss/IT0; fi
+#if [ "$mode" == "1" ]; then base=$HOME/runs/fioss/IT1; fi
+
+base=$HOME/runs/fioss/IT$mode
+
+dir=$base/$run
+tmp=$TMPDIR
+
+#if [ -d "$dir" ]; then rm -r $dir; fi
+
+#mkdir -p $dir
+
+#cp -r $inp/gen/* -t $dir
+
+#cp $scr/fioss_do2        -t $dir
+#cp $scr/fioss_cplink_dir -t $dir
+#cp $scr/fioss_mv_results -t $dir
+
+#cp $scr/fioss_prepare -t $dir
+
+#if [ "$mode" == "lte" ];  then echo lte >     $dir/fort.99; fi
+#if [ "$mode" == "nlte" ]; then echo wrstart > $dir/fort.99; fi
+
+cp $dir/CARDS.TEMPLATE $dir/CARDS
+
+echo 'INTERVAL 1800 1810' >> $dir/CARDS
+
+#ln -s -t $tmp $dir/*
+cp -r $dir/* -t $tmp
+
+#$tmp/fioss_do2 1800 10 1800 | tee $tmp/fioss.log
+#$tmp/fioss_do2 1800 10 3000 | tee $tmp/fioss.log
+$tmp/fioss.exe | tee $tmp/fioss.out
+
+rsync -rptgoDq $tmp/ $dir/

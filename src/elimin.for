@@ -83,7 +83,8 @@
 
          endif
 
-         CALL INV(JMAX, B(1 : JMAX, 1 : JMAX))
+!         CALL INV(JMAX, B(1 : JMAX, 1 : JMAX))
+         CALL inv_lapack(JMAX, B(1 : JMAX, 1 : JMAX))
 
          CALL MVV(WX(1 : JMAX, L), B(1 : JMAX, 1 : JMAX), W(1 : JMAX), JMAX, JMAX)
 

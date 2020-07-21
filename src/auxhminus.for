@@ -51,8 +51,8 @@
 
       CALL SYSTEM("echo DIRECTORY: $(pwd)'\n'")
 
-      CALL RM_FILE(NTP_FILE, '-vf')
-      CALL RM_FILE(NTW_FILE, '-vf')
+!      CALL RM_FILE(NTP_FILE, '-vf')
+!      CALL RM_FILE(NTW_FILE, '-vf')
 
       itsw=0
       itemp=0

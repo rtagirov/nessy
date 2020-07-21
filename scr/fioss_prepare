@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 
-if [[ $HOME == /rds/general/user/rtagirov/home ]]; then scr=$HOME/nessy/scr;        fi
-if [[ $HOME == /home/rtagirov ]];                  then scr=/mnt/SSD/sim/nessy/scr; fi
+if   [[ $HOME == /rds/general/user/rtagirov/home ]]; then 
 
-#[[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
+     scr=$HOME/nessy/scr
 
-#scripts=$HOME/nessy/scr
+elif [[ $HOME == /home/rtagirov ]]; then 
 
-#echo fioss_prepare: $scripts
+     scr=/mnt/SSD/sim/nessy/scr
+
+else
+
+     abort "Unknown HOME directory."
+
+fi
 
 source $scr/fioss.settings
 source $scr/aux_func.sh
@@ -79,37 +84,38 @@ set -v
 
 rm_dir $OUTPUT_DIR; create_dir $OUTPUT_DIR; change_dir $OUTPUT_DIR
 
-$CP ${ORIG_COSI}/MODFILE   ./
-$CP ${ORIG_COSI}/FGRID	   ./
-$CP ${ORIG_COSI}/RADIOC    ./
-$CP ${ORIG_COSI}/RADIOL    ./
-$CP ${ORIG_COSI}/POPNUM    ./
-$CP ${ORIG_COSI}/mu        ./
+cmd "$CP $ORIG_COSI/fioss.exe ./"
 
-$CP ${ORIG_COSI}/atm.inp   ./
-$CP ${ORIG_COSI}/datom.inp ./
+$CP ${ORIG_COSI}/atm.inp     ./
+$CP ${ORIG_COSI}/datom.inp   ./
+$CP ${ORIG_COSI}/fgrid.inp   ./
+$CP ${ORIG_COSI}/MODFILE     ./
+$CP ${ORIG_COSI}/RADIOC      ./
+$CP ${ORIG_COSI}/RADIOL      ./
+$CP ${ORIG_COSI}/POPNUM      ./
+$CP ${ORIG_COSI}/MolConc.txt ./
+$CP ${ORIG_COSI}/mu          ./
+
+#$CP $mol/c2.asc             ./
+#$CP $mol/ch.asc             ./
+#$CP $mol/cn.asc             ./
+#$CP $mol/co.asc             ./
+#$CP $mol/h2.asc             ./
+#$CP $mol/nh.asc             ./
+#$CP $mol/oh.asc             ./
+#$CP $mol/o2.asc             ./
+#$CP $mol/O2_H               ./
+
+$CP $dat/fudge_As.txt        ./
+
+$CP $INPUT_STARK_BROAD/*     ./
+$CP ${VELO_FILE}             ./VELO
+$CP $INPUT_SUN_FILE          ./input_sun
 
 if [ -f $NTW_FILE ]; then $CP $NTW_FILE ./; fi
 if [ -f $NTP_FILE ]; then $CP $NTP_FILE ./; fi
 
 if [ -d ${ORIG_COSI}/src/ ]; then cmd "cp -r ${ORIG_COSI}/src/  ./"; fi
-
-#Added by Alexander Shapiro
-#######################################
-$CP $mol/c2.asc ./
-$CP $mol/ch.asc ./
-$CP $mol/cn.asc ./
-$CP $mol/co.asc ./
-$CP $mol/h2.asc ./
-$CP $mol/nh.asc ./
-$CP $mol/oh.asc ./
-$CP $mol/o2.asc ./
-$CP $mol/O2_H   ./
-#######################################
-
-# Added by Rinat Tagirov
-###########################################################################
-$CP $dat/fudge_As.txt ./
 
 if [ $ODF_IT -eq 0 ]; then
 	
@@ -129,29 +135,17 @@ else
 
 fi
 
-cmd "$CP $ORIG_COSI/fioss.exe ./"
-###########################################################################
-
-$CP ${ORIG_COSI}/MolConc.txt     ./
-
-#Added by Alexander Shapiro
-#############################################
-$CP ${CROSS_SECTION_FILES}/*---* ./
-$CP $INPUT_STARK_BROAD/*         ./
-$CP ${VELO_FILE}                 ./VELO
-$CP $INPUT_SUN_FILE              ./input_sun
-#############################################
-
 if [ ! -d $LINELISTS ]; then abort "The directory $LINELISTS with the linelists does not exist."; fi
 
 ls ${LINELISTS}* &> /dev/null
 
 exit_if_error "The linelists have not been found. The directory $LINELISTS is empty."
 
-#if [ ! -L "$F_DIR/ITx/fort.19.d" ]; then abort "The symbolic link $F_DIR/ITx/fort.19.d to the directory $LINELISTS with the linelists does not exist."; fi
-
-#ln -sv $F_DIR/ITx/fort.19.d fort.19.d
 ln -sv $LINELISTS fort.19.d
+
+ln -sv ${CROSS_SECTION_FILES} ./crs
+
+ln -sv $mol ./mol
 
 if ( isSet $ORIG_COSI2 ); then
   echo "Overwriting files from $ORIG_COSI with files from $ORIG_COSI2 in `pwd`"

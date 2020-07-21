@@ -125,7 +125,7 @@
 
 !      open(nunit1, file='~/Kurucz/ASC/CONVERTED/Molec/'//Molnames(i)//'.asc', status='unknown')
 
-      open(nunit1, file=Molnames(i)//'.asc', status='unknown',
+      open(nunit1, file='./mol/'//Molnames(i)//'.asc', status='unknown',
      *  ACTION='READ')     
 
 

@@ -21,7 +21,6 @@
       CHARACTER (LEN = 6),  PARAMETER :: EDDI_FILE =         'eddies'
 
       CHARACTER (LEN = 10), PARAMETER :: NTP_FILE =          'nltetrapop'
-
       CHARACTER (LEN = 7),  PARAMETER :: NTW_FILE =          'nltewav'
 
       CHARACTER (LEN = 9),  PARAMETER :: atomic_data_file =  'datom.inp'

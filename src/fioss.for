@@ -404,7 +404,7 @@
       print*, 'vdop after decf_syn', vdop
 
 !RT:  BLOCK FOR CALCULATION OF NLTE LINES LISTED IN THE DATOM FILE
-!RT:  FOR FURTHER DETAILS SEE LINOP.FOR
+!RT:  FOR FURTHER DETAILS SEE LINPOP.FOR
 !===========================================================================
 
       NTC = 0
@@ -570,7 +570,7 @@
       CALL DIFFUS (XLAM,T,R,ND,BCORE,DBDR)   !BCORE=Plank (XLAM, T) at R(ND), DBDR=d(BCORE)/dR at R=ND
       ncoop=n
 
-      print*, 'check 1'
+!      print*, 'check 1'
 
       CALL COOP(XLAM,ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $          OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
@@ -578,7 +578,7 @@
      $          ALPHA,SEXPO,AGAUNT,0,DUMMY2,
      $          WAVARR,SIGARR,NF,NFDIM)
 
-      print*, 'check 2'
+!      print*, 'check 2'
 
 !     CALCULATION OF THE CONTINUUM RADIATION FIELD XJC AT THE LINE FREQUENCY
       CALL ELIMIN(XLAM,FNUCONT,DUMMY0,U,Z2D,XJC,R,P,BCORE,
@@ -590,7 +590,7 @@
       refcon=fnucont
 
 
-      print*, 'check 3'
+!      print*, 'check 3'
 
 
       PRINT *,' VERSION 8 / SYNSPEC'
