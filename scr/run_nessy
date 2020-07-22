@@ -128,11 +128,11 @@ HM_DIR=${HM_BASE_DIR}/IT$ODF_IT/
 
 for RUN in $1; do
 
-    if [ $ODF_IT -ne "0" ]; then
+#    if [ $ODF_IT -ne "0" ]; then
 
-       check_dir $HM_DIR$RUN; check_dir $HM_DIR$RUN "e"
+#       check_dir $HM_DIR$RUN; check_dir $HM_DIR$RUN "e"
 
-    else
+#    else
  
        if [ ! -d $HM_DIR$RUN ] || [ ! -n "$(echo `ls $HM_DIR$RUN`)" ]; then
 
@@ -160,7 +160,7 @@ for RUN in $1; do
 
        fi
 
-    fi
+#    fi
 
 done
 }
