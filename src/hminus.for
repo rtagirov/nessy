@@ -81,24 +81,25 @@
 
       CALL tic(timer2)
 
-      CALL RM_FILE('BROYDEN',          '-vf')
-      CALL RM_FILE('NEWBROYDEN',       '-vf')
+      call rm_file('BROYDEN',          '-vf')
+      call rm_file('NEWBROYDEN',       '-vf')
 
-      CALL RM_FILE('wall_time.etl',    '-vf')
-      CALL RM_FILE('wall_time.como',   '-vf')
-      CALL RM_FILE('wall_time.steal',  '-vf')
-      CALL RM_FILE('wall_time.linpop', '-vf')
-      CALL RM_FILE('wall_time.cycle',  '-vf')
-      CALL RM_FILE('wall_time.wrcont', '-vf')
+      call rm_file('wall_time.etl',    '-vf')
+      call rm_file('wall_time.como',   '-vf')
+      call rm_file('wall_time.steal',  '-vf')
+      call rm_file('wall_time.linpop', '-vf')
+      call rm_file('wall_time.cycle',  '-vf')
+      call rm_file('wall_time.wrcont', '-vf')
 
-      CALL RM_FILE('cpu_time.etl',     '-vf')
-      CALL RM_FILE('cpu_time.como',    '-vf')
-      CALL RM_FILE('cpu_time.steal',   '-vf')
-      CALL RM_FILE('cpu_time.linpop',  '-vf')
-      CALL RM_FILE('cpu_time.cycle',   '-vf')
-      CALL RM_FILE('cpu_time.wrcont',  '-vf')
+      call rm_file('cpu_time.etl',     '-vf')
+      call rm_file('cpu_time.como',    '-vf')
+      call rm_file('cpu_time.steal',   '-vf')
+      call rm_file('cpu_time.linpop',  '-vf')
+      call rm_file('cpu_time.cycle',   '-vf')
+      call rm_file('cpu_time.wrcont',  '-vf')
 
       call rm_file('linop.out', '-vf')
+      call rm_file('conv.out',  '-vf')
 !      call rm_file('inine.out', '-vf')
 
       CALL WRSTART; call finish('WRSTART', timer2, .true.)
@@ -144,7 +145,7 @@
 
       call cpu_time(cycle_start)
 
-      call system("echo -n $(date +%s) >> wall_time.cycle")
+!      call system("echo -n $(date +%s) >> wall_time.cycle")
 
       call tic(timer2)
 
@@ -154,13 +155,13 @@
 
       CALL STEAL(JOB); call finish('STEAL', timer2)
 
-      call system("echo ' '$(date +%s) >> wall_time.cycle")
+!      call system("echo ' '$(date +%s) >> wall_time.cycle")
 
       call cpu_time(cycle_finish)
 
       print*, 'HMINUS: TIME USED FOR CYCLE: '//writeTOC(timer2)
 
-      call open_to_append(231, 'cpu_time.cycle'); write(231, '(F6.3)') cycle_finish - cycle_start; close(231)
+!      call open_to_append(231, 'cpu_time.cycle'); write(231, '(F6.3)') cycle_finish - cycle_start; close(231)
 
       IF (INEW .EQ. 1) THEN
 

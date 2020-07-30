@@ -51,7 +51,7 @@
 
       call zgrid(radius, p, z, ND, NP)
 
-      call print_strat(ND, height, T, entot, radius)
+!      call print_strat(ND, height, T, entot, radius)
 
       dpn = ND
 

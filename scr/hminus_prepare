@@ -95,7 +95,7 @@ cp -v ${CHEMIN_FILE}           ./chem.inp
 cmd "cp -v ${ORIG_EXE_FILE} ./"
 
 cmd "cp -v ${FIOSS_DIR}/fioss.exe ./"
-cmd "cp -v ${FIOSS_DIR}/mu        ./"
+#cmd "cp -v ${FIOSS_DIR}/mu        ./"
 
 cmd "cp -v $PREV_RUN_DIR/CARDS ./"
 

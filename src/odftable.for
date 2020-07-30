@@ -18,7 +18,8 @@
 
 !      real*8 :: rho ! density for a given pair of pressure and temperature
 
-      open(unit = 1409, file = 'odf.table.grid')
+!      open(unit = 1409, file = 'odf.table.grid')
+      open(unit = 1409, file = 'odf.inp')
 
       read(1409, *) numt
       read(1409, *) nump
@@ -29,7 +30,7 @@
       read (1409, *) (temp(j), j = 1, numt)
       read (1409, *) (pres(j), j = 1, nump)
 
-      close(unit = 1409)
+!      close(unit = 1409)
 
       tabt = dlog10(temp)
       tabp = dlog10(pres)
@@ -37,11 +38,12 @@
       allocate(odf(nsubbins, nbins, nump, numt))
       allocate(wvlgrid(nbins + 1))
 
-      open(unit = 1408, file = 'odf.table')
+!      open(unit = 1408, file = 'odf.table')
 
       do inu = 1, nbins
 
-         read(1408, *) wvlgrid(inu), wvlgrid(inu + 1)
+!         read(1408, *) wvlgrid(inu), wvlgrid(inu + 1)
+         read(1409, *) wvlgrid(inu), wvlgrid(inu + 1)
 
             do ip = 1, nump
 
@@ -54,7 +56,8 @@
 
 !                  stop
 
-                  read(1408, *) (odf(istep, inu, ip, it), istep = 1, nsubbins)
+!                  read(1408, *) (odf(istep, inu, ip, it), istep = 1, nsubbins)
+                  read(1409, *) (odf(istep, inu, ip, it), istep = 1, nsubbins)
 
 !                  odf(1 : nsubbins, inu, ip, it) =  1d+3 * dlog10(rho * 1.0d+1**(odf(1 : nsubbins, inu, ip, it) / 1d+3))
 
@@ -64,7 +67,8 @@
 
       enddo
 
-      close(unit = 1408)
+!      close(unit = 1408)
+      close(unit = 1409)
 
       deallocate(temp)
       deallocate(pres)

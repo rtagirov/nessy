@@ -68,7 +68,7 @@ C***  DERIVATIVE WITH RESPECT TO ELECTRON DENSITY
 
       ENDIF
 
-      if (isnan(dlowup)) stop 'deriv bf elec is NaN'
+!      if (isnan(dlowup)) stop 'deriv bf elec is NaN'
 
 C***  RATE INTEGRAL (DERIVATIVE OF NET RADIATIVE BRACKET)
 
@@ -118,13 +118,13 @@ C***  PREFACTOR FOR THE DERIVATIVE OF 1/S-BOUND-FREE WITH RESPECT TO N(I)
 
       DLOWUP = DLOWUP + SUM * PI8 * EN(NUP) * ENLTE(LOW) / ENLTE(NUP)
 
-      if (isnan(dlowup)) then 
+!      if (isnan(dlowup)) then 
 
-         print*, 'deriv bf dlowup is NaN'
+!         print*, 'deriv bf dlowup is NaN'
 
-         stop
+!         stop
 
-      endif
+!      endif
 
       RETURN
 
@@ -143,7 +143,7 @@ C***  PREFACTOR FOR THE DERIVATIVE OF 1/S-BOUND-FREE WITH RESPECT TO N(I)
 
       ENDIF
 
-      if (isnan(dlowup)) stop 'deriv bb elec dlowup is NaN'
+!      if (isnan(dlowup)) stop 'deriv bb elec dlowup is NaN'
 
 !     DERIVATIVES WITH RESPECT TO POPNUMBER EN(I)
 
@@ -187,7 +187,7 @@ C***  PREFACTOR FOR THE DERIVATIVE OF 1/S-BOUND-FREE WITH RESPECT TO N(I)
 
       DLOWUP = EN(NUP) * DLOWUP_RB
 
-      if (isnan(dlowup)) stop 'deriv bb dlowup is NaN'
+!      if (isnan(dlowup)) stop 'deriv bb dlowup is NaN'
 
       RETURN
 

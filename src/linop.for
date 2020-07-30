@@ -477,12 +477,12 @@ C     TOTAL LINE OPACITY (ABLIN) AND EMISSIVITY (EMLIN)
 
       cycle3_time = cycle3_finish - cycle3_start
 
-      write(18765, '(7(2x,I5),1x,3(2x,E15.7))'), id, ILmax - ILmin, wlc,
-     $                                               AB0_COUNTER, 
-     $                                               vc, svc, dvc,
-     $                                               cycle1_time,
-     $                                               cycle2_time,
-     $                                               cycle3_time
+!      write(18765, '(7(2x,I5),1x,3(2x,E15.7))'), id, ILmax - ILmin, wlc,
+!     $                                               AB0_COUNTER, 
+!     $                                               vc, svc, dvc,
+!     $                                               cycle1_time,
+!     $                                               cycle2_time,
+!     $                                               cycle3_time
 
       Ffudge=0.
       ABLIN(1:NFREQ)=ABLIN(1:NFREQ)+(opres)/(NFREQ-1)

@@ -45,7 +45,7 @@
       COMMON/INTKEY/INMOD,INTRPL,ICHANG,ICHEMC
       COMMON/OPCPAR/IOPADD,IOPHMI,IOPH2P,IRSCT,IOPHLI,IOPHE1,IOPHE2,IOPFE1
 
-      open(555, file = 'input_sun', STATUS='OLD')
+      open(555, file = 'sun.inp', STATUS='OLD')
       read(555, *) incode
 
 !     original input - routine START and others

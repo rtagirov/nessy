@@ -60,7 +60,7 @@
 
       call cpu_time(como_start)
 
-      call system("echo -n $(date +%s) >> wall_time.como")
+!      call system("echo -n $(date +%s) >> wall_time.como")
 
       tstart = time()
 
@@ -203,11 +203,11 @@
       write (7,'(A100)') LCARD
       close (7)   ! MODHIST
 
-      call system("echo ' '$(date +%s) >> wall_time.como")
+!      call system("echo ' '$(date +%s) >> wall_time.como")
 
       call cpu_time(como_finish)
 
-      call open_to_append(271, 'cpu_time.como'); write(271, '(F6.3)') como_finish - como_start; close(271)
+!      call open_to_append(271, 'cpu_time.como'); write(271, '(F6.3)') como_finish - como_start; close(271)
 
       return
 

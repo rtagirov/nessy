@@ -67,13 +67,15 @@
       LOGICAL ETLKEY, LINEKEY(lastind_nlte)
       logical :: ierr9
 
-      real*8, allocatable, dimension(:) ::    opal, etal
+      real*8, allocatable, dimension(:) :: opal, etal
 
-      real*8, allocatable, dimension(:) ::    xjcind, xjlmean
+      real*8, allocatable, dimension(:) :: xjcind, xjlmean
 
       real*8 :: start, finish
 
-      call cpu_time(start); call system("echo -n $(date +%s) >> wall_time.etl")
+      call cpu_time(start)
+
+!      call system("echo -n $(date +%s) >> wall_time.etl")
 
       print*, 'entered etl: ' // writeTOC()
 
@@ -394,9 +396,11 @@
 
       close(6)
 
-      call system("echo ' '$(date +%s) >> wall_time.etl"); call cpu_time(finish)
+!      call system("echo ' '$(date +%s) >> wall_time.etl")
 
-      call open_to_append(281, 'cpu_time.etl'); write(281, '(F6.3)') finish - start; close(281)
+      call cpu_time(finish)
+
+!      call open_to_append(281, 'cpu_time.etl'); write(281, '(F6.3)') finish - start; close(281)
 
       return
 

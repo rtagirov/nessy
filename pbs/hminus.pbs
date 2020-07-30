@@ -3,9 +3,6 @@
 #parsed by qsub
 #mode
 #run
-#atf
-#car
-#fgr
 
 module load intel-suite
 
@@ -21,35 +18,27 @@ base=$HOME/runs/hminus/IT$mode
 dir=$base/$run
 tmp=$TMPDIR
 
-if [ -d "$dir" ]; then rm -r $dir; fi
+if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
+if [   -d "$dir"    ]; then rm -r $dir;              fi
 
 mkdir -p $dir
 
-#cp -r $inp/gen/* -t $dir
-ln -s $inp/gen/* $dir
+#ln -s $base/gen/* $dir
+cp -r $base/gen/* -t $dir
 
-#cp $inp/fgr/$fgr $dir/FGRID
-#cp $inp/car/$car $dir/CARDS
-#cp $inp/ato/$atf $dir/datom.inp
-
-#ln -s $obj/hminus.exe $dir
-cp $obj/hminus.exe $dir
-#ln -s $obj/fioss.exe  $dir
+#cp $obj/hminus.exe $dir
+#cp $obj/fioss.exe  $dir
+ln -s $obj/hminus.exe $dir
+ln -s $obj/fioss.exe  $dir
 
 ln -s $scr/fioss_prepare $dir
 
-#if [ "$mode" == "lte" ];  then echo lte >     $dir/fort.99; fi
-#if [ "$mode" == "nlte" ]; then echo wrstart > $dir/fort.99; fi
 echo $fort99 > $dir/fort.99
 
-#ln -s -t $tmp $dir/*
 cp -r $dir/* -t $tmp
 
-$tmp/hminus.exe | tee $tmp/hminus.log
+/usr/bin/time -v $tmp/hminus.exe | tee $tmp/log.out
 
 rsync -rptgoDq $tmp/ $dir/
 
 $tmp/fioss_prepare $mode $run
-
-#qstat -f -1 $PBS_JOBID
-#qstat -fxw $PBS_JOBID

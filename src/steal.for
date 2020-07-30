@@ -66,7 +66,9 @@ CMH  XLBKB1, XLBKG2: WAVELENTH RANGE FOR THE ODF
 
       real*8 :: steal_start, steal_finish
 
-      call cpu_time(steal_start); call system("echo -n $(date +%s) >> wall_time.steal")
+      call cpu_time(steal_start)
+
+!      call system("echo -n $(date +%s) >> wall_time.steal")
 
       WRITE(*, *), 'entered steal: job = '//JOB
 
@@ -455,11 +457,11 @@ C***  PROGRAM STOP
 
       CLOSE(99)
 
-      call system("echo ' '$(date +%s) >> wall_time.steal")
+!      call system("echo ' '$(date +%s) >> wall_time.steal")
 
       call cpu_time(steal_finish)
 
-      call open_to_append(302, 'cpu_time.steal'); write(302, '(F6.3)') steal_finish - steal_start; close(302)
+!      call open_to_append(302, 'cpu_time.steal'); write(302, '(F6.3)') steal_finish - steal_start; close(302)
 
       return
 

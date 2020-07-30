@@ -4,7 +4,7 @@
 
       subroutine wrcont(job)
 
-      use MOD_AMBIPOLAR
+!      use MOD_AMBIPOLAR
       use MOD_CALCH
       use MOD_COOP
       use MOD_DIFFUS
@@ -67,7 +67,7 @@
 
       call cpu_time(wrcont_start)
 
-      call system("echo -n $(date +%s) >> wall_time.wrcont")
+!      call system("echo -n $(date +%s) >> wall_time.wrcont")
 
       print*, 'Entering wrcont, JOB = '//JOB
 
@@ -225,19 +225,19 @@
 
       DEDDI3_LOC = MAXLOC(ABS(EDDI(3, 1 : ND) / EDDI_OLD(3, :)) - 1.0D0, 1)
 
-      IF (LAMBDA_ITER .NE. 0) THEN
+!      IF (LAMBDA_ITER .NE. 0) THEN
 
-         CALL OPEN_TO_APPEND(1836, EDDI_FILE)
+!         CALL OPEN_TO_APPEND(1836, EDDI_FILE)
 
-         WRITE(1836, '(I5,3(2x,E15.7,2x,I3))') LAMBDA_ITER, DEDDI1, DEDDI1_LOC, DEDDI2, DEDDI2_LOC, DEDDI3, DEDDI3_LOC
+!         WRITE(1836, '(I5,3(2x,E15.7,2x,I3))') LAMBDA_ITER, DEDDI1, DEDDI1_LOC, DEDDI2, DEDDI2_LOC, DEDDI3, DEDDI3_LOC
 
-         CLOSE(1836)
+!         CLOSE(1836)
 
-      ENDIF
+!      ENDIF
 
 !=============================================================================================================================
 
-      call AMBIPOLAR(ND, N, T, ENTOT, RNE, LEVEL, RADIUS, POPNUM, RSTAR, timer)
+!      call AMBIPOLAR(ND, N, T, ENTOT, RNE, LEVEL, RADIUS, POPNUM, RSTAR, timer)
 
 !     store the new continuum radiation field
       IF (LASTK.EQ.NF) ETOT(1:ND)=ETOT(1:ND)/XTOT(1:ND)
@@ -307,11 +307,11 @@
 
       ENDIF
 
-      call system("echo ' '$(date +%s) >> wall_time.wrcont")
+!      call system("echo ' '$(date +%s) >> wall_time.wrcont")
 
       call cpu_time(wrcont_finish)
 
-      call open_to_append(261, 'cpu_time.wrcont'); write(261, '(F7.3)') wrcont_finish - wrcont_start; close(261)
+!      call open_to_append(261, 'cpu_time.wrcont'); write(261, '(F7.3)') wrcont_finish - wrcont_start; close(261)
 
       return
 

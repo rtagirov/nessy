@@ -111,7 +111,8 @@ C***  MODEL HEADER
 
       WRITE(*, '(/,A,/)') '------------------------------ CARDS FILE START ------------------------------'
 
-      OPEN (1, FILE = 'CARDS', STATUS = 'OLD'); REWIND 1
+!      OPEN (1, FILE = 'CARDS', STATUS = 'OLD'); REWIND 1
+      OPEN (1, FILE = 'cards.inp', STATUS = 'OLD'); REWIND 1
 
    10 READ (1,11,END=66) KARTE
    11 FORMAT (A)
@@ -453,7 +454,8 @@ c    this option should be switched off within steal
 C*** NO TEMPERATURE PLOT (DEFAILT)
       TPLOT=.FALSE.
      
-      OPEN (1,FILE='CARDS')
+!      OPEN (1,FILE='CARDS')
+      OPEN (1,FILE='cards.inp')
       REWIND 1
     8 READ (1,4,END=66) KARTE
     4 FORMAT (A)
@@ -721,7 +723,8 @@ C***  DEFAULT VALUES
       TEFF=-1.0d0
       NOTEMP=.FALSE.
      
-      OPEN (1,FILE='CARDS')
+!      OPEN (1,FILE='CARDS')
+      OPEN (1,FILE='cards.inp')
       REWIND 1
     8 READ (1,4,END=66) KARTE
     4 FORMAT (A)
@@ -827,7 +830,8 @@ C                         ========
       implicit real*8(a-h,o-z)
      
       CHARACTER KARTE*80
-      OPEN (1,FILE='CARDS')
+!      OPEN (1,FILE='CARDS')
+      OPEN (1,FILE='cards.inp')
       REWIND 1
       LSOPA=-1
       LSINT=-1
@@ -891,7 +895,8 @@ C                         ========
       real*8  :: XL
       integer :: IND,IND1,IND2,INC
       
-      OPEN (1,FILE='CARDS')
+!      OPEN (1,FILE='CARDS')
+      OPEN (1,FILE='cards.inp')
       LSOPA=-1
       LSINT=-1
       NLINE=0

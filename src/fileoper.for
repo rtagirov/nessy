@@ -2,28 +2,29 @@
 
       implicit none
 
-      CHARACTER (LEN = 9),  PARAMETER :: NLTE_DIR_1 =        'nlte/lev/'
-      CHARACTER (LEN = 9),  PARAMETER :: NLTE_DIR_2 =        'nlte/tra/'
-      CHARACTER (LEN = 9),  PARAMETER :: NLTE_DIR_3 =        'nlte/rat/'
-      CHARACTER (LEN = 8),  PARAMETER :: LTE_DIR_1 =         'lte/lev/'
-      CHARACTER (LEN = 8),  PARAMETER :: LTE_DIR_2 =         'lte/tra/'
+      CHARACTER (LEN = 9),  PARAMETER :: NLTE_DIR_1 =       'nlte/lev/'
+      CHARACTER (LEN = 9),  PARAMETER :: NLTE_DIR_2 =       'nlte/tra/'
+      CHARACTER (LEN = 9),  PARAMETER :: NLTE_DIR_3 =       'nlte/rat/'
+      CHARACTER (LEN = 8),  PARAMETER :: LTE_DIR_1 =        'lte/lev/'
+      CHARACTER (LEN = 8),  PARAMETER :: LTE_DIR_2 =        'lte/tra/'
 
-      CHARACTER (LEN = 3),  PARAMETER :: NRRM_FILE_NAME =    'RNR' ! NRRM = Net Radiative Rate Matrix
-      CHARACTER (LEN = 3),  PARAMETER :: NCRM_FILE_NAME =    'CNR' ! NCRM = Net Collision Rate Matrix
-      CHARACTER (LEN = 3),  PARAMETER :: NTRM_FILE_NAME =    'TNR' ! NTRM = Net Total Rate Matrix
+      CHARACTER (LEN = 3),  PARAMETER :: NRRM_FILE_NAME =   'RNR' ! NRRM = Net Radiative Rate Matrix
+      CHARACTER (LEN = 3),  PARAMETER :: NCRM_FILE_NAME =   'CNR' ! NCRM = Net Collision Rate Matrix
+      CHARACTER (LEN = 3),  PARAMETER :: NTRM_FILE_NAME =   'TNR' ! NTRM = Net Total Rate Matrix
 
-      CHARACTER (LEN = 7),  PARAMETER :: atm_mod_file     =  'atm.inp'
+      CHARACTER (LEN = 7),  PARAMETER :: atm_mod_file   =   'atm.inp'
 
-      CHARACTER (LEN = 12), PARAMETER :: VEL_FIELD_FILE =    'vel_field.in'
+      CHARACTER (LEN = 12), PARAMETER :: VEL_FIELD_FILE =   'vel_field.in'
 
-      CHARACTER (LEN = 5),  PARAMETER :: CONV_DIR =          'conv/'
+      character (len = 5),  parameter :: conv_dir =         'conv/'
+      character (len = 8),  parameter :: conv_file_name =   'conv.out'
 
-      CHARACTER (LEN = 6),  PARAMETER :: EDDI_FILE =         'eddies'
+      CHARACTER (LEN = 6),  PARAMETER :: EDDI_FILE =        'eddies'
 
-      CHARACTER (LEN = 10), PARAMETER :: NTP_FILE =          'nltetrapop'
-      CHARACTER (LEN = 7),  PARAMETER :: NTW_FILE =          'nltewav'
+      CHARACTER (LEN = 10), PARAMETER :: NTP_FILE =         'nltetrapop'
+      CHARACTER (LEN = 7),  PARAMETER :: NTW_FILE =         'nltewav'
 
-      CHARACTER (LEN = 9),  PARAMETER :: atomic_data_file =  'datom.inp'
+      CHARACTER (LEN = 9),  PARAMETER :: atomic_data_file = 'datom.inp'
 
       public
 

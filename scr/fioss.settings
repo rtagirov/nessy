@@ -21,7 +21,6 @@ F_DIR=$BASE_DIR/fioss
 CROSS_SECTION_FILES=$inp/crs/002
 ORIG_COSI=$BASE_DIR/hminus/IT$ODF_IT/$RUN
 ORIG_EXE=$nes/obj
-VELO_FILE=$inp/vel/velo_2
 INPUT_SUN_FILE=$inp/dat/sunHHe10K10N10Th_PF2.inp5
 INPUT_STARK_BROAD=$inp/lin/002
 LINELISTS=$inp/lin/kurucz_comb_air_parts/
@@ -32,3 +31,5 @@ NTP_FILE_NAME=NLTETRAPOP
 
 NTW_FILE=${ORIG_COSI}/$NTW_FILE_NAME
 NTP_FILE=${ORIG_COSI}/$NTP_FILE_NAME
+
+#VELO_FILE=$inp/vel/velo_2

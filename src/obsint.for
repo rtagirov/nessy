@@ -278,11 +278,11 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
 
         if (contr_l(l) .lt. 1.E-30) contr_l(l)=0.
 
-        write(250,280), L, contr_c(l), contr_l(l) 
+!        write(250, 280), L, contr_c(l), contr_l(l) 
 
         endif
 
- 280    format(I3, 2x, E12.4, E12.4)
+! 280    format(I3, 2x, E12.4, E12.4)
 
         DO 53 K=1,NFOBR
           IF (TAU(K,N) .GT. 1.E-10) THEN
@@ -444,19 +444,19 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
 
          FH(K) = ZZ1 - (tau1 - 1.0) / (tau1 - tau2) * (ZZ1 - ZZ2)
 
-         if ((JP .eq. 1) .and. (K .eq. 1000)) then
+!         if ((JP .eq. 1) .and. (K .eq. 1000)) then
 
-            open(270, file = 'atmosinfo.txt', status = 'unknown')
+!            open(270, file = 'atmosinfo.txt', status = 'unknown')
 
-            do ll = 1, ND
+!            do ll = 1, ND
 
-               write(270, *), L, Z(ll), TAUSSUM(ll)
+!               write(270, *), L, Z(ll), TAUSSUM(ll)
 
-            enddo
+!            enddo
 
-            close(270)
+!            close(270)
 
-         endif
+!         endif
 
 !        3) write the TAU = 1 to file
          lambda = RWLAE + DLAM(K) ! the frequency point

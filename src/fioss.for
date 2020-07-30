@@ -103,7 +103,7 @@
 
       integer :: NVD
 
-      LOGICAL :: LOPA
+!      LOGICAL :: LOPA
 
       CHARACTER KARTE*80, MODHEAD*104, PHEAD*28
 
@@ -153,12 +153,10 @@
 
       !MH   VARIABILITY OF VELOCITY ACTIV/NONACTIVE
       !MH var = true then variation of Doppler velocity considered
-      ! VAR = .TRUE.
       VAR	= .FALSE. 
       !MH ADDVELO TRUE then ASPLUND 2000, A&A 359, 729 is considered
       ADDVELO = .FALSE.
-      ! ADDVELO = .TRUE.
-      LOPA	= .TRUE.
+!      LOPA	= .TRUE.
 !***  TAUMAX = MAXIMUM OPTICAL DEPTH WHERE INTEGRATION IS TRUNCATED
 !     taumax is not used anymore since all points are needed for an
 !     evaluation of the electron scattering integral
@@ -302,11 +300,13 @@
       print*, 'vdop after readmod', vdop
 
 !      open(unit = 3, file = '../mu')
-      open(unit = 3, file = 'mu')
+!      open(unit = 3, file = 'mu')
 
-      read(3, *) mu
+!      read(3, *) mu
 
-      close(3)
+!      close(3)
+
+      mu = 1.0
 
       R = R - 1.0
 
@@ -335,7 +335,7 @@
      $             NCHARG_nlte,EDDARR,EDDI,NOM_nlte,WCHARM,N_nlte,lastind_nlte,
      $             EINST_nlte,MODHEAD,JOBNUM)
 
-      !***  READING VERTICAL VELOCITY ASPLUND 2000, A&A 359, 729
+      !*** READING VERTICAL VELOCITY ASPLUND 2000, A&A 359, 729
       if (ADDVELO) then
         open (IFL,file='VELO',STATUS='OLD')
         DO L=1,ND
@@ -696,13 +696,21 @@
       !***  OPENING FILE FOR EMLIN, ABLIN OUTPUT
       !***  WRITTEN IN OPAC, CALLED BY SYNOPA
       !***  FREQUENCY GRID WRITTEN IN INTRFC
-      write (flnam,'(F14.0)') XLAM
-      flnam = adjustl(trim(flnam)//'lopa')
-      open (200,file=flnam,status='unknown')
+
+      if (lopa) then
+
+          write(flnam, '(F14.0)') XLAM
+          flnam = adjustl(trim(flnam)//'lopa')
+
+          open(200, file = flnam, status = 'unknown')
+
+      endif
+
       !*** micha: Open the ABEMLIN File according to the setting in CARDS
       !***  1) get the full filename
       write(flnam,'(F14.0)') XLAM
       flnam=adjustl(trim(flnam)//'abemlin')
+
       flnam=adjustl(adjustr(CARDS%ABEMLIN_PATH)//flnam)
       !*** block for ABEMLIN write/read
       !***  2) decide what to do - auto: read, write
@@ -720,7 +728,9 @@
       select case(CARDS.ABEMLIN)
         case(CARD_PARAMS.ABEMLIN_READ)  !** read values from file
           open(201,file=flnam,status='OLD')
-          close(200)
+
+          if (lopa) close(200)
+
         case(CARD_PARAMS.ABEMLIN_WRITE) !** write values to file
           open(201,file=flnam,status='REPLACE',action='write')
       end select
@@ -733,17 +743,17 @@
 
       call cpu_time(synopa_end)
 
-      print*, 'fioss: time taken by synopa = ', synopa_end - synopa_start
+      print*, 'fioss: time taken by synopa = ',     synopa_end - synopa_start
+      print*, 'fioss: time elapsed after synopa: ', TOC()
 
-      PRINT *,'FIOSS: Time elapsed after SYNOPA: ',TOC()
-      close (unit=200)
-      close (unit=201)
+      if (lopa) close (unit = 200)
+                close (unit = 201)
+
       if(CARDS%PRINT_TAU) then
         write(flnam,'(F14.0)') XLAM
         flnam=adjustl(trim(flnam)//'tau')
         open  (unit=9998,name=flnam)
       endif
-
 
       DO L = 1, ND
 
@@ -807,13 +817,14 @@
 
         !***  LOOP FOR EACH IMPACT PARAMETER ===========================
 
-         call system('mkdir -p contr')
+!         call system('mkdir -p contr')
 
          write(rwlae_str, '(i8)') int(rwlae)
 
 !         open(250, file='../contr.txt',access='append')
-         open(250, file='./contr/'//trim(adjustl(rwlae_str))//'.contr')
-         write(250,*), rwlae
+
+!         open(250, file='./contr/'//trim(adjustl(rwlae_str))//'.contr')
+!         write(250,*), rwlae
 
 !         N_CLV = 100
 !         N_CLV = 20
@@ -918,7 +929,7 @@
 
         ENDDO ! LOOP OVER JP (IMPACT PARAMETERS)
 
-        close(250)
+!        close(250)
 
         !***  THE EXTREME FREQUENCY POINTS DEFINE THE REFERENCE CONTINUUM
         print *

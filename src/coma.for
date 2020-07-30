@@ -190,6 +190,8 @@
 
       PR_COND = ITNEL_COND .AND. DEPTH_PR_COND .AND. JOBNUM_PR_COND
 
+      pr_cond = .false.
+
 ! Rinat Tagirov: printing the rates
 !**********************************************************************************************************************
 

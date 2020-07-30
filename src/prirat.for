@@ -6,7 +6,9 @@ C**********  MODULNAME: PRIRAT    ******* 24/03/87  21.31.18.******   130 KARTEN
       SUBROUTINE PRIRAT (ITNE,N,LEVEL,L,CRATE,RRATE,RATCO,EN,
      $           IFRRA,MODHEAD,JOBNUM,NETTO )
 C***  OUTPUT OF RATE MATRIX ON FT09   *********************************
-      use MOD_AMBIPOLAR
+
+!      use MOD_AMBIPOLAR
+
       implicit none
       integer, intent(in) :: JOBNUM, ITNE, N, L, IFRRA, NETTO
       real*8,intent(in)    :: EN(N)

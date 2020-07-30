@@ -8,4 +8,4 @@ MAXITER= 1.
 #ABEMLIN READ abemlin/
 #ABEMLIN WRITE abemlin/
 #ABEMLIN AUTO ../abemlin/
-PRINT TAU
+#PRINT TAU

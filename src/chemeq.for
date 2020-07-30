@@ -884,7 +884,7 @@
       print*, 'readMolconc allocation'
       allocate(molconc(Nmol,ND))
       nunit1=990
-      open(nunit1, file='MolConc.txt', status='old',  ACTION='READ')
+      open(nunit1, file='molconc.inp', status='old',  ACTION='READ')
 
       do j=1, Nmol
 
@@ -1143,7 +1143,7 @@
       enddo
  
       nunit1=990
-      open(nunit1, file='MolConc.txt', status='unknown')
+      open(nunit1, file='molconc.inp', status='unknown')
 
       do j=1, Nmol 
        
@@ -1159,7 +1159,7 @@
 
  
       nunit1=690
-      open(nunit1, file='Molpres.txt', status='unknown')
+      open(nunit1, file='molpres.inp', status='unknown')
 
  
 

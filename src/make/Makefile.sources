@@ -74,7 +74,6 @@ constants.for \
 varhminus.for \
 varsteal.for \
 utils.for\
-ambipolar.for\
 formats.for\
 sequin.for\
 priex.for\
@@ -211,3 +210,4 @@ elresp.for\
 comblock.for\
 odftable.for\
 auxhminus.for
+#ambipolar.for\

@@ -113,7 +113,7 @@
      $           ELEMENT,SYMBOL,NOM,KODAT,ATMASS,STAGE,NFIRST,
      $           NLAST,WAVARR,SIGARR,eleatnum,levatnum,NFDIM) ! NFDIM is known from varhminus module
 
-      call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
+!      call print_eion(N, level, levatnum, ncharg, eion, elevel, eion - elevel)
 
 !      call print_istageinfo(natom, N, symbol, nfirst, nlast, ncharg)
 

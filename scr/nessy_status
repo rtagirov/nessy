@@ -2,7 +2,7 @@
 #
 # Print the status of all running fioss programms and their controlling scripts.
 #
-# Status is the mem, cpu usage etc, the working directory and the last two lines of the frequencies.log
+# Status is the mem, cpu usage etc, the working directory and the last two lines of the log.out
 #
 # It accepts one argument, a filter. If FILTER is set, it only displays the programms that contain 
 # FILTER in its directory name. E.g cosi_status hminus/IT4 
@@ -33,13 +33,13 @@ for PID in `pgrep fioss.exe`; do
       cd /proc/$PID/cwd/;
       echo "$bold$PATHNAME$offbold"
       echo -ne " F: $PID  \t"
-      if [[ -r "frequencies.log" ]]; then 
-        echo " frequencies(2): `[[ $(tail -n2 frequencies.log | wc -l) == 0 ]] && echo " - - - - - -" || tail -n2 frequencies.log | head -n1`"
-        echo -en " P: `ps -p $PID -o ppid=`  \t            (1): `tail -n1 frequencies.log` "
+      if [[ -r "log.out" ]]; then 
+        echo " frequencies(2): `[[ $(tail -n2 log.out | wc -l) == 0 ]] && echo " - - - - - -" || tail -n2 log.out | head -n1`"
+        echo -en " P: `ps -p $PID -o ppid=`  \t            (1): `tail -n1 log.out` "
         [[ -e pause || -e ../pause ]] && echo -n " ( paused )"
         [[ -e stop || -e ../stop ]] && echo -n " ( stop at end )"
         echo
-	FREQ="`tail -n1 frequencies.log | grep -o Freq:[^,]* | cut -b 7-`"
+	FREQ="`tail -n1 log.out | grep -o Freq:[^,]* | cut -b 7-`"
 	[[ -r output/fioss-$FREQ.out ]] &&   echo "                               `tail -n1 output/fioss-$FREQ.out | grep -Eo '.{11}ID.{20}'`"; echo
       fi
       #echo "\- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"

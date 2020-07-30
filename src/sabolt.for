@@ -68,7 +68,7 @@ ccc      data ionequ,nreflw,nrefup/3,1,18,29,18,28,39/
 
 
       WRITEOUT_TION=.false.       ! No writeout
-      WRITEOUT_DILFAC=.true.     ! No Writeout
+      WRITEOUT_DILFAC=.false.     ! No Writeout
 c	do i=1,3 
 c	print *,'SABOLT 1: zeta',zeta(i)
 c	enddo
@@ -318,6 +318,7 @@ cc               tion_pot(l,i)=tion(nrepl(i))
           close (10)
         enddo
       endif
+
       if(WRITEOUT_DILFAC) then
         flname='Dilfac.mdisp'
         open (10,file=flname,status='unknown')

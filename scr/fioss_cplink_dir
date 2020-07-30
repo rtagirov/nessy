@@ -35,24 +35,24 @@ fi
 #CI-------1  FeI------1    fioss.exe   input_sun   NaI-----10  NaI------7  RADIOL      SiI------3
 #CI-------2  FeI------2    fioss_do_mu  MgI------1  NaI------2  NaI------8  SI-------1  SiI------4  `echo fort.*`"
 
-FILES="fudge_As.txt
-       fioss.exe
-       fioss_prepare
+FILES="fudge.inp
        datom.inp
-       fgrid.inp
        atm.inp
+       molconc.inp
+       sun.inp
        POPNUM
        RADIOC
        RADIOL
        MODFILE
-       Dilfac.mdisp
-       MolConc.txt
-       VELO
-       input_sun
-       mu
        crs
        mol
+       Dilfac.mdisp
+       fioss.exe
        `echo fort.*`"
+#       fgrid.inp
+#      fioss_prepare
+#      VELO
+#      mu
 
 if [ -f $NTW_FILE_NAME ] && [ -f $NTP_FILE_NAME ]; then FILES=$FILES" $NTW_FILE_NAME $NTP_FILE_NAME"; fi
 
@@ -77,6 +77,9 @@ cd    "$NEW"
 for A in $FILES; do
 [[ -e $OLD/$A ]] &&  ln -s $OLD/$A . 
 done;
+#for A in $FILES; do
+#[[ -e $OLD/$A ]] &&  cp -r $OLD/$A .
+#done;
 
 [[ -h "$NEW/CARDS" ]] && rm "$NEW/CARDS"
 [[ -e "$OLD/CARDS" ]] && cp "$OLD/CARDS" "$NEW/"

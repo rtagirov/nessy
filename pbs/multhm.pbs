@@ -2,56 +2,23 @@
 
 #rm -f $HOME/log/*
 
-#nums=`seq 0 1`
-#nums=0
+mode=$1
 
-mode=1
-#mode=0
+if [ "$mode" != "0" ] && [ "$mode" != "1" ]; then echo "mode is not recognized. abort."; exit 1; fi
 
-#wt=00:03:00
-wt=00:15:00
+run=$2
 
 ncpus=1
 
+wt=00:15:00
+
 mem=1gb
 
-#for n in $nums; do
-
-#    name=test$n
-
-#    qsub -v mode=$mode,run=$name -o $HOME/log/$JOB_ID -e $HOME/log/$JOB_ID -N $name -lwalltime=$wt -lselect=1:ncpus=$ncpus:mem=$mem hminus.pbs
-
-#done
-
-#name=nlte_test
-name=inv_lapack
-#name=inv_regular
-#name=lte_test
-
-#fgr=FGRID_red_5_red_20
-#car=CARDS_EPS2_LBKG
-#atf=nlte/nlte11
-
-#fgr=FGRID_DEF
-#car=CARDS_DEF
-#atf=DEF_NLTE_MARKS
-
-#qsub -v mode=$mode,run=$name,fgr=$fgr,car=$car,atf=$atf -o $HOME/log/$JOB_ID  -e $HOME/log/$JOB_ID -N $name -lwalltime=$wt -lselect=1:ncpus=$ncpus:mem=$mem hminus.pbs
-qsub -v mode=$mode,run=$name -o $HOME/log/$JOB_ID  -e $HOME/log/$JOB_ID -N $name -lwalltime=$wt -lselect=1:ncpus=$ncpus:mem=$mem hminus.pbs
-
-#str=$(ls ./log/*.ER)
-
-#i=0
-
-#for elem in $str; do
-
-#    if [ $i == 0 ]; then jobids=${elem//[^0-9]/};         fi
-#    if [ $i != 0 ]; then jobids=$jobids:${elem//[^0-9]/}; fi
-
-#    i=$(echo $i+1 | bc)
-
-#done
-
-#echo $jobids
-
-#qsub -W afterany:$jobids -o $HOME/log/$JOB_ID -e $HOME/log/$JOB_ID -N sleep sleep.pbs
+qsub -v \
+mode=$mode,\
+run=$run \
+-o $HOME/log/$JOB_ID \
+-e $HOME/log/$JOB_ID \
+-N $run \
+-lwalltime=$wt \
+-lselect=1:ncpus=$ncpus:mem=$mem hminus.pbs

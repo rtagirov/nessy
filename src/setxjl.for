@@ -67,8 +67,8 @@
 
       DEPTH_ACC_COND = L .NE. ND
 
-      IF (ITNEL .EQ. 1) WRITE(*, '(/,2x,A,5x,A,5x,A,3x,A,7x,A,11x,A,12x,A,13x,A,19x,A,17x,A,14x,A,11x,A,14x,A,13x,A,/)'),
-     $                           'LI', 'L', 'BI', 'IND', 'LL', 'UL', 'SLO', 'SLN', 'DE', 'JO', 'DJ', 'DJ/JO', 'ULD', 'LLD'
+!      IF (ITNEL .EQ. 1) WRITE(*, '(/,2x,A,5x,A,5x,A,3x,A,7x,A,11x,A,12x,A,13x,A,19x,A,17x,A,14x,A,11x,A,14x,A,13x,A,/)'),
+!     $                           'LI', 'L', 'BI', 'IND', 'LL', 'UL', 'SLO', 'SLN', 'DE', 'JO', 'DJ', 'DJ/JO', 'ULD', 'LLD'
 
       XJLAPP(1 : LASTIND) = XJL(1 : LASTIND)
 
@@ -81,7 +81,8 @@
 
       AccFactCutOff = 10.0D+0
 
-      PRINT_COND = IND .EQ. 1
+!      PRINT_COND = IND .EQ. 1
+      PRINT_COND = .false.
 
       LOW = INDLOW(IND)
       NUP = INDNUP(IND)

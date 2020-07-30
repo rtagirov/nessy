@@ -1,7 +1,7 @@
       module mod_opac
 
-!      character*(*), private, parameter :: FMT_LOPA = '(1pe12.5)'
-      character*(*), private, parameter :: FMT_LOPA = '(1pe12.5,1x,1pe12.5)'
+      character*(*), private, parameter :: FMT_LOPA = '(1pe12.5)'
+!      character*(*), private, parameter :: FMT_LOPA = '(1pe12.5,1x,1pe12.5)'
 
       contains
 
@@ -111,7 +111,7 @@ CMH   CFF         = (4 e6/3 c h) * (2 pi/3 k m_e3)^(1/2)
 
       REAL*8  :: HydIonDeg, HeIonDeg
 
-      integer :: UnitRatios
+!      integer :: UnitRatios
 
       integer :: idx
 
@@ -124,14 +124,11 @@ CMH   CFF         = (4 e6/3 c h) * (2 pi/3 k m_e3)^(1/2)
 
 !******************************************************************************************************************************************
 !RINAT TAGIROV
-      UnitRatios = 10506
-      OPEN(UNIT=UnitRatios, FILE="absorption_coefratio.out",
-     $ ACTION="write", ACCESS="append") ! file for printing out the ratios of absorption coefficients
-!2001  FORMAT('wavelength',10x,'height_index',10x,'temperature',10x,
-!     $ 'n_e',10x,'HM/(H+HM)',10x,'rest/(H+HM)')
-2000  FORMAT(E15.7,8x,I2,8x,E15.7,8x,E15.7,8x,E15.7,8x,
-     $ E15.7,8x,E15.7,8x,E15.7,8x,E15.7,8x,E15.7)
-!      WRITE(UnitRatios, 2001)
+
+!      UnitRatios = 10506
+
+!      open(unit = UnitRatios, file = "absorption_coefratio.out", action = "write", access = "append") ! file for printing out the ratios of absorption coefficients
+!2000  format(E15.7,8x,I2,8x,E15.7,8x,E15.7,8x,E15.7,8x,E15.7,8x,E15.7,8x,E15.7,8x,E15.7,8x,E15.7)
 !******************************************************************************************************************************************
 
 CMH   IELHM SET TO 1, FIRST ELEMENT IS HMINUS
@@ -330,17 +327,17 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
            CALL GFF_TEMP(1, 1.0D0, PlanckConstantEV * FR, BoltzmannConstantEV * T, SG)
 
-           WRITE(UnitRatios, 2000), xlam, ID, T, ANE,
-     $     AbsCoefHM * 1.0D+2 / (AbsCoefH + AbsCoefHM),
-     $     AbsCoefRest * 1.0D+2 / (AbsCoefH + AbsCoefHM),
-     $     GFREE(T, FR / CH), SG, HydIonDeg * 1.0D+2, HeIonDeg * 1.0D+2
+!           WRITE(UnitRatios, 2000), xlam, ID, T, ANE,
+!     $     AbsCoefHM * 1.0D+2 / (AbsCoefH + AbsCoefHM),
+!     $     AbsCoefRest * 1.0D+2 / (AbsCoefH + AbsCoefHM),
+!     $     GFREE(T, FR / CH), SG, HydIonDeg * 1.0D+2, HeIonDeg * 1.0D+2
 
         ENDIF
 !***********************************************************************************
 
       ENDDO FCONT_LOOP
 
-      CLOSE(UnitRatios)
+!      CLOSE(UnitRatios)
 
       if(mode.eq.0) return
 
@@ -384,21 +381,20 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
         endif
       ENDIF  ! EMABLIN /= EMABLIN_READ
 
-
       !***********************************************************
       !***  MARGIT HABERREITER
       !***  WRITING OUTPUT FOR NON-LTE BLANKETING
       !***  WHICH WILL BE THE INPUT FOR HMINUS-ROUTINE
       !***  ID: depth point
       !***  NFREQ: number of frequency points
-      write (200,*) nfreq, id
+      if (lopa) write(200, *) nfreq, id
 
 !*****************************
-       freqt = (freq(1) + freq(NFREQ)) / 2.0
+      freqt = (freq(1) + freq(NFREQ)) / 2.0
 
-       lambdat = (clight_cgs / freqt) * 1.0d8
+      lambdat = (clight_cgs / freqt) * 1.0d8
 
-       contf = 1.0
+      contf = 1.0
 
 !====================================================================
 !FUDGE REGULAR
@@ -419,45 +415,48 @@ cmh     correction by X1 = 1. - exp(-h*nu/k*T) obsolete for Hminus
 
 !       totH=sum(popul(1:12,id))
 
-       ABLIN(1 : NFREQ) = ABLIN(1 : NFREQ) + ABSO(1 : NFREQ) * (contf - 1.0d0)
+      ABLIN(1 : NFREQ) = ABLIN(1 : NFREQ) + ABSO(1 : NFREQ) * (contf - 1.0d0)
 
-       totop(1 : NFREQ) = ABLIN(1 : NFREQ) + ABSO(1 : NFREQ)
+      totop(1 : NFREQ) = ABLIN(1 : NFREQ) + ABSO(1 : NFREQ)
 
-       EMLIN(1 : NFREQ) = EMLIN(1 : NFREQ) + ABSO(1 : NFREQ) * (contf - 1.0d0) * PLAN(max(NDPMIN, id))
+      EMLIN(1 : NFREQ) = EMLIN(1 : NFREQ) + ABSO(1 : NFREQ) * (contf - 1.0d0) * PLAN(max(NDPMIN, id))
 
-       do i = 1, nfreq
-!       do i = nfreq, 1, -1
+      if (lopa) then
 
-!       here the line opacity is written to the *.lopa files
-!       this opacity is pure line opacity except for the 160 -- 320 nm region
-!       in which the SORCE fudging is performed
-!       (continuum opacity added to the line opacity in order for the agreement
-!       with the observed spectrum to be attained)
-!       the units of the opacity is cm^{-1}
-!       this can be verified by analysing the formulas for
-!       the molecular lines in linop.for (which is called by opac.for) and chemeq.for
+          do i = 1, nfreq
+!         do i = nfreq, 1, -1
 
-        write (200, FMT_LOPA) ablin(i)
-!        write (200, FMT_LOPA) (clight_cgs / freq(i)) * 1.0d8, ablin(i)
-!        write (200, FMT_LOPA) totop(i)
-!        write (200, FMT_LOPA) abso(i)
+!         here the line opacity is written to the *.lopa files
+!         this opacity is pure line opacity except for the 160 -- 320 nm region
+!         in which the SORCE fudging is performed
+!         (continuum opacity added to the line opacity in order for the agreement
+!         with the observed spectrum to be attained)
+!         the units of the opacity is cm^{-1}
+!         this can be verified by analysing the formulas for
+!         the molecular lines in linop.for (which is called by opac.for) and chemeq.for
 
-        IF ((ABLIN(I) .LT. 0.) .OR. (EMLIN(I) .LT. 0.)) THEN
-          PRINT '(i0,X,i0," ",$)',I,ID
-          PRINT '("opac: NEGATIVE OPACITY,'//
-     &             ' EMISSIVITY : ",$)' ! WARNING!!!
-          PRINT *,I, ABLIN(I),EMLIN(I)
-        ENDIF
-      enddo
+             write (200, FMT_LOPA) ablin(i)
+!         write (200, FMT_LOPA) (clight_cgs / freq(i)) * 1.0d8, ablin(i)
+!         write (200, FMT_LOPA) totop(i)
+!         write (200, FMT_LOPA) abso(i)
 
-  300 CONTINUE
+             if ((ablin(i) .lt. 0.0) .or. (emlin(i) .lt. 0.0)) then
+                print '(i0,X,i0," ",$)', i, id
+                print '("opac: NEGATIVE OPACITY,'//' EMISSIVITY : ",$)' ! WARNING!!!
+                print*, i, ablin(i), emlin(i)
+             endif
 
-!     Rinat, use it to calculate continuum
+          enddo
 
+      endif
+
+  300 continue
+
+!     multiplication by zero = take into account only continuum opacity
       ABSO(1:NFREQ)=ABSO(1:NFREQ)+ABLIN(1:NFREQ)!*0.
       EMIS(1:NFREQ)=EMIS(1:NFREQ)+EMLIN(1:NFREQ)!*0.
 
-  225 CONTINUE
+  225 continue
 
 !     Detailed opacity and emissivity in hydrogen lines (for IHYL = 1)
 

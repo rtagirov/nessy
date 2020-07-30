@@ -180,83 +180,97 @@ C***  NEGINTL COUNTS THE ERROR MESSAGES  FROM SUBR. LINPOP
 
 !==========================================================================================
 
-      IF (LAMBDA_ITER .EQ. 1) THEN; CALL MKDIR(CONV_DIR); CALL CLEAN_DIR(CONV_DIR); ENDIF
+      if (full_conv_print) then
 
-      DO NA = 1, NATOM
-
-         CONV_FILE = CONV_DIR//ELEMENT(NA)
-
-         CALL OPEN_TO_APPEND(999 + NA, CONV_FILE)
-
-         IF (LAMBDA_ITER .EQ. 1) THEN
-
-             WRITE(999 + NA, '(3x, A, 5x, A, 6x, A, 1x, $)') 'LI', 'MAX', 'DI'
-
-             DO J = NFIRST(NA), NLAST(NA); WRITE(999 + NA, '(2x, A10, $)') LEVEL(J); ENDDO
-
-             WRITE(999 + NA, '(/)')
-
-         ENDIF
-
-         WRITE(999 + NA, '(I5, 2x, ES9.3, 2x, I3, $)') LAMBDA_ITER, CORMAX_ELE(NA), DCM_ELE(NA)
-
-         DO J = NFIRST(NA), NLAST(NA)
-
-            IF (J .NE. NLAST(NA)) WRITE(999 + NA, '(3x, ES9.3, $)') CORMAX_LEV(J)
-            IF (J .EQ. NLAST(NA)) WRITE(999 + NA, '(3x, ES9.3)')    CORMAX_LEV(J)
-
-         ENDDO
-
-         CLOSE(UNIT = 999 + NA)
-
-      ENDDO
-
-!==========================================================================================
-
-      CALL OPEN_TO_APPEND(1000 + NATOM, CONV_DIR//'ELEM')
-
-      IF (LAMBDA_ITER .EQ. 1) THEN
-
-         WRITE(1000 + NATOM, '(3x,A,$)') 'LI'
+         IF (LAMBDA_ITER .EQ. 1) THEN; CALL MKDIR(CONV_DIR); CALL CLEAN_DIR(CONV_DIR); ENDIF
 
          DO NA = 1, NATOM
 
-            ELE = ELEMENT(NA)
+            CONV_FILE = CONV_DIR//ELEMENT(NA)
 
-            IF (NA .EQ. 1) WRITE(1000 + NATOM, '(5x,A,$)') ELE(1 : 3)
+            CALL OPEN_TO_APPEND(999 + NA, CONV_FILE)
 
-            IF (NA .NE. 1) WRITE(1000 + NATOM, '(8x,A,$)') ELE(1 : 3)
+            IF (LAMBDA_ITER .EQ. 1) THEN
+
+                WRITE(999 + NA, '(3x, A, 5x, A, 6x, A, 1x, $)') 'LI', 'MAX', 'DI'
+
+                DO J = NFIRST(NA), NLAST(NA); WRITE(999 + NA, '(2x, A10, $)') LEVEL(J); ENDDO
+
+                WRITE(999 + NA, '(/)')
+
+            ENDIF
+
+            WRITE(999 + NA, '(I5, 2x, ES9.3, 2x, I3, $)') LAMBDA_ITER, CORMAX_ELE(NA), DCM_ELE(NA)
+
+            DO J = NFIRST(NA), NLAST(NA)
+
+               IF (J .NE. NLAST(NA)) WRITE(999 + NA, '(3x, ES9.3, $)') CORMAX_LEV(J)
+               IF (J .EQ. NLAST(NA)) WRITE(999 + NA, '(3x, ES9.3)')    CORMAX_LEV(J)
+
+            ENDDO
+
+            CLOSE(UNIT = 999 + NA)
 
          ENDDO
 
-         WRITE(1000 + NATOM, '(8x,A,/)') 'ELE'
+!==========================================================================================
 
-      ENDIF
+         CALL OPEN_TO_APPEND(1000 + NATOM, CONV_DIR//'ELEM')
 
-      WRITE(1000 + NATOM, '(I5,$)') LAMBDA_ITER
+         IF (LAMBDA_ITER .EQ. 1) THEN
 
-      DO NA = 1, NATOM; WRITE(1000 + NATOM, '(2x,ES9.3,$)') CORMAX_ELE(NA); ENDDO
+            WRITE(1000 + NATOM, '(3x,A,$)') 'LI'
 
-      WRITE(1000 + NATOM, '(2x,ES9.3)'), CORMAX_ELEC
+            DO NA = 1, NATOM
 
-      CLOSE(UNIT = 1000 + NATOM)
+               ELE = ELEMENT(NA)
+
+               IF (NA .EQ. 1) WRITE(1000 + NATOM, '(5x,A,$)') ELE(1 : 3)
+
+               IF (NA .NE. 1) WRITE(1000 + NATOM, '(8x,A,$)') ELE(1 : 3)
+
+            ENDDO
+
+            WRITE(1000 + NATOM, '(8x,A,/)') 'ELE'
+
+         ENDIF
+
+         WRITE(1000 + NATOM, '(I5,$)') LAMBDA_ITER
+
+         DO NA = 1, NATOM; WRITE(1000 + NATOM, '(2x,ES9.3,$)') CORMAX_ELE(NA); ENDDO
+
+         WRITE(1000 + NATOM, '(2x,ES9.3)'), CORMAX_ELEC
+
+         CLOSE(UNIT = 1000 + NATOM)
 
 !==========================================================================================
 
-      CALL OPEN_TO_APPEND(1001 + NATOM, CONV_DIR//'ALL')
+         CALL OPEN_TO_APPEND(1001 + NATOM, CONV_DIR//'ALL')
 
-      IF (LAMBDA_ITER .EQ. 1) THEN
+         IF (LAMBDA_ITER .EQ. 1) THEN
 
-         WRITE(1001 + NATOM, '(3x,A,7x,A,6x,A,3(8x,A),5x,A,/)') 'LI', 'TIME', 'ALL', 'NHE', 'NHN', 'HYD', 'DCMF'
+            WRITE(1001 + NATOM, '(3x,A,7x,A,6x,A,3(8x,A),5x,A,/)') 'LI', 'TIME', 'ALL', 'NHE', 'NHN', 'HYD', 'DCMF'
 
-      ENDIF
+         ENDIF
 
-      time = trim(adjustl(writeTOC()))
+         time = trim(adjustl(writeTOC()))
 
-      if (len_trim(time) == 5) time = '00:'//time
+         if (len_trim(time) == 5) time = '00:'//time
 
-      WRITE(1001 + NATOM, '(I5,5x,A8,4(2x,ES9.3),2x,I3)') LAMBDA_ITER, time, CORMAX_ALL,
-     $                                                    CORMAX_NHE, CORMAX_NHN, CORMAX_ELE(1), DCM_FIN
+         WRITE(1001 + NATOM, '(I5,5x,A8,4(2x,ES9.3),2x,I3)') LAMBDA_ITER, time, CORMAX_ALL,
+     $                                                       CORMAX_NHE, CORMAX_NHN, CORMAX_ELE(1), DCM_FIN
+
+      else
+
+         CALL OPEN_TO_APPEND(19462, 'conv.out')
+        
+         time = trim(adjustl(writeTOC()))
+
+         if (len_trim(time) == 5) time = '00:'//time
+
+         WRITE(19462, '(A8,2x,ES9.3)') time, cormax_fin
+
+      endif
 
 !----------------------------------------------------------------------------------
 !PRINT OUT BLOCK END

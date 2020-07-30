@@ -83,8 +83,8 @@
 
          endif
 
-         CALL INV(JMAX, B(1 : JMAX, 1 : JMAX))
-!         CALL inv_lapack(JMAX, B(1 : JMAX, 1 : JMAX))
+!         CALL INV(JMAX, B(1 : JMAX, 1 : JMAX))
+         CALL inv_lapack(JMAX, B(1 : JMAX, 1 : JMAX))
 
          CALL MVV(WX(1 : JMAX, L), B(1 : JMAX, 1 : JMAX), W(1 : JMAX), JMAX, JMAX)
 
@@ -113,13 +113,13 @@
 !     RECENT WX IS THE FEAUTRIER-INTENSITY U AT THE INNER BOUNDARY
     2 CALL MOMENT0_ELIMIN(ND, RADIUS, ND, JMAX, Z(1 : ND, 1 : JMAX), WX(1 : JMAX, ND), XJC(ND))
 
-      if (isnan(XJC(ND))) then 
+!      if (isnan(XJC(ND))) then 
 
-         write(*, *) 'elimin 0', XLAM, ND, XJC(ND)
+!         write(*, *) 'elimin 0', XLAM, ND, XJC(ND)
 
-         stop
+!         stop
 
-      endif
+!      endif
 
       CALL MOMENT1(RADIUS(ND), JMAX, P(1 : JMAX), WX(1 : JMAX, ND), H)
 
@@ -147,16 +147,7 @@
      
       RRQ = one
 
-!      call system('rm eddi.out')
-
-!      open(unit = 18368, file = 'eddi.out', status = 'new')
-      call open_to_append(18368, 'eddi.out')
-
-!      do l = 1, nd
-
-!      enddo
-
-!      stop
+!      call open_to_append(18368, 'eddi.out')
 
 !     L = ND-1 ... 1
       DO JMAX = NC2, NP
@@ -187,22 +178,22 @@
 
          EDDI(1, L) = XK / XJC(L)
 
-         if (isnan(eddi(1, L))) then
+!         if (isnan(eddi(1, L))) then
 
-             write(*, '(I4,3(2x,e15.7))') l, eddi(1, l), xk, xjc(l)
+!             write(*, '(I4,3(2x,e15.7))') l, eddi(1, l), xk, xjc(l)
 
-             stop 'elimin eddi(1, l) is nan'
+!             stop 'elimin eddi(1, l) is nan'
 
-         endif
+!         endif
 
 !        THIS IS AN INGENIOUS RECURSION FORMULA FOR THE SPHERICITY FACTOR
          RLP = RADIUS(L + 1)
          FLP = FL
          FL = three - one / EDDI(1, L)
 
-         if (xlam == 350.0) write(18368, '(e15.7,1x,i3,6(2x,e15.7))')
-     $                      xlam, l, hei(l), eddi(1, l), fl,
-     $                      flp, fl - flp, dexp(fl - flp)
+!         if (xlam == 350.0) write(18368, '(e15.7,1x,i3,6(2x,e15.7))')
+!     $                      xlam, l, hei(l), eddi(1, l), fl,
+!     $                      flp, fl - flp, dexp(fl - flp)
 
          bas = RL / RLP
 
@@ -236,22 +227,18 @@
 
 !         print*, 'elimin height: ', l, height(l), rstar
 
-         if (isnan(eddi(2, L))) then
+!         if (isnan(eddi(2, L))) then
 
-             write(*, '(I4,4(2x,e15.7))') l, eddi(2, l), rrq, dexp(fl - flp), bas**pow
+!             write(*, '(I4,4(2x,e15.7))') l, eddi(2, l), rrq, dexp(fl - flp), bas**pow
 
-             stop 'elimin eddi(2, l) is nan'
+!             stop 'elimin eddi(2, l) is nan'
 
-         endif
+!         endif
 
       ENDDO
 
-      close(18368)
+!      close(18368)
 
-!      print*, 'check elimin 2'
-
-!      stop
-     
       CALL MOMENT1(RADIUS(1), NP, P(1 : NP), WX(1 : NP, 1), H)
 
 !     EMFLUX IS THE EMERGENT FLUX, BUT RELATED TO THE INNER RADIUS

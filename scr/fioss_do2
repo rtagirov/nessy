@@ -24,15 +24,15 @@ contr_file=./contr.func
 
 CLV_DIR=./clv_uvi
 CLV_TEMP_FILE=./clv.temp.uvi
-CLV_FILE=./CLV_UVI
+CLV_FILE=./clv.out
 
 TAU_DIR=./tau
 TAU_TEMP_FILE=./form.temp.uvi
 TAU_FILE=./TAU_UVI
 
 SPE_DIR=./mdisp
-SPE_TEMP_FILE=./spec.uvi
-SPE_FILE=./SPE_UVI
+SPE_TEMP_FILE=./spec.temp.uvi
+SPE_FILE=./spec.out
 
 rm -rf title abemlin output output2 ctrl-* JOB-*
 
@@ -52,7 +52,10 @@ trap "rmdir $CTRL/.lock; error" 0
 trap "return 2" 1 2 3 15
 
 cd $2
-mkdir -p mdisp lopa title output clv
+
+#mkdir -p mdisp lopa title output clv
+mkdir -p mdisp title output clv # lopa change
+
 ## While there are files available, run them
 while [[ `ls $CTRL | head -1` ]]; do
 ## Make the program pausable by placing the file pause in the directory or its parents directory
@@ -98,36 +101,38 @@ fi
 
 #FGRIDN_PREV=''
 
-#  echo -n "`date +'%Y-%m-%d %H:%M:%S'` WAVELENGTH: $FREQ, STATUS: " | tee -a frequencies.log
-  echo "`date +'%Y-%m-%d %H:%M:%S'` WAVELENGTH: $FREQ A, LINELIST: $FGRIDN" | tee -a frequencies.log
+#  echo -n "`date +'%Y-%m-%d %H:%M:%S'` WAVELENGTH: $FREQ, STATUS: " | tee -a log.out
+  echo "`date +'%Y-%m-%d %H:%M:%S'` WAVELENGTH: $FREQ A, LINELIST: $FGRIDN" | tee -a log.out
 #  if [ "$FGRIDN" != "$FGRIDN_PREV" ]; then message "LINELIST: $FGRIDN"; FGRIDN_PREV=$FGRIDN; fi
-#  echo "`date +'%Y-%m-%d %H:%M:%S'` WAVELENGTH: $FREQ" | tee -a frequencies.log
+#  echo "`date +'%Y-%m-%d %H:%M:%S'` WAVELENGTH: $FREQ" | tee -a log.out
   APPEND=""
   ## Run fioss.exe
-  ./fioss.exe $FREQ  &> output/fioss-$FREQ.out && echo -n >> frequencies.log ||
-  echo -n "FAILED" | tee -a  frequencies.log
+  ./fioss.exe $FREQ  &> output/fioss-$FREQ.out && echo -n >> log.out ||
+  echo -n "FAILED" | tee -a  log.out
 
   if ` tail -n1 output/fioss-$FREQ.out | grep 'O.K.' &> /dev/null `; then
-#    echo "O.K." | tee -a frequencies.log
-    echo "O.K." >> frequencies.log
+#    echo "O.K." | tee -a log.out
+    echo "O.K." >> log.out
   else
-    tail -n1 output/fioss-$FREQ.out | tee -a frequencies.log
+    tail -n1 output/fioss-$FREQ.out | tee -a log.out
     APPEND="fail"
   fi
 
   [[ -e save_out || -e ../save_out ]] && APPEND="${APPEND:+${APPEND}+}save"
   ## Decide what to do with the fioss.exe console output
-  if [[ "$APPEND"  ]]; then 
+  if [[ "$APPEND" ]]; then 
     mv output/fioss-$FREQ.out output/fioss-$FREQ-$APPEND.out
   else
     rm output/fioss-$FREQ.out
   fi
+
   ## move the resulting mdisp lopa title files into its corresponding directory
   [[ -d mdisp ]] && mv [0-9]*.mdisp mdisp || true
   [[ -d lopa  ]] && mv [0-9]*.lopa  lopa  || true
   [[ -d title ]] && mv [0-9]*.title title || true
   [[ -d tau   ]] && mv [0-9]*.tau   tau   || true
   [[ -d clv   ]] && mv [0-9]*.clv   clv   || true
+
   ## If failed, move the control file to the output directory
   if [[ "$APPEND" =~ ".*fail.*" ]]; then 
     mv $FILE1 output
@@ -191,7 +196,10 @@ FREQ_STEP_E=$FREQ_STEP
 (( FREQ_START > FREQ_STOP )) && let FREQ_STEP=-$FREQ_STEP
 (( FREQ_START > FREQ_STOP )) && let FREQ_STEP_INC=-$FREQ_STEP_INC
 
-echo "Wavelengths: $FREQ_START -> $FREQ_STEP_INC -> $FREQ_STOP"; echo
+echo "directory: $(pwd)"; echo
+
+echo "wavelengths: $FREQ_START -> $FREQ_STEP_INC -> $FREQ_STOP"; echo
+
 FREQ_TODO=`seq -w $FREQ_START $FREQ_STEP_INC $FREQ_STOP`
 
 fi;
@@ -202,9 +210,9 @@ rm -rf output2
 mkdir output/
 
 
-if [[ -e frequencies.log ]]; then 
+if [[ -e log.out ]]; then 
   mkdir -p output2;  
-  mv frequencies.log output2/; 
+  mv log.out output2/; 
 fi
 
 
@@ -219,10 +227,14 @@ done
 [[ "$CTRL_SET" ]] || ln -s "`pwd`" "$CTRL-wd"
 
 MAX_PROC=${MAX_PROC:-1}
-echo MAX_PROC = $MAX_PROC
+
+echo MAX_PROC = $MAX_PROC; echo
+
 ABEMLIN_DIR=$(egrep '^ABEMLIN .*' CARDS.TEMPLATE | sed 's/^ABEMLIN [A-Z]* *//')
+
 #echo ABEMLIN_DIR=\"$ABEMLIN_DIR\"
 # mkdir lopa title tau mdisp || true
+
 for ((A=1;A<=MAX_PROC;A++)); do
   DIR=JOB-$A-$$ 
   if [[ -e "$DIR" ]]; then
@@ -249,12 +261,18 @@ if [ $icl ]; then      fioss_mv_results $DIRS .; fi
 if [ $hpc ]; then bash fioss_mv_results $DIRS .; fi
 
 #catenate $contr_dir $contr_temp_file $contr_file
+#catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
 
 catenate $CLV_DIR $CLV_TEMP_FILE $CLV_FILE
-#catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
 #catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
 
-for DIR in $DIRS; do cat $DIR/frequencies.log >> log.uvi; done
+for DIR in $DIRS; do cat $DIR/log.out >> log.out; done
 
-#rm -rf title abemlin output output2 $DIRS ctrl-*
-rm -rf title abemlin output output2
+rm -rf title
+rm -rf abemlin 
+rm -rf output 
+rm -rf output2
+rm -rf $CLV_DIR
+#rm -rf $SPE_DIR
+
+#rm -rf JOB-*

@@ -2486,10 +2486,9 @@ c      IF(NLIN.EQ.0) RETURN
       
 !            print*, 'test vdop', ID, VTURB(ID)
 
-           if(IAT>30)write(991,*)  IAT,ID,DOPA1(IAT,ID)
+!            if (IAT > 30) write(991, *) IAT, ID, DOPA1(IAT, ID)
 
   !          if(IAT>30) print*, 'mytest', IAT,ID,DOPA1(IAT,ID), 1.d-5*sqrt(DP1*T/AMAS(IAT)), 1.d-5*sqrt(VTURB(ID)) 
-
 
 CMH	DOPA1: All velcities are calculated in units of dopa1
 CMH	DP1*T/AMAS(IAT): Thermal broadening
@@ -2512,7 +2511,8 @@ c***      ID=IDSTD
       IF(IMODE.GE.0) WRITE(6,601) IBLANK,ALM0,ALM1
       IF(IMODE.GE.0.OR.(IMODE.EQ.-1.AND.IBLANK.EQ.1)) WRITE(6,602)
       endif
-      write (12,*) id
+
+!      write (12,*) id
 C
       DO 20 IL=1,NLIN0
          ALAM=CLIGHT_SI*1e10/FREQ0(IL)
@@ -2700,6 +2700,8 @@ C
 
       call cpu_time(read1_start)
       call cpu_time(read2_start)
+
+      print*, 'before reading fort.19'
 
       ALAM=0.
     7 READ(19,*,END=100) ALAM

@@ -233,9 +233,12 @@
 !     C1 = H * C / K (CM * KELVIN)
       DATA C1 /1.4388D0/
 
-      call cpu_time(linpop_start); call system("echo -n $(date +%s) >> wall_time.linpop")
+      call cpu_time(linpop_start)
 
-      CONV_FILE = CONV_DIR//'ALL'
+!      call system("echo -n $(date +%s) >> wall_time.linpop")
+
+      if (full_conv_print)       conv_file = conv_dir//'ALL'
+      if (.not. full_conv_print) conv_file = conv_file_name
 
       PRINT_LTE_ARR = .FALSE.
 
@@ -333,7 +336,8 @@
 
       IF (CONV_FILE_EXISTS) LAMBDA_ITER = NUM_OF_LINES(CONV_FILE) - 1
 
-      IF (.NOT. LTE_RUN .AND. LAMBDA_ITER .EQ. 0) THEN
+!      IF (.NOT. LTE_RUN .AND. LAMBDA_ITER .EQ. 0) THEN
+      IF (.NOT. LTE_RUN .AND. LAMBDA_ITER .EQ. 0 .and. .false.) THEN
 
          CALL MKDIR(NLTE_DIR_1); CALL CLEAN_DIR(NLTE_DIR_1)
          CALL MKDIR(NLTE_DIR_2); CALL CLEAN_DIR(NLTE_DIR_2)
@@ -557,8 +561,8 @@
 
          CALL VSUB(V1, V2, NRANK) ! V1 = V1 - V2
 
-         CALL INV(NRANK, DM)
-!         CALL inv_lapack(NRANK, DM)
+!         CALL INV(NRANK, DM)
+         CALL inv_lapack(NRANK, DM)
 
          CALL VMF(ENDELTA, V1, DM, NRANK) ! ENDELTA = DM * V1a
 
@@ -576,8 +580,8 @@
          IF (ITNE(L) .EQ. 1 .and. nofile(L)) THEN
 
 !           IF FORT.19 NOT FOUND AND THE FIRST ITERATION STEP, DB IS DM^T
-            CALL INV(NRANK, DM)
-!            CALL inv_lapack(NRANK, DM)
+!            CALL INV(NRANK, DM)
+            CALL inv_lapack(NRANK, DM)
 
             CALL ACOPY(DB, DM, NRANK)
 
@@ -758,7 +762,8 @@
 !     CALCULATING CORMAX FOR ELECTRONS
       CORMAX_ELEC = MAXVAL(DABS(1.0D0 - ELEC_CONC_OLD(3 : ND - 1) / ElecConc(3 : ND - 1)))
 
-      IF (.NOT. LTE_RUN) THEN
+!      IF (.NOT. LTE_RUN) THEN
+      IF (.NOT. LTE_RUN .and. .false.) THEN
 
          DO J = 1, N_full; CALL PRINT_LEV(LEVEL_full(J), POPNUM_LTE(1 : ND, J),
      $                                    POPNUM(1 : ND, J), DEPART(1 : ND, J)); ENDDO
@@ -812,6 +817,8 @@
 
          ENDDO
 
+!--------------------------------------------------------------------------------------------------------------------
+
 !         CALL RM_FILE(NTP_FILE, '-vf')
 
 !         IF (LAMBDA_ITER .EQ. 1) THEN
@@ -846,6 +853,8 @@
 !         ENDDO
 
 !         IF (LAMBDA_ITER .EQ. 1) CLOSE(195)
+
+!--------------------------------------------------------------------------------------------------------------------
 
       ENDIF
 
@@ -899,7 +908,8 @@
 
       DEALLOCATE(NOFILE)
 
-      CLOSE(648); CLOSE(295); CLOSE(257)
+!     see coma.for
+!      CLOSE(648); CLOSE(295); CLOSE(257)
 
 !      INQUIRE(FILE = NRRM_FILE, EXIST = NRRM_FILE_EXISTS)
 !      INQUIRE(FILE = NCRM_FILE, EXIST = NCRM_FILE_EXISTS)
@@ -909,9 +919,11 @@
 !      IF (NCRM_FILE_EXISTS) CALL REPLACE_PATTERN(NCRM_FILE, '0.0000000E+00', '      -      ', 13, 13)
 !      IF (NTRM_FILE_EXISTS) CALL REPLACE_PATTERN(NTRM_FILE, '0.0000000E+00', '      -      ', 13, 13)
 
-      call system("echo ' '$(date +%s) >> wall_time.linpop"); call cpu_time(linpop_finish)
+!      call system("echo ' '$(date +%s) >> wall_time.linpop")
 
-      call open_to_append(377, 'cpu_time.linpop'); write(377, '(F6.3)') linpop_finish - linpop_start; close(377)
+      call cpu_time(linpop_finish)
+
+!      call open_to_append(377, 'cpu_time.linpop'); write(377, '(F6.3)') linpop_finish - linpop_start; close(377)
 
       IF (LTE_RUN) STOP 'LTE RUN IS DONE'
 

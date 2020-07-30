@@ -55,8 +55,12 @@ CP='cp -rfv'
 
 change_dir $BASE_DIR
 
+#error_ifunset CROSS_SECTION_FILES    \
+#              ORIG_COSI       ORIG_EXE        VELO_FILE              \
+#              INPUT_SUN_FILE  INPUT_STARK_BROAD  LINELISTS           \
+#              OUTPUT_DIR 
 error_ifunset CROSS_SECTION_FILES    \
-              ORIG_COSI       ORIG_EXE        VELO_FILE              \
+              ORIG_COSI       ORIG_EXE             \
               INPUT_SUN_FILE  INPUT_STARK_BROAD  LINELISTS           \
               OUTPUT_DIR 
 
@@ -66,11 +70,21 @@ function isSet(){
  [[ 'X'$1 != 'X' ]]
 }
 
+#echo \
+#"--------------------------------------------------------------------------------------------------------------------------------------------------
+#ORIG_COSI =         $ORIG_COSI
+#ORIG_EXE =          $ORIG_EXE
+#VELO_FILE =         $VELO_FILE
+#INPUT_SUN_FILE =    $INPUT_SUN_FILE
+#INPUT_STARK_BROAD = $INPUT_STARK_BROAD
+#LINELISTS =         $LINELISTS
+#OUTPUT_DIR =        $OUTPUT_DIR
+#X_SECTION_FILES =   $CROSS_SECTION_FILES
+#--------------------------------------------------------------------------------------------------------------------------------------------------"; echo
 echo \
 "--------------------------------------------------------------------------------------------------------------------------------------------------
 ORIG_COSI =         $ORIG_COSI
 ORIG_EXE =          $ORIG_EXE
-VELO_FILE =         $VELO_FILE
 INPUT_SUN_FILE =    $INPUT_SUN_FILE
 INPUT_STARK_BROAD = $INPUT_STARK_BROAD
 LINELISTS =         $LINELISTS
@@ -85,37 +99,6 @@ set -v
 rm_dir $OUTPUT_DIR; create_dir $OUTPUT_DIR; change_dir $OUTPUT_DIR
 
 cmd "$CP $ORIG_COSI/fioss.exe ./"
-
-$CP ${ORIG_COSI}/atm.inp     ./
-$CP ${ORIG_COSI}/datom.inp   ./
-$CP ${ORIG_COSI}/fgrid.inp   ./
-$CP ${ORIG_COSI}/MODFILE     ./
-$CP ${ORIG_COSI}/RADIOC      ./
-$CP ${ORIG_COSI}/RADIOL      ./
-$CP ${ORIG_COSI}/POPNUM      ./
-$CP ${ORIG_COSI}/MolConc.txt ./
-$CP ${ORIG_COSI}/mu          ./
-
-#$CP $mol/c2.asc             ./
-#$CP $mol/ch.asc             ./
-#$CP $mol/cn.asc             ./
-#$CP $mol/co.asc             ./
-#$CP $mol/h2.asc             ./
-#$CP $mol/nh.asc             ./
-#$CP $mol/oh.asc             ./
-#$CP $mol/o2.asc             ./
-#$CP $mol/O2_H               ./
-
-$CP $dat/fudge_As.txt        ./
-
-$CP $INPUT_STARK_BROAD/*     ./
-$CP ${VELO_FILE}             ./VELO
-$CP $INPUT_SUN_FILE          ./input_sun
-
-if [ -f $NTW_FILE ]; then $CP $NTW_FILE ./; fi
-if [ -f $NTP_FILE ]; then $CP $NTP_FILE ./; fi
-
-if [ -d ${ORIG_COSI}/src/ ]; then cmd "cp -r ${ORIG_COSI}/src/  ./"; fi
 
 if [ $ODF_IT -eq 0 ]; then
 	
@@ -135,64 +118,105 @@ else
 
 fi
 
+echo
+
+#cp -rv ${ORIG_COSI}/atm.inp     ./
+#cp -rv ${ORIG_COSI}/datom.inp   ./
+#cp -rv ${ORIG_COSI}/molconc.inp ./
+#
+#cp -rv ${ORIG_COSI}/MODFILE     ./
+#cp -rv ${ORIG_COSI}/RADIOC      ./
+#cp -rv ${ORIG_COSI}/RADIOL      ./
+#cp -rv ${ORIG_COSI}/POPNUM      ./
+#
+#cp -rv $dat/fudge.inp           ./
+#cp -rv $dat/fort.55             ./
+#cp -rv $dat/fort.56             ./
+#
+#cp -rv $INPUT_STARK_BROAD/*     ./
+#cp -rv $INPUT_SUN_FILE          ./sun.inp
+#
+#cp -rv ${CROSS_SECTION_FILES}   ./crs
+#cp -rv $mol                     ./mol
+
+ln -sv ${ORIG_COSI}/atm.inp     ./
+ln -sv ${ORIG_COSI}/datom.inp   ./
+ln -sv ${ORIG_COSI}/molconc.inp ./
+
+ln -sv ${ORIG_COSI}/MODFILE     ./
+ln -sv ${ORIG_COSI}/RADIOC      ./
+ln -sv ${ORIG_COSI}/RADIOL      ./
+ln -sv ${ORIG_COSI}/POPNUM      ./
+
+ln -sv $dat/fudge.inp           ./
+ln -sv $dat/fort.55             ./
+ln -sv $dat/fort.56             ./
+
+ln -sv $INPUT_STARK_BROAD/*     ./
+ln -sv $INPUT_SUN_FILE          ./sun.inp
+
+ln -sv ${CROSS_SECTION_FILES}   ./crs
+ln -sv $mol                     ./mol
+
 if [ ! -d $LINELISTS ]; then abort "The directory $LINELISTS with the linelists does not exist."; fi
 
 ls ${LINELISTS}* &> /dev/null
 
 exit_if_error "The linelists have not been found. The directory $LINELISTS is empty."
 
-ln -sv $LINELISTS fort.19.d
+ln -sv $LINELISTS ./fort.19.d
 
-ln -sv ${CROSS_SECTION_FILES} ./crs
+if [ -f $NTW_FILE ]; then $CP $NTW_FILE ./; fi
+if [ -f $NTP_FILE ]; then $CP $NTP_FILE ./; fi
 
-ln -sv $mol ./mol
+if [ -d ${ORIG_COSI}/src/ ]; then cmd "cp -r ${ORIG_COSI}/src/  ./"; fi
 
 if ( isSet $ORIG_COSI2 ); then
   echo "Overwriting files from $ORIG_COSI with files from $ORIG_COSI2 in `pwd`"
    cp -rf $ORIG_COSI2/* ./
 fi;
 
-cat > fort.55 << eof
-0 40 1
-1 0 0
-0 70717273 29 25 0 0 0
-4003. 6000. 30. 1.e-40 10.
-XXXXX
-eof
+#cat > fort.55 << eof
+#0 40 1
+#1 0 0
+#0 70717273 29 25 0 0 0
+#4003. 6000. 30. 1.e-40 10.
+#XXXXX
+#eof
 
-cat > fort.56 << eof
-30
-    1      -1.000
-    2      -1.000
-    3      -1.000
-    4      -1.000
-    5      -1.000
-    6      -1.000
-    7      -1.000
-    8      -1.000
-    9      -1.000
-   10      -1.000
-   11      -1.000
-   12      -1.000
-   13      -1.000
-   14      -1.000
-   15      -1.000
-   16      -1.000
-   17      -1.000
-   18      -1.000
-   19      -1.000
-   20      -1.000
-   21      -1.000
-   22      -1.000
-   23      -1.000
-   24      -1.000
-   25      -1.000
-   26      -1.000
-   27      -1.000
-   28      -1.000
-   29      -1.000
-   30      -1.000
-eof
+#cat > fort.56 << eof
+#30
+#    1      -1.000
+#    2      -1.000
+#    3      -1.000
+#    4      -1.000
+#    5      -1.000
+#    6      -1.000
+#    7      -1.000
+#    8      -1.000
+#    9      -1.000
+#   10      -1.000
+#   11      -1.000
+#   12      -1.000
+#   13      -1.000
+#   14      -1.000
+#   15      -1.000
+#   16      -1.000
+#   17      -1.000
+#   18      -1.000
+#   19      -1.000
+#   20      -1.000
+#   21      -1.000
+#   22      -1.000
+#   23      -1.000
+#   24      -1.000
+#   25      -1.000
+#   26      -1.000
+#   27      -1.000
+#   28      -1.000
+#   29      -1.000
+#   30      -1.000
+#eof
 
 echo -e "\nFIOSS run $OUTPUT_DIR/ has been prepared.\n"
 
