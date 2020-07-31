@@ -70,7 +70,7 @@ CONV_DIR=CONV
 
 EDDI_FILE=EDDIES
 
-HM_SET=CARDS
+HM_SET=cards.inp
 FI_SET=CARDS.TEMPLATE
 
 VelParStringPattern='.*VELPAR:.*'
@@ -211,7 +211,7 @@ for RUN in $RUNS; do
 
        xterm_cmd "echo $JOB > $HM_DIR$RUN/$HM_JOB_FILE"
 
-       xterm_cmd "./$HM_EXE_NAME | tee $HM_LOG"
+       xterm_cmd "/usr/bin/time -v ./$HM_EXE_NAME | tee $HM_LOG"
 
     else
 
@@ -221,7 +221,7 @@ for RUN in $RUNS; do
 
        xterm_cmd "echo wrstart > $HM_DIR$RUN/$HM_JOB_FILE"
 
-       xterm_cmd "./$HM_EXE_NAME | tee -a $HM_LOG"
+       xterm_cmd "/usr/bin/time -v ./$HM_EXE_NAME | tee -a $HM_LOG"
 
     fi
 
@@ -547,7 +547,7 @@ elif [ $RANGE == "uvi" ]; then
 
        xterm_cmd "echo -e MAX_PROC = $MAX_PROC'\n'"
 
-       xterm_cmd "fioss_do2 $GRID"
+       xterm_cmd "/usr/bin/time -v fioss_do2 $GRID"
 
        if [ "$RMLOPA" == "Yes" ]; then xterm_cmd "rm -rf $FI_DIR$RUN/lopa/"; fi
        if [ "$RMJOB" == "Yes" ];  then xterm_cmd "rm -rf $FI_DIR$RUN/JOB-*"; fi
