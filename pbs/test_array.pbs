@@ -6,12 +6,13 @@ mode=$1
 
 if [ "$mode" != "0" ] && [ "$mode" != "1" ]; then echo "mode is not recognized. abort."; exit 1; fi
 
-run=$2
+#run=$2
 #nums=`seq 11 20`
 
 #for num in $nums; do
 
 #run=time_test/$num
+#run=test_batch/1
 
 ncpus=1
 
@@ -19,13 +20,12 @@ wt=00:31:00
 
 mem=1gb
 
-qsub -v \
-mode=$mode,\
-run=$run \
+#-N $run \
+qsub -v mode=$mode \
+-J 1-9:1 \
 -o $HOME/log/$JOB_ID \
 -e $HOME/log/$JOB_ID \
--N $run \
 -lwalltime=$wt \
--lselect=1:ncpus=$ncpus:mem=$mem hminus.pbs
+-lselect=1:ncpus=$ncpus:mem=$mem test_job_array.pbs
 
 #done

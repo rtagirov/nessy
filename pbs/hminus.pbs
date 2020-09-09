@@ -23,8 +23,8 @@ if [   -d "$dir"    ]; then rm -r $dir;              fi
 
 mkdir -p $dir
 
-#ln -s $base/gen/* $dir
-cp -r $base/gen/* -t $dir
+ln -s $base/gen/* $dir
+#cp -r $base/gen/* -t $dir
 
 #cp $obj/hminus.exe $dir
 #cp $obj/fioss.exe  $dir
