@@ -164,21 +164,39 @@
       ENDDO
  
 !***  CHECK WHETHER THESE DATA EXIST AND BELONG TO THE PRESENT MODEL
-      IFL=9
-      ierr9=.false.
-      open (IFL,file='RADIOCL',STATUS='UNKNOWN')
+      ifl = 9
+      ierr9 = .false.
+
+      open (ifl, file = 'RADIOCL', STATUS = 'UNKNOWN')
+
       IERR=-10
       CNAME='MODHEAD'
+
       READ (ifl,'(A10)',err=1001,end=101) cread
+
       if (cread.eq.cname) then
-         READ (ifl,'(A104)',err=1001,end=101) MODHOLD
-         IF (MODHEAD .NE. MODHOLD) then
+
+         print*, 'check 1'
+
+         read (ifl, '(A104)', err = 1001, end = 101) MODHOLD
+
+         if (modhead .ne. modhold) then
+
+            print*, 'check 2'
+
             goto 101
+
          else
+
+            print*, 'check 3'
+
             ierr=0
-	   endif
-	endif
-101    continue
+
+	     endif
+
+	  endif
+
+101   continue
 
       IF (IERR.ne.0 .OR. JOB.EQ.'newline')THEN
          rewind (ifl)
