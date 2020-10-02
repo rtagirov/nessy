@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm -f $HOME/log/*
+#rm -f $HOME/log/*
 
 mode=$1
 
@@ -26,6 +26,6 @@ run=$run \
 -e $HOME/log/$JOB_ID \
 -N $run \
 -lwalltime=$wt \
--lselect=1:ncpus=$ncpus:mem=$mem hminus.pbs
+-lselect=1:ncpus=$ncpus:mem=$mem:avx2=true hminus.pbs
 
 #done

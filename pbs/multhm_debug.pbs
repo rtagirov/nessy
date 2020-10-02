@@ -7,30 +7,25 @@ mode=$1
 if [ "$mode" != "0" ] && [ "$mode" != "1" ]; then echo "mode is not recognized. abort."; exit 1; fi
 
 run=$2
+#nums=`seq 11 20`
 
-dir=$HOME/runs/fioss/IT$mode/$run
+#for num in $nums; do
 
-if [ ! -d "$dir" ]; then echo "directory $dir does not exist. abort."; exit 1; fi
-
-nproc=1
-
-w1=$3
-w2=$4
-
-wt=00:31:00
+#run=time_test/$num
 
 ncpus=1
 
-mem=2gb
+wt=00:10:00
+
+mem=1gb
 
 qsub -v \
 mode=$mode,\
-run=$run,\
-nproc=$nproc,\
-w1=$w1,\
-w2=$w2 \
+run=$run \
 -o $HOME/log/$JOB_ID \
 -e $HOME/log/$JOB_ID \
 -N $run \
 -lwalltime=$wt \
--lselect=1:ncpus=$ncpus:mem=$mem:avx2=true fioss.pbs
+-lselect=1:ncpus=$ncpus:mem=$mem:avx2=true hminus.pbs
+
+#done

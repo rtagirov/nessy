@@ -1,10 +1,10 @@
 #!/bin/sh
 
-rm -f $HOME/log/*
+#rm -f $HOME/log/*
 
-mode=$1
+#mode=$1
 
-if [ "$mode" != "0" ] && [ "$mode" != "1" ]; then echo "mode is not recognized. abort."; exit 1; fi
+#if [ "$mode" != "0" ] && [ "$mode" != "1" ]; then echo "mode is not recognized. abort."; exit 1; fi
 
 #run=$2
 #nums=`seq 11 20`
@@ -21,8 +21,8 @@ wt=00:31:00
 mem=1gb
 
 #-N $run \
-qsub -v mode=$mode \
--J 1-9:1 \
+#qsub -v mode=$mode \
+qsub -J $1-$2:1 \
 -o $HOME/log/$JOB_ID \
 -e $HOME/log/$JOB_ID \
 -lwalltime=$wt \

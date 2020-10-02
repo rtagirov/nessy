@@ -37,7 +37,18 @@ echo $fort99 > $dir/fort.99
 
 cp -r $dir/* -t $tmp
 
-/usr/bin/time -v $tmp/hminus.exe | tee $tmp/log.out
+#/usr/bin/time -v $tmp/hminus.exe | tee $tmp/log.out
+/usr/bin/time -v $tmp/hminus.exe > $tmp/log.out 2>&1
+
+#rm BROYDEN
+#rm log.out
+#rm MODFILE
+#rm MODHIST
+#rm NEWBROYDEN
+#rm POPNUM
+#rm RADIOC
+#rm RADIOCL
+#rm RADIOL
 
 rsync -rptgoDq $tmp/ $dir/
 
