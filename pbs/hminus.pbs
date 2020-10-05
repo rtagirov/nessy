@@ -23,7 +23,19 @@ if [   -d "$dir"    ]; then rm -r $dir;              fi
 
 mkdir -p $dir
 
-ln -s $base/gen/* $dir
+ln -s $base/gen/atm.inp     -t $dir
+ln -s $base/gen/cards.inp   -t $dir
+ln -s $base/gen/chem.inp    -t $dir
+ln -s $base/gen/datom.inp   -t $dir
+ln -s $base/gen/fgrid.inp   -t $dir
+ln -s $base/gen/molconc.inp -t $dir
+ln -s $base/gen/molpres.inp -t $dir
+ln -s $base/gen/odf.inp     -t $dir
+ln -s $base/gen/crs         -t $dir
+
+cp    $base/gen/fort.99     -t $dir
+
+#ln -s $base/gen/* $dir
 #cp -r $base/gen/* -t $dir
 
 #cp $obj/hminus.exe $dir
