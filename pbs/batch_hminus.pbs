@@ -27,6 +27,6 @@ for (( j=0; j<=950; j+=$step )); do
 
     done
 
-    sleep 10m
+    sleep 15m
 
 done
