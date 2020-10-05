@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+step=10
+
+#for (( i=0; i<=40; i+=$step )); do
+
+#    j=`expr $i + $step`
+
+#    k=`expr $i + 1`
+
+#    echo $k $j
+
+#    test_array.pbs $k $j
+
+#done
+
+for (( j=310; j<=500; j+=$step )); do
+
+    k=`expr $j + 1`
+    m=`expr $j + $step`
+
+    echo $j $k $m
+
+    for (( i=$k; i<=$m; i+=1 )); do
+
+        run_nessy time_test/$i -T -i 1 -G '1800 10 3000' -P 1 &
+
+    done
+
+    sleep 25m
+
+done

@@ -142,7 +142,17 @@ for RUN in $1; do
 
         cp -r $HM_GENERIC_DIR/* -t ${HM_DIR}gen
 
-        ln -s ${HM_DIR}gen/* $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/atm.inp     -t $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/cards.inp   -t $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/chem.inp    -t $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/datom.inp   -t $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/fgrid.inp   -t $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/molconc.inp -t $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/molpres.inp -t $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/odf.inp     -t $HM_DIR$RUN
+        ln -s ${HM_DIR}gen/crs         -t $HM_DIR$RUN
+
+        cp    ${HM_DIR}gen/fort.99     -t $HM_DIR$RUN
 
         if [ ! $COMPILATION ]; then copy "$exes" "$HM_DIR$RUN"; echo; fi
 

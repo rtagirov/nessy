@@ -144,7 +144,8 @@ if [ -f $FILE ]; then cmd "$CP_CMD $FILE $DEST"; fi
 
 copy()
 {
-for file in $1; do cp -v $file $2; done
+#for file in $1; do cp -v $file $2; done
+for file in $1; do ln -s $file -t $2; done
 }
 
 catenate()
