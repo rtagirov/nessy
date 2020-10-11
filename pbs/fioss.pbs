@@ -28,6 +28,6 @@ cp -r $dir/* -t $tmp
 
 export MAX_PROC=$nproc
 
-/usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2
+/usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2 > $tmp/fioss.log 2>&1
 
 rsync -rptgoDq $tmp/ $dir/

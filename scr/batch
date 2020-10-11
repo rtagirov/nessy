@@ -14,7 +14,7 @@ step=10
 
 #done
 
-for (( j=310; j<=500; j+=$step )); do
+for (( j=310; j<=490; j+=$step )); do
 
     k=`expr $j + 1`
     m=`expr $j + $step`
@@ -23,10 +23,10 @@ for (( j=310; j<=500; j+=$step )); do
 
     for (( i=$k; i<=$m; i+=1 )); do
 
-        run_nessy time_test/$i -T -i 1 -G '1800 10 3000' -P 1 &
+        run_nessy test_time/$i -T -i 1 -G '1800 10 3000' -P 1 &
 
     done
 
-    sleep 25m
+    sleep 35m
 
 done
