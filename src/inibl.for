@@ -9,7 +9,7 @@
        use UTILS,only:assert
        use MOD_DECF_SYN
        use CONSTANTS,only: CLIGHT_SI
-       use MOD_BALINI
+!       use MOD_BALINI
        use MOD_HYDTAB
        use MOD_chemeq
 
@@ -124,9 +124,7 @@ C
       READ(55,*) INLTE,INLIST,IFHE2  ! Read in the options from the (cryptic) file fort.55
       READ(55,*) ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2RE
       READ(55,*) ALAM0,ALAST,CUTOF0,RELOP,SPACE
-cc    READ(81,*) INLTE,INLIST,IFHE2
-cc    READ(81,*) ILVCS,IBVCS,IHE1,IHE144,IHE2UV,IHE2VI,IHE2RE
-cc    READ(81,*) ALAM0,ALAST,CUTOF0,RELOP,SPACE
+
       VELMAX=3.e10
       NLTOFF=0
       IEMOFF=0
@@ -207,17 +205,18 @@ c      FREQ(1)=2.997925D17/ALAM0
 c      FREQ(2)=FRLAST
 c      CALL SIGAVS
 
-      print*, 'IBVCS = ', IBVCS
+!      print*, 'IBVCS = ', IBVCS
 
-      IF(IBVCS.GT.0)  THEN
-        IF(IBVCS/=24) THEN
-          print *,'call HYDINI'
-          CALL HYDINI(IBVCS)
-        ELSE
-          print *,'call BALINI'
-          CALL BALINI(IBVCS)
-        ENDIF
-      ENDIF
+!     fort.70 fort.71 fort.72 fort.73 files are read here
+      IF(IBVCS.GT.0) CALL HYDINI(IBVCS)
+!        IF(IBVCS/=24) THEN
+!          print *,'call HYDINI'
+!        ELSE
+!          print *,'call BALINI'
+!          CALL BALINI(IBVCS)
+!        ENDIF
+
+!     fort.25 fort.26 fort.27 fort.28 fort.29 files are read here
       IF(IHE144.GT.0) CALL HE1INI(1,IHE144)
       IF(IHE1.GT.0)   CALL HE1INI(2,IHE1)
       IF(IHE2UV.GT.0) CALL HE2INI(1,IHE2UV)

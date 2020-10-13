@@ -149,12 +149,13 @@ ln -sv ${ORIG_COSI}/RADIOL      ./
 ln -sv ${ORIG_COSI}/POPNUM      ./
 
 ln -sv $dat/fudge.inp           ./
-ln -sv $dat/fort.55             ./
-ln -sv $dat/fort.56             ./
+#ln -sv $dat/fort.55             ./
+#ln -sv $dat/fort.56             ./
 
-ln -sv $INPUT_STARK_BROAD/*     ./
+#ln -sv $INPUT_STARK_BROAD/*     ./
 ln -sv $INPUT_SUN_FILE          ./sun.inp
 
+ln -sv $INPUT_STARK_BROAD       ./fort
 ln -sv ${CROSS_SECTION_FILES}   ./crs
 ln -sv $mol                     ./mol
 

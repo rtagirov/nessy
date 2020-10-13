@@ -1,40 +1,20 @@
-      MODULE STRING_OPERATIONS
+      module string_operations
 
-      IMPLICIT NONE
+      implicit none
 
-      CONTAINS
+      contains
 
-!      FUNCTION INT_TO_CHAR(IntNum) RESULT(CharNum)
+      function int2_to_char(intnum) result(charnum)
 
-!      INTEGER, INTENT(IN) ::       IntNum
+      integer, intent(in) :: intnum
 
-!      CHARACTER(:), ALLOCATABLE :: CharNum
+      character(len = 2)  :: charnum
 
-!      IF (IntNum .LE. 9) THEN
+      write(charnum, '(i2)') intnum
 
-!         WRITE(CharNum, '(I1)') IntNum
+      return
 
-!         CharNum = '00'//CharNum
-
-!      ELSEIF (IntNum .GE. 10 .AND. IntNum .LE. 99) THEN
-
-!         WRITE(CharNum, '(I2)') IntNum
-
-!         CharNum = '0'//CharNum
-
-!      ELSEIF ()
-
-!         WRITE(CharNum, '(I3)') IntNum
-
-!      ENDIF
-
-!      WRITE(CharNum, '(I6)') IntNum
-
-!      CharNum = TRIM(ADJUSTL(CharNum))
-
-!      RETURN
-
-!      END FUNCTION INT_TO_CHAR
+      end function int2_to_char
 
 
       FUNCTION RM_CHAR(in_str, target_char) RESULT(out_str)

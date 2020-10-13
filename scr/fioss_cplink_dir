@@ -48,7 +48,9 @@ FILES="fudge.inp
        mol
        Dilfac.mdisp
        fioss.exe
-       `echo fort.*`"
+       fort.19.d
+       `echo fort/*`"
+#       `echo fort.*`"
 #       fgrid.inp
 #      fioss_prepare
 #      VELO
