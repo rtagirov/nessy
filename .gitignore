@@ -1,5 +1,5 @@
 obj/
-inp/lin/kurucz_comb_air_parts
+inp/lin/kurucz_comb_air_parts/
 inp/odf/
 *.swp
 src/*.swp
