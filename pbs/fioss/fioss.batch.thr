@@ -12,16 +12,15 @@ dir=$HOME/runs/fioss/IT$mode/$run
 
 if [ ! -d "$dir" ]; then echo "directory $dir does not exist. abort."; exit 1; fi
 
-nproc=1
-
 w1=$3
 w2=$4
 
-wt=00:20:00
+wt=07:30:00
 
+nproc=1
 ncpus=1
 
-mem=2gb
+mem=4gb
 
 qsub -v \
 mode=$mode,\
@@ -29,8 +28,9 @@ run=$run,\
 nproc=$nproc,\
 w1=$w1,\
 w2=$w2 \
+-J $5-$6:1 \
 -o $HOME/log/$JOB_ID \
 -e $HOME/log/$JOB_ID \
--N $run \
+-N f:$run:$5-$6 \
 -lwalltime=$wt \
--lselect=1:ncpus=$ncpus:mem=$mem:avx2=true fioss.pbs
+-lselect=1:ncpus=$ncpus:mem=$mem:avx2=true fioss.batch

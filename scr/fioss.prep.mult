@@ -1,0 +1,28 @@
+#!/bin/sh
+
+if   [[ $HOME == /rds/general/user/rtagirov/home ]]; then 
+
+     scr=$HOME/nessy/scr
+
+elif [[ $HOME == /home/rtagirov ]]; then 
+
+     scr=/mnt/SSD/sim/nessy/scr
+
+else
+
+     abort "Unknown HOME directory."
+
+fi
+
+source $scr/aux_func.sh
+
+#for (( i=1; i<=1000; i+=1 )); do
+for (( i=1; i<=6; i+=1 )); do
+
+    echo preparing $i
+
+    fioss_prepare 1 test_time/$i >> $HOME/log/fioss.prep.mult.log
+
+    exit_if_error "Error during processing of run $i."
+
+done

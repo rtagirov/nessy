@@ -1,0 +1,14 @@
+#!/bin/sh
+
+rm -f $HOME/log/*
+
+mode=$1
+name=$2
+
+wt=00:01:00
+
+ncpus=1
+
+mem=1gb
+
+qsub -v mode=$mode,run=$name -o $HOME/log/$JOB_ID -e $HOME/log/$JOB_ID -N $name -lwalltime=$wt -lselect=1:ncpus=$ncpus:mem=$mem fioss.test

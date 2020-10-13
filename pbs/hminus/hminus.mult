@@ -23,7 +23,7 @@ for (( j=0; j<=950; j+=$step )); do
 
     for (( i=$k; i<=$m; i+=1 )); do
 
-        multhm_throughput.pbs 1 test_time/$i
+        hminus.mult.thr 1 test_time/$i
 
     done
 

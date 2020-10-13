@@ -1,0 +1,22 @@
+#!/bin/sh
+
+step=20
+#step=2
+
+for (( j=0; j<=980; j+=$step )); do
+#for (( j=0; j<=8; j+=$step )); do
+
+    k=`expr $j + 1`
+    m=`expr $j + $step`
+
+#    echo $j $k $m
+
+#    for (( i=$k; i<=$m; i+=1 )); do
+
+    hminus.batch.thr 1 test_time $k $m
+
+#    done
+
+#    sleep 15m
+
+done

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+#parsed by qsub
+#mode 
+#run
+#nproc
+#w1, w2
+
+module load intel-suite
+
+scr=$HOME/nessy/scr
+inp=$HOME/nessy/inp
+obj=$HOME/nessy/obj
+
+base=$HOME/runs/fioss/IT$mode
+
+dir=$base/$run/$PBS_ARRAY_INDEX
+tmp=$TMPDIR
+
+#cp $scr/fioss_do2        -t $dir
+#cp $scr/fioss_cplink_dir -t $dir
+#cp $scr/fioss_mv_results -t $dir
+ln -s $scr/fioss_do2        -t $dir
+ln -s $scr/fioss_cplink_dir -t $dir
+ln -s $scr/fioss_mv_results -t $dir
+
+cp -r $dir/* -t $tmp
+
+export MAX_PROC=$nproc
+
+/usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2 > $tmp/fioss.log 2>&1
+
+rsync -rptgoDq $tmp/ $dir/

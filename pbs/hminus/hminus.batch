@@ -1,0 +1,67 @@
+#!/bin/sh
+
+#parsed by qsub
+#mode
+#run
+
+module load intel-suite
+
+scr=$HOME/nessy/scr
+inp=$HOME/nessy/inp
+obj=$HOME/nessy/obj
+
+if [ "$mode" == "0" ]; then fort99=lte;     fi
+if [ "$mode" == "1" ]; then fort99=wrstart; fi
+
+base=$HOME/runs/hminus/IT$mode
+
+dir=$base/$run/$PBS_ARRAY_INDEX
+tmp=$TMPDIR
+
+if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
+if [   -d "$dir"    ]; then rm -r $dir;              fi
+
+mkdir -p $dir
+
+ln -s $base/gen/atm.inp     -t $dir
+ln -s $base/gen/cards.inp   -t $dir
+ln -s $base/gen/chem.inp    -t $dir
+ln -s $base/gen/datom.inp   -t $dir
+ln -s $base/gen/fgrid.inp   -t $dir
+ln -s $base/gen/molconc.inp -t $dir
+ln -s $base/gen/molpres.inp -t $dir
+ln -s $base/gen/odf.inp     -t $dir
+ln -s $base/gen/crs         -t $dir
+
+cp    $base/gen/fort.99     -t $dir
+
+#ln -s $base/gen/* $dir
+#cp -r $base/gen/* -t $dir
+
+#cp $obj/hminus.exe $dir
+#cp $obj/fioss.exe  $dir
+ln -s $obj/hminus.exe $dir
+ln -s $obj/fioss.exe  $dir
+
+ln -s $scr/fioss_prepare $dir
+
+echo $fort99 > $dir/fort.99
+
+cp -r $dir/* -t $tmp
+
+#/usr/bin/time -v $tmp/hminus.exe | tee $tmp/log.out
+/usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
+
+#rm BROYDEN
+#rm log.out
+#rm MODFILE
+#rm MODHIST
+#rm NEWBROYDEN
+#rm POPNUM
+#rm RADIOC
+#rm RADIOCL
+#rm RADIOL
+
+rsync -rptgoDq $tmp/ $dir/
+
+#$tmp/fioss_prepare $mode $run

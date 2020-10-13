@@ -23,7 +23,7 @@ for (( j=0; j<=950; j+=$step )); do
 
     for (( i=$k; i<=$m; i+=1 )); do
 
-        multfi_throughput.pbs 1 test_time/$i 1800 3000
+        fioss.mult.thr 1 test_time/$i 1800 3000
 
     done
 
