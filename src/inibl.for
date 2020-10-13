@@ -206,6 +206,9 @@ c      NFREQ=2
 c      FREQ(1)=2.997925D17/ALAM0
 c      FREQ(2)=FRLAST
 c      CALL SIGAVS
+
+      print*, 'IBVCS = ', IBVCS
+
       IF(IBVCS.GT.0)  THEN
         IF(IBVCS/=24) THEN
           print *,'call HYDINI'

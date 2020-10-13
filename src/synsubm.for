@@ -5574,6 +5574,9 @@ c
       DO ITAB=1,NTAB
       ILINEB=ILINE
       IHYDPR=IHYDP(ITAB)
+
+      print*, 'IHYDPR = ', IHYDPR
+
       READ(IHYDPR,*) NLLY
       HEADER: DO ILI=1,NLLY
          ILINE=ILINE+1
