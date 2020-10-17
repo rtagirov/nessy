@@ -1,5 +1,7 @@
 obj/
-inp/lin/kurucz_comb_air_parts/
+inp/lin/kurucz/
+inp/lin/kurucz_old/
+inp/gen/fort.19.d/
 inp/odf/
 *.swp
 src/*.swp

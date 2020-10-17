@@ -1,0 +1,9 @@
+#!/bin/sh
+
+logs=$HOME/log/*.ER
+
+for log in $logs; do 
+
+    if [[ ! -z $(cat $log) ]]; then echo $log; fi
+
+done

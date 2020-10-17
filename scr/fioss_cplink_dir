@@ -38,7 +38,7 @@ fi
 FILES="fudge.inp
        datom.inp
        atm.inp
-       molconc.inp
+       molconc.out.inp
        sun.inp
        POPNUM
        RADIOC

@@ -3,6 +3,7 @@
        contains
 
        subroutine inibl(wavarr, sigarr, N, NFDIM)
+!      fort.55 is read here
 
        use MOD_SYNSUBM
        use SYNTHP_CONT,only: FREQC,ABSOC,NFCONT

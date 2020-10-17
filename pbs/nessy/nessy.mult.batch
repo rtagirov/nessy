@@ -1,0 +1,14 @@
+#!/bin/sh
+
+sta=$1
+end=$2
+ste=$3
+
+for (( j=$sta; j<=$end; j+=$ste )); do
+
+    k=`expr $j + 1`
+    m=`expr $j + $ste`
+
+    nessy.batch.thr 1 test_time_2 1800 3000 $k $m
+
+done

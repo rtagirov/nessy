@@ -139,25 +139,25 @@ echo
 #cp -rv ${CROSS_SECTION_FILES}   ./crs
 #cp -rv $mol                     ./mol
 
-ln -sv ${ORIG_COSI}/atm.inp     ./
-ln -sv ${ORIG_COSI}/datom.inp   ./
-ln -sv ${ORIG_COSI}/molconc.inp ./
+ln -sv ${ORIG_COSI}/atm.inp         ./
+ln -sv ${ORIG_COSI}/datom.inp       ./
+ln -sv ${ORIG_COSI}/molconc.out.inp ./
 
-ln -sv ${ORIG_COSI}/MODFILE     ./
-ln -sv ${ORIG_COSI}/RADIOC      ./
-ln -sv ${ORIG_COSI}/RADIOL      ./
-ln -sv ${ORIG_COSI}/POPNUM      ./
+ln -sv ${ORIG_COSI}/MODFILE         ./
+ln -sv ${ORIG_COSI}/RADIOC          ./
+ln -sv ${ORIG_COSI}/RADIOL          ./
+ln -sv ${ORIG_COSI}/POPNUM          ./
 
-ln -sv $dat/fudge.inp           ./
+ln -sv $dat/fudge.inp               ./
 #ln -sv $dat/fort.55             ./
 #ln -sv $dat/fort.56             ./
 
 #ln -sv $INPUT_STARK_BROAD/*     ./
-ln -sv $INPUT_SUN_FILE          ./sun.inp
+ln -sv $INPUT_SUN_FILE              ./sun.inp
 
-ln -sv $INPUT_STARK_BROAD       ./fort
-ln -sv ${CROSS_SECTION_FILES}   ./crs
-ln -sv $mol                     ./mol
+ln -sv $INPUT_STARK_BROAD           ./fort
+ln -sv ${CROSS_SECTION_FILES}       ./crs
+ln -sv $mol                         ./mol
 
 if [ ! -d $LINELISTS ]; then abort "The directory $LINELISTS with the linelists does not exist."; fi
 

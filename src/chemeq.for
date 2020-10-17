@@ -884,7 +884,7 @@
       print*, 'readMolconc allocation'
       allocate(molconc(Nmol,ND))
       nunit1=990
-      open(nunit1, file='molconc.inp', status='old',  ACTION='READ')
+      open(nunit1, file='molconc.out.inp', status='old',  ACTION='READ')
 
       do j=1, Nmol
 
@@ -1143,7 +1143,7 @@
       enddo
  
       nunit1=990
-      open(nunit1, file='molconc.inp', status='unknown')
+      open(nunit1, file='molconc.out.inp', status='unknown')
 
       do j=1, Nmol 
        
@@ -1158,17 +1158,17 @@
       close(nunit1)    
 
  
-      nunit1=690
-      open(nunit1, file='molpres.inp', status='unknown')
+!      nunit1=690
+!      open(nunit1, file='molpres.inp', status='unknown')
 
  
 
-      do i=1, ND
-      write(nunit1,250) Nconc(5,i), Nconc(3,i),N conc(4,i), Nconc(2,i)
- 250      format(4(e15.5,2x))
-      enddo
+!      do i=1, ND
+!      write(nunit1,250) Nconc(5,i), Nconc(3,i),N conc(4,i), Nconc(2,i)
+! 250      format(4(e15.5,2x))
+!      enddo
 
-      close(nunit1)
+!      close(nunit1)
 
       END SUBROUTINE
 

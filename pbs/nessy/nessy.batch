@@ -1,0 +1,51 @@
+#!/bin/sh
+
+#parsed by qsub
+#mode
+#run
+#nproc
+#w1, w2
+
+module load intel-suite
+
+scr=$HOME/nessy/scr
+inp=$HOME/nessy/inp
+obj=$HOME/nessy/obj
+
+if [ "$mode" == "0" ]; then fort99=lte;     fi
+if [ "$mode" == "1" ]; then fort99=wrstart; fi
+
+base=$HOME/runs/nessy
+
+dir=$base/$run/$PBS_ARRAY_INDEX
+tmp=$TMPDIR
+
+if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
+if [   -d "$dir"    ]; then rm -r $dir;              fi
+
+mkdir -p $dir
+
+ln -s  $base/gen/* $dir
+
+unlink $dir/fort.99
+
+cp     $base/gen/fort.99 -t $dir
+
+ln -s  $scr/fioss_do2        -t $dir
+ln -s  $scr/fioss_cplink_dir -t $dir
+ln -s  $scr/fioss_mv_results -t $dir
+
+ln -s  $obj/hminus.exe $dir
+ln -s  $obj/fioss.exe  $dir
+
+echo $fort99 > $dir/fort.99
+
+cp -r $dir/* -t $tmp
+
+/usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
+
+export MAX_PROC=$nproc
+
+/usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2 > $tmp/fioss.log 2>&1
+
+rsync -rptgoDq $tmp/ $dir/

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+dirs=$(ls)
+
+for d in $dirs; do 
+
+    cd $d
+
+    if [[ ! -z $(grep -i fail fioss.log) ]]; then echo $d; fi
+
+    cd ..
+
+done

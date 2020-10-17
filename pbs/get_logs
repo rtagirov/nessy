@@ -1,0 +1,10 @@
+#!/bin/sh
+
+dirs=$(ls)
+
+for d in $dirs; do 
+
+    cp -v $d/hminus.log ./hminus.${d}.log
+    cp -v $d/fioss.log  ./fioss.${d}.log
+
+done

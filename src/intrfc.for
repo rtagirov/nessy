@@ -6,7 +6,7 @@
      *                  einst,alpha,sexpo,agaunt,natom,
      *                  symbol,nfirs0,nlast0,
      *                  WAVARR,SIGARR,N,NFDIM)
-
+!     fort.55 is read here
 !     now includes fix of quantum number of HeI lines
 
       use MOD_INIBL
