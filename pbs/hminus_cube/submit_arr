@@ -1,0 +1,18 @@
+#!/bin/sh
+
+sta=0
+end=90
+ste=10
+
+run=G2V/hydro/123000
+
+for (( j=$sta; j<=$end; j+=$ste )); do
+
+    k=`expr $j + 1`
+    m=`expr $j + $ste`
+
+    submit_hminus 1 $run $k $m
+
+done
+
+#submit_hminus 1 $run 491 512

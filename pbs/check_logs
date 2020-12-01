@@ -2,8 +2,17 @@
 
 logs=$HOME/log/*.ER
 
+bold=$(tput bold)
+normal=$(tput sgr0)
+
 for log in $logs; do 
 
-    if [[ ! -z $(cat $log) ]]; then echo $log; fi
+    if [[ ! -z $(cat $log) ]]; then 
+
+        echo ${bold}${log}${normal}
+        cat $log
+#        echo
+
+    fi
 
 done

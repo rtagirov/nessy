@@ -18,25 +18,23 @@ base=$HOME/runs/hminus/IT$mode
 dir=$base/$run
 tmp=$TMPDIR
 
-if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
-if [   -d "$dir"    ]; then rm -r $dir;              fi
+if [ ! -d $base/gen_hm ]; then cp -r $inp/gen_hm -t $base; fi
+if [   -d "$dir"    ];    then rm -r $dir;                 fi
 
 mkdir -p $dir
 
-ln -s $base/gen/atm.inp     -t $dir
-ln -s $base/gen/cards.inp   -t $dir
-ln -s $base/gen/chem.inp    -t $dir
-ln -s $base/gen/datom.inp   -t $dir
-ln -s $base/gen/fgrid.inp   -t $dir
-ln -s $base/gen/molconc.inp -t $dir
-ln -s $base/gen/molpres.inp -t $dir
-ln -s $base/gen/odf.inp     -t $dir
-ln -s $base/gen/crs         -t $dir
+ln -s $base/gen_hm/atm.inp     -t $dir
+ln -s $base/gen_hm/cards.inp   -t $dir
+ln -s $base/gen_hm/chem.inp    -t $dir
+ln -s $base/gen_hm/datom.inp   -t $dir
+ln -s $base/gen_hm/fgrid.inp   -t $dir
+ln -s $base/gen_hm/odf.inp     -t $dir
+ln -s $base/gen_hm/crs         -t $dir
 
-cp    $base/gen/fort.99     -t $dir
+cp    $base/gen_hm/fort.99     -t $dir
 
-#ln -s $base/gen/* $dir
-#cp -r $base/gen/* -t $dir
+#ln -s $base/gen_hm/* $dir
+#cp -r $base/gen_hm/* -t $dir
 
 #cp $obj/hminus.exe $dir
 #cp $obj/fioss.exe  $dir

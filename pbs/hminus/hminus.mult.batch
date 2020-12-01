@@ -1,22 +1,15 @@
 #!/bin/sh
 
-step=20
-#step=2
+run=$1
+sta=$2
+end=$3
+ste=$4
 
-for (( j=0; j<=980; j+=$step )); do
-#for (( j=0; j<=8; j+=$step )); do
+for (( j=$sta; j<=$end; j+=$ste )); do
 
     k=`expr $j + 1`
-    m=`expr $j + $step`
+    m=`expr $j + $ste`
 
-#    echo $j $k $m
-
-#    for (( i=$k; i<=$m; i+=1 )); do
-
-    hminus.batch.thr 1 test_time $k $m
-
-#    done
-
-#    sleep 15m
+    hminus.batch.thr 1 $run $k $m
 
 done

@@ -3,7 +3,6 @@
 #parsed by qsub
 #mode
 #run
-#nproc
 #w1, w2
 
 module load intel-suite
@@ -15,7 +14,8 @@ obj=$HOME/nessy/obj
 if [ "$mode" == "0" ]; then fort99=lte;     fi
 if [ "$mode" == "1" ]; then fort99=wrstart; fi
 
-base=$HOME/runs/nessy
+base=/rds/general/user/rtagirov/ephemeral/runs/nessy
+#base=$HOME/runs/nessy
 
 dir=$base/$run/$PBS_ARRAY_INDEX
 tmp=$TMPDIR
@@ -28,8 +28,11 @@ mkdir -p $dir
 ln -s  $base/gen/* $dir
 
 unlink $dir/fort.99
+unlink $dir/atm.inp
 
 cp     $base/gen/fort.99 -t $dir
+
+ln -s $HOME/atms/$run/atm.${PBS_ARRAY_INDEX} $dir/atm.inp
 
 ln -s  $scr/fioss_do2        -t $dir
 ln -s  $scr/fioss_cplink_dir -t $dir
@@ -44,8 +47,12 @@ cp -r $dir/* -t $tmp
 
 /usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
 
-export MAX_PROC=$nproc
+conv=$(grep 'MODEL FINALLY CONVERGED' ${tmp}/hminus.log)
 
-/usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2 > $tmp/fioss.log 2>&1
+if [[ ! -z $conv ]]; then
+
+   /usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2 > $tmp/fioss.log 2>&1
+
+fi
 
 rsync -rptgoDq $tmp/ $dir/

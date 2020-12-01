@@ -370,6 +370,7 @@ C     I       - atomic number
 C     ABN     - new abundance; coded using teh same conventions as in
 C               the standard input
 C
+!     fort.56 is read here
       READ(56,*,ERR=566,END=566) NCHANG
       WRITE(6,610)
       DO 60 II=1,NCHANG

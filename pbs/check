@@ -1,0 +1,36 @@
+#!/bin/sh
+
+dirs=$(ls | sort -V)
+
+for d in $dirs; do 
+
+    cd $d
+
+    if [[ ! -f $2.log ]];
+    then
+
+        echo $d: no log file
+
+        cd ..
+
+        continue
+
+    fi
+
+    if [[ "$3" == "1" ]]
+    then
+        
+        if [[ ! -z $(grep -i $1 $2.log) ]]; then echo $d; fi
+
+    fi
+
+    if [[ "$3" == "0" ]]
+    then
+
+        if [[ -z $(grep -i $1 $2.log) ]]; then echo $d; fi
+
+    fi
+
+    cd ..
+
+done

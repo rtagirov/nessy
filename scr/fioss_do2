@@ -264,7 +264,7 @@ if [ $hpc ]; then bash fioss_mv_results $DIRS .; fi
 #catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
 
 catenate $CLV_DIR $CLV_TEMP_FILE $CLV_FILE
-#catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
+catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
 
 for DIR in $DIRS; do cat $DIR/log.out >> log.out; done
 
@@ -273,6 +273,6 @@ rm -rf abemlin
 rm -rf output 
 rm -rf output2
 rm -rf $CLV_DIR
-#rm -rf $SPE_DIR
+rm -rf $SPE_DIR
 
 #rm -rf JOB-*

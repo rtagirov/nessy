@@ -1,7 +1,5 @@
 #!/bin/sh
 
-#rm -f $HOME/log/*
-
 mode=$1
 
 if [ "$mode" != "0" ] && [ "$mode" != "1" ]; then echo "mode is not recognized. abort."; exit 1; fi
@@ -10,11 +8,10 @@ run=$2
 
 ncpus=1
 
-#wt=00:31:00
-#wt=02:00:00
-wt=40:00:00
+#wt=10:00:00
+wt=02:00:00
 
-mem=2gb
+mem=1gb
 
 qsub -v \
 mode=$mode,\
@@ -22,6 +19,6 @@ run=$run \
 -J $3-$4:1 \
 -o $HOME/log/$JOB_ID \
 -e $HOME/log/$JOB_ID \
--N 00625:$3-$4 \
+-N hydro:$3-$4 \
 -lwalltime=$wt \
--lselect=1:ncpus=$ncpus:mem=$mem:avx2=true hminus.batch
+-lselect=1:ncpus=$ncpus:mem=$mem:avx2=true hminus

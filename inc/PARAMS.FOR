@@ -7,7 +7,7 @@ C
      *           MIOEX = 90,
 c     *           MIOEX = 30,
      *           MLEV  = 200,
-     *           MDEPTH= 300,
+     *           MDEPTH= 600,
      *           MFREQ = 80000,
      *           MFCONT= 2+MFREQ/50,       !max number of continous frequency points FREQC(MFCONT)
      *           MCROSS= MLEV,

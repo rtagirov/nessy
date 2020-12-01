@@ -6,28 +6,29 @@ if [ "$mode" != "0" ] && [ "$mode" != "1" ]; then echo "mode is not recognized. 
 
 run=$2
 
-w1=$3
-w2=$4
+w1=$4
+w2=$5
 
-st=$5
-en=$6
+st=$6
+en=$7
 
-wt=10:00:00
+name=$3:$st-$en
 
-nproc=1
+#wt=10:00:00
+wt=24:00:00
+
 ncpus=1
 
-mem=6gb
+mem=2gb
 
 qsub -v \
 mode=$mode,\
 run=$run,\
-nproc=$nproc,\
 w1=$w1,\
 w2=$w2 \
 -J $st-$en:1 \
 -o $HOME/log/$JOB_ID \
 -e $HOME/log/$JOB_ID \
--N $run:$st-$en \
+-N $name \
 -lwalltime=$wt \
 -lselect=1:ncpus=$ncpus:mem=$mem:avx2=true nessy.batch

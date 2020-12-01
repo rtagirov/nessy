@@ -1,0 +1,27 @@
+#!/bin/sh
+
+depth=$1
+
+declare -i k
+
+dirs=$(find ./ -mindepth $depth -maxdepth $depth -type d | sort -V)
+
+for d in $dirs; do
+
+    subdirs=$(awk -F'/' '{ for(i=1;i<=NF;i++) print $i }' <<< $d)
+
+    spec=spec
+
+    k=0
+
+    for subdir in $subdirs; do
+
+       if [[ $k != 0 ]]; then spec=${spec}.${subdir}; fi
+
+       k=$k+1
+
+    done
+
+    cp -v $d/spec.out ./spec/$spec
+
+done

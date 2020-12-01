@@ -1,13 +1,41 @@
 #!/bin/sh
 
-dirs=$(ls)
+depth=$1
 
-for d in $dirs; do 
+dirs=$(find . -mindepth $depth -maxdepth $depth -type d | sort -V)
 
-    cd $d
+for d in $dirs; do
 
-    if [[ ! -z $(grep -i fail fioss.log) ]]; then echo $d; fi
+    if [[ ! -f $d/hminus.log ]]; then
 
-    cd ..
+        echo $d: no hminus log
+
+        continue
+
+    fi
+
+    conv=$(grep 'MODEL FINALLY CONVERGED' $d/hminus.log)
+
+    if [[ -z $conv ]]; then
+
+        echo $d: hminus fail
+
+        continue
+
+    elif [[ ! -f $d/fioss.log ]]; then
+
+        echo $d: no fioss log
+
+        continue
+
+    fi
+
+    fail=$(grep -i fail $d/fioss.log)
+
+    if [[ ! -z $fail ]]; then
+
+        echo $d: fioss fail 
+
+    fi
 
 done

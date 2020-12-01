@@ -215,7 +215,7 @@
 
       n = p / (boltz * T) ! Number density
 
-      h = abs(h - maxval(h))
+      if (h(2) > h(1)) h = abs(h - maxval(h))
 
       r = 1.0d0 + h * 1.0d5 / rstar ! Calculation of radius in relative units: h (height) in km, rstar in cm
 
@@ -243,6 +243,8 @@
       h = read_atm_file_col(1) ! Height
       T = read_atm_file_col(2) ! Temperature
       n = read_atm_file_col(4) ! Number density
+
+      if (h(2) > h(1)) h = abs(h - maxval(h))
 
       r = 1.0d0 + h * 1.0d5 / rstar ! Calculation of radius in relative units: h (height) in km, rstar in cm
 

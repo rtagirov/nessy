@@ -1,0 +1,78 @@
+#!/bin/sh
+
+function run_hminus(){
+
+for (( j=1; j<=$1; j+=1 )); do
+
+    cd $j
+
+    /usr/bin/time -v ./hminus.exe > hminus.log 2>&1
+
+    cd ..
+
+done
+}
+
+#parsed by qsub
+#mode
+#run
+#ndir
+
+module load intel-suite
+
+scr=$HOME/nessy/scr
+inp=$HOME/nessy/inp
+obj=$HOME/nessy/obj
+
+if [ "$mode" == "0" ]; then fort99=lte;     fi
+if [ "$mode" == "1" ]; then fort99=wrstart; fi
+
+base=/rds/general/user/rtagirov/ephemeral/runs/hminus/IT$mode
+#base=$HOME/runs/hminus/IT$mode
+
+i=$PBS_ARRAY_INDEX
+
+dir=$base/$run/$i
+tmp=$TMPDIR
+
+if [ ! -d $base/gen_hm ]; then cp -r $inp/gen_hm -t $base; fi
+if [   -d "$dir"    ];    then rm -r $dir;                 fi
+
+mkdir -p $dir
+
+ndir=8
+
+declare -i i j k ndir
+
+for (( j=1; j<=$ndir; j+=1 )); do
+
+    mkdir -p $dir/$j
+
+#    k=`expr $i - 1`
+#    k=`expr $k * $ndir`
+#    k=`expr $k + $j`
+
+    k=(i-1)*ndir+j
+
+    ln -s $HOME/atms/$run/atm.$k      $dir/$j/atm.inp
+
+    ln -s $base/gen_hm/cards.inp   -t $dir/$j
+    ln -s $base/gen_hm/chem.inp    -t $dir/$j
+    ln -s $base/gen_hm/datom.inp   -t $dir/$j
+    ln -s $base/gen_hm/fgrid.inp   -t $dir/$j
+    ln -s $base/gen_hm/odf.inp     -t $dir/$j
+    ln -s $base/gen_hm/crs         -t $dir/$j
+
+    cp    $base/gen_hm/fort.99     -t $dir/$j
+
+    ln -s $obj/hminus.exe             $dir/$j
+
+    echo $fort99 > $dir/$j/fort.99
+
+done
+
+cp -r $dir/* -t $tmp
+
+run_hminus $ndir
+
+rsync -rptgoDq $tmp/ $dir/

@@ -1,14 +1,46 @@
 #!/bin/sh
 
-sta=$1
-end=$2
-ste=$3
+#run=$1
+#nam=$2
+sta=0
+end=1280
+ste=320
 
-for (( j=$sta; j<=$end; j+=$ste )); do
+#for (( j=$sta; j<=$end; j+=$ste )); do
 
-    k=`expr $j + 1`
-    m=`expr $j + $ste`
+#    k=`expr $j + 1`
+#    m=`expr $j + $ste`
 
-    nessy.batch.thr 1 test_time_2 1800 3000 $k $m
+#    nessy.batch.thr 1 $run $nam 1800 3000 $k $m
+
+#done
+
+nums='30 40 50 60 70 80 82 90 100 110 120 130 140 150 160 170 180 190 200 210'
+#nums='30 40 50 60 70 80 82 90 100 110 120'
+#nums='30'
+#nums='40 50 60 70 80 82 90 120'
+#nums='40 50 60 70 80 90 120'
+#nums='0 1 2 3 4 5 6 7 8 9 10'
+
+for n in $nums; do
+
+#    for (( j=$sta; j<=$end; j+=$ste )); do
+
+        k=`expr $j + 1`
+        m=`expr $j + $ste`
+
+#        run=G2V/hydro/123000/$n
+#        run=G2V/hydro/123000_b/$n
+#        run=G2V/300G/118000_b/$n
+#        run=G2V/300G/118000_c/$n
+#        run=G2V/hydro/123000_c/$n
+        run=G2V/300G/118000_d/$n
+#        run=G2V/300G/118000/$n
+
+#        nessy.batch.thr 1 $run $n 1800 2990 $k $m
+#        nessy.batch.thr 1 $run hydro:$n 1800 2990 1 900
+        nessy.batch.thr 1 $run 300G:$n 1800 2990 1 900
+
+#    done
 
 done
