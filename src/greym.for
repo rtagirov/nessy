@@ -160,8 +160,8 @@ c*** first entry for rnel =  0.99997
           RNEL=ABH/2.+SQRT(ABH*ABH/4.+2.*EXP(-285645./TP)*T32/2.07E-16
      $        *ABHE/ENTOT(L))
 
-!          RNEL = ABXYZ_new(3) + ABXYZ_new(4) + ABXYZ_new(5)
-!          RNEL = 0.0001
+          RNEL = ABXYZ_new(3) + ABXYZ_new(4) + ABXYZ_new(5)
+          RNEL = 0.0001
 
 !          PRINT*, 'ACHTUNG 2: RNEL', ITER, L, RNEL
 
@@ -186,7 +186,7 @@ c*** first entry for rnel =  0.99997
           if(n3 > 20 000 000) then
             print '("greym:RNE does not converge L,N,RNEL,RNEDIF=" '//
      $      ',I4,I4,e6.4,e6.4)', L, N, RNEL, RNEDIF
-          call error('greym: RNEL does not to converge')
+          call error('greym: RNEL does not converge')
           endif  !END DEBUG
 
           CALL LTEPOP(N,ENLTE,TP,ENE,WEIGHT,NCHARG,EION,ELEVEL,NOM,ABXYZ_new,NFIRST,NLAST,NATOM)
