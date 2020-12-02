@@ -20,7 +20,7 @@ base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 dir=$base/$run/$PBS_ARRAY_INDEX
 tmp=$TMPDIR
 
-if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
+#if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
 if [   -d "$dir"    ]; then rm -r $dir;              fi
 
 mkdir -p $dir

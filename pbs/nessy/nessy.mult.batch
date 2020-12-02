@@ -16,6 +16,7 @@ ste=320
 #done
 
 nums='30 40 50 60 70 80 82 90 100 110 120 130 140 150 160 170 180 190 200 210'
+#nums='82'
 #nums='30 40 50 60 70 80 82 90 100 110 120'
 #nums='30'
 #nums='40 50 60 70 80 82 90 120'
@@ -33,13 +34,13 @@ for n in $nums; do
 #        run=G2V/hydro/123000_b/$n
 #        run=G2V/300G/118000_b/$n
 #        run=G2V/300G/118000_c/$n
-#        run=G2V/hydro/123000_c/$n
-        run=G2V/300G/118000_d/$n
+        run=G2V/hydro/123000_c/$n
+#        run=G2V/300G/118000_d/$n
 #        run=G2V/300G/118000/$n
 
 #        nessy.batch.thr 1 $run $n 1800 2990 $k $m
-#        nessy.batch.thr 1 $run hydro:$n 1800 2990 1 900
-        nessy.batch.thr 1 $run 300G:$n 1800 2990 1 900
+        nessy.batch.thr 1 $run 123000_c:$n 1800 2990 1 900
+#        nessy.batch.thr 1 $run 300G:$n 1800 2990 1 900
 
 #    done
 
