@@ -10,6 +10,7 @@
       use auxhminus
       use common_block
       use file_operations
+!      use varhminus
 
       implicit none
 
@@ -27,6 +28,9 @@
       character*7 :: JOB
 
       LOGICAL :: VEL_FIELD_FILE_EXISTS
+
+      real*8, allocatable, dimension(:, :)    :: xjcind
+      real*8, allocatable, dimension(:, :, :) :: U2
 
       LTE_RUN =             .FALSE.
       VEL_FIELD_FROM_FILE = .FALSE.
@@ -151,7 +155,10 @@
 
       CALL COMO;       call finish('COMO',  timer2)
 
-      CALL ETL(JOB);   call finish('ETL',   timer2)
+      CALL ETL(JOB, U2, xjcind);   call finish('ETL',   timer2)
+
+!      print*, 'xjcind'
+!      print*, xjcind
 
       CALL STEAL(JOB); call finish('STEAL', timer2)
 

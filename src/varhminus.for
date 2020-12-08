@@ -30,7 +30,9 @@
 
       real*8, allocatable, dimension(:, :)    :: scafac, absfac
 
-      real*8, allocatable, dimension(:, :)    :: U, VJL
+!      real*8, allocatable, dimension(:, :)    :: xjcind
+      real*8, allocatable, dimension(:, :)    :: U1, VJL
+!      real*8, allocatable, dimension(:, :, :) :: U2
 
       real*8, allocatable, dimension(:, :)    :: sigmaki
 

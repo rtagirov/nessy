@@ -2,7 +2,7 @@
 
       contains
 
-      subroutine etl(job)
+      subroutine etl(job, U2, xjcind)
 
       use MOD_READMOD
       use MOD_WRITMS
@@ -69,7 +69,14 @@
 
       real*8, allocatable, dimension(:) :: opal, etal
 
-      real*8, allocatable, dimension(:) :: xjcind, xjlmean
+      real*8, allocatable, dimension(:, :) :: U
+      real*8, allocatable, dimension(:)    :: xjci
+!      real*8, allocatable, dimension(:)    :: lalala
+      real*8, allocatable, dimension(:, :)    :: lalala
+      real*8, allocatable, dimension(:)    :: xjlmean
+
+      real*8, allocatable, dimension(:, :), intent(inout)    :: xjcind
+      real*8, allocatable, dimension(:, :, :), intent(inout) :: U2
 
       real*8 :: start, finish
 
@@ -98,6 +105,16 @@
 
       close(IFL)
 
+      if (.not. allocated(xjcind)) then
+
+         allocate(xjcind(NLINE, ND))
+         allocate(U2(NLINE, ND, NP))
+
+         xjcind(:, :) = 0.0d0
+         U2(:, :, :) = 0.0d0
+
+      endif
+
       call assert(ND > 1, 'ND <= 1'); call assert(NP > 1, 'NP <= 1')
 
       if (allocated(llo))       deallocate(llo);       allocate(llo(ND, lastind_nlte))
@@ -107,7 +124,7 @@
       if (allocated(opal))      deallocate(opal);      allocate(opal(ND))
       if (allocated(etal))      deallocate(etal);      allocate(etal(ND))
 
-      if (allocated(xjcind))    deallocate(xjcind);    allocate(xjcind(ND))
+!      if (allocated(xjcind))    deallocate(xjcind);    allocate(xjcind(ND))
       if (allocated(xjlmean))   deallocate(xjlmean);   allocate(xjlmean(ND))
 
       damp_line(1 : ND, 1 : lastind_nlte) = .false.
@@ -212,6 +229,9 @@
      $     ' ETL: WARNING - BACKGROUND DATA YOUNGER THAN PRESENT MODEL'
          IF (LASTUPD .LT. JOBNUM-20) PRINT *,
      $     ' ETL: WARNING - BACKGROUND DATA OLDER THAN 20 JOBS'
+
+       print*, 'ierr9 check'
+
 	   ierr9=.true.
       ENDIF
  
@@ -278,32 +298,81 @@
 
       write (NAMEU,FMT_KEY) 'U   ',IND
       write (NAMEJ,FMT_KEY) 'XJC ',IND
+
       if (ierr9) then
 
-!     READ U AND XJC FROM FILE 9
-      IERR=1
-      CALL READMS (ifl,U,ND*NP,NAMEU,IERR)
-      call assert(ierr==0,'Error reading U from File')
-      CALL READMS (ifl,XJCIND,ND,NAMEJ,ierr)
-      call assert(ierr==0,'Error reading XJCIND from File')
+!         do i = 1, ND
+!
+!            print*, xjcind(i)
+!
+!         enddo
 
-      else
+      allocate(lalala(ND, NP))
+      allocate(U(ND, NP))
+
+!      lalala = xjcind(NL, :)
+      lalala = U2(NL, :, :)
+
+!     READ U AND XJC FROM FILE 9
+!      IERR=1
+!      CALL READMS (ifl,U2(NL, :, :),ND*NP,NAMEU,IERR)
+!      call assert(ierr==0,'Error reading U from File')
+!      CALL READMS (ifl,XJCIND(NL, :),ND,NAMEJ,ierr)
+!      call assert(ierr==0,'Error reading XJCIND from File')
+
+!      do i = 1, ND
+
+!         do j = 1, NP
+
+!         if (lalala(i, j) - U(i, j) .ne. 0.0d0) then
+
+!         print*, 'not one ', (lalala(i) - xjcind(NL, i)) / xjcind(NL, i)
+!             print*, 'not one ', (lalala(i, j) - U(i, j)) / U(i, j)
+
+!         endif
+
+!      enddo
+
+!      enddo
+
+      deallocate(lalala)
+      deallocate(U)
+
+!      stop
+
+      endif
+
+!      else
 
 !***     DATA FOR THAT LINE NOT PRESENT - CALCULATE IT NEW ...
 
-      CALL ELIMIN(XLAM,DUMMY1,DUMMY0,U,Z,XJCIND,RADIUS,P,
+      if (.not. ierr9) then
+
+         U2(NL, :, :) = 0.0d0
+         xjcind(NL, :) = 0.0d0
+
+         allocate(U(ND, NP))
+         allocate(xjci(ND))
+
+         CALL ELIMIN(XLAM,DUMMY1,DUMMY0,U,Z,xjci,RADIUS,P,
      $            BCORE,DBDR,OPA,ETA,THOMSON,EDDI,ND,NP,rstar / 1.0d5)
 
+         U2(NL, :, :) = U
+         xjcind(NL, :) = xjci
+
+         deallocate(U)
+         deallocate(xjci)
+
 !***     ... and write it for use in the next iteration
-      CALL WRITMS(ifl,U,ND*NP,NAMEU,-1,IERR)
-      CALL WRITMS(ifl,XJCIND,ND,NAMEJ,-1,IERR)
+!      CALL WRITMS(ifl,U2(NL, :, :),ND*NP,NAMEU,-1,IERR)
+!      CALL WRITMS(ifl,XJCIND(NL, :),ND,NAMEJ,-1,IERR)
 
-      NEWBGC = NEWBGC + 1
+         NEWBGC = NEWBGC + 1
 
-      ENDIF
+      endif
  
       !ADD THE THOMSON EMISSIVITY, USING THE CONTINUUM RADIATION FIELD :
-      ETA(:ND)=ETA(:ND)+OPA(:ND)*THOMSON(:ND)*XJCIND(:ND)
+      ETA(:ND)=ETA(:ND)+OPA(:ND)*THOMSON(:ND)*XJCIND(NL, 1 : ND)
 
       CALL LIOP_RTE(EINST(NUP,LOW),WEIGHT(LOW),WEIGHT(NUP),LOW,NUP,
      $              ND,XLAM,ENTOT,POPNUM,RSTAR,OPAL,ETAL,VDOP, N)
@@ -322,7 +391,7 @@
 
       LMAX = MIN0(NP + 1 - JP, ND)
 
-      CALL ETLRAY(U(1 : ND, JP),Z,OPA,OPAL,ETA,ETAL,XJLMEAN,RADIUS,ND,NP,JP,P,
+      CALL ETLRAY(U2(NL, 1 : ND, JP),Z,OPA,OPAL,ETA,ETAL,XJLMEAN,RADIUS,ND,NP,JP,P,
      $            VELO,GRADI,BCORE,DBDR,PHI,PWEIGHT,NFL,DELTAX,LO)
 
    13 CONTINUE
@@ -377,7 +446,7 @@
 !      stop
 
       deallocate(lo)
-      deallocate(xjcind)
+!      deallocate(xjcind)
 
       close(ifl)
 

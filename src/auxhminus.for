@@ -14,12 +14,14 @@
       character*7 :: JOB
       integer :: timer
       logical,optional:: reset
+      real*8, allocatable, dimension(:, :)    :: xjcind
+      real*8, allocatable, dimension(:, :, :) :: U2
       print *,'HMINUS: Call '//CMD
       selectcase(CMD)
         case('WRSTART'); call WRSTART
         case('WRCONT');  call WRCONT (JOB)
         case('STEAL');   call STEAL  (JOB)
-        case('ETL');     call ETL    (JOB)
+        case('ETL');     call ETL    (JOB, U2, xjcind)
         case('COMO');    call COMO
         case default
         print *,'HMINUS: Unknwon CMD:"'//CMD//'"'

@@ -178,7 +178,9 @@
 
       allocate(ABXYZn(NATOM, ND))
 
-      allocate(U(ND, NP))
+!      allocate(xjcind(ND))
+      allocate(U1(ND, NP))
+!      allocate(U2(ND, NP))
       allocate(VJL(NP, ND))
       allocate(VL(NP))
       allocate(HNU(ND))
