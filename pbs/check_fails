@@ -14,9 +14,17 @@ for d in $dirs; do
 
     fi
 
+    noconv=$(grep 'MAX. NUMBER OF JOBS EXCEEDED' $d/hminus.log)
+
     conv=$(grep 'MODEL FINALLY CONVERGED' $d/hminus.log)
 
-    if [[ -z $conv ]]; then
+    if [[ ! -z $noconv ]]; then
+
+        echo $d: no convergence
+
+        continue
+
+    elif [[ -z $conv ]]; then
 
         echo $d: hminus fail
 
