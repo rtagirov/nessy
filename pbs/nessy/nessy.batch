@@ -32,7 +32,7 @@ unlink $dir/atm.inp
 
 cp     $base/gen/fort.99 -t $dir
 
-ln -s $HOME/atms/$run/atm.${PBS_ARRAY_INDEX} $dir/atm.inp
+ln -s $HOME/atms/$atms/atm.${PBS_ARRAY_INDEX} $dir/atm.inp
 
 ln -s  $scr/fioss_do2        -t $dir
 ln -s  $scr/fioss_cplink_dir -t $dir
