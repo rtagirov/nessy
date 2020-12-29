@@ -7,6 +7,7 @@
       logical ::                                 each_ali =        .false.
       logical ::                                 odf_from_table =  .true. ! if .false. then read ODF from *.lbkg files
       logical ::                                 full_conv_print = .false.
+      logical ::                                 hm_lte =          .false. ! if true then hminus_lte is called by hminus
       logical ::                                 lte_run
       logical ::                                 vel_field_from_file
       logical ::                                 oldstart

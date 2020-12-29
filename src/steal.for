@@ -194,6 +194,16 @@ c***     the new blanketing table needs to be written to the model file
 
 !         stop
 
+          if (hm_lte) then
+
+            open(2, file = 'POPNUM', status = 'unknown')
+
+            call writpop(2, T, popnum, pop1, pop2, pop3, rne, n, nd, modhead, jobnum)
+
+            close(2)
+
+          endif
+
       ELSE
 
 !     RATE EQUATION WITH APPROXIMATE RADIATION TRANSFER

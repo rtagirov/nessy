@@ -64,6 +64,8 @@
         CASE('wrstart');           CONTINUE
         CASE('lte')
 
+             hm_lte = .true.
+
              CALL HMINUS_LTE(); STOP
 
       CASE DEFAULT
