@@ -1,0 +1,15 @@
+#!/bin/bash
+
+dir=$(pwd)
+
+IFS='/' read -r -a array <<< "$dir"
+
+reverse=$(echo "${array[@]} " | tac -s ' ')
+
+r=($reverse)
+
+echo ${r[0]}
+echo ${r[1]}
+echo ${r[2]}
+
+rsync -rv rtagirov@ph-rtagirov.ph.ic.ac.uk:/mnt/SSD/sim/runs/cpline/${r[2]}/${r[1]}/${r[0]}/atms/ ./

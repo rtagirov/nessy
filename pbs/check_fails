@@ -18,13 +18,15 @@ for d in $dirs; do
 
     conv=$(grep 'MODEL FINALLY CONVERGED' $d/hminus.log)
 
+    lte=$(grep 'END OF LTE RUN' $d/hminus.log)
+
     if [[ ! -z $noconv ]]; then
 
         echo $d: no convergence
 
         continue
 
-    elif [[ -z $conv ]]; then
+    elif [[ -z $conv ]] && [[ -z $lte ]]; then
 
         echo $d: hminus fail
 
@@ -42,7 +44,17 @@ for d in $dirs; do
 
     if [[ ! -z $fail ]]; then
 
-        echo $d: fioss fail 
+        echo $d: fioss fail
+
+        continue
+
+    fi
+
+    if [[ ! -f $d/spec.out ]]; then
+
+        echo $d: no spectrum
+
+        continue
 
     fi
 

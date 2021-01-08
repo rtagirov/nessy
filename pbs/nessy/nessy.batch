@@ -48,8 +48,9 @@ cp -r $dir/* -t $tmp
 /usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
 
 conv=$(grep 'MODEL FINALLY CONVERGED' ${tmp}/hminus.log)
+lte=$(grep 'END OF LTE RUN' ${tmp}/hminus.log)
 
-if [[ ! -z $conv ]]; then
+if [[ ! -z $conv ]] || [[ ! -z $lte ]]; then
 
    /usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2 > $tmp/fioss.log 2>&1
 

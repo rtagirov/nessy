@@ -8,14 +8,14 @@ run=$2
 
 atms=$3
 
-#name=$4:$st-$en
-name=$4:$en
-
 w1=$5
 w2=$6
 
 st=$7
 en=$8
+
+#name=$4:$st-$en
+name=$4:$en
 
 wt=24:00:00
 
