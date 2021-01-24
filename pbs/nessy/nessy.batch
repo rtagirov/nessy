@@ -30,7 +30,7 @@ ln -s  $base/gen/* $dir
 unlink $dir/fort.99
 unlink $dir/atm.inp
 
-cp     $base/gen/fort.99 -t $dir
+#cp     $base/gen/fort.99 -t $dir
 
 ln -s $HOME/atms/$atms/atm.${PBS_ARRAY_INDEX} $dir/atm.inp
 

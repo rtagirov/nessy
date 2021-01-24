@@ -261,8 +261,8 @@ if [ $icl ]; then      fioss_mv_results $DIRS .; fi
 if [ $hpc ]; then bash fioss_mv_results $DIRS .; fi
 
 #catenate $contr_dir $contr_temp_file $contr_file
-#catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
 
+catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
 catenate $CLV_DIR $CLV_TEMP_FILE $CLV_FILE
 catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
 
@@ -274,5 +274,6 @@ rm -rf output
 rm -rf output2
 rm -rf $CLV_DIR
 rm -rf $SPE_DIR
+rm -rf $TAU_DIR
 
 #rm -rf JOB-*
