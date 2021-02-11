@@ -14,7 +14,7 @@ C***  DIRECT TRANSFER OF PLOT DATA
 
       ! RT: Introduced for calculation of brightness temperatures in radio range
       !*************************************************************************
-      REAL*8 :: Wavelength
+      REAL*8 :: Wavelength, I_mean
       !*************************************************************************
 
       IDAT=MODHEAD(15:22)
@@ -119,11 +119,19 @@ c     ENCODE (60,55,HEADER) NOUT,RWLAE,PHEAD,IDAT
       open (10,file=flnam,status='unknown')
        
       if (DLAMBD(1) .lt. 67660.0D0) then
-      DO  I=NF,1,-1
-         WRITE (10,3) DLAMBD(i),prof(i)
+
+         I_mean = sum(prof) / NF
+
+         write(10, 3) rwlae, I_mean
  3       format (F10.4," ",e12.5)
 
-      enddo
+!      DO  I=NF,1,-1
+
+!         WRITE (10,3) DLAMBD(i),prof(i)
+! 3       format (F10.4," ",e12.5)
+
+!      enddo
+
       else
       DO  I=NF,1,-1
 !         WRITE (10,4) DLAMBD(i),prof(i)
