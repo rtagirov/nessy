@@ -22,13 +22,13 @@ idx=$PBS_ARRAY_INDEX
 snum=$(($idx/512 + 1))
 rnum=$(($idx%512))
 
-if [[ $rnum == "0" ]]; then $rnum=512; fi
+if (( $rnum == 0 )); then rnum=512; fi
 
 dir=$base/$run/$snum/$rnum
 tmp=$TMPDIR
 
 #if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
-if [   -d "$dir"    ]; then rm -r $dir;              fi
+if [ -d "$dir" ]; then rm -r $dir; fi
 
 mkdir -p $dir
 
@@ -39,7 +39,7 @@ unlink $dir/atm.inp
 
 #cp     $base/gen/fort.99 -t $dir
 
-ln -s $HOME/atms/$atms/$snum/$rnum $dir/atm.inp
+ln -s $HOME/atms/$atms/$snum $dir/atm.inp
 
 ln -s  $scr/fioss_do2        -t $dir
 ln -s  $scr/fioss_cplink_dir -t $dir
@@ -49,6 +49,7 @@ ln -s  $obj/hminus.exe $dir
 ln -s  $obj/fioss.exe  $dir
 
 echo $fort99 > $dir/fort.99
+echo $rnum   > $dir/rn.inp
 
 cp -r $dir/* -t $tmp
 

@@ -13,8 +13,8 @@ ste=320
 
 #done
 
-runs='G2V/300G/118_test_res'
-atms='G2V/300G/118_test_res'
+runs='G2V/hydro/123_wce'
+atms='G2V/hydro/123_wce'
 
 a=($atms)
 
@@ -45,7 +45,7 @@ for r in $runs; do
 
 #        nessy.batch.thr 1 $run $n 1800 2990 $k $m
 #        nessy.batch.thr 1 $run 123000_b:$n 1800 2990 1 900
-    nessy.batch.thr 1 $r ${a[$j]} $name 1800 2990 1 262144
+    nessy.cube.thr 1 $r ${a[$j]} $name 1800 2990 1 1024
 
 #        nessy.batch.thr 1 $run 300G:$n 1800 2990 1 900
 

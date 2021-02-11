@@ -262,17 +262,17 @@
 
       deallocate(p)
 
-      open(unit = 142, file = 'blah')
+!      open(unit = 142, file = 'blah')
 
-      do j = 1, ND
+!      do j = 1, ND
 
-         write(142, *), j, h(j), T(j)
+!         write(142, *), j, h(j), T(j)
 
-      enddo
+!      enddo
 
-      close(142)
+!      close(142)
 
-      stop
+!      stop
 
       end subroutine
 
