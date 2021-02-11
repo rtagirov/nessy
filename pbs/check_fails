@@ -4,9 +4,11 @@ depth=$1
 
 dirs=$(find . -mindepth $depth -maxdepth $depth -type d | sort -V)
 
-for d in $dirs; do
+for d in $dirs
+do
 
-    if [[ ! -f $d/hminus.log ]]; then
+    if [[ ! -f $d/hminus.log ]]
+    then
 
         echo $d: no hminus log
 
@@ -20,19 +22,37 @@ for d in $dirs; do
 
     lte=$(grep 'END OF LTE RUN' $d/hminus.log)
 
-    if [[ ! -z $noconv ]]; then
+    rne_fail=$(grep 'greym: RNEL does not converge' $d/hminus.log)
+
+    if [[ ! -z $noconv ]]
+    then
 
         echo $d: no convergence
 
         continue
 
-    elif [[ -z $conv ]] && [[ -z $lte ]]; then
+    fi
+
+    if [[ ! -z $rne_fail ]]
+    then
+
+        echo $d: rne fail
+
+        continue
+
+    fi
+
+    if [[ -z $conv ]] && [[ -z $lte ]]
+    then
 
         echo $d: hminus fail
 
         continue
 
-    elif [[ ! -f $d/fioss.log ]]; then
+    fi
+
+    if [[ ! -f $d/fioss.log ]]
+    then
 
         echo $d: no fioss log
 
@@ -42,7 +62,8 @@ for d in $dirs; do
 
     fail=$(grep -i fail $d/fioss.log)
 
-    if [[ ! -z $fail ]]; then
+    if [[ ! -z $fail ]]
+    then
 
         echo $d: fioss fail
 
@@ -50,7 +71,8 @@ for d in $dirs; do
 
     fi
 
-    if [[ ! -f $d/spec.out ]]; then
+    if [[ ! -f $d/spec.out ]]
+    then
 
         echo $d: no spectrum
 

@@ -1,0 +1,66 @@
+#!/bin/sh
+
+#parsed by qsub
+#mode
+#run
+#w1, w2
+
+module load intel-suite
+
+scr=$HOME/nessy/scr
+inp=$HOME/nessy/inp
+obj=$HOME/nessy/obj
+
+if [ "$mode" == "0" ]; then fort99=lte;     fi
+if [ "$mode" == "1" ]; then fort99=wrstart; fi
+
+base=/rds/general/user/rtagirov/ephemeral/runs/nessy
+#base=$HOME/runs/nessy
+
+idx=$PBS_ARRAY_INDEX
+
+snum=$(($idx/512 + 1))
+rnum=$(($idx%512))
+
+if [[ $rnum == "0" ]]; then $rnum=512; fi
+
+dir=$base/$run/$snum/$rnum
+tmp=$TMPDIR
+
+#if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
+if [   -d "$dir"    ]; then rm -r $dir;              fi
+
+mkdir -p $dir
+
+ln -s  $base/gen/* $dir
+
+unlink $dir/fort.99
+unlink $dir/atm.inp
+
+#cp     $base/gen/fort.99 -t $dir
+
+ln -s $HOME/atms/$atms/$snum/$rnum $dir/atm.inp
+
+ln -s  $scr/fioss_do2        -t $dir
+ln -s  $scr/fioss_cplink_dir -t $dir
+ln -s  $scr/fioss_mv_results -t $dir
+
+ln -s  $obj/hminus.exe $dir
+ln -s  $obj/fioss.exe  $dir
+
+echo $fort99 > $dir/fort.99
+
+cp -r $dir/* -t $tmp
+
+/usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
+
+conv=$(grep 'MODEL FINALLY CONVERGED' ${tmp}/hminus.log)
+lte=$(grep 'END OF LTE RUN' ${tmp}/hminus.log)
+
+if [[ ! -z $conv ]] || [[ ! -z $lte ]]; then
+
+   /usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2 > $tmp/fioss.log 2>&1
+
+fi
+
+rsync -rptgoDq $tmp/ $dir/
