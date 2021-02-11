@@ -49,6 +49,9 @@
 
       REAL*8 :: PL, PU, DL, DU
 
+!     careful here
+!     if the atmosphere is read from a muram cube slice
+!     the line below is going to give wrong number of depth points
       depth_points_num = num_of_lines(atm_mod_file)
 
       ALLOCATE(TPL(DEPTH_POINTS_NUM, NTC))

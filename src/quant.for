@@ -65,7 +65,12 @@ C***  READING VELOCITY ASPLUND 2000, A&A 359, 729
       ENDIF
 
 CMH   IF ADDTURB TRUE THEN READ THE TURBULENCE BROADENING FROM atm.inp
-      IF (ADDTURB) THEN
+      IF (ADDTURB) THEN 
+! careful here
+! for muram/kurucz format atmosphere or
+! if the atmosphere is read from a muram cube slice
+! this bit is not going to work
+! it works only for FAL format atmosphere
 
       open (UNIT = 9999, file = 'atm.inp', STATUS = 'OLD')
 

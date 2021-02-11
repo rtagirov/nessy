@@ -31,7 +31,11 @@
 !     entot:  heavy particle density
 !     radius: height in units of solar radii
 
+!      print*, 'num of columns', num_of_columns(atm_mod_file)
+
       selectcase(num_of_columns(atm_mod_file))
+
+          case(2);  call read_from_slice(rstar, height, radius, T, entot, ND)           ! Atmosphere model from MURAM slice in MURAM format
 
           case(4);  call read_mur_mod(rstar, height, radius, T, entot, ND)              ! Atmosphere model in MURAM format
 
@@ -185,6 +189,90 @@
       enddo
 
       return
+
+      end subroutine
+
+      subroutine read_from_slice(rstar, h, r, T, n, ND)
+
+      use phys
+      use file_operations
+
+      real*8,  intent(in)  :: rstar
+
+      integer, intent(out) :: ND
+
+      real*8, allocatable, dimension(:), intent(out) :: T, n, r, h
+
+      real*8, allocatable, dimension(:) :: p
+
+      integer :: rn, num
+
+      integer :: j, k
+
+      real*8 :: x
+
+!      print*, 'hello 1'
+
+      open(unit = 1539, file = 'rn.inp', action =  'read')
+
+      read(1539, *) rn
+
+      close(1539)
+
+!      print*, 'hello 2', rn
+
+      open(unit = 1540, file = atm_mod_file, action = 'read')
+
+!      print*, 'hello 3'
+
+      do j = 1, 512
+
+!         print*, j
+
+         read(1540, *) num, ND
+
+         if (num == rn) then
+
+             allocate(h(ND))
+             allocate(T(ND))
+             allocate(p(ND))
+
+             read(1540, *) (h(k), T(k), p(k), x, k = 1, ND)
+
+             exit
+
+         else
+
+             read(1540, *) (x, x, x, x, k = 1, ND)
+
+         endif
+
+      enddo
+
+      close(1540)
+
+      allocate(n(ND))
+      allocate(r(ND))
+
+      n = p / (boltz * T) ! Number density
+
+      if (h(2) > h(1)) h = abs(h - maxval(h))
+
+      r = 1.0d0 + h * 1.0d5 / rstar ! Calculation of radius in relative units: h (height) in km, rstar in cm
+
+      deallocate(p)
+
+      open(unit = 142, file = 'blah')
+
+      do j = 1, ND
+
+         write(142, *), j, h(j), T(j)
+
+      enddo
+
+      close(142)
+
+      stop
 
       end subroutine
 
