@@ -60,6 +60,8 @@
 
       logical ::                               lopa = .false.
 
+      logical ::                               calculate_clv = .false.
+
       integer ::                               numtra
       integer ::                               ntc
 

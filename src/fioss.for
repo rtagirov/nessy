@@ -135,7 +135,7 @@
 
       real*8,allocatable :: dummy2(:, :) ! do not allocate - make sure noone uses it
 
-      REAL*8, ALLOCATABLE :: WAV_CLV(:), FLUX_CLV(:, :)
+      real*8, allocatable :: wav_clv(:), flux_clv(:, :)
        
       real*8 :: dummy0
 
@@ -826,15 +826,15 @@
 !         open(250, file='./contr/'//trim(adjustl(rwlae_str))//'.contr')
 !         write(250,*), rwlae
 
-!         N_CLV = 100
-!         N_CLV = 20
-!         N_CLV = 10
-         N_CLV = 1
-!         N_CLV = NFOBS
-         LP = NP - ND
+         if (calculate_clv) then 
 
-         ALLOCATE(WAV_CLV(N_CLV))
-         ALLOCATE(FLUX_CLV(LP, N_CLV))
+             N_CLV = 1
+             LP = NP - ND
+
+             ALLOCATE(WAV_CLV(N_CLV))
+             ALLOCATE(FLUX_CLV(LP, N_CLV))
+
+         endif
 
          DO JP = JFIRST, JLAST
 
@@ -884,48 +884,55 @@
 
           ENDDO ! LPHI
 
-!         AVERAGING THE SPECTRUM FOR CLV CALCULATIONS
+! clv calculation block, averaging the spectrum (for lower resolution)
+!-----------------------------------------------------------------------
 
-          IF (JP .LE. LP) THEN
+          if (calculate_clv) then
 
-             IS = INT(NFOBS / N_CLV)
-             FP = INT(IS / 2)
+              IF (JP .LE. LP) THEN
 
-             DO K = 1, N_CLV
+                 IS = INT(NFOBS / N_CLV)
+                 FP = INT(IS / 2)
 
-                IF (N_CLV .GT. 1 .AND. N_CLV .LT. NFOBS) THEN
+                 DO K = 1, N_CLV
 
-                   MP = FP + IS * (K - 1)
-                   SP = IS * (K - 1)
-                   EP = IS * K
+                    IF (N_CLV .GT. 1 .AND. N_CLV .LT. NFOBS) THEN
 
-                ELSE IF (N_CLV .EQ. 1) THEN
+                       MP = FP + IS * (K - 1)
+                       SP = IS * (K - 1)
+                       EP = IS * K
 
-                   MP = FP
-                   SP = 1
-                   EP = NFOBS
+                    ELSE IF (N_CLV .EQ. 1) THEN
+
+                       MP = FP
+                       SP = 1
+                       EP = NFOBS
                 
-                ELSE IF (N_CLV .EQ. NFOBS) THEN
+                    ELSE IF (N_CLV .EQ. NFOBS) THEN
 
-                   MP = K
-                   SP = K
-                   EP = K
+                       MP = K
+                       SP = K
+                       EP = K
 
-                ELSE
+                    ELSE
 
-                   PRINT*, 'N_CLV = ', N_CLV, ' IS NOT RECOGNIZED. ABORT.'; STOP
+                       PRINT*, 'N_CLV = ', N_CLV, ' IS NOT RECOGNIZED. ABORT.'; STOP
 
-                ENDIF
+                    ENDIF
 
-                WAV_CLV(K) = DLAM(MP) + RWLAE
+                    WAV_CLV(K) = DLAM(MP) + RWLAE
 
-                if (wav_clv(k) <= 290.0d0) FLUX_CLV(JP, K) = 0.0d0
+                    if (wav_clv(k) <= 290.0d0) FLUX_CLV(JP, K) = 0.0d0
 
-                if (wav_clv(k) > 290.0d0)  FLUX_CLV(JP, K) = SUM(emint(SP : EP)) / IS
+                    if (wav_clv(k) > 290.0d0)  FLUX_CLV(JP, K) = SUM(emint(SP : EP)) / IS
 
-             ENDDO
+                 ENDDO
 
-          ENDIF
+              ENDIF ! JP .le. LP
+
+          endif ! calculate_clv
+
+!------------------------------------------------------------------------------------------
 
         ENDDO ! LOOP OVER JP (IMPACT PARAMETERS)
 
@@ -1023,30 +1030,49 @@
         ! CALL JSYMSET (2LG1,'TRANSFER')
         ! CALL REMARK ('PLOT DATA TO BE ROUTED')
       ENDIF
+
+!-------------------------------------------------
+! clv printout block
+
+      if (calculate_clv) then 
  
-      WRITE(CLVFLNAM, '(F14.0)') XLAM; CLVFLNAM = ADJUSTL(TRIM(CLVFLNAM)//'clv')
+          WRITE(CLVFLNAM, '(F14.0)') XLAM
 
-      CALL OPEN_TO_APPEND(100, CLVFLNAM)
+          CLVFLNAM = ADJUSTL(TRIM(CLVFLNAM)//'clv')
 
-      DO K = 1, N_CLV
+          CALL OPEN_TO_APPEND(100, CLVFLNAM)
 
-          WRITE(100, '(E15.7,1x,$)'), WAV_CLV(K)
+          DO K = 1, N_CLV
 
-          DO JP = JFIRST, LP
+              WRITE(100, '(E15.7,1x,$)'), WAV_CLV(K)
 
-             IF (JP .LT. LP) WRITE(100, '(E15.7,1x,$)'), FLUX_CLV(JP, K)
-             IF (JP .EQ. LP) WRITE(100, '(E15.7)'),      FLUX_CLV(JP, K)
+              DO JP = JFIRST, LP
+
+                 IF (JP .LT. LP) WRITE(100, '(E15.7,1x,$)'), FLUX_CLV(JP, K)
+                 IF (JP .EQ. LP) WRITE(100, '(E15.7)'),      FLUX_CLV(JP, K)
+
+              ENDDO
 
           ENDDO
 
-      ENDDO
+          CLOSE(100)
 
-      CLOSE(100)
+          deallocate(wav_clv)
+          deallocate(flux_clv)
+
+      endif
  
+!-------------------------------------------------
+
+      call rm_file('RADIOC',          '-vf')
+      call rm_file('RADIOL',          '-vf')
+      call rm_file('MODFILE',         '-vf')
+      call rm_file('molconc.out.inp', '-vf')
+
       call cpu_time(fioss_finish)
 
       print*, 'fioss execution time: ', (fioss_finish - fioss_start)
 
-      STOP 'O.K.'
+      stop 'O.K.'
 
-      END
+      end

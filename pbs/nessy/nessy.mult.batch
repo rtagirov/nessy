@@ -39,8 +39,10 @@ nums='0 1 2 3 4 5 6'
 #atms='G2V/300G/118_step G2V/hydro/123_step'
 #runs='G2V/hydro/123_test'
 #atms='G2V/hydro/123_test'
-runs='G2V/300G/118_test_res'
-atms='G2V/300G/118_test_res'
+#runs='G2V/300G/118_test_res'
+#atms='G2V/300G/118_test_res'
+atms='G2V/300G/118_bo'
+runs='G2V/300G/118_bo'
 
 a=($atms)
 
@@ -71,7 +73,7 @@ for r in $runs; do
 
 #        nessy.batch.thr 1 $run $n 1800 2990 $k $m
 #        nessy.batch.thr 1 $run 123000_b:$n 1800 2990 1 900
-        nessy.batch.thr 1 $r/$n ${a[$j]}/$n $name:$n 1800 2990 1 100
+        nessy.batch.thr 1 $r/$n ${a[$j]}/$n $name:$n 1800 2990 1 400
 #        nessy.batch.thr 1 $run 300G:$n 1800 2990 1 900
 
 #    done

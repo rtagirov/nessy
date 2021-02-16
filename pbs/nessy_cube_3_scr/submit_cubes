@@ -1,0 +1,68 @@
+#!/bin/sh
+
+#for (( j=$sta; j<=$end; j+=$ste )); do
+
+#    k=`expr $j + 1`
+#    m=`expr $j + $ste`
+
+#    nessy.batch.thr 1 $run $nam 1800 3000 $k $m
+
+#done
+
+#runs='G2V/hydro/123_wce'
+#atms='G2V/hydro/123_wce'
+#runs='G2V/hydro/123_wcr_test'
+runs='G2V/hydro/123_wcr_72'
+atms='G2V/hydro/123_wcr'
+
+a=($atms)
+
+declare -i j k m sta end ste
+
+#sta=0
+#end=262144
+#end=8192
+#end=1024
+#ste=8192
+#ste=1024
+
+j=0
+
+for r in $runs; do
+
+    IFS='/' read -r -a array <<< "$r"
+
+    name=${array[-1]}
+
+#    for n in $nums; do
+
+#    for (( i=$sta; i<$end; i+=$ste )); do
+
+#        k=`expr $j + 1`
+#        m=`expr $j + $ste`
+#         k=$i+1
+#         m=$i+$ste
+
+#        run=G2V/hydro/123000/$n
+#        run=G2V/hydro/123000_b/$n
+#        run=G2V/300G/118000_bo/$n
+#        run=G2V/300G/118000_c/$n
+#        run=G2V/hydro/123000_c/$n
+#        run=G2V/300G/118000_d/$n
+#        run=G2V/300G/118000/$n
+
+#        nessy.batch.thr 1 $run $n 1800 2990 $k $m
+#        nessy.batch.thr 1 $run 123000_b:$n 1800 2990 1 900
+#    nessy.cube.thr 1 $r ${a[$j]} $name 1800 2990 $k $m
+    submit_cube 1 $r ${a[$j]} $name 1800 2990 1 8192
+#    submit_cube 1 $r ${a[$j]} $name 1800 2990 1 2
+
+#        nessy.batch.thr 1 $run 300G:$n 1800 2990 1 900
+
+#    done
+
+#    done
+
+    j=$j+1
+
+done

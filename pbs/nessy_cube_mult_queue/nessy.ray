@@ -19,10 +19,12 @@ base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
 idx=$PBS_ARRAY_INDEX
 
+declare -i snum rnum
+
 snum=$(($idx/512 + 1))
 rnum=$(($idx%512))
 
-if (( $rnum == 0 )); then rnum=512; fi
+if (( $rnum == 0 )); then snum=$snum-1; rnum=512; fi
 
 dir=$base/$run/$snum/$rnum
 tmp=$TMPDIR

@@ -20,6 +20,7 @@ name=$4:$en
 wt=24:00:00
 
 ncpus=1
+#ncpus=32
 
 mem=2gb
 

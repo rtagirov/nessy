@@ -1,9 +1,5 @@
 #!/bin/sh
 
-sta=0
-end=1280
-ste=320
-
 #for (( j=$sta; j<=$end; j+=$ste )); do
 
 #    k=`expr $j + 1`
@@ -13,12 +9,20 @@ ste=320
 
 #done
 
-runs='G2V/hydro/123_wce'
-atms='G2V/hydro/123_wce'
+#runs='G2V/hydro/123_wce'
+#atms='G2V/hydro/123_wce'
+runs='G2V/hydro/123_wcr'
+atms='G2V/hydro/123_wcr'
 
 a=($atms)
 
-declare -i j
+declare -i j k m sta end ste
+
+sta=0
+end=262144
+#end=1024
+ste=8192
+#ste=1024
 
 j=0
 
@@ -30,10 +34,12 @@ for r in $runs; do
 
 #    for n in $nums; do
 
-#    for (( j=$sta; j<=$end; j+=$ste )); do
+    for (( i=$sta; i<=$end; i+=$ste )); do
 
 #        k=`expr $j + 1`
 #        m=`expr $j + $ste`
+         k=$i+1
+         m=$i+$ste
 
 #        run=G2V/hydro/123000/$n
 #        run=G2V/hydro/123000_b/$n
@@ -45,13 +51,13 @@ for r in $runs; do
 
 #        nessy.batch.thr 1 $run $n 1800 2990 $k $m
 #        nessy.batch.thr 1 $run 123000_b:$n 1800 2990 1 900
-    nessy.cube.thr 1 $r ${a[$j]} $name 1800 2990 1 1024
+    nessy.cube.thr 1 $r ${a[$j]} $name 1800 2990 $k $m
 
 #        nessy.batch.thr 1 $run 300G:$n 1800 2990 1 900
 
 #    done
 
-#    done
+    done
 
     j=$j+1
 

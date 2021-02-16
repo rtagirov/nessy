@@ -54,7 +54,8 @@ trap "return 2" 1 2 3 15
 cd $2
 
 #mkdir -p mdisp lopa title output clv
-mkdir -p mdisp title output clv # lopa change
+#mkdir -p mdisp title output clv # lopa change
+mkdir -p mdisp title output # lopa change
 
 ## While there are files available, run them
 while [[ `ls $CTRL | head -1` ]]; do
@@ -131,7 +132,7 @@ fi
   [[ -d lopa  ]] && mv [0-9]*.lopa  lopa  || true
   [[ -d title ]] && mv [0-9]*.title title || true
   [[ -d tau   ]] && mv [0-9]*.tau   tau   || true
-  [[ -d clv   ]] && mv [0-9]*.clv   clv   || true
+#  [[ -d clv   ]] && mv [0-9]*.clv   clv   || true
 
   ## If failed, move the control file to the output directory
   if [[ "$APPEND" =~ ".*fail.*" ]]; then 
@@ -263,7 +264,7 @@ if [ $hpc ]; then bash fioss_mv_results $DIRS .; fi
 #catenate $contr_dir $contr_temp_file $contr_file
 
 catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
-catenate $CLV_DIR $CLV_TEMP_FILE $CLV_FILE
+#catenate $CLV_DIR $CLV_TEMP_FILE $CLV_FILE
 catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
 
 for DIR in $DIRS; do cat $DIR/log.out >> log.out; done
@@ -275,5 +276,8 @@ rm -rf output2
 rm -rf $CLV_DIR
 rm -rf $SPE_DIR
 rm -rf $TAU_DIR
+
+rm -rf JOB-*
+rm -f  log.out
 
 #rm -rf JOB-*
