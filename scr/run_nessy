@@ -6,7 +6,7 @@ obj=/mnt/SSD/sim/nessy/obj
 
 if [ $# != 4 ]; then
 
-    echo There should be three arguments. Abort.
+    echo There should be four arguments. Abort.
 
     exit 0
 

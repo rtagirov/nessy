@@ -19,20 +19,19 @@ MAX_PROC: Defines the number of processes run simultaniuosly. Preset to 2. Use e
 fi
 
 contr_dir=./contr
-contr_temp_file=./contr.temp.uvi
-contr_file=./contr.func
-
 CLV_DIR=./clv_uvi
-CLV_TEMP_FILE=./clv.temp.uvi
-CLV_FILE=./clv.out
-
 TAU_DIR=./tau
-TAU_TEMP_FILE=./form.temp.uvi
-TAU_FILE=./TAU_UVI
-
 SPE_DIR=./mdisp
-SPE_TEMP_FILE=./spec.temp.uvi
+
+contr_file=./contr.func
+CLV_FILE=./clv.out
+TAU_FILE=./TAU_UVI
 SPE_FILE=./spec.out
+
+#contr_temp_file=./contr.temp.uvi
+#CLV_TEMP_FILE=./clv.temp.uvi
+#TAU_TEMP_FILE=./form.temp.uvi
+#SPE_TEMP_FILE=./spec.temp.uvi
 
 rm -rf title abemlin output output2 ctrl-* JOB-*
 
@@ -54,8 +53,8 @@ trap "return 2" 1 2 3 15
 cd $2
 
 #mkdir -p mdisp lopa title output clv
-#mkdir -p mdisp title output clv # lopa change
-mkdir -p mdisp title output # lopa change
+mkdir -p mdisp title output clv # lopa change
+#mkdir -p mdisp title output # lopa change
 
 ## While there are files available, run them
 while [[ `ls $CTRL | head -1` ]]; do
@@ -133,6 +132,18 @@ fi
   [[ -d title ]] && mv [0-9]*.title title || true
   [[ -d tau   ]] && mv [0-9]*.tau   tau   || true
 #  [[ -d clv   ]] && mv [0-9]*.clv   clv   || true
+
+  for f in [0-9]*.clv; do
+
+      if [ -f $f ]; then
+
+         mv [0-9]*.clv clv
+
+         break
+
+      fi
+
+  done
 
   ## If failed, move the control file to the output directory
   if [[ "$APPEND" =~ ".*fail.*" ]]; then 
@@ -261,11 +272,11 @@ rm $CTRL-wd || true
 if [ $icl ]; then      fioss_mv_results $DIRS .; fi
 if [ $hpc ]; then bash fioss_mv_results $DIRS .; fi
 
-#catenate $contr_dir $contr_temp_file $contr_file
+#catenate $contr_dir $contr_file
 
-catenate $TAU_DIR $TAU_TEMP_FILE $TAU_FILE
-#catenate $CLV_DIR $CLV_TEMP_FILE $CLV_FILE
-catenate $SPE_DIR $SPE_TEMP_FILE $SPE_FILE
+catenate $TAU_DIR $TAU_FILE
+catenate $CLV_DIR $CLV_FILE
+catenate $SPE_DIR $SPE_FILE
 
 for DIR in $DIRS; do cat $DIR/log.out >> log.out; done
 
@@ -280,4 +291,4 @@ rm -rf $TAU_DIR
 rm -rf JOB-*
 rm -f  log.out
 
-#rm -rf JOB-*
+rm -f POPNUM RADIOC RADIOL MODFILE molconc.out.inp

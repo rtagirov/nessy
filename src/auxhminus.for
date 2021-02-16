@@ -92,6 +92,12 @@
       PRINT *,'HMINUS: NO NEW JOB TO BE ROUTED; JOB=',JOB
       REWIND 99; WRITE (99,'(A4)') 'exit'
 
+      call rm_file('BROYDEN',    '-vf')
+      call rm_file('NEWBROYDEN', '-vf')
+      call rm_file('RADIOCL',    '-vf')
+      call rm_file('MODHIST',    '-vf')
+      call rm_file('fort.99',    '-vf')
+
       print *,'HMINUS: Elapsed time for total job: '//writeTOC(timer)
 
       CALL SYSTEM("echo '\n'END OF LTE RUN - $(date)'\n'")

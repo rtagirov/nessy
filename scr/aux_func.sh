@@ -148,13 +148,24 @@ copy()
 for file in $1; do ln -s $file -t $2; done
 }
 
+#catenate()
+#{
+#ls $1/* > $2
+
+#SORTED_NAMES=$(sort -V $2)
+
+#rm $2
+
+#for NAME in $SORTED_NAMES; do cat $NAME >> $3; done
+#}
+
 catenate()
 {
-ls $1/* > $2
+if [ -d $1 ] && [ "$(ls -A $1)" ]; then
 
-SORTED_NAMES=$(sort -V $2)
+    sorted=$(ls $1/* | sort -V)
 
-rm $2
+    for file in $sorted; do cat $file >> $2; done
 
-for NAME in $SORTED_NAMES; do cat $NAME >> $3; done
+fi
 }

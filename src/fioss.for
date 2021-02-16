@@ -1064,10 +1064,10 @@
  
 !-------------------------------------------------
 
-      call rm_file('RADIOC',          '-vf')
-      call rm_file('RADIOL',          '-vf')
-      call rm_file('MODFILE',         '-vf')
-      call rm_file('molconc.out.inp', '-vf')
+!      call rm_file('RADIOC',          '-vf')
+!      call rm_file('RADIOL',          '-vf')
+!      call rm_file('MODFILE',         '-vf')
+!      call rm_file('molconc.out.inp', '-vf')
 
       call cpu_time(fioss_finish)
 
