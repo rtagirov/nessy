@@ -2,6 +2,7 @@ obj/
 inp/lin/kurucz/
 inp/lin/kurucz_old/
 inp/gen/fort.19.d/
+inp/gen_old/fort.19.d/
 inp/odf/
 *.swp
 src/*.swp

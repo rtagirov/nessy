@@ -27,8 +27,8 @@ mkdir -p $dir
 
 ln -s  $base/gen/* $dir
 
-unlink $dir/fort.99
-unlink $dir/atm.inp
+#unlink $dir/fort.99
+#unlink $dir/atm.inp
 
 #cp     $base/gen/fort.99 -t $dir
 

@@ -1,79 +1,136 @@
 #!/bin/sh
 
+clean()
+{
+rm -f $1/atm.inp
+
+files=($(ls $1))
+
+declare -i ln
+
+ln=${#files[@]}-1
+
+for n in $(seq 0 $ln)
+do
+
+    if [ ! -L $1/${files[n]} ]
+    then
+
+        rm -rf $1/${files[n]}
+
+    fi
+
+done
+}
+
+#edit_llog()
+#{
+#arg='!/'$1'/'
+#arg=$1
+
+#awk "$arg" $llog > $tlog
+
+
+#}
+
+#log_fail()
+#{
+#message="$rid: rne fail"
+
+#echo "$1" >> $flog
+
+#continue
+#}
+
+#edit_run_log()
+#{
+#c='1,$s/'$1': not finished/'$2'/g'
+
+#printf "%s\n" "$c" wq | ed -s $3
+#}
+
 #parsed by qsub
-#mode
+#rmode
 #run
-#w1, w2
+#atm
+#flog
+#slog
+#spec
+#Nr
+#ws
+#we
+
+#set -x
 
 module load intel-suite
 
-scr=$HOME/nessy/scr
-
-inp=$HOME/nessy/inp
-obj=$HOME/nessy/obj
-
-if [ "$mode" == "0" ]; then fort99=lte;     fi
-if [ "$mode" == "1" ]; then fort99=wrstart; fi
-
 base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
-declare -i gid rid idx
-declare -i snum rnum
+inp=$HOME/nessy/inp
 
-gid=$PBS_ARRAY_INDEX
+tmp=$TMPDIR
 
-for (( rid=1; rid<=32; rid+=1 )); do
+ln -s $inp/gen/*                  $tmp
 
-    idx=($gid-1)*32+$rid
+ln -s $base/$run/fioss_do2        $tmp
+ln -s $base/$run/fioss_cplink_dir $tmp
+ln -s $base/$run/fioss_mv_results $tmp
 
-    snum=$(($idx/512 + 1))
-    rnum=$(($idx%512))
+ln -s $base/$run/hminus.exe       $tmp
+ln -s $base/$run/fioss.exe        $tmp
 
-    if (( $rnum == 0 )); then snum=$snum-1; rnum=512; fi
+declare -i Nr
+declare -i f x y g r
 
-    dir=$base/$run/$gid/$rid
-    tmp=$TMPDIR
+if [ $rmode = lte ];  then fort99=lte;     fi
+if [ $rmode = nlte ]; then fort99=wrstart; fi
 
-    #if [ ! -d $base/gen ]; then cp -r $inp/gen -t $base; fi
-    if [ -d "$dir" ]; then rm -r $dir; fi
+g=$PBS_ARRAY_INDEX
+
+for ((r=1; r<=Nr; r+=1)); do
+
+    f=(g-1)*Nr+r
+
+#    f=f*2
+    f=f*4
+
+    x=f/512+1
+    y=f%512
+
+    rid="$g,$r;$x,$y"
+
+    if ((y == 0)); then x=x-1; y=512; fi
+
+#    if ((y%2 == 1)); then y=y+1; fi
+
+    dir=$base/$run/groups/$g/$r
+
+    if [ -d $dir ]; then rm -rf $dir; fi
 
     mkdir -p $dir
 
-    ln -s  $base/gen/* $dir
+    ln -s $HOME/atms/$atm/$x $tmp/atm.inp
 
-    unlink $dir/fort.99
-    unlink $dir/atm.inp
-
-    ln -s $HOME/atms/$atms/$snum $dir/atm.inp
-
-    ln -s  $scr/fioss_do2        -t $dir
-    ln -s  $scr/fioss_cplink_dir -t $dir
-    ln -s  $scr/fioss_mv_results -t $dir
-
-    ln -s  $obj/hminus.exe $dir
-    ln -s  $obj/fioss.exe  $dir
-
-    echo $fort99 > $dir/fort.99
-    echo $rnum   > $dir/rn.inp
-
-    cp -r $dir/* -t $tmp
+    echo $fort99 > $tmp/fort.99
+    echo $y      > $tmp/rn.inp
 
     /usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
 
-    if [[ -s $tmp/hminus.log ]]
+    if [ -s $tmp/hminus.log ]
     then
 
         rne_fail=$(grep 'greym: RNEL does not converge' $tmp/hminus.log)
 
-        if [[ -z $rne_fail ]]
+        if [ ! "$rne_fail" ]
         then
 
             conv=$(grep 'MODEL FINALLY CONVERGED' ${tmp}/hminus.log)
             lte=$(grep 'END OF LTE RUN' ${tmp}/hminus.log)
 
-            if [[ ! -z $conv ]] || [[ ! -z $lte ]]; then
+            if [ "$conv" ] || [ "$lte" ]
+            then
 
-               /usr/bin/time -v $tmp/fioss_do2 $w1 10 $w2 > $tmp/fioss.log 2>&1
+               /usr/bin/time -v $tmp/fioss_do2 $ws 10 $we > $tmp/fioss.log 2>&1
 
             fi
 
@@ -81,16 +138,13 @@ for (( rid=1; rid<=32; rid+=1 )); do
 
     fi
 
-    rsync -rptgoDq $tmp/ $dir/
+    cp -P $tmp/atm.inp $dir
 
-    if [[ ! -s $dir/hminus.log ]]
-    then
+    rsync -aq --no-links $tmp/ $dir/
 
-        echo $snum/$rnum: no hminus log >> $base/$run/fail.log
+    clean $tmp
 
-        continue
-
-    fi
+    if [ ! -s $dir/hminus.log ]; then echo "$rid: no hminus log" >> $flog; continue; fi
 
     noconv=$(grep 'MAX. NUMBER OF JOBS EXCEEDED' $dir/hminus.log)
 
@@ -100,65 +154,49 @@ for (( rid=1; rid<=32; rid+=1 )); do
 
     rne_fail=$(grep 'greym: RNEL does not converge' $dir/hminus.log)
 
-    if [[ ! -z $noconv ]]
-    then
+    if [ "$noconv" ];                 then echo "$rid: no convergence" >>  $flog; continue; fi
 
-        echo $snum/$rnum: no convergence >> $base/$run/fail.log
+    if [ "$rne_fail" ];               then echo "$rid: rne fail" >>        $flog; continue; fi
 
-        continue
+    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus fail" >>     $flog; continue; fi
 
-    fi
+    if [ ! -s $dir/fioss.log ];       then echo "$rid: no fioss log" >>    $flog; continue; fi
 
-    if [[ ! -z $rne_fail ]]
-    then
+    fioss_fail=$(grep -i fail $dir/fioss.log | head -1)
 
-        echo $snum/$rnum: rne fail >> $base/$run/fail.log
+    if [ "$fioss_fail" ];             then echo "$rid: fioss fail" >>      $flog; continue; fi
 
-        continue
+    if [ ! -s $dir/spec.out ];        then echo "$rid: no spectrum" >>     $flog; continue; fi
 
-    fi
+    spec_nans=$(grep -i nan $dir/spec.out | head -1)
 
-    if [[ -z $conv ]] && [[ -z $lte ]]
-    then
+    if [ "$spec_nans" ];              then echo "$rid: nan in spectrum" >> $flog; continue; fi
 
-        echo $snum/$rnum: hminus fail >> $base/$run/fail.log
+    echo $rid: >> $slog
 
-        continue
+#    echo $g $r $x $y   >> $spec
+    cat  $dir/spec.out >> $spec
 
-    fi
+#    (
+#    flock -w 10 200 || exit 1
 
-    if [[ ! -s $dir/fioss.log ]]
-    then
+#    grep -v "$g,$r:" $llog > $tlog
 
-        echo $snum/$rnum: no fioss log >> $base/$run/fail.log
+#    mv $tlog $llog
 
-        continue
+#    ) 200>$llog
 
-    fi
-
-    fail=$(grep -i fail $dir/fioss.log)
-
-    if [[ ! -z $fail ]]
-    then
-
-        echo $snum/$rnum: fioss fail >> $base/$run/fail.log
-
-        continue
-
-    fi
-
-    if [[ ! -s $dir/spec.out ]]
-    then
-
-        echo $snum/$rnum: no spectrum >> $base/$run/fail.log
-
-        continue
-
-    fi
-
-    echo $snum $rnum   >> $base/$run/spec.out 
-    cat  $dir/spec.out >> $base/$run/spec.out
-
-#    rm $dir/spec.out
+#    edit_llog "$g,$r:"
 
 done
+
+# if [ $x ] && [ $y ] && [ $g ] && [ $r ] && ((snl == nl))
+# edit_run_log "$rid" "$message" $rlog
+# sed -i "${f}s/.*/$message/" $base/$run/run.log.$Ns.$Nr
+
+#   sometimes g, r, x, y or $dir/spec.out 
+#   turn out to be empty for reasons unknown
+#   here we check that it is not the case
+#   and then count the ray as successful
+
+#    snl=$(wc -l $dir/spec.out | awk '{print $1}')

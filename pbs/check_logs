@@ -1,6 +1,6 @@
 #!/bin/sh
 
-logs=$HOME/log/*.ER
+logs=./*.ER
 
 bold=$(tput bold)
 normal=$(tput sgr0)

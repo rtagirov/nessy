@@ -191,6 +191,7 @@
       call rm_file('RADIOCL',    '-vf')
       call rm_file('MODHIST',    '-vf')
       call rm_file('fort.99',    '-vf')
+!      call rm_file('conv.out',   '-vf')
 
       print*,'HMINUS: Elapsed time for total job: '//writeTOC(timer)
 

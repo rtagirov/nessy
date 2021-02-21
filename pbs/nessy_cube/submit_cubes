@@ -1,58 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
-mode=1
+#submit_split_cube lte  8 G2V hydro 123_lte  123_wcr
+#submit_split_cube lte  8 G2V 300G  118_lte  118_wcr
 
-if [ "$mode" != "0" ] && [ "$mode" != "1" ]; then echo "mode is not recognized. abort."; exit 1; fi
+#submit_split_cube nlte 8 G2V hydro 123_nlte 123_wcr
+#submit_split_cube nlte 8 G2V 300G  118_nlte 118_wcr
 
-runs='G2V/hydro/123_wcr_72'
-atms='G2V/hydro/123_wcr'
+submit_split_cube lte  16 G2V hydro 123_lte_eh  123_wcr
+submit_split_cube lte  16 G2V 300G  118_lte_eh  118_wcr
 
-a=($atms)
-
-w1=1800
-w2=2990
-
-st=1
-en=8192
-#en=2
-
-#wt=24:00:00
-#wt=48:00:00
-wt=72:00:00
-
-ncpus=1
-
-mem=2gb
-
-base=/rds/general/user/rtagirov/ephemeral/runs/nessy
-
-rm -f $base/$run/fail.log
-rm -f $base/$run/spec.out
-
-declare -i j
-
-j=0
-
-for run in $runs; do
-
-IFS='/' read -r -a array <<< "$run"
-
-name=${array[-1]}:$en
-
-qsub -v \
-mode=$mode,\
-run=$run,\
-atms=${a[$j]},\
-w1=$w1,\
-w2=$w2 \
--J $st-$en:1 \
--o $HOME/log/$JOB_ID \
--e $HOME/log/$JOB_ID \
--N $name \
--lwalltime=$wt \
--lselect=1:ncpus=$ncpus:mem=$mem:avx2=true calc_ray_spec
-
-
-j=$j+1
-
-done
+#submit_split_cube nlte 16 G2V hydro 123_nlte 123_wcr
+submit_split_cube nlte 16 G2V 300G  118_nlte_eh 118_wcr
