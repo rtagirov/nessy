@@ -56,6 +56,7 @@ done
 #flog
 #slog
 #spec
+#dfac
 #Nr
 #ws
 #we
@@ -66,11 +67,9 @@ module load intel-suite
 
 base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
-inp=$HOME/nessy/inp
-
 tmp=$TMPDIR
 
-ln -s $inp/gen/*                  $tmp
+ln -s $base/$run/inp/*            $tmp
 
 ln -s $base/$run/fioss_do2        $tmp
 ln -s $base/$run/fioss_cplink_dir $tmp
@@ -80,6 +79,7 @@ ln -s $base/$run/hminus.exe       $tmp
 ln -s $base/$run/fioss.exe        $tmp
 
 declare -i Nr
+declare -i dfac
 declare -i f x y g r
 
 if [ $rmode = lte ];  then fort99=lte;     fi
@@ -91,8 +91,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
     f=(g-1)*Nr+r
 
-#    f=f*2
-    f=f*4
+    f=f*dfac
 
     x=f/512+1
     y=f%512
@@ -175,7 +174,8 @@ for ((r=1; r<=Nr; r+=1)); do
     echo $rid: >> $slog
 
 #    echo $g $r $x $y   >> $spec
-    cat  $dir/spec.out >> $spec
+#    cat  $dir/spec.out >> $spec
+    cp $dir/spec.out $spec/$x.$y
 
 #    (
 #    flock -w 10 200 || exit 1

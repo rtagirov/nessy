@@ -1,18 +1,18 @@
 #!/bin/sh
 
-if [ $# != 6 ]; then
+if [ $# != 5 ]; then
  
-   echo expecting 6 arguments: rmode, Ns, stype, ctype, rname, apath
+   echo expecting 5 arguments: rmode, stype, ctype, rname, apath
  
    exit 1
  
 fi
 
 rmode=$1
-stype=$3
-ctype=$4
-rname=$5
-apath=$6
+stype=$2
+ctype=$3
+rname=$4
+apath=$5
 
 if [ $rmode != lte ] && [ $rmode != nlte ]; then
 
@@ -23,30 +23,60 @@ if [ $rmode != lte ] && [ $rmode != nlte ]; then
 fi
 
 declare -i Nt Ng Ns Nr
-#declare -i ws we nf nl
 declare -i f x y g r
 declare -i gs ge
+declare -i dfac
 declare -i s
 
 Nt=512*512
-#Ng=8192
-Ng=4096
-#Ng=2
 
-Ns=$2
-#Nr=Nt/Ng/Ns
-Nr=1
+#full cube, Nr rays per processor
+Ng=8192
+Ns=${N_sub:-1}
+Nr=Nt/Ng/Ns
 
-#nf=1
+dfac=1
 
 ws=1800
-#we=1800
 we=2990
 
-#nl=(we-ws+10)*nf/10
-
-#walltime=01:00:00
 walltime=24:00:00
+
+#quarter of a cube, 1 ray per processor, 16 submissions
+#Ns=16
+#Ng=4096
+#Nr=1
+
+#dfac=4
+
+#ws=1800
+#we=2990
+
+#walltime=24:00:00
+
+#quarter of a cube, 1 ray per processor, 32 submissions
+#Ns=32
+#Ng=2048
+#Nr=1
+
+#dfac=4
+
+#ws=1800
+#we=2990
+
+#walltime=24:00:00
+
+#test
+#Ns=2
+#Ng=2
+#Nr=2
+
+#dfac=1
+
+#walltime=00:30:00
+
+#ws=1800
+#we=1800
 
 base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
@@ -55,19 +85,29 @@ atm=$stype/$ctype/$apath
 
 scr=$HOME/nessy/scr
 obj=$HOME/nessy/obj
+inp=$HOME/nessy/inp
 
 ldo=$HOME/log/$run/out
 lde=$HOME/log/$run/err
 
-mkdir -p $base/$run $ldo $lde
-
 slog=$base/$run/success.log
 flog=$base/$run/fail.log
-spec=$base/$run/spec.out
+spec=$base/$run/spec
 
-echo Removing old spectrum...
+mkdir -p $base/$run $ldo $lde
 
-rm -f $spec
+if [ ! -d $base/$run/inp ]; then
+
+    echo Copying input files...
+
+    cp -r $inp/gen $base/$run/inp
+
+fi
+
+echo Removing old spectra...
+
+rm -rf   $spec
+mkdir -p $spec
 
 echo Removing old logs...
 
@@ -131,6 +171,7 @@ atm=$atm,\
 slog=$slog,\
 flog=$flog,\
 spec=$spec,\
+dfac=$dfac,\
 Nr=$Nr,\
 ws=$ws,\
 we=$we \

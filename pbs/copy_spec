@@ -10,7 +10,8 @@ for d in $dirs; do
 
     subdirs=$(awk -F'/' '{ for(i=1;i<=NF;i++) print $i }' <<< $d)
 
-    spec=spec
+    spec=s
+#    spec=''
 
     k=0
 
