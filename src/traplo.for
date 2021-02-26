@@ -123,8 +123,9 @@ c     ENCODE (60,55,HEADER) NOUT,RWLAE,PHEAD,IDAT
          I_mean = sum(prof) / NF
 
 !         write(10, 3) rwlae, I_mean
-         write(10, 3) I_mean
 ! 3       format (F10.4," ",e12.5)
+
+         write(10, 3) I_mean
  3       format (e12.5)
 
 !      DO  I=NF,1,-1

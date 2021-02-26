@@ -16,8 +16,8 @@ mode=$1
 run=$3
 atm=$inp/atm/$4
 
-if [ "$mode" = "0" ]; then fort99=lte;     fi
-if [ "$mode" = "1" ]; then fort99=wrstart; fi
+if [ $mode = lte ];  then fort99=lte;     fi
+if [ $mode = nlte ]; then fort99=wrstart; fi
 
 base=/mnt/SSD/sim/runs/nessy
 
@@ -32,7 +32,13 @@ ln -s  $base/gen/* $dir
 unlink $dir/fort.99
 unlink $dir/atm.inp
 
-#cp     $base/gen/fort.99 -t $dir
+#--------------------------------------
+
+#unlink $dir/cards.inp
+
+#ln -s $inp/car/atl_ab $dir/cards.inp
+
+#--------------------------------------
 
 ln -s  $atm $dir/atm.inp
 
@@ -48,7 +54,6 @@ cd $dir
 echo $fort99 > fort.99
 
 /usr/bin/time -v ./hminus.exe > hminus.log 2>&1 &
-#/usr/bin/time -v ./hminus.exe > hminus.log &
 
 wait
 
@@ -60,6 +65,5 @@ if [[ ! -z $conv ]] || [[ ! -z $lte ]]; then
    export MAX_PROC=$2
 
    /usr/bin/time -v fioss_do2 1800 10 2990 > fioss.log 2>&1 &
-#   /usr/bin/time -v fioss_do2 1800 10 2990 > fioss.log &
 
 fi
