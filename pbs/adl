@@ -8,8 +8,25 @@ reverse=$(echo "${array[@]} " | tac -s ' ')
 
 r=($reverse)
 
-echo ${r[0]}
-echo ${r[1]}
-echo ${r[2]}
+declare -i n m idx
 
-rsync -ar --info=progress2 rtagirov@ph-rtagirov.ph.ic.ac.uk:/mnt/SSD/sim/runs/cpline/${r[2]}/${r[1]}/${r[0]}/atms/ ./
+m=$1
+
+n=m-1
+
+path=/mnt/SSD/sim/runs/cpline
+
+for i in $(seq 0 $n); do
+
+    idx=n-i
+
+#    echo ${r[idx]}
+
+    path=$path/${r[idx]}
+
+done
+
+echo $path
+
+#rsync -ar --info=progress2 rtagirov@ph-rtagirov.ph.ic.ac.uk:/mnt/SSD/sim/runs/cpline/${r[2]}/${r[1]}/${r[0]}/atms/ ./
+rsync -ar --info=progress2 rtagirov@ph-rtagirov.ph.ic.ac.uk:$path/atms/ ./

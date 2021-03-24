@@ -56,7 +56,7 @@ done
 #flog
 #slog
 #spec
-#dfac
+#frac
 #Nr
 #ws
 #we
@@ -79,7 +79,7 @@ ln -s $base/$run/hminus.exe       $tmp
 ln -s $base/$run/fioss.exe        $tmp
 
 declare -i Nr
-declare -i dfac
+declare -i frac
 declare -i f x y g r
 
 if [ $rmode = lte ];  then fort99=lte;     fi
@@ -91,7 +91,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
     f=(g-1)*Nr+r
 
-    f=f*dfac
+    f=f*frac
 
     x=f/512+1
     y=f%512

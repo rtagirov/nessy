@@ -1,18 +1,20 @@
 #!/bin/sh
 
-if [ $# != 5 ]; then
+if [ $# != 7 ]; then
  
-   echo expecting 5 arguments: rmode, stype, ctype, rname, apath
+   echo expecting 7 arguments: stype, ctype, rfrac, rname, rmode, rangl, apath
  
    exit 1
  
 fi
 
-rmode=$1
-stype=$2
-ctype=$3
+stype=$1
+ctype=$2
+rfrac=$3
 rname=$4
-apath=$5
+rmode=$5
+rangl=$6
+apath=$7
 
 if [ $rmode != lte ] && [ $rmode != nlte ]; then
 
@@ -25,7 +27,7 @@ fi
 declare -i Nt Ng Ns Nr
 declare -i f x y g r
 declare -i gs ge
-declare -i dfac
+#declare -i dfac
 declare -i s
 
 Nt=512*512
@@ -35,16 +37,18 @@ Ng=8192
 Ns=${N_sub:-1}
 Nr=Nt/Ng/Ns
 
-dfac=1
+#dfac=1
 
 ws=1800
 we=2990
 
 walltime=24:00:00
 
+#---------------------------------------------------------
+
 #quarter of a cube, 1 ray per processor, 16 submissions
-#Ns=16
 #Ng=4096
+#Ns=16
 #Nr=1
 
 #dfac=4
@@ -53,10 +57,12 @@ walltime=24:00:00
 #we=2990
 
 #walltime=24:00:00
+
+#---------------------------------------------------------
 
 #quarter of a cube, 1 ray per processor, 32 submissions
-#Ns=32
 #Ng=2048
+#Ns=32
 #Nr=1
 
 #dfac=4
@@ -65,6 +71,22 @@ walltime=24:00:00
 #we=2990
 
 #walltime=24:00:00
+
+#---------------------------------------------------------
+
+#eighth of a cube, 1 ray per processor, 4 submissions
+Ng=8192
+Ns=4
+Nr=1
+
+#dfac=8
+
+ws=1800
+we=2990
+
+walltime=24:00:00
+
+#---------------------------------------------------------
 
 #test
 #Ns=2
@@ -80,7 +102,7 @@ walltime=24:00:00
 
 base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
-run=$stype/$ctype/$rname
+run=$stype/$ctype/$rfrac/$rname/$rmode/$rangl
 atm=$stype/$ctype/$apath
 
 scr=$HOME/nessy/scr
@@ -96,13 +118,27 @@ spec=$base/$run/spec
 
 mkdir -p $base/$run $ldo $lde
 
-if [ ! -d $base/$run/inp ]; then
+if [ -d $base/$run/inp ]; then rm -r $base/$run/inp; fi
 
-    echo Copying input files...
+mkdir -p $base/$run/inp
 
-    cp -r $inp/gen $base/$run/inp
+echo Copying input files...
 
-fi
+#cp -r $inp/gen $base/$run/inp
+
+cp -r $inp/gen/CARDS.TEMPLATE $base/$run/inp
+cp -r $inp/gen/cards.inp      $base/$run/inp
+cp -r $inp/gen/datom.inp      $base/$run/inp
+cp -r $inp/gen/fgrid.inp      $base/$run/inp
+cp -r $inp/gen/chem.inp       $base/$run/inp
+cp -r $inp/gen/fudge.inp      $base/$run/inp
+cp -r $inp/gen/sun.inp        $base/$run/inp
+
+ln -s $inp/gen/fort.19.d      $base/$run/inp
+ln -s $inp/gen/odf.inp        $base/$run/inp
+ln -s $inp/gen/fort           $base/$run/inp
+ln -s $inp/gen/crs            $base/$run/inp
+ln -s $inp/gen/mol            $base/$run/inp
 
 echo Removing old spectra...
 
@@ -117,7 +153,7 @@ rm -f $ldo/*
 rm -f $lde/*
 #rm -f $base/$run/leftover.*.*.*.log
 
-echo $Ns $Nr > $base/$run/split.log
+echo $rfrac $Ns $Nr > $base/$run/split.log
 
 cp $obj/hminus.exe       $base/$run
 cp $obj/fioss.exe        $base/$run
@@ -164,6 +200,9 @@ ge=s*Ng
 
 IFS='/' read -r -a array <<< "$run"
 
+#name=${array[-1]}:$s
+name=${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$s
+
 qsub -v \
 rmode=$rmode,\
 run=$run,\
@@ -171,17 +210,18 @@ atm=$atm,\
 slog=$slog,\
 flog=$flog,\
 spec=$spec,\
-dfac=$dfac,\
+frac=$rfrac,\
 Nr=$Nr,\
 ws=$ws,\
 we=$we \
 -J $gs-$ge:1 \
 -o $ldo \
 -e $lde \
--N ${array[-1]}:$s \
+-N $name \
 -lwalltime=$walltime \
 -lselect=1:ncpus=1:mem=2gb:avx2=true calc_ray_spec
 
 done
+
 #tlog=$tlog,\
 #llog=$llog,\
