@@ -313,9 +313,7 @@
 
         OPAL = OPAL + SUM
 
-!MH    CHANGES BY MARGIT HABERREITER
-!MH    RDOPAC: READS BINNED LINE OPACITY DATA FROM *.LBKG FILES
-!RT    LINOP is binned and sorted background (i.e. passed on from FIOSS)
+!RT    LINOP is binned and sorted background
 !RT    line opacity at depthpoint L and frequency XLAM
 !MH    IF coop IS CALLED FROM WRCONT
        IF (LBKG) THEN
