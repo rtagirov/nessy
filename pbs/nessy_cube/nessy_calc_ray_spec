@@ -173,30 +173,12 @@ for ((r=1; r<=Nr; r+=1)); do
 
     echo $rid: >> $slog
 
-#    echo $g $r $x $y   >> $spec
-#    cat  $dir/spec.out >> $spec
-    cp $dir/spec.out $spec/$x.$y
+    mv $dir/spec.out $spec/$x.$y
 
-#    (
-#    flock -w 10 200 || exit 1
-
-#    grep -v "$g,$r:" $llog > $tlog
-
-#    mv $tlog $llog
-
-#    ) 200>$llog
-
-#    edit_llog "$g,$r:"
+#    rm $dir/spec.out
+#    rm $dir/fioss.log
+#    rm $dir/hminus.log
 
 done
 
-# if [ $x ] && [ $y ] && [ $g ] && [ $r ] && ((snl == nl))
-# edit_run_log "$rid" "$message" $rlog
-# sed -i "${f}s/.*/$message/" $base/$run/run.log.$Ns.$Nr
-
-#   sometimes g, r, x, y or $dir/spec.out 
-#   turn out to be empty for reasons unknown
-#   here we check that it is not the case
-#   and then count the ray as successful
-
-#    snl=$(wc -l $dir/spec.out | awk '{print $1}')
+module purge

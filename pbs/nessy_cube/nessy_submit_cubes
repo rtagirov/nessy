@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export N_sub=8
+#export N_sub=8
 
 #submit_split_cube lte  G2V hydro 123_lte  123_wcr
 #submit_split_cube lte  G2V 300G  118_lte  118_wcr
@@ -49,10 +49,36 @@ export N_sub=8
 
 #------------------------------------------------------
 
-submit_split_cube G2V hydro 8 angles nlte 4 mu/4
-submit_split_cube G2V ssd   8 angles nlte 4 mu/4
-submit_split_cube G2V 300G  8 angles nlte 4 mu/4
+nessy_submit_split_cube G2V hydro 8 angles lte  2 mu/atms/nessy/2
+nessy_submit_split_cube G2V ssd   8 angles lte  2 mu/atms/nessy/2
+nessy_submit_split_cube G2V 300G  8 angles lte  2 mu/atms/nessy/2
 
-submit_split_cube G2V hydro 8 angles lte  4 mu/4
-submit_split_cube G2V ssd   8 angles lte  4 mu/4
-submit_split_cube G2V 300G  8 angles lte  4 mu/4
+nessy_submit_split_cube G2V hydro 8 angles nlte 2 mu/atms/nessy/2
+nessy_submit_split_cube G2V ssd   8 angles nlte 2 mu/atms/nessy/2
+nessy_submit_split_cube G2V 300G  8 angles nlte 2 mu/atms/nessy/2
+
+#------------------------------------------------------
+
+#s=103833
+
+#nessy_submit_split_cube G2V 300G  8 $s lte 2 $s/mu/atms/nessy/2
+#nessy_submit_split_cube G2V 300G  8 $s lte 4 $s/mu/atms/nessy/4
+#nessy_submit_split_cube G2V 300G  8 $s lte 6 $s/mu/atms/nessy/6
+#nessy_submit_split_cube G2V 300G  8 $s lte 8 $s/mu/atms/nessy/8
+#nessy_submit_split_cube G2V 300G  8 $s lte 1 $s/mu/atms/nessy/1
+
+#s=251568
+
+#nessy_submit_split_cube G2V ssd   8 $s lte 2 $s/mu/atms/nessy/2
+#nessy_submit_split_cube G2V ssd   8 $s lte 4 $s/mu/atms/nessy/4
+#nessy_submit_split_cube G2V ssd   8 $s lte 6 $s/mu/atms/nessy/6
+#nessy_submit_split_cube G2V ssd   8 $s lte 8 $s/mu/atms/nessy/8
+#nessy_submit_split_cube G2V ssd   8 $s lte 1 $s/mu/atms/nessy/1
+
+#s=235427
+
+#nessy_submit_split_cube G2V hydro 8 $s lte 2 $s/mu/atms/nessy/2
+#nessy_submit_split_cube G2V hydro 8 $s lte 4 $s/mu/atms/nessy/4
+#nessy_submit_split_cube G2V hydro 8 $s lte 6 $s/mu/atms/nessy/6
+#nessy_submit_split_cube G2V hydro 8 $s lte 8 $s/mu/atms/nessy/8
+#nessy_submit_split_cube G2V hydro 8 $s lte 1 $s/mu/atms/nessy/1

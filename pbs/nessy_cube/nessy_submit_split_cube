@@ -25,9 +25,7 @@ if [ $rmode != lte ] && [ $rmode != nlte ]; then
 fi
 
 declare -i Nt Ng Ns Nr
-declare -i f x y g r
 declare -i gs ge
-#declare -i dfac
 declare -i s
 
 Nt=512*512
@@ -37,26 +35,12 @@ Ng=8192
 Ns=${N_sub:-1}
 Nr=Nt/Ng/Ns
 
-#dfac=1
-
-ws=1800
-we=2990
-
-walltime=24:00:00
-
 #---------------------------------------------------------
 
 #quarter of a cube, 1 ray per processor, 16 submissions
 #Ng=4096
 #Ns=16
 #Nr=1
-
-#dfac=4
-
-#ws=1800
-#we=2990
-
-#walltime=24:00:00
 
 #---------------------------------------------------------
 
@@ -65,13 +49,6 @@ walltime=24:00:00
 #Ns=32
 #Nr=1
 
-#dfac=4
-
-#ws=1800
-#we=2990
-
-#walltime=24:00:00
-
 #---------------------------------------------------------
 
 #eighth of a cube, 1 ray per processor, 4 submissions
@@ -79,10 +56,21 @@ Ng=8192
 Ns=4
 Nr=1
 
-#dfac=8
+#---------------------------------------------------------
 
-ws=1800
-we=2990
+#eighth of a cube, 4 ray per processor, 1 submissions
+#Ng=8192
+#Ns=1
+#Nr=4
+
+#---------------------------------------------------------
+
+#eighth of a cube, 2 ray per processor, 2 submissions
+#Ng=8192
+#Ns=2
+#Nr=2
+
+#---------------------------------------------------------
 
 walltime=24:00:00
 
@@ -93,24 +81,24 @@ walltime=24:00:00
 #Ng=2
 #Nr=2
 
-#dfac=1
-
 #walltime=00:30:00
 
-#ws=1800
-#we=1800
+#---------------------------------------------------------
+
+ws=1800
+we=1800
 
 base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
-run=$stype/$ctype/$rfrac/$rname/$rmode/$rangl
-atm=$stype/$ctype/$apath
+run=$stype/matthias/$ctype/$rfrac/$rname/$rmode/$rangl
+atm=$stype/matthias/$ctype/$apath
 
 scr=$HOME/nessy/scr
 obj=$HOME/nessy/obj
 inp=$HOME/nessy/inp
 
-ldo=$HOME/log/$run/out
-lde=$HOME/log/$run/err
+ldo=$HOME/log/nessy/$run/out
+lde=$HOME/log/nessy/$run/err
 
 slog=$base/$run/success.log
 flog=$base/$run/fail.log
@@ -192,16 +180,12 @@ cp $scr/fioss_do2        $base/$run
 
 for ((s=1; s<=Ns; s+=1)); do
 
-#llog=$base/$run/leftover.${Nr}.${Ns}.${s}.log
-#tlog=$base/$run/.leftover.${s}.log.temp
-
 gs=(s-1)*Ng+1
 ge=s*Ng
 
 IFS='/' read -r -a array <<< "$run"
 
-#name=${array[-1]}:$s
-name=${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$s
+name=n:${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$s
 
 qsub -v \
 rmode=$rmode,\
@@ -219,9 +203,6 @@ we=$we \
 -e $lde \
 -N $name \
 -lwalltime=$walltime \
--lselect=1:ncpus=1:mem=2gb:avx2=true calc_ray_spec
+-lselect=1:ncpus=1:mem=2gb:avx2=true nessy_calc_ray_spec
 
 done
-
-#tlog=$tlog,\
-#llog=$llog,\
