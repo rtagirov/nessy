@@ -8,7 +8,7 @@
 
       integer,private :: NVDIM__ = -1
       integer,private :: NFOBS__ = -1
-      integer,PARAMETER :: NMAX =1200,NDDD = 200
+      integer,PARAMETER :: NMAX =1200,NDDD = 1000
       real*8,allocatable :: OPATOT(:,:),ETATOT(:,:),VOPA(:)
      &            ,TAU(:,:),DTAU(:,:),WTAU(:,:)
      &            ,SFINE(:,:),OPAFINE(:,:)

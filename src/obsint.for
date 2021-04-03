@@ -322,6 +322,8 @@ cccc      DIMENSION 	EQUIVALENCE (TAU(1,1),OPAFINE(1,1))
             PLUSI=BCORE+DBDR*ZRAY(ND)/XOPA
             EMINT(K)=PLUSI
 
+!            print*, 'test plusi 1', shape(opatot)
+!            print*, 'test plusi 2', k, xopa, kopa, irind(nd)
 
             DINT(Kopa,L)=EMINT(K)
 40        enddo

@@ -10,12 +10,15 @@ C*******************************************************************
  
     !  print*, 'w test', W
              
-      DO K=1,NFOBR
+      DO K = 1, NFOBR
           IF (JFIRST .EQ. JLAST) THEN
               PROFILE(K)=EMINT(K)
           ELSE
               PROFILE(K)=PROFILE(K)+W*EMINT(K)
           ENDIF
+
+!           print*, 'test emint', emint(k) 
+
       ENDDO
      
   !    print*, 'test sasha', profile(1), profile(2), profile(3)

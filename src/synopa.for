@@ -63,6 +63,8 @@ c         freq(nvopa-kopa+1) = cl8/wlam(nvopa-kopa+1)
             opatot(nfreq-ij+1,id)=abso(ij)
             etatot(nfreq-ij+1,id)=emis(ij)
 
+!            print*, 'synopa test', abso(ij)
+
             if (id.le.1) etatot(nfreq-ij+1,id)=emisc(getContIdx(ij))
 
          enddo

@@ -116,8 +116,8 @@ C***  MODEL HEADER
 
    10 READ (1,11,END=66) KARTE
    11 FORMAT (A)
-      PRINT 2,KARTE
-    2 FORMAT (1X,A)
+!      PRINT 2,KARTE
+!    2 FORMAT (1X,A)
      
       IF ( KARTE(:10) .EQ. 'LINE BLANK') THEN
 C                           ==========

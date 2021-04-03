@@ -770,6 +770,9 @@
           WL = xlam0+(k-1)*dlmbd     
           ! write (9996,*) WL,l,opatot(k,l)
           opatot(k,l)=opatot(k,l)*rstar
+
+!          print*, 'opatot fioss test', opatot(k, l)
+
           if (opatot(k,l).gt.opamax) then
             !if (l.eq.39) write (91,692) k,opatot(k,l)
             opamax=opatot(k,l)
