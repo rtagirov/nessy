@@ -113,6 +113,8 @@ if [ -d $base/$run/inp ]; then rm -r $base/$run/inp; fi
 
 mkdir -p $base/$run/inp
 
+echo Submitting $run:
+
 echo Copying input files...
 
 #cp -r $inp/gen $base/$run/inp

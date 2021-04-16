@@ -49,13 +49,13 @@
 
 #------------------------------------------------------
 
-#nessy_submit_split_cube G2V hydro 8 angles lte  2 mu/atms/nessy/2
-#nessy_submit_split_cube G2V ssd   8 angles lte  2 mu/atms/nessy/2
 nessy_submit_split_cube G2V 300G  8 angles lte  2 mu/atms/nessy/2
+nessy_submit_split_cube G2V ssd   8 angles lte  2 mu/atms/nessy/2
+nessy_submit_split_cube G2V hydro 8 angles lte  2 mu/atms/nessy/2
 
-#nessy_submit_split_cube G2V hydro 8 angles nlte 2 mu/atms/nessy/2
-#nessy_submit_split_cube G2V ssd   8 angles nlte 2 mu/atms/nessy/2
 nessy_submit_split_cube G2V 300G  8 angles nlte 2 mu/atms/nessy/2
+nessy_submit_split_cube G2V ssd   8 angles nlte 2 mu/atms/nessy/2
+nessy_submit_split_cube G2V hydro 8 angles nlte 2 mu/atms/nessy/2
 
 #------------------------------------------------------
 

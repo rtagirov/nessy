@@ -211,23 +211,15 @@
 
       real*8 :: x
 
-!      print*, 'hello 1'
-
       open(unit = 1539, file = 'rn.inp', action =  'read')
 
       read(1539, *) rn
 
       close(1539)
 
-!      print*, 'hello 2', rn
-
       open(unit = 1540, file = atm_mod_file, action = 'read')
 
-!      print*, 'hello 3'
-
       do j = 1, 512
-
-!         print*, j
 
          read(1540, *) num, ND
 
@@ -261,18 +253,6 @@
       r = 1.0d0 + h * 1.0d5 / rstar ! Calculation of radius in relative units: h (height) in km, rstar in cm
 
       deallocate(p)
-
-!      open(unit = 142, file = 'blah')
-
-!      do j = 1, ND
-
-!         write(142, *), j, h(j), T(j)
-
-!      enddo
-
-!      close(142)
-
-!      stop
 
       end subroutine
 

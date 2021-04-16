@@ -49,4 +49,4 @@ echo $path/
 
 #rsync -ar --info=progress2 rtagirov@ph-rtagirov.ph.ic.ac.uk:/mnt/SSD/sim/runs/cpline/${r[2]}/${r[1]}/${r[0]}/atms/ ./
 #rsync -ar --info=progress2 rtagirov@ph-rtagirov.ph.ic.ac.uk:$path/atms/$form ./
-rsync -ar --info=progress2 rtagirov@ph-rtagirov.ph.ic.ac.uk:$path/ ./
+rsync -a --info=progress2 rtagirov@ph-rtagirov.ph.ic.ac.uk:$path/ ./
