@@ -51,8 +51,6 @@
 
       integer ::                              timer
 
-      real*8 ::                               amu
-
       LOGICAL ::                              LDUMMY1, LDUMMY2
 
       real*8, allocatable, dimension(:, :) :: eddi_old
@@ -63,8 +61,6 @@
 
       real*8 ::                               wrcont_start, wrcont_finish
 
-      DATA AMU /1.660531d-24/
-
       call cpu_time(wrcont_start)
 
 !      call system("echo -n $(date +%s) >> wall_time.wrcont")
@@ -72,7 +68,7 @@
       print*, 'Entering wrcont, JOB = '//JOB
 
 !     DECODING INPUT OPTIONS
-      CALL DECSTAR(MODHEAD,FM,RSTAR,teff,glog,xmass,VDOP,LDUMMY1,LDUMMY2,NATOM,KODAT,IDAT,LBLANK,ATMEAN,amu)
+      CALL DECSTAR(MODHEAD,FM,RSTAR,teff,glog,xmass,VDOP,LDUMMY1,LDUMMY2,NATOM,KODAT,IDAT,LBLANK,ATMEAN)
 
       CALL DECON(LSOPA,LSINT,IFLUX,JOBMAX,LPRIH,LPHNU,LPRIV,TEFF,LBLANK)
 

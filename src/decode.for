@@ -7,7 +7,7 @@
 
       contains
 
-      subroutine decstar(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,TPLOT,NATOM,KODAT,IDAT,LBLANK,ATMEAN,amu)
+      subroutine decstar(MODHEAD,FM,RSTAR,t_eff,glog,xmass,VDOP,TTABLE,TPLOT,NATOM,KODAT,IDAT,LBLANK,ATMEAN)
 
 !     DECODES INPUT CARDS, CALLED FROM WRSTART AND WRCONT
 
@@ -15,8 +15,6 @@
       use file_operations
  
       IMPLICIT REAL*8(A - H, O - Z)
-
-      real*8, intent(in) :: amu
 
       PARAMETER (ONE = 1.D+0)
       
