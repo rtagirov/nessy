@@ -1,20 +1,21 @@
 #!/bin/sh
 
-if [ $# != 7 ]; then
+if [ $# != 8 ]; then
  
-   echo expecting 7 arguments: stype, ctype, rfrac, rname, rmode, rangl, apath
+   echo expecting 8 arguments: stype, ctype, csnap, rfrac, rname, rmode, rangl, spath
  
    exit 1
  
 fi
 
-stype=$1
-ctype=$2
-rfrac=$3
-rname=$4
-rmode=$5
-rangl=$6
-apath=$7
+stype=$1 # spectral type
+ctype=$2 # cube type
+csnap=$3 # cube snapshot id
+rfrac=$4 # reverse of the fraction of the cube to be calculated
+rname=$5 # run name
+rmode=$6 # lte or nlte
+rangl=$7 # run angle (index of the cube inclination)
+spath=$8 # path to cube slices
 
 if [ $rmode != lte ] && [ $rmode != nlte ]; then
 
@@ -37,38 +38,45 @@ Nr=Nt/Ng/Ns
 
 #---------------------------------------------------------
 
-#quarter of a cube, 1 ray per processor, 16 submissions
+#quarter of the cube, 1 ray per processor, 16 submissions
 #Ng=4096
 #Ns=16
 #Nr=1
 
 #---------------------------------------------------------
 
-#quarter of a cube, 1 ray per processor, 32 submissions
+#quarter of the cube, 1 ray per processor, 32 submissions
 #Ng=2048
 #Ns=32
 #Nr=1
 
 #---------------------------------------------------------
 
-#eighth of a cube, 1 ray per processor, 4 submissions
+#eighth of the cube, 1 ray per processor, 4 submissions
 Ng=8192
 Ns=4
 Nr=1
 
 #---------------------------------------------------------
 
-#eighth of a cube, 4 ray per processor, 1 submissions
+#eighth of the cube, 4 ray per processor, 1 submissions
 #Ng=8192
 #Ns=1
 #Nr=4
 
 #---------------------------------------------------------
 
-#eighth of a cube, 2 ray per processor, 2 submissions
+#eighth of the cube, 2 ray per processor, 2 submissions
 #Ng=8192
 #Ns=2
 #Nr=2
+
+#---------------------------------------------------------
+
+#1/32 of the cube, 1 ray per processor, 1 submissions
+Ng=8192
+Ns=1
+Nr=1
 
 #---------------------------------------------------------
 
@@ -93,8 +101,9 @@ we=2990
 
 base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
-run=$stype/matthias/$ctype/$rfrac/$rname/$rmode/$rangl
-atm=$stype/matthias/$ctype/$apath
+run=$stype/matthias/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
+#atm=$stype/matthias/$ctype/$spath
+atm=$HOME/cubes/matthias/$ctype/$csnap/$spath
 
 scr=$HOME/nessy/scr
 obj=$HOME/nessy/obj
@@ -144,9 +153,8 @@ rm -f $slog
 rm -f $flog
 rm -f $ldo/*
 rm -f $lde/*
-#rm -f $base/$run/leftover.*.*.*.log
 
-echo $rfrac $Ns $Nr > $base/$run/split.log
+echo $rfrac $Ng $Ns $Nr > $base/$run/split.log
 
 cp $obj/hminus.exe       $base/$run
 cp $obj/fioss.exe        $base/$run
@@ -154,34 +162,6 @@ cp $obj/fioss.exe        $base/$run
 cp $scr/fioss_cplink_dir $base/$run
 cp $scr/fioss_mv_results $base/$run
 cp $scr/fioss_do2        $base/$run
-
-#echo Creating logs for leftover rays...
-
-#for ((s=1; s<=Ns; s+=1)); do
-
-#    llog=$base/$run/leftover.${Nr}.${Ns}.${s}.log
-
-#    gs=(s-1)*Ng+1
-#    ge=s*Ng
-
-#    for ((g=gs; g<=ge; g+=1)); do
-
-#        for ((r=1; r<=Nr; r+=1)); do
-
-#            f=(g-1)*Nr+r
-
-#            x=f/512+1
-#            y=f%512
-
-#            if ((y == 0)); then x=x-1; y=512; fi
-
-#            echo $g,$r: >> $llog
-
-#        done
-
-#    done
-
-#done
 
 for ((s=1; s<=Ns; s+=1)); do
 

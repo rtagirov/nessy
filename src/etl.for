@@ -176,19 +176,19 @@
 
       if (cread.eq.cname) then
 
-         print*, 'check 1'
+!         print*, 'check 1'
 
          read (ifl, '(A104)', err = 1001, end = 101) MODHOLD
 
          if (modhead .ne. modhold) then
 
-            print*, 'check 2'
+!            print*, 'check 2'
 
             goto 101
 
          else
 
-            print*, 'check 3'
+!            print*, 'check 3'
 
             ierr=0
 

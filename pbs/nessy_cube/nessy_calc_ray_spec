@@ -108,7 +108,8 @@ for ((r=1; r<=Nr; r+=1)); do
 
     mkdir -p $dir
 
-    ln -s $HOME/atms/$atm/$x $tmp/atm.inp
+#    ln -s $HOME/atms/$atm/$x $tmp/atm.inp
+    ln -s $atm/$x $tmp/atm.inp
 
     echo $fort99 > $tmp/fort.99
     echo $y      > $tmp/rn.inp
@@ -145,6 +146,8 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if [ ! -s $dir/hminus.log ]; then echo "$rid: no hminus log" >> $flog; continue; fi
 
+    nospace=$(grep 'No space left on device' $dir/hminus.log)
+
     noconv=$(grep 'MAX. NUMBER OF JOBS EXCEEDED' $dir/hminus.log)
 
     conv=$(grep 'MODEL FINALLY CONVERGED' $dir/hminus.log)
@@ -153,23 +156,29 @@ for ((r=1; r<=Nr; r+=1)); do
 
     rne_fail=$(grep 'greym: RNEL does not converge' $dir/hminus.log)
 
+    ratconan=$(grep 'coma: ratco NaN' $dir/hminus.log)
+
+    if [ "$nospace" ];                then echo "$rid: no space" >>        $flog; continue; fi
+
     if [ "$noconv" ];                 then echo "$rid: no convergence" >>  $flog; continue; fi
 
-    if [ "$rne_fail" ];               then echo "$rid: rne fail" >>        $flog; continue; fi
+    if [ "$rne_fail" ];               then echo "$rid: rne" >>             $flog; continue; fi
 
-    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus fail" >>     $flog; continue; fi
+    if [ "$ratconan" ];               then echo "$rid: ratco nan" >>       $flog; continue; fi
+
+    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus" >>          $flog; continue; fi
 
     if [ ! -s $dir/fioss.log ];       then echo "$rid: no fioss log" >>    $flog; continue; fi
 
     fioss_fail=$(grep -i fail $dir/fioss.log | head -1)
 
-    if [ "$fioss_fail" ];             then echo "$rid: fioss fail" >>      $flog; continue; fi
+    if [ "$fioss_fail" ];             then echo "$rid: fioss" >>           $flog; continue; fi
 
     if [ ! -s $dir/spec.out ];        then echo "$rid: no spectrum" >>     $flog; continue; fi
 
-    spec_nans=$(grep -i nan $dir/spec.out | head -1)
+    spec_nan=$(grep -i nan $dir/spec.out | head -1)
 
-    if [ "$spec_nans" ];              then echo "$rid: nan in spectrum" >> $flog; continue; fi
+    if [ "$spec_nan" ];               then echo "$rid: nan in spectrum" >> $flog; continue; fi
 
     echo $rid: >> $slog
 

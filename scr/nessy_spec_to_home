@@ -1,0 +1,39 @@
+#!/bin/bash
+
+ctype=(hydro ssd 300G)
+
+csnap=(123000 186000 118000)
+
+mode=(nlte lte)
+
+ltype=${#ctype[@]}
+lmode=${#mode[@]}
+
+#angle=(2 4 6 8 10)
+
+for ((i=0; i<$ltype; i++)); do
+
+    for ((j=0; j<$lmode; j++)); do
+
+        src_path=G2V/matthias/${ctype[i]}/${csnap[i]}/32/246810/${mode[j]}
+        des_path=G2V/matthias/${ctype[i]}/no_extension/${mode[j]}
+
+        echo $src_path
+
+        src=./nessy/$src_path
+
+        dest=$HOME/spec/nessy/$des_path
+
+        dirs=$(ls $src)
+
+        for d in $dirs; do
+
+            mkdir -p $dest/$d/spec
+
+            rsync -a --info=progress2 $src/$d/spec/ $dest/$d/spec/
+
+        done
+
+    done
+
+done

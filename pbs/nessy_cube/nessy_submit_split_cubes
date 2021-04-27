@@ -49,13 +49,13 @@
 
 #------------------------------------------------------
 
-nessy_submit_split_cube G2V 300G  8 angles lte  2 mu/atms/nessy/2
-nessy_submit_split_cube G2V ssd   8 angles lte  2 mu/atms/nessy/2
-nessy_submit_split_cube G2V hydro 8 angles lte  2 mu/atms/nessy/2
+#nessy_submit_split_cube G2V 300G  8 angles lte  2 mu/atms/nessy/2
+#nessy_submit_split_cube G2V ssd   8 angles lte  2 mu/atms/nessy/2
+#nessy_submit_split_cube G2V hydro 8 angles lte  2 mu/atms/nessy/2
 
-nessy_submit_split_cube G2V 300G  8 angles nlte 2 mu/atms/nessy/2
-nessy_submit_split_cube G2V ssd   8 angles nlte 2 mu/atms/nessy/2
-nessy_submit_split_cube G2V hydro 8 angles nlte 2 mu/atms/nessy/2
+#nessy_submit_split_cube G2V 300G  8 angles nlte 2 mu/atms/nessy/2
+#nessy_submit_split_cube G2V ssd   8 angles nlte 2 mu/atms/nessy/2
+#nessy_submit_split_cube G2V hydro 8 angles nlte 2 mu/atms/nessy/2
 
 #------------------------------------------------------
 
@@ -82,3 +82,35 @@ nessy_submit_split_cube G2V hydro 8 angles nlte 2 mu/atms/nessy/2
 #nessy_submit_split_cube G2V hydro 8 $s lte 6 $s/mu/atms/nessy/6
 #nessy_submit_split_cube G2V hydro 8 $s lte 8 $s/mu/atms/nessy/8
 #nessy_submit_split_cube G2V hydro 8 $s lte 1 $s/mu/atms/nessy/1
+
+#--------------------------------------------------------
+
+# echo expecting 8 arguments: stype, ctype, csnap, rfrac, rname, rmode, rangl, spath
+
+rmode=(nlte lte)
+
+ctype=(300G ssd hydro)
+
+csnap=(118000 186000 123000)
+
+rangl=(2 4 6 8 10)
+
+lrmode=${#rmode[@]}-1
+lctype=${#ctype[@]}-1
+lrangl=${#rangl[@]}-1
+
+for ((j=0; j<=$lrangl; j+=1)); do
+
+    for ((k=0; k<=$lrmode; k+=1)); do
+
+        for ((i=0; i<=$lctype; i+=1)); do
+
+#            echo ${rmode[k]} ${ctype[i]} ${csnap[i]} ${rangl[j]}
+
+            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} 32 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
+
+        done
+
+    done
+
+done
