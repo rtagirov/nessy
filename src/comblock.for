@@ -61,6 +61,7 @@
       logical ::                               lopa = .false.
 
       logical ::                               calculate_clv = .false.
+!      logical ::                               calculate_clv = .true.
 
       integer ::                               numtra
       integer ::                               ntc
