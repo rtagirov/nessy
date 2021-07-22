@@ -1,7 +1,30 @@
 #!/usr/bin/env bash
 
-if [[ $HOME == /rds/general/user/rtagirov/home ]]; then hpc=yes; scr=$HOME/nessy/scr;        fi
-if [[ $HOME == /home/rtagirov ]];                  then icl=yes; scr=/mnt/SSD/sim/nessy/scr; fi
+if [[ $HOME == /rds/general/user/rtagirov/home ]]; then 
+
+    host=imperial_hpc
+
+    scr=$HOME/nessy/scr
+
+elif [[ $HOME == /home/dc-tagi1 ]]; then 
+
+    host=dirac_cambridge
+
+    scr=$HOME/nessy/scr
+
+elif [[ $HOME == /home/rtagirov ]]; then
+
+    host=imperial_pc
+
+    scr=/mnt/SSD/sim/nessy/scr
+
+else
+
+    echo "Host not recognized. Abort."
+
+    exit 1
+
+fi
 
 #if [ -z "$scr" ]; then echo "Variable scr must be declared in .bashrc!"; exit; fi
 
@@ -252,12 +275,14 @@ for ((A=1;A<=MAX_PROC;A++)); do
   if [[ -e "$DIR" ]]; then
     DIR="`mktemp -d ${DIR}_XX`"
 #    echo "Start Job $DIR"
-    if [ $icl ]; then      fioss_cplink_dir . $DIR --force; fi
-    if [ $hpc ]; then bash fioss_cplink_dir . $DIR --force; fi
+    if [ $host == imperial_pc ];     then      fioss_cplink_dir . $DIR --force; fi
+    if [ $host == imperial_hpc ];    then bash fioss_cplink_dir . $DIR --force; fi
+    if [ $host == dirac_cambridge ]; then bash fioss_cplink_dir . $DIR --force; fi
   else
 #    echo "Start Job $DIR"
-    if [ $icl ]; then      fioss_cplink_dir . $DIR; fi
-    if [ $hpc ]; then bash fioss_cplink_dir . $DIR; fi
+    if [ $host == imperial_pc ];     then      fioss_cplink_dir . $DIR; fi
+    if [ $host == imperial_hpc ];    then bash fioss_cplink_dir . $DIR; fi
+    if [ $host == dirac_cambridge ]; then bash fioss_cplink_dir . $DIR; fi
   fi
   [[ $ABEMLIN_DIR ]] &&  mkdir -p $DIR/${ABEMLIN_DIR}
   fioss_runProg "$CTRL/" "$DIR" &
@@ -269,8 +294,9 @@ wait
 rmdir $CTRL &> /dev/null || true
 rm $CTRL-wd || true
 
-if [ $icl ]; then      fioss_mv_results $DIRS .; fi
-if [ $hpc ]; then bash fioss_mv_results $DIRS .; fi
+if [ $host == imperial_pc ];     then      fioss_mv_results $DIRS .; fi
+if [ $host == imperial_hpc ];    then bash fioss_mv_results $DIRS .; fi
+if [ $host == dirac_cambridge ]; then bash fioss_mv_results $DIRS .; fi
 
 #catenate $contr_dir $contr_file
 

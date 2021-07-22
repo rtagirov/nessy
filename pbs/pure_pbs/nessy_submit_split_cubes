@@ -87,17 +87,13 @@
 
 # echo expecting 8 arguments: stype, ctype, csnap, rfrac, rname, rmode, rangl, spath
 
-#rmode=(nlte lte)
-rmode=(lte)
+rmode=(nlte lte)
 
-#ctype=(300G ssd hydro)
-ctype=(hydro)
+ctype=(300G ssd hydro)
 
-#csnap=(118000 186000 123000)
-csnap=(123000)
+csnap=(118000 186000 123000)
 
-#rangl=(2 4 6 8 10)
-rangl=(10)
+rangl=(2 4 6 8 10)
 
 lrmode=${#rmode[@]}-1
 lctype=${#ctype[@]}-1
@@ -111,8 +107,7 @@ for ((j=0; j<=$lrangl; j+=1)); do
 
 #            echo ${rmode[k]} ${ctype[i]} ${csnap[i]} ${rangl[j]}
 
-#            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} 32 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
-            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} 1 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
+            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} 32 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
 
         done
 

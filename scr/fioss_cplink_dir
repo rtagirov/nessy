@@ -8,8 +8,31 @@
 
 #[[ $scr ]] || echo "Variable scr must be declared in .bashrc!" || exit
 
-if [[ $HOME == /rds/general/user/rtagirov/home ]]; then hpc=yes; scr=$HOME/nessy/scr;        fi
-if [[ $HOME == /home/rtagirov ]];                  then icl=yes; scr=/mnt/SSD/sim/nessy/scr; fi
+if [[ $HOME == /rds/general/user/rtagirov/home ]]; then 
+
+    host=imperial_hpc
+
+    scr=$HOME/nessy/scr
+
+elif [[ $HOME == /home/dc-tagi1 ]]; then 
+
+    host=dirac_cambridge
+
+    scr=$HOME/nessy/scr
+
+elif [[ $HOME == /home/rtagirov ]]; then
+
+    host=imperial_pc
+
+    scr=/mnt/SSD/sim/nessy/scr
+
+else
+
+    echo "Host not recognized. Abort."
+
+    exit 1
+
+fi
 
 source $scr/fioss.settings
 source $scr/helper_scripts

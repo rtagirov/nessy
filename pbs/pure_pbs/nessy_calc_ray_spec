@@ -1,89 +1,26 @@
-#!/bin/bash
+#!/bin/sh
 
 clean()
 {
-if [ $2 == imperial ]; then
+rm -f $1/atm.inp
 
-    rm -f $1/atm.inp
+files=($(ls $1))
 
-    files=($(ls $1))
+declare -i ln
 
-    declare -i ln
+ln=${#files[@]}-1
 
-    ln=${#files[@]}-1
+for n in $(seq 0 $ln)
+do
 
-    for n in $(seq 0 $ln)
-    do
+    if [ ! -L $1/${files[n]} ]
+    then
 
-        if [ ! -L $1/${files[n]} ]
-        then
+        rm -rf $1/${files[n]}
 
-            rm -rf $1/${files[n]}
+    fi
 
-        fi
-
-    done
-
-elif [ $2 == dirac_cambridge ]; then
-
-    files=($(ls $1))
-#---------------------------------------
-#    files=$(ls $1)
-
-#    declare -i ln
-
-#    ln=${#files[@]}-1
-
-#    for n in $(seq 0 $ln)
-#    do
-
-#     for f in $files; do
-#---------------------------------------
-
-##     for f in "${files[@]}"; do
-
-#---------------------------------------
-#         f=${files[n]}
-#---------------------------------------
-
-##         if [[ "$f" == "rn.inp" ]];  then continue; fi
-##         if [[ "$f" == "atm.inp" ]]; then continue; fi
-##         if [[ "$f" == *.log ]];     then continue; fi
-
-##         rm -rf $1/$f
-
-##     done
-
-#============================
-
-    rm $1/cards.inp
-    rm $1/CARDS.TEMPLATE
-    rm $1/chem.inp
-    rm $1/crs
-    rm $1/datom.inp
-    rm $1/fgrid.inp
-    rm $1/fioss_cplink_dir
-    rm $1/fioss_do2
-    rm $1/fioss.exe
-    rm $1/fioss_mv_results
-    rm $1/fort
-    rm $1/fort.19.d
-    rm $1/fudge.inp
-    rm $1/hminus.exe
-    rm $1/MODFILE
-    rm $1/mol
-    rm $1/molconc.out.inp
-    rm $1/odf.inp
-    rm $1/POPNUM
-    rm $1/RADIOC
-    rm $1/RADIOL
-    rm $1/sun.inp
-
-    rm -r $1/JOB-*
-
-#=============================
-
-fi
+done
 }
 
 #edit_llog()
@@ -112,8 +49,7 @@ fi
 #printf "%s\n" "$c" wq | ed -s $3
 #}
 
-#parsed by qsub or sbatch
-#host
+#parsed by qsub
 #rmode
 #run
 #atm
@@ -125,30 +61,22 @@ fi
 #ws
 #we
 
-set -x
+#set -x
 
-if [ $host == imperial ]; then
+module load intel-suite
 
-    module load intel-suite
+base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
-    base=/rds/general/user/rtagirov/ephemeral/runs/nessy
+tmp=$TMPDIR
 
-    tmp=$TMPDIR
+ln -s $base/$run/inp/*            $tmp
 
-    ln -s $base/$run/inp/*            $tmp
+ln -s $base/$run/fioss_do2        $tmp
+ln -s $base/$run/fioss_cplink_dir $tmp
+ln -s $base/$run/fioss_mv_results $tmp
 
-    ln -s $base/$run/fioss_do2        $tmp
-    ln -s $base/$run/fioss_cplink_dir $tmp
-    ln -s $base/$run/fioss_mv_results $tmp
-
-    ln -s $base/$run/hminus.exe       $tmp
-    ln -s $base/$run/fioss.exe        $tmp
-
-elif [ $host == dirac_cambridge ]; then
-
-    base=/home/dc-tagi1/rds/rds-dirac-dp100-n0fcCTMMDq4/dc-tagi1/runs/nessy
-
-fi
+ln -s $base/$run/hminus.exe       $tmp
+ln -s $base/$run/fioss.exe        $tmp
 
 declare -i Nr
 declare -i frac
@@ -157,8 +85,7 @@ declare -i f x y g r
 if [ $rmode = lte ];  then fort99=lte;     fi
 if [ $rmode = nlte ]; then fort99=wrstart; fi
 
-if [ $host == imperial ];        then g=$PBS_ARRAY_INDEX;     fi
-if [ $host == dirac_cambridge ]; then g=$SLURM_ARRAY_TASK_ID; fi
+g=$PBS_ARRAY_INDEX
 
 for ((r=1; r<=Nr; r+=1)); do
 
@@ -173,29 +100,15 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if ((y == 0)); then x=x-1; y=512; fi
 
+#    if ((y%2 == 1)); then y=y+1; fi
+
     dir=$base/$run/groups/$g/$r
 
     if [ -d $dir ]; then rm -rf $dir; fi
 
     mkdir -p $dir
 
-    if [ $host == dirac_cambridge ]; then
-
-        tmp=$dir
-
-        cd $tmp
-
-        ln -s $base/$run/inp/*            $tmp
-
-        ln -s $base/$run/fioss_do2        $tmp
-        ln -s $base/$run/fioss_cplink_dir $tmp
-        ln -s $base/$run/fioss_mv_results $tmp
-
-        ln -s $base/$run/hminus.exe       $tmp
-        ln -s $base/$run/fioss.exe        $tmp
-
-    fi
-
+#    ln -s $HOME/atms/$atm/$x $tmp/atm.inp
     ln -s $atm/$x $tmp/atm.inp
 
     echo $fort99 > $tmp/fort.99
@@ -225,15 +138,11 @@ for ((r=1; r<=Nr; r+=1)); do
 
     fi
 
-    if [ $host == imperial ]; then
+    cp -P $tmp/atm.inp $dir
 
-        cp -P $tmp/atm.inp $dir
+    rsync -aq --no-links $tmp/ $dir/
 
-        rsync -aq --no-links $tmp/ $dir/
-
-    fi
-
-    clean $tmp $host
+    clean $tmp
 
     if [ ! -s $dir/hminus.log ]; then echo "$rid: no hminus log" >> $flog; continue; fi
 
@@ -275,9 +184,10 @@ for ((r=1; r<=Nr; r+=1)); do
 
     mv $dir/spec.out $spec/$x.$y
 
+#    rm $dir/spec.out
 #    rm $dir/fioss.log
 #    rm $dir/hminus.log
 
 done
 
-if [ $host == imperial ]; then module purge; fi
+module purge

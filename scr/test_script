@@ -1,0 +1,14 @@
+#!/bin/bash
+
+files=($(ls ./))
+
+
+for f in ${files[@]}; do
+
+    if [[ "$f" == "rn.inp" ]];  then continue; fi
+    if [[ "$f" == "atm.inp" ]]; then continue; fi
+    if [[ "$f" == *.log ]];   then continue; fi
+
+    echo $f
+
+done
