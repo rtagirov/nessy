@@ -1,6 +1,8 @@
 #!/bin/bash
 
-#export N_sub=8
+export N_sub=4
+
+frac=1
 
 #submit_split_cube lte  G2V hydro 123_lte  123_wcr
 #submit_split_cube lte  G2V 300G  118_lte  118_wcr
@@ -87,14 +89,14 @@
 
 # echo expecting 8 arguments: stype, ctype, csnap, rfrac, rname, rmode, rangl, spath
 
-#rmode=(nlte lte)
+#rmode=(nlte)
 rmode=(lte)
 
-#ctype=(300G ssd hydro)
-ctype=(hydro)
+ctype=(300G ssd hydro)
+#ctype=(hydro)
 
 #csnap=(118000 186000 123000)
-csnap=(123000)
+csnap=(627321 222809 214519)
 
 #rangl=(2 4 6 8 10)
 rangl=(10)
@@ -109,10 +111,7 @@ for ((j=0; j<=$lrangl; j+=1)); do
 
         for ((i=0; i<=$lctype; i+=1)); do
 
-#            echo ${rmode[k]} ${ctype[i]} ${csnap[i]} ${rangl[j]}
-
-#            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} 32 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
-            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} 1 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
+            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} $frac 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
 
         done
 

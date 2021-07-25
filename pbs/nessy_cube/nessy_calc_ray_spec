@@ -26,7 +26,7 @@ if [ $2 == imperial ]; then
 
 elif [ $2 == dirac_cambridge ]; then
 
-    files=($(ls $1))
+##    files=($(ls $1))
 #---------------------------------------
 #    files=$(ls $1)
 
