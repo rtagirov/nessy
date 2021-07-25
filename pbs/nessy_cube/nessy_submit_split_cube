@@ -27,7 +27,7 @@ fi
 
 declare -i Nt Ng Ns Nr
 declare -i gs ge
-declare -i s
+declare -i sub
 
 Nt=512*512
 
@@ -88,7 +88,7 @@ we=2990
 #---------------------------------------------------------
 
 #test
-#Ns=1
+#Ns=2
 #Ng=2
 #Nr=2
 
@@ -96,6 +96,7 @@ we=2990
 
 #ws=1800
 #we=1800
+#we=2990
 
 #---------------------------------------------------------
 
@@ -122,19 +123,29 @@ if [ $host == imperial ]; then
 #    atm=$HOME/cubes/matthias/$ctype/$csnap/$spath
     atm=/rds/general/user/rtagirov/ephemeral/cubes/veronika/$stype/$ctype/$csnap/$spath
 
+#    run=veronika/$stype/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
+    run=veronika/$stype/$ctype/$csnap/$rfrac/$rmode/$rangl
+#    run=veronika/$stype/$ctype/$csnap/$rmode/$rangl
+
 elif [ $host == dirac_cambridge ]; then
 
     rds=/home/dc-tagi1/rds/rds-dirac-dp100-n0fcCTMMDq4/dc-tagi1
 
-    base=$rds/runs/nessy
+#    base=$rds/runs/nessy
+    base=$rds/runs
 
 #    atm=$rds/cubes/matthias/$ctype/$csnap/$spath
     atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
 
+#    run=veronika/$stype/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
+    run=veronika/$stype/$ctype/$csnap/$rangl
+
 fi
 
+#run=veronika/$stype/$ctype/$csnap/$rmode/$rangl
+
 #run=$stype/matthias/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
-run=veronika/$stype/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
+#run=veronika/$stype/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
 
 scr=$HOME/nessy/scr
 obj=$HOME/nessy/obj
@@ -192,20 +203,22 @@ cp $scr/fioss_cplink_dir $base/$run
 cp $scr/fioss_mv_results $base/$run
 cp $scr/fioss_do2        $base/$run
 
-for ((s=1; s<=Ns; s+=1)); do
+for ((sub=1; sub<=Ns; sub+=1)); do
 
-gs=(s-1)*Ng+1
-ge=s*Ng
-
-IFS='/' read -r -a array <<< "$run"
+#IFS='/' read -r -a array <<< "$run"
 
 if [ $host == imperial ]; then
 
-name=n:${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$s
+gs=(sub-1)*Ng+1
+ge=sub*Ng
+
+#name=n:${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$sub
+name=n:${ctype:0:1}/$rfrac/${rmode:0:1}/$rangl:$sub
 
 qsub -v \
 host=$host,\
 rmode=$rmode,\
+base=$base,\
 run=$run,\
 atm=$atm,\
 slog=$slog,\
@@ -224,14 +237,19 @@ we=$we \
 
 elif [ $host == dirac_cambridge ]; then
 
-#name=n:${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$s
-name=${ctype:0:1}/${rmode:0:1}/$rangl:$s
+gs=1
+ge=Ng
+
+#name=n:${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$sub
+#name=${ctype:0:1}/${rmode:0:1}/$rangl:$sub
+name=${ctype:0:1}/$rangl:$sub
 
 sbatch \
 -A dirac-dp100-cpu \
 -p skylake \
 --export=host=$host,\
 rmode=$rmode,\
+base=$base,\
 run=$run,\
 atm=$atm,\
 slog=$slog,\
@@ -239,6 +257,8 @@ flog=$flog,\
 spec=$spec,\
 frac=$rfrac,\
 Nr=$Nr,\
+Ng=$Ng,\
+sub=$sub,\
 ws=$ws,\
 we=$we \
 -a $gs-$ge:1 \

@@ -115,6 +115,7 @@ fi
 #parsed by qsub or sbatch
 #host
 #rmode
+#base
 #run
 #atm
 #flog
@@ -122,16 +123,18 @@ fi
 #spec
 #frac
 #Nr
+#Ng  # only for slurm
+#sub # only for slurm
 #ws
 #we
 
-set -x
+#set -x
 
 if [ $host == imperial ]; then
 
     module load intel-suite
 
-    base=/rds/general/user/rtagirov/ephemeral/runs/nessy
+#    base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
     tmp=$TMPDIR
 
@@ -144,21 +147,24 @@ if [ $host == imperial ]; then
     ln -s $base/$run/hminus.exe       $tmp
     ln -s $base/$run/fioss.exe        $tmp
 
-elif [ $host == dirac_cambridge ]; then
-
-    base=/home/dc-tagi1/rds/rds-dirac-dp100-n0fcCTMMDq4/dc-tagi1/runs/nessy
-
 fi
 
-declare -i Nr
+#elif [ $host == dirac_cambridge ]; then
+
+#    base=/home/dc-tagi1/rds/rds-dirac-dp100-n0fcCTMMDq4/dc-tagi1/runs/nessy
+
+#fi
+
+declare -i sub
 declare -i frac
+declare -i Nr, Ng
 declare -i f x y g r
 
 if [ $rmode = lte ];  then fort99=lte;     fi
 if [ $rmode = nlte ]; then fort99=wrstart; fi
 
-if [ $host == imperial ];        then g=$PBS_ARRAY_INDEX;     fi
-if [ $host == dirac_cambridge ]; then g=$SLURM_ARRAY_TASK_ID; fi
+if [ $host == imperial ];        then g=$PBS_ARRAY_INDEX;                  fi
+if [ $host == dirac_cambridge ]; then g=(sub-1)*Ng + $SLURM_ARRAY_TASK_ID; fi
 
 for ((r=1; r<=Nr; r+=1)); do
 
