@@ -70,16 +70,17 @@ elif [ $2 == dirac_cambridge ]; then
     rm $1/fort.19.d
     rm $1/fudge.inp
     rm $1/hminus.exe
-    rm $1/MODFILE
     rm $1/mol
-    rm $1/molconc.out.inp
     rm $1/odf.inp
-    rm $1/POPNUM
-    rm $1/RADIOC
-    rm $1/RADIOL
     rm $1/sun.inp
 
-    rm -r $1/JOB-*
+#    rm $1/MODFILE
+#    rm $1/molconc.out.inp
+#    rm $1/POPNUM
+#    rm $1/RADIOC
+#    rm $1/RADIOL
+
+#    rm -r $1/JOB-*
 
 #=============================
 
@@ -255,6 +256,8 @@ for ((r=1; r<=Nr; r+=1)); do
 
     ratconan=$(grep 'coma: ratco NaN' $dir/hminus.log)
 
+    library=$(grep 'libmkl_intel_lp64.so' $dir/hminus.log)
+
     if [ "$nospace" ];                then echo "$rid: no space" >>        $flog; continue; fi
 
     if [ "$noconv" ];                 then echo "$rid: no convergence" >>  $flog; continue; fi
@@ -262,6 +265,8 @@ for ((r=1; r<=Nr; r+=1)); do
     if [ "$rne_fail" ];               then echo "$rid: rne" >>             $flog; continue; fi
 
     if [ "$ratconan" ];               then echo "$rid: ratco nan" >>       $flog; continue; fi
+
+    if [ "$library" ];                then echo "$rid: library problem" >> $flog; continue; fi
 
     if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus" >>          $flog; continue; fi
 
