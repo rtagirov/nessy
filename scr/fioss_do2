@@ -314,7 +314,7 @@ rm -rf $CLV_DIR
 rm -rf $SPE_DIR
 rm -rf $TAU_DIR
 
-#rm -rf JOB-*
+rm -rf JOB-*
 rm -f  log.out
 
-#rm -f POPNUM RADIOC RADIOL MODFILE molconc.out.inp
+rm -f POPNUM RADIOC RADIOL MODFILE molconc.out.inp

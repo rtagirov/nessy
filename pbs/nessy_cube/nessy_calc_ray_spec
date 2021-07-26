@@ -157,14 +157,14 @@ fi
 
 declare -i sub
 declare -i frac
-declare -i Nr, Ng
+declare -i Nr Ng
 declare -i f x y g r
 
 if [ $rmode = lte ];  then fort99=lte;     fi
 if [ $rmode = nlte ]; then fort99=wrstart; fi
 
-if [ $host == imperial ];        then g=$PBS_ARRAY_INDEX;                  fi
-if [ $host == dirac_cambridge ]; then g=(sub-1)*Ng + $SLURM_ARRAY_TASK_ID; fi
+if [ $host == imperial ];        then g=$PBS_ARRAY_INDEX;                fi
+if [ $host == dirac_cambridge ]; then g=(sub-1)*Ng+$SLURM_ARRAY_TASK_ID; fi
 
 for ((r=1; r<=Nr; r+=1)); do
 
