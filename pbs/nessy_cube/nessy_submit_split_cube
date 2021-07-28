@@ -29,11 +29,16 @@ declare -i Nt Ng Ns Nr
 declare -i gs ge
 declare -i sub
 
+#Nt - total number of rays
+#Ns - number of submissions
+#Ng - number of groups in each submission
+#Nr - number of rays in each group
+
 Nt=512*512
 
 #full cube, Nr rays per processor
-Ng=8192
 Ns=${N_sub:-1}
+Ng=8192
 Nr=Nt/Ng/Ns
 
 #---------------------------------------------------------
@@ -194,7 +199,10 @@ rm -f $flog
 rm -f $ldo/*
 rm -f $lde/*
 
-echo $rfrac $Ng $Ns $Nr > $base/$run/split.log
+echo "Fraction of the cube (reverse):      $rfrac" >  $base/$run/split.log
+echo "Number of submissions:               $Ns"    >> $base/$run/split.log
+echo "Number of groups in each submission: $Ng"    >> $base/$run/split.log
+echo "Number of rays in each group:        $Nr"    >> $base/$run/split.log
 
 cp $obj/hminus.exe       $base/$run
 cp $obj/fioss.exe        $base/$run

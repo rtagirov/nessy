@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export N_sub=32
+export N_sub=4
 
 frac=1
 
@@ -87,8 +87,8 @@ frac=1
 
 #--------------------------------------------------------
 
-rmode=(nlte)
-#rmode=(lte)
+#rmode=(nlte)
+rmode=(lte)
 
 #ctype=(300G ssd hydro)
 ctype=(300G ssd)
@@ -102,7 +102,8 @@ csnap=(627321 222809)
 #csnap=(214519)
 
 #rangl=(2 4 6 8 10)
-rangl=(10)
+rangl=(2 4 6 8)
+#rangl=(10)
 
 lrmode=${#rmode[@]}-1
 lctype=${#ctype[@]}-1
