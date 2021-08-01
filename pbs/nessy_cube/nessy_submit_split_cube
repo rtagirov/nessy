@@ -2,16 +2,18 @@
 
 if [ $# != 8 ]; then
  
-   echo expecting 8 arguments: stype, ctype, csnap, rfrac, rname, rmode, rangl, spath
+   echo expecting 8 arguments: stype, ctype, csnap, reverse_cube_frac, rname, rmode, rangl, spath
  
    exit 1
  
 fi
 
+declare -i reverse_cube_frac
+
 stype=$1 # spectral type
 ctype=$2 # cube type
 csnap=$3 # cube snapshot id
-rfrac=$4 # reverse of the fraction of the cube to be calculated
+reverse_cube_frac=$4 # reverse of the fraction of the cube to be calculated
 rname=$5 # run name
 rmode=$6 # lte or nlte
 rangl=$7 # run angle (index of the cube inclination)
@@ -26,7 +28,7 @@ if [ $rmode != lte ] && [ $rmode != nlte ]; then
 fi
 
 declare -i Nt Ng Ns Nr
-declare -i gs ge
+#declare -i gs ge
 declare -i sub
 
 #Nt - total number of rays
@@ -39,7 +41,7 @@ Nt=512*512
 #full cube, Nr rays per processor
 Ns=${N_sub:-1}
 Ng=8192
-Nr=Nt/Ng/Ns
+Nr=Nt/Ng/Ns/reverse_cube_frac
 
 #---------------------------------------------------------
 
@@ -123,14 +125,21 @@ fi
 
 if [ $host == imperial ]; then
 
-    base=/rds/general/user/rtagirov/ephemeral/runs/nessy
+    rds=/rds/general/user/rtagirov/ephemeral
+
+    base=$rds/runs/nessy
 
 #    atm=$HOME/cubes/matthias/$ctype/$csnap/$spath
-    atm=/rds/general/user/rtagirov/ephemeral/cubes/veronika/$stype/$ctype/$csnap/$spath
+    atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
 
-#    run=veronika/$stype/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
-    run=veronika/$stype/$ctype/$csnap/$rfrac/$rmode/$rangl
+#    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rmode/$rangl
+#    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
+    run=$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
+
+    scr=$HOME/nessy/scr
+    obj=$HOME/nessy/obj
+    inp=$HOME/nessy/inp
 
 elif [ $host == dirac_cambridge ]; then
 
@@ -142,22 +151,23 @@ elif [ $host == dirac_cambridge ]; then
 #    atm=$rds/cubes/matthias/$ctype/$csnap/$spath
     atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
 
-#    run=veronika/$stype/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
-    run=veronika/$stype/$ctype/$csnap/$rangl
+#    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
+#    run=veronika/$stype/$ctype/$csnap/$rangl
+    run=$stype/$ctype/$csnap/$rangl
+
+    scr=$HOME/nessy/scr
+    obj=$HOME/nessy/obj
+    inp=$HOME/nessy/inp
 
 fi
 
 #run=veronika/$stype/$ctype/$csnap/$rmode/$rangl
 
-#run=$stype/matthias/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
-#run=veronika/$stype/$ctype/$csnap/$rfrac/$rname/$rmode/$rangl
+#run=$stype/matthias/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
+#run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 
-scr=$HOME/nessy/scr
-obj=$HOME/nessy/obj
-inp=$HOME/nessy/inp
-
-ldo=$HOME/log/nessy/$run/out
-lde=$HOME/log/nessy/$run/err
+ldo=$rds/logs/nessy/$run/out
+lde=$rds/logs/nessy/$run/err
 
 slog=$base/$run/success.log
 flog=$base/$run/fail.log
@@ -199,10 +209,10 @@ rm -f $flog
 rm -f $ldo/*
 rm -f $lde/*
 
-echo "Fraction of the cube (reverse):      $rfrac" >  $base/$run/split.log
-echo "Number of submissions:               $Ns"    >> $base/$run/split.log
-echo "Number of groups in each submission: $Ng"    >> $base/$run/split.log
-echo "Number of rays in each group:        $Nr"    >> $base/$run/split.log
+echo "Reverse of the fraction of the cube: $reverse_cube_frac" >  $base/$run/split.log
+echo "Number of submissions:               $Ns"                >> $base/$run/split.log
+echo "Number of groups in each submission: $Ng"                >> $base/$run/split.log
+echo "Number of rays in each group:        $Nr"                >> $base/$run/split.log
 
 cp $obj/hminus.exe       $base/$run
 cp $obj/fioss.exe        $base/$run
@@ -217,11 +227,14 @@ for ((sub=1; sub<=Ns; sub+=1)); do
 
 if [ $host == imperial ]; then
 
-gs=(sub-1)*Ng+1
-ge=sub*Ng
+#gs=1
+#ge=Ng
 
-#name=n:${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$sub
-name=n:${ctype:0:1}/$rfrac/${rmode:0:1}/$rangl:$sub
+#gs=(sub-1)*Ng+1
+#ge=sub*Ng
+
+#name=n:${ctype:0:1}/$reverse_cube_frac/$rname/${rmode:0:1}/$rangl:$sub
+name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl:$sub
 
 qsub -v \
 host=$host,\
@@ -232,11 +245,14 @@ atm=$atm,\
 slog=$slog,\
 flog=$flog,\
 spec=$spec,\
-frac=$rfrac,\
+reverse_cube_frac=$reverse_cube_frac,\
+Ns=$Ns,\
+Ng=$Ng,\
 Nr=$Nr,\
+sub=$sub,\
 ws=$ws,\
 we=$we \
--J $gs-$ge:1 \
+-J 1-$Ng:1 \
 -o $ldo \
 -e $lde \
 -N $name \
@@ -245,10 +261,10 @@ we=$we \
 
 elif [ $host == dirac_cambridge ]; then
 
-gs=1
-ge=Ng
+#gs=1
+#ge=Ng
 
-#name=n:${ctype:0:1}/$rfrac/$rname/${rmode:0:1}/$rangl:$sub
+#name=n:${ctype:0:1}/$reverse_cube_frac/$rname/${rmode:0:1}/$rangl:$sub
 #name=${ctype:0:1}/${rmode:0:1}/$rangl:$sub
 name=${ctype:0:1}/$rangl:$sub
 
@@ -263,13 +279,14 @@ atm=$atm,\
 slog=$slog,\
 flog=$flog,\
 spec=$spec,\
-frac=$rfrac,\
-Nr=$Nr,\
+reverse_cube_frac=$reverse_cube_frac,\
+Ns=$Ns,\
 Ng=$Ng,\
+Nr=$Nr,\
 sub=$sub,\
 ws=$ws,\
 we=$we \
--a $gs-$ge:1 \
+-a 1-$Ng:1 \
 -o $ldo/%A[%a] \
 -e $lde/%A[%a] \
 -J $name \

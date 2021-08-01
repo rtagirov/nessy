@@ -4,30 +4,45 @@ from tqdm import tqdm
 
 from multiprocessing import Pool
 
+import os
+
 def exec_time(l):
 
-    group_ray = l.split(';')[0]
+    hmet = 0.0
+    fiet = 0.0
 
-    group = group_ray.split(',')[0]
-    ray =   group_ray.split(',')[1]
+    if l != '\n' and len(l.split(';')) == 2:
 
-    hmlog = open('./groups/' + group + '/' + ray + '/hminus.log', 'r')
-    filog = open('./groups/' + group + '/' + ray + '/fioss.log',  'r')
+        group_ray = l.split(';')[0]
 
-    hm_lines = hmlog.readlines()
-    fi_lines = filog.readlines()
+        if len(group_ray.split(',')) == 2:
 
-    hmlog.close()
-    filog.close()
+            group = group_ray.split(',')[0]
+            ray =   group_ray.split(',')[1]
 
-    hm_lines.reverse()
-    fi_lines.reverse()
+            if group and ray:
 
-    hm_user_time_line = hm_lines[21]
-    fi_user_time_line = fi_lines[21]
+                folder = './groups/' + group + '/' + ray
 
-    hmet = float(hm_user_time_line.split(':')[1].strip('\n'))
-    fiet = float(fi_user_time_line.split(':')[1].strip('\n'))
+                if os.path.isdir(folder):
+
+                    hmlog = open(folder + '/hminus.log', 'r')
+                    filog = open(folder + '/fioss.log',  'r')
+
+                    hm_lines = hmlog.readlines()
+                    fi_lines = filog.readlines()
+
+                    hmlog.close()
+                    filog.close()
+
+                    hm_lines.reverse()
+                    fi_lines.reverse()
+
+                    hm_user_time_line = hm_lines[21]
+                    fi_user_time_line = fi_lines[21]
+
+                    hmet = float(hm_user_time_line.split(':')[1].strip('\n'))
+                    fiet = float(fi_user_time_line.split(':')[1].strip('\n'))
 
     return hmet, fiet
 
@@ -55,8 +70,8 @@ with Pool(processes = 16) as p:
 
             hmet, fiet = result
 
-            hm_exec_time.append(hmet)
-            fi_exec_time.append(fiet)
+            if hmet > 0.0: hm_exec_time.append(hmet)
+            if fiet > 0.0: fi_exec_time.append(fiet)
 
             pbar.update()
 

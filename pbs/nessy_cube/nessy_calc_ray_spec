@@ -87,6 +87,36 @@ elif [ $2 == dirac_cambridge ]; then
 fi
 }
 
+time_stamp()
+{
+
+declare -i Ns Ng Nr
+declare -i group ray
+
+Ns=$1
+Ng=$2
+Nr=$3
+
+group=$4
+ray=$5
+
+log=$6
+
+if ((group == 1)) && ((ray == 1)); then
+
+    echo -n "Start of the run: " >> $log
+
+    date >> $log
+
+elif ((group == Ns*Ng)) && ((ray == Nr)); then
+
+    echo -n "End of the run:   " >> $log
+
+    date >> $log
+
+fi
+}
+
 #edit_llog()
 #{
 #arg='!/'$1'/'
@@ -122,14 +152,17 @@ fi
 #flog
 #slog
 #spec
-#frac
+#reverse_cube_frac
+#Ns
+#Ng
 #Nr
-#Ng  # only for slurm
-#sub # only for slurm
+#sub
 #ws
 #we
 
 #set -x
+
+splitlog=$base/$run/split.log
 
 if [ $host == imperial ]; then
 
@@ -157,28 +190,30 @@ fi
 #fi
 
 declare -i sub
-declare -i frac
-declare -i Nr Ng
+declare -i Ns Ng Nr
 declare -i f x y g r
+declare -i reverse_cube_frac
 
 if [ $rmode = lte ];  then fort99=lte;     fi
 if [ $rmode = nlte ]; then fort99=wrstart; fi
 
-if [ $host == imperial ];        then g=$PBS_ARRAY_INDEX;                fi
+if [ $host == imperial ];        then g=(sub-1)*Ng+$PBS_ARRAY_INDEX;     fi
 if [ $host == dirac_cambridge ]; then g=(sub-1)*Ng+$SLURM_ARRAY_TASK_ID; fi
 
 for ((r=1; r<=Nr; r+=1)); do
 
     f=(g-1)*Nr+r
 
-    f=f*frac
+    f=f*reverse_cube_frac
 
     x=f/512+1
     y=f%512
 
+    if ((y == 0)); then x=x-1; y=512; fi
+
     rid="$g,$r;$x,$y"
 
-    if ((y == 0)); then x=x-1; y=512; fi
+    time_stamp $Ns $Ng $Nr $g $r $splitlog
 
     dir=$base/$run/groups/$g/$r
 
@@ -258,29 +293,33 @@ for ((r=1; r<=Nr; r+=1)); do
 
     library=$(grep 'libmkl_intel_lp64.so' $dir/hminus.log)
 
-    if [ "$nospace" ];                then echo "$rid: no space" >>        $flog; continue; fi
+    if [ "$nospace" ];                then echo "$rid: no space" >>           $flog; continue; fi
 
-    if [ "$noconv" ];                 then echo "$rid: no convergence" >>  $flog; continue; fi
+    if [ "$noconv" ];                 then echo "$rid: no convergence" >>     $flog; continue; fi
 
-    if [ "$rne_fail" ];               then echo "$rid: rne" >>             $flog; continue; fi
+    if [ "$rne_fail" ];               then echo "$rid: rne" >>                $flog; continue; fi
 
-    if [ "$ratconan" ];               then echo "$rid: ratco nan" >>       $flog; continue; fi
+    if [ "$ratconan" ];               then echo "$rid: ratco nan" >>          $flog; continue; fi
 
-    if [ "$library" ];                then echo "$rid: library problem" >> $flog; continue; fi
+    if [ "$library" ];                then echo "$rid: library problem" >>    $flog; continue; fi
 
-    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus" >>          $flog; continue; fi
+    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus" >>             $flog; continue; fi
 
-    if [ ! -s $dir/fioss.log ];       then echo "$rid: no fioss log" >>    $flog; continue; fi
+    if [ ! -s $dir/fioss.log ];       then echo "$rid: no fioss log" >>       $flog; continue; fi
 
     fioss_fail=$(grep -i fail $dir/fioss.log | head -1)
 
-    if [ "$fioss_fail" ];             then echo "$rid: fioss" >>           $flog; continue; fi
+    seg_fault=$(grep -i "Segmentation fault" $dir/fioss.log | head -1)
 
-    if [ ! -s $dir/spec.out ];        then echo "$rid: no spectrum" >>     $flog; continue; fi
+    if [ "$seg_fault" ];              then echo "$rid: segmentation fault" >> $flog; continue; fi
+
+    if [ "$fioss_fail" ];             then echo "$rid: fioss" >>              $flog; continue; fi
+
+    if [ ! -s $dir/spec.out ];        then echo "$rid: no spectrum" >>        $flog; continue; fi
 
     spec_nan=$(grep -i nan $dir/spec.out | head -1)
 
-    if [ "$spec_nan" ];               then echo "$rid: nan in spectrum" >> $flog; continue; fi
+    if [ "$spec_nan" ];               then echo "$rid: nan in spectrum" >>    $flog; continue; fi
 
     echo $rid: >> $slog
 

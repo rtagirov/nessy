@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export N_sub=4
+export N_sub=16
 
-frac=1
+reverse_cube_frac=1
 
 #submit_split_cube lte  G2V hydro 123_lte  123_wcr
 #submit_split_cube lte  G2V 300G  118_lte  118_wcr
@@ -102,8 +102,9 @@ csnap=(627321 222809)
 #csnap=(214519)
 
 #rangl=(2 4 6 8 10)
-rangl=(2 4 6 8)
+#rangl=(2 4 6 8)
 #rangl=(10)
+rangl=(2)
 
 lrmode=${#rmode[@]}-1
 lctype=${#ctype[@]}-1
@@ -115,7 +116,7 @@ for ((j=0; j<=$lrangl; j+=1)); do
 
         for ((i=0; i<=$lctype; i+=1)); do
 
-            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} $frac 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
+            nessy_submit_split_cube G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy
 
         done
 
