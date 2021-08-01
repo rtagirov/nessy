@@ -155,9 +155,13 @@ elif [ $host == dirac_cambridge ]; then
 #    run=veronika/$stype/$ctype/$csnap/$rangl
     run=$stype/$ctype/$csnap/$rangl
 
-    scr=$HOME/nessy/scr
-    obj=$HOME/nessy/obj
-    inp=$HOME/nessy/inp
+#    scr=$HOME/nessy/scr
+#    obj=$HOME/nessy/obj
+#    inp=$HOME/nessy/inp
+
+    scr=$rds/nessy/scr
+    obj=$rds/nessy/obj
+    inp=$rds/nessy/inp
 
 fi
 
