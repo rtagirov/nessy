@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export N_sub=16
+export N_sub=1
 
 reverse_cube_frac=1
 
@@ -91,14 +91,14 @@ reverse_cube_frac=1
 rmode=(lte)
 
 #ctype=(300G ssd hydro)
-ctype=(300G ssd)
-#ctype=(300G)
+#ctype=(300G ssd)
+ctype=(300G)
 #ctype=(hydro)
 
 #csnap=(118000 186000 123000)
 #csnap=(627321 222809 214519)
-csnap=(627321 222809)
-#csnap=(627321)
+#csnap=(627321 222809)
+csnap=(627321)
 #csnap=(214519)
 
 #rangl=(2 4 6 8 10)
