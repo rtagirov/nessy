@@ -84,6 +84,24 @@ elif [ $2 == dirac_cambridge ]; then
 
 #=============================
 
+#for f in "$1"/*; do
+#
+#   echo "$f"
+#
+#   [[ -e $f ]]            || continue
+#
+#   [[ $f =~ .*rn.inp$ ]]  && continue
+#
+#   [[ $f =~ .*atm.inp$ ]] && continue
+#
+#   [[ $f =~ .*.log$ ]]    && continue
+#
+#   echo "$f"    
+#
+#   rm -rf "$f"
+#
+#done
+
 fi
 }
 

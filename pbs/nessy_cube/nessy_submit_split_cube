@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ $# != 8 ]; then
  
@@ -99,7 +99,7 @@ Ns=2
 Ng=2
 Nr=2
 
-walltime=00:31:00
+#walltime=00:31:00
 
 ws=1800
 we=1800
