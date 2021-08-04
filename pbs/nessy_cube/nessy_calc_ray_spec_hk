@@ -1,0 +1,350 @@
+#!/bin/bash
+
+clean()
+{
+if [ $2 == imperial ]; then
+
+    rm -f $1/atm.inp
+
+    files=($(ls $1))
+
+    declare -i ln
+
+    ln=${#files[@]}-1
+
+    for n in $(seq 0 $ln)
+    do
+
+        if [ ! -L $1/${files[n]} ]
+        then
+
+            rm -rf $1/${files[n]}
+
+        fi
+
+    done
+
+elif [ $2 == dirac_cambridge ]; then
+
+##    files=($(ls $1))
+#---------------------------------------
+#    files=$(ls $1)
+
+#    declare -i ln
+
+#    ln=${#files[@]}-1
+
+#    for n in $(seq 0 $ln)
+#    do
+
+#     for f in $files; do
+#---------------------------------------
+
+##     for f in "${files[@]}"; do
+
+#---------------------------------------
+#         f=${files[n]}
+#---------------------------------------
+
+##         if [[ "$f" == "rn.inp" ]];  then continue; fi
+##         if [[ "$f" == "atm.inp" ]]; then continue; fi
+##         if [[ "$f" == *.log ]];     then continue; fi
+
+##         rm -rf $1/$f
+
+##     done
+
+#============================
+
+    rm $1/cards.inp
+    rm $1/CARDS.TEMPLATE
+    rm $1/chem.inp
+    rm $1/crs
+    rm $1/datom.inp
+    rm $1/fgrid.inp
+    rm $1/fioss_cplink_dir
+    rm $1/fioss_do2
+    rm $1/fioss.exe
+    rm $1/fioss_mv_results
+    rm $1/fort
+    rm $1/fort.19.d
+    rm $1/fudge.inp
+    rm $1/hminus.exe
+    rm $1/mol
+    rm $1/odf.inp
+    rm $1/sun.inp
+
+#    rm $1/MODFILE
+#    rm $1/molconc.out.inp
+#    rm $1/POPNUM
+#    rm $1/RADIOC
+#    rm $1/RADIOL
+
+#    rm -r $1/JOB-*
+
+#=============================
+
+#for f in "$1"/*; do
+#
+#   echo "$f"
+#
+#   [[ -e $f ]]            || continue
+#
+#   [[ $f =~ .*rn.inp$ ]]  && continue
+#
+#   [[ $f =~ .*atm.inp$ ]] && continue
+#
+#   [[ $f =~ .*.log$ ]]    && continue
+#
+#   echo "$f"    
+#
+#   rm -rf "$f"
+#
+#done
+
+fi
+}
+
+time_stamp()
+{
+
+declare -i Ns Ng Nr
+declare -i group ray
+
+Ns=$1
+Ng=$2
+Nr=$3
+
+group=$4
+ray=$5
+
+log=$6
+
+if ((group == 1)) && ((ray == 1)); then
+
+    echo -n "Start of the run: " >> $log
+
+    date >> $log
+
+elif ((group == Ns*Ng)) && ((ray == Nr)); then
+
+    echo -n "End of the run:   " >> $log
+
+    date >> $log
+
+fi
+}
+
+#parsed by qsub or sbatch
+#host
+#regime
+#hk_rays
+#rmode
+#base
+#run
+#atm
+#flog
+#slog
+#spec
+#reverse_cube_frac
+#Ns
+#Ng
+#Nr
+#sub
+#ws
+#we
+
+#set -x
+
+splitlog=$base/$run/split.log
+
+if [ $host == imperial ]; then
+
+    module load intel-suite
+
+#    base=/rds/general/user/rtagirov/ephemeral/runs/nessy
+
+    tmp=$TMPDIR
+
+    ln -s $base/$run/inp/*            $tmp
+
+    ln -s $base/$run/fioss_do2        $tmp
+    ln -s $base/$run/fioss_cplink_dir $tmp
+    ln -s $base/$run/fioss_mv_results $tmp
+
+    ln -s $base/$run/hminus.exe       $tmp
+    ln -s $base/$run/fioss.exe        $tmp
+
+fi
+
+declare -i sub
+declare -i Ns Ng Nr
+declare -i f x y g r
+declare -i reverse_cube_frac
+
+if [ $rmode = lte ];  then fort99=lte;     fi
+if [ $rmode = nlte ]; then fort99=wrstart; fi
+
+if [ $regime == main_run ]; then
+
+    if [ $host == imperial ];        then g=(sub-1)*Ng+$PBS_ARRAY_INDEX;     fi
+    if [ $host == dirac_cambridge ]; then g=(sub-1)*Ng+$SLURM_ARRAY_TASK_ID; fi
+
+elif [ $regime = housekeeping ]; then
+
+    hk_rays=($hk_rays)
+
+    if [ $host == imperial ];        then ray_idx=$PBS_ARRAY_INDEX-1;     fi
+    if [ $host == dirac_cambridge ]; then ray_idx=$SLURM_ARRAY_TASK_ID-1; fi
+
+fi
+
+for ((r=1; r<=Nr; r+=1)); do
+
+    if [ $regime == main_run ]; then
+
+        f=(g-1)*Nr+r
+
+        f=f*reverse_cube_frac
+
+        x=f/512+1
+        y=f%512
+
+        if ((y == 0)); then x=x-1; y=512; fi
+
+        rid="$g,$r;$x,$y"
+
+        time_stamp $Ns $Ng $Nr $g $r $splitlog
+
+        dir=$base/$run/groups/$g/$r
+
+    elif [ $regime == housekeeping ]; then
+
+        xy=${hk_rays[ray_idx]}
+
+        IFS='.' read -r -a array <<< $xy
+
+        x=${array[0]}
+
+        y=${array[1]}
+
+        rid="$x,$y"
+
+        dir=$base/$run/groups_hk/$x.$y
+
+    fi
+
+    if [ -d $dir ]; then rm -rf $dir; fi
+
+    mkdir -p $dir
+
+    if [ $host == dirac_cambridge ]; then
+
+        tmp=$dir
+
+        cd $tmp
+
+        ln -s $base/$run/inp/*            $tmp
+
+        ln -s $base/$run/fioss_do2        $tmp
+        ln -s $base/$run/fioss_cplink_dir $tmp
+        ln -s $base/$run/fioss_mv_results $tmp
+
+        ln -s $base/$run/hminus.exe       $tmp
+        ln -s $base/$run/fioss.exe        $tmp
+
+    fi
+
+    ln -s $atm/$x $tmp/atm.inp
+
+    echo $fort99 > $tmp/fort.99
+    echo $y      > $tmp/rn.inp
+
+    /usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
+
+    if [ -s $tmp/hminus.log ]
+    then
+
+        rne_fail=$(grep 'greym: RNEL does not converge' $tmp/hminus.log)
+
+        if [ ! "$rne_fail" ]
+        then
+
+            conv=$(grep 'MODEL FINALLY CONVERGED' ${tmp}/hminus.log)
+            lte=$(grep 'END OF LTE RUN' ${tmp}/hminus.log)
+
+            if [ "$conv" ] || [ "$lte" ]
+            then
+
+               /usr/bin/time -v $tmp/fioss_do2 $ws 10 $we > $tmp/fioss.log 2>&1
+
+            fi
+
+        fi
+
+    fi
+
+    if [ $host == imperial ]; then
+
+        cp -P $tmp/atm.inp $dir
+
+        rsync -aq --no-links $tmp/ $dir/
+
+    fi
+
+    clean $tmp $host
+
+    if [ ! -s $dir/hminus.log ]; then echo "$rid: no hminus log" >> $flog; continue; fi
+
+    nospace=$(grep 'No space left on device' $dir/hminus.log)
+
+    noconv=$(grep 'MAX. NUMBER OF JOBS EXCEEDED' $dir/hminus.log)
+
+    conv=$(grep 'MODEL FINALLY CONVERGED' $dir/hminus.log)
+
+    lte=$(grep 'END OF LTE RUN' $dir/hminus.log)
+
+    rne_fail=$(grep 'greym: RNEL does not converge' $dir/hminus.log)
+
+    ratconan=$(grep 'coma: ratco NaN' $dir/hminus.log)
+
+    library=$(grep 'libmkl_intel_lp64.so' $dir/hminus.log)
+
+    if [ "$nospace" ];                then echo "$rid: no space" >>           $flog; continue; fi
+
+    if [ "$noconv" ];                 then echo "$rid: no convergence" >>     $flog; continue; fi
+
+    if [ "$rne_fail" ];               then echo "$rid: rne" >>                $flog; continue; fi
+
+    if [ "$ratconan" ];               then echo "$rid: ratco nan" >>          $flog; continue; fi
+
+    if [ "$library" ];                then echo "$rid: library problem" >>    $flog; continue; fi
+
+    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus" >>             $flog; continue; fi
+
+    if [ ! -s $dir/fioss.log ];       then echo "$rid: no fioss log" >>       $flog; continue; fi
+
+    fioss_fail=$(grep -i fail $dir/fioss.log | head -1)
+
+    seg_fault=$(grep -i "Segmentation fault" $dir/fioss.log | head -1)
+
+    if [ "$seg_fault" ];              then echo "$rid: segmentation fault" >> $flog; continue; fi
+
+    if [ "$fioss_fail" ];             then echo "$rid: fioss" >>              $flog; continue; fi
+
+    if [ ! -s $dir/spec.out ];        then echo "$rid: no spectrum" >>        $flog; continue; fi
+
+    spec_nan=$(grep -i nan $dir/spec.out | head -1)
+
+    if [ "$spec_nan" ];               then echo "$rid: nan in spectrum" >>    $flog; continue; fi
+
+    echo $rid: >> $slog
+
+    mv $dir/spec.out $spec/$x.$y
+
+#    rm $dir/fioss.log
+#    rm $dir/hminus.log
+
+done
+
+if [ $host == imperial ]; then module purge; fi

@@ -1,0 +1,380 @@
+#!/bin/bash
+
+if [ $# != 9 ]; then
+ 
+   echo expecting 9 arguments: stype, ctype, csnap, reverse_cube_frac, rname, rmode, rangl, spath, regime
+ 
+   exit 1
+ 
+fi
+
+declare -i reverse_cube_frac
+
+stype=$1 # spectral type
+ctype=$2 # cube type
+csnap=$3 # cube snapshot id
+reverse_cube_frac=$4 # reverse of the fraction of the cube to be calculated
+rname=$5 # run name
+rmode=$6 # lte or nlte
+rangl=$7 # run angle (index of the cube inclination)
+spath=$8 # path to cube slices
+regime=$9 # main_run or housekeeping (calculating spectra left over after the main run)
+
+if [ $rmode != lte ] && [ $rmode != nlte ]; then
+
+    echo "rmode not recognized. abort."
+
+    exit 1
+
+fi
+
+if [ $HOME == /rds/general/user/rtagirov/home ]; then
+
+    host=imperial
+
+elif [ $HOME == /home/dc-tagi1 ]; then
+
+    host=dirac_cambridge
+
+else
+
+    echo "Host not recognized. Abort."
+
+    exit 1
+
+fi
+
+if [ $host == imperial ]; then
+
+    rds=/rds/general/user/rtagirov/ephemeral
+
+    base=$rds/runs/nessy
+
+#    atm=$HOME/cubes/matthias/$ctype/$csnap/$spath
+    atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
+
+#    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
+#    run=veronika/$stype/$ctype/$csnap/$rmode/$rangl
+#    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
+    run=test_run/$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
+
+    scr=$HOME/nessy/scr
+    obj=$HOME/nessy/obj
+    inp=$HOME/nessy/inp
+
+elif [ $host == dirac_cambridge ]; then
+
+    rds=/home/dc-tagi1/rds/rds-dirac-dp100-n0fcCTMMDq4/dc-tagi1
+
+#    base=$rds/runs/nessy
+    base=$rds/runs
+
+#    atm=$rds/cubes/matthias/$ctype/$csnap/$spath
+    atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
+
+#    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
+#    run=veronika/$stype/$ctype/$csnap/$rangl
+    run=test_run/$stype/$ctype/$csnap/$rangl
+
+#    scr=$HOME/nessy/scr
+#    obj=$HOME/nessy/obj
+#    inp=$HOME/nessy/inp
+
+    scr=$rds/nessy/scr
+    obj=$rds/nessy/obj
+    inp=$rds/nessy/inp
+
+fi
+
+spec=$base/$run/spec
+
+declare -i Nx Ny
+declare -i Nt Ng Ns Nr
+declare -i sub
+
+Nx=512
+Ny=512
+
+#Nt - total number of rays
+#Ns - number of submissions
+#Ng - number of groups in each submission
+#Nr - number of rays in each group
+
+if [ $regime == main_run ]; then
+
+    Nt=Nx*Ny
+
+#---------------------------------------------------------
+
+#   full cube, Nr rays per core
+    Ns=${N_sub:-1}
+    Ng=8192
+    Nr=Nt/Ng/Ns/reverse_cube_frac
+
+    walltime=24:00:00
+
+    ws=1800
+    we=2990
+
+#---------------------------------------------------------
+
+#   test
+    Ns=2
+    Ng=2
+    Nr=2
+
+#   walltime=00:31:00
+
+    ws=1800
+    we=1800
+#   we=2990
+
+#---------------------------------------------------------
+
+    N_jobs=' '
+
+    for ((i=1; i<=Ns; i++)); do N_jobs=$N_jobs' '$Ng; done
+
+    N_jobs=($N_jobs)
+
+    ldo=$rds/logs/nessy/$run/out
+    lde=$rds/logs/nessy/$run/err
+
+    slog=$base/$run/success.log
+    flog=$base/$run/fail.log
+
+    mkdir -p $base/$run $ldo $lde
+
+    if [ -d $base/$run/inp ]; then rm -r $base/$run/inp; fi
+
+    mkdir -p $base/$run/inp
+
+    echo Submitting $run:
+
+    echo Copying input files...
+
+    cp $inp/gen/CARDS.TEMPLATE $base/$run/inp
+    cp $inp/gen/cards.inp      $base/$run/inp
+    cp $inp/gen/datom.inp      $base/$run/inp
+    cp $inp/gen/fgrid.inp      $base/$run/inp
+    cp $inp/gen/chem.inp       $base/$run/inp
+    cp $inp/gen/fudge.inp      $base/$run/inp
+    cp $inp/gen/sun.inp        $base/$run/inp
+
+    ln -s $inp/gen/fort.19.d      $base/$run/inp
+    ln -s $inp/gen/odf.inp        $base/$run/inp
+    ln -s $inp/gen/fort           $base/$run/inp
+    ln -s $inp/gen/crs            $base/$run/inp
+    ln -s $inp/gen/mol            $base/$run/inp
+
+    echo Removing old spectra...
+
+    rm -rf   $spec
+    mkdir -p $spec
+
+    echo Removing old logs...
+
+    rm -f $slog
+    rm -f $flog
+    rm -f $ldo/*
+    rm -f $lde/*
+
+    echo "Reverse of the fraction of the cube: $reverse_cube_frac" >  $base/$run/split.log
+    echo "Number of submissions:               $Ns"                >> $base/$run/split.log
+    echo "Number of groups in each submission: $Ng"                >> $base/$run/split.log
+    echo "Number of rays in each group:        $Nr"                >> $base/$run/split.log
+
+    cp $obj/hminus.exe       $base/$run
+    cp $obj/fioss.exe        $base/$run
+
+    cp $scr/fioss_cplink_dir $base/$run
+    cp $scr/fioss_mv_results $base/$run
+    cp $scr/fioss_do2        $base/$run
+
+elif [ $regime == housekeeping ]; then
+
+    walltime=24:00:00
+
+    ws=1800
+#    we=2990
+    we=1800
+
+    ldo=$rds/logs/nessy/$run/hk/out
+    lde=$rds/logs/nessy/$run/hk/err
+
+    slog=$base/$run/success.hk.log
+    flog=$base/$run/fail.hk.log
+
+    remlog=$base/$run/remaining_rays.log
+
+    mkdir -p $ldo $lde
+
+    rm -f $slog
+    rm -f $flog
+    rm -f $ldo/*
+    rm -f $lde/*
+
+    rm -f $remlog
+
+    declare -i N_remainder
+
+    echo -n "Submitting housekeeping for $run: "
+
+    remaining_rays=' '
+
+    for ((i=509; i<=512; i++)); do
+
+        for ((j=509; j<=512; j++)); do
+
+            if [ ! -s $base/$run/spec/$i.$j ]; then
+
+                remaining_rays=$remaining_rays' '$i.$j
+
+                echo $i.$j >> $remlog
+
+            fi
+
+        done
+
+    done
+
+    remaining_rays_arr=($remaining_rays)
+
+    Nt=${#remaining_rays_arr[@]}
+
+    echo "$Nt remaining rays."
+
+    if ((Nt == 0)); then exit 0; fi
+
+    Ng=8192; Nr=1
+
+    Ns=Nt/Ng
+
+    N_jobs=' '
+
+    for ((i=1; i<=Ns; i++)); do N_jobs=$N_jobs' '$Ng; done
+
+    N_remainder=Nt%Ng
+
+    if ((N_remainder != 0)); then Ns=Ns+1; N_jobs=$N_jobs' '$N_remainder; fi
+
+#    echo $Ns $N_jobs
+
+#    exit 0
+
+    N_jobs=($N_jobs)
+
+#    echo ${N_jobs[@]}
+
+    for ((s=0; s<=Ns-1; s++)); do
+
+        if ((s == 0)); then ids[s]=1; ide[s]=$(echo ${ids[s]}+${N_jobs[s]}-1 | bc); continue; fi
+
+        ids[s]=$(echo ${ids[s-1]}+${N_jobs[s-1]} | bc)
+
+        ide[s]=$(echo ${ids[s]}+${N_jobs[s]}-1 | bc)
+
+    done
+
+#    echo ${ids[@]}
+#    echo ${ide[@]}
+
+#    exit 0
+
+else
+
+    echo "Regime not recognized. Abort."
+
+    exit 1
+
+fi
+
+for ((sub=1; sub<=Ns; sub+=1)); do
+
+#echo ${N_jobs[sub-1]}
+
+if [ $regime == housekeeping ]; then
+
+    hk_rays=' '
+
+    for ((r=${ids[sub-1]}-1; r<=${ide[sub-1]}-1; r++)); do
+
+        hk_rays=$hk_rays' '${remaining_rays_arr[r]}
+
+    done
+
+#    echo $hk_rays
+
+#    exit 0
+
+fi
+
+if [ $host == imperial ]; then
+
+name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
+
+if [ $regime == main_run ];     then name=$name:$sub; fi
+if [ $regime == housekeeping ]; then name=$name:hk;   fi
+
+qsub -v \
+host=$host,\
+regime=$regime,\
+hk_rays="$hk_rays",\
+rmode=$rmode,\
+base=$base,\
+run=$run,\
+atm=$atm,\
+slog=$slog,\
+flog=$flog,\
+spec=$spec,\
+reverse_cube_frac=$reverse_cube_frac,\
+Ns=$Ns,\
+Ng=$Ng,\
+Nr=$Nr,\
+sub=$sub,\
+ws=$ws,\
+we=$we \
+-J 1-${N_jobs[sub-1]}:1 \
+-o $ldo \
+-e $lde \
+-N $name \
+-lwalltime=$walltime \
+-lselect=1:ncpus=1:mem=2gb:avx2=true nessy_calc_ray_spec_hk
+
+elif [ $host == dirac_cambridge ]; then
+
+name=${ctype:0:1}/$rangl
+
+if [ $regime == main_run ];     then name=$name:$sub; fi
+if [ $regime == housekeeping ]; then name=$name:hk;   fi
+
+sbatch \
+-A dirac-dp100-cpu \
+-p skylake \
+--export=host=$host,\
+regime=$regime,\
+hk_rays="$hk_rays",\
+rmode=$rmode,\
+base=$base,\
+run=$run,\
+atm=$atm,\
+slog=$slog,\
+flog=$flog,\
+spec=$spec,\
+reverse_cube_frac=$reverse_cube_frac,\
+Ns=$Ns,\
+Ng=$Ng,\
+Nr=$Nr,\
+sub=$sub,\
+ws=$ws,\
+we=$we \
+-a 1-${N_jobs[sub-1]}:1 \
+-o $ldo/%A[%a] \
+-e $lde/%A[%a] \
+-J $name \
+-t $walltime \
+-n 1 -c 1 --mem 2gb nessy_calc_ray_spec_hk
+
+fi
+
+done

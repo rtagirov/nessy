@@ -38,49 +38,49 @@ declare -i sub
 
 Nt=512*512
 
-#full cube, Nr rays per processor
+#full cube, Nr rays per core
 Ns=${N_sub:-1}
 Ng=8192
 Nr=Nt/Ng/Ns/reverse_cube_frac
 
 #---------------------------------------------------------
 
-#quarter of the cube, 1 ray per processor, 16 submissions
+#quarter of the cube, 1 ray per core, 16 submissions
 #Ng=4096
 #Ns=16
 #Nr=1
 
 #---------------------------------------------------------
 
-#quarter of the cube, 1 ray per processor, 32 submissions
+#quarter of the cube, 1 ray per core, 32 submissions
 #Ng=2048
 #Ns=32
 #Nr=1
 
 #---------------------------------------------------------
 
-#eighth of the cube, 1 ray per processor, 4 submissions
+#eighth of the cube, 1 ray per core, 4 submissions
 #Ng=8192
 #Ns=4
 #Nr=1
 
 #---------------------------------------------------------
 
-#eighth of the cube, 4 ray per processor, 1 submissions
+#eighth of the cube, 4 ray per core, 1 submissions
 #Ng=8192
 #Ns=1
 #Nr=4
 
 #---------------------------------------------------------
 
-#eighth of the cube, 2 ray per processor, 2 submissions
+#eighth of the cube, 2 ray per core, 2 submissions
 #Ng=8192
 #Ns=2
 #Nr=2
 
 #---------------------------------------------------------
 
-#1/32 of the cube, 1 ray per processor, 1 submissions
+#1/32 of the cube, 1 ray per core, 1 submissions
 #Ng=8192
 #Ns=1
 #Nr=1
