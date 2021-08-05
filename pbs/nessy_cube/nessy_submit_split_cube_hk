@@ -74,7 +74,8 @@ elif [ $host == dirac_cambridge ]; then
 
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rangl
-    run=test_run/$stype/$ctype/$csnap/$rangl
+#    run=test_run/$stype/$ctype/$csnap/$rangl
+    run=$stype/$ctype/$csnap/$rangl
 
 #    scr=$HOME/nessy/scr
 #    obj=$HOME/nessy/obj
@@ -196,8 +197,8 @@ elif [ $regime == housekeeping ]; then
     walltime=24:00:00
 
     ws=1800
-#    we=2990
-    we=1800
+    we=2990
+#    we=1800
 
     ldo=$rds/logs/nessy/$run/hk/out
     lde=$rds/logs/nessy/$run/hk/err
@@ -205,7 +206,7 @@ elif [ $regime == housekeeping ]; then
     slog=$base/$run/success.hk.log
     flog=$base/$run/fail.hk.log
 
-    remlog=$base/$run/remaining_rays.log
+#    remlog=$base/$run/remaining_rays.log
 
     mkdir -p $ldo $lde
 
@@ -214,7 +215,7 @@ elif [ $regime == housekeeping ]; then
     rm -f $ldo/*
     rm -f $lde/*
 
-    rm -f $remlog
+#    rm -f $remlog
 
     declare -i N_remainder
 
@@ -222,15 +223,17 @@ elif [ $regime == housekeeping ]; then
 
     remaining_rays=' '
 
-    for ((i=509; i<=512; i++)); do
+    for ((i=1; i<=512; i++)); do
 
-        for ((j=509; j<=512; j++)); do
+        for ((j=1; j<=512; j++)); do
+
+            echo $i $j
 
             if [ ! -s $base/$run/spec/$i.$j ]; then
 
                 remaining_rays=$remaining_rays' '$i.$j
 
-                echo $i.$j >> $remlog
+#                echo $i.$j >> $remlog
 
             fi
 
@@ -241,8 +244,6 @@ elif [ $regime == housekeeping ]; then
     remaining_rays_arr=($remaining_rays)
 
     Nt=${#remaining_rays_arr[@]}
-
-    echo "$Nt remaining rays."
 
     if ((Nt == 0)); then exit 0; fi
 
@@ -257,6 +258,8 @@ elif [ $regime == housekeeping ]; then
     N_remainder=Nt%Ng
 
     if ((N_remainder != 0)); then Ns=Ns+1; N_jobs=$N_jobs' '$N_remainder; fi
+
+    echo "$Nt remaining rays, $Ns submissions."
 
 #    echo $Ns $N_jobs
 

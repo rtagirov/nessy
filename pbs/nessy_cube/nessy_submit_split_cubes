@@ -87,24 +87,26 @@ reverse_cube_frac=1
 
 #--------------------------------------------------------
 
-#rmode=(nlte)
-rmode=(lte)
+rmode=(nlte)
+#rmode=(lte)
 
 #ctype=(300G ssd hydro)
 #ctype=(300G ssd)
-ctype=(300G)
+#ctype=(300G)
+ctype=(ssd)
 #ctype=(hydro)
 
 #csnap=(118000 186000 123000)
 #csnap=(627321 222809 214519)
 #csnap=(627321 222809)
-csnap=(627321)
+#csnap=(627321)
+csnap=(222809)
 #csnap=(214519)
 
 #rangl=(2 4 6 8 10)
 #rangl=(2 4 6 8)
-#rangl=(10)
-rangl=(2)
+rangl=(10)
+#rangl=(2)
 
 lrmode=${#rmode[@]}-1
 lctype=${#ctype[@]}-1

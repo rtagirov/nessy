@@ -178,6 +178,7 @@ if [ $host == imperial ]; then
 fi
 
 declare -i sub
+declare -i ray_idx
 declare -i Ns Ng Nr
 declare -i f x y g r
 declare -i reverse_cube_frac
@@ -212,7 +213,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
         if ((y == 0)); then x=x-1; y=512; fi
 
-        rid="$g,$r;$x,$y"
+        rid="$g/$r;$x.$y"
 
         time_stamp $Ns $Ng $Nr $g $r $splitlog
 
@@ -228,7 +229,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
         y=${array[1]}
 
-        rid="$x,$y"
+        rid="$x.$y"
 
         dir=$base/$run/groups_hk/$x.$y
 
