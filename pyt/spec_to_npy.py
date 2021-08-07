@@ -1,5 +1,6 @@
 import glob
 import os
+import sys
 
 import numpy as np
 import netCDF4 as nc
@@ -7,6 +8,14 @@ import netCDF4 as nc
 from tqdm import tqdm
 
 from multiprocessing import Pool
+
+if len(sys.argv) < 2:
+
+    print('nproc not provided. abort.')
+
+    sys.exit()
+
+nproc = int(sys.argv[1])
 
 Nx = 512
 Ny = 512
@@ -42,7 +51,7 @@ rev_cube_frac = int(specifications[3])
 
 ray_numbers = np.arange(rev_cube_frac, Nx * Ny + rev_cube_frac, rev_cube_frac)
 
-with Pool(processes = 16) as p:
+with Pool(processes = nproc) as p:
 
     maximum = len(ray_numbers)
 
