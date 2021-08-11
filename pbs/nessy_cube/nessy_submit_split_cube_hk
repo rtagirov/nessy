@@ -56,7 +56,8 @@ if [ $host == imperial ]; then
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
-    run=test_run/$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
+#    run=test_run/$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
+    run=$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
 
     scr=$HOME/nessy/scr
     obj=$HOME/nessy/obj
@@ -120,15 +121,15 @@ if [ $regime == main_run ]; then
 #---------------------------------------------------------
 
 #   test
-    Ns=2
-    Ng=2
-    Nr=2
+#    Ns=2
+#    Ng=2
+#    Nr=2
 
 #   walltime=00:31:00
 
-    ws=1800
-    we=1800
-#   we=2990
+#    ws=1800
+#    we=1800
+#    we=2990
 
 #---------------------------------------------------------
 
@@ -162,11 +163,11 @@ if [ $regime == main_run ]; then
     cp $inp/gen/fudge.inp      $base/$run/inp
     cp $inp/gen/sun.inp        $base/$run/inp
 
-    ln -s $inp/gen/fort.19.d      $base/$run/inp
-    ln -s $inp/gen/odf.inp        $base/$run/inp
-    ln -s $inp/gen/fort           $base/$run/inp
-    ln -s $inp/gen/crs            $base/$run/inp
-    ln -s $inp/gen/mol            $base/$run/inp
+    ln -s $inp/gen/fort.19.d   $base/$run/inp
+    ln -s $inp/gen/odf.inp     $base/$run/inp
+    ln -s $inp/gen/fort        $base/$run/inp
+    ln -s $inp/gen/crs         $base/$run/inp
+    ln -s $inp/gen/mol         $base/$run/inp
 
     echo Removing old spectra...
 
@@ -184,6 +185,13 @@ if [ $regime == main_run ]; then
     echo "Number of submissions:               $Ns"                >> $base/$run/split.log
     echo "Number of groups in each submission: $Ng"                >> $base/$run/split.log
     echo "Number of rays in each group:        $Nr"                >> $base/$run/split.log
+
+    echo $stype             >  $base/$run/specification.log
+    echo $ctype             >> $base/$run/specification.log
+    echo $csnap             >> $base/$run/specification.log
+    echo $reverse_cube_frac >> $base/$run/specification.log
+    echo $rmode             >> $base/$run/specification.log
+    echo $rangl             >> $base/$run/specification.log
 
     cp $obj/hminus.exe       $base/$run
     cp $obj/fioss.exe        $base/$run
@@ -223,11 +231,11 @@ elif [ $regime == housekeeping ]; then
 
     remaining_rays=' '
 
-    for ((i=1; i<=512; i++)); do
+    for ((i=1; i<=Nx; i++)); do
 
-        for ((j=1; j<=512; j++)); do
+        for ((j=1; j<=Ny; j++)); do
 
-            echo $i $j
+#            echo $i $j
 
             if [ ! -s $base/$run/spec/$i.$j ]; then
 
@@ -342,7 +350,7 @@ we=$we \
 -e $lde \
 -N $name \
 -lwalltime=$walltime \
--lselect=1:ncpus=1:mem=2gb:avx2=true nessy_calc_ray_spec_hk
+-lselect=1:ncpus=1:mem=3gb:avx2=true nessy_calc_ray_spec_hk
 
 elif [ $host == dirac_cambridge ]; then
 
@@ -376,7 +384,7 @@ we=$we \
 -e $lde/%A[%a] \
 -J $name \
 -t $walltime \
--n 1 -c 1 --mem 2gb nessy_calc_ray_spec_hk
+-n 1 -c 1 --mem 3gb nessy_calc_ray_spec_hk
 
 fi
 

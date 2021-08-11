@@ -181,6 +181,7 @@ declare -i sub
 declare -i ray_idx
 declare -i Ns Ng Nr
 declare -i f x y g r
+declare -i num_of_spec_wvl
 declare -i reverse_cube_frac
 
 if [ $rmode = lte ];  then fort99=lte;     fi
@@ -337,7 +338,11 @@ for ((r=1; r<=Nr; r+=1)); do
 
     spec_nan=$(grep -i nan $dir/spec.out | head -1)
 
+    num_of_spec_wvl=$(cat $dir/spec.out | wc -l)
+
     if [ "$spec_nan" ];               then echo "$rid: nan in spectrum" >>    $flog; continue; fi
+
+    if ((num_of_spec_wvl != 120));    then echo "$rid: less than 120 wvl" >>  $flog; continue; fi
 
     echo $rid: >> $slog
 

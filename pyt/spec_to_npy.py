@@ -9,6 +9,10 @@ from tqdm import tqdm
 
 from multiprocessing import Pool
 
+def num_lines(f):
+
+    return sum(1 for line in open(f))
+
 if len(sys.argv) < 2:
 
     print('nproc not provided. abort.')
@@ -37,7 +41,11 @@ def read_spec(ray_number):
 
     intensity = np.zeros(Nz)
 
-    if os.path.isfile(name): intensity = np.genfromtxt(name)
+    if os.path.isfile(name):
+
+        if num_lines(name) == Nz:
+
+            intensity = np.genfromtxt(name)
 
     return i, j, intensity
 

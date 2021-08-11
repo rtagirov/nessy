@@ -24,6 +24,54 @@ if len(sys.argv) < 3:
 
 regime = sys.argv[2]
 
+if len(sys.argv) < 4:
+
+    print('step not provided. abort.')
+
+    sys.exit()
+
+step = int(sys.argv[3])
+
+def get_time(folder):
+
+    hmlog = open(folder + '/hminus.log', 'r')
+    filog = open(folder + '/fioss.log',  'r')
+
+    hm_lines = hmlog.readlines()
+    fi_lines = filog.readlines()
+
+    hmlog.close()
+    filog.close()
+
+    hm_lines.reverse()
+    fi_lines.reverse()
+
+    hm_user_time_line = hm_lines[21]
+    fi_user_time_line = fi_lines[21]
+
+    hmet = float(hm_user_time_line.split(':')[1].strip('\n'))
+    fiet = float(fi_user_time_line.split(':')[1].strip('\n'))
+
+    atm = open(folder + '/atm.inp', 'r')
+
+    atm_lines = atm.readlines()
+
+    atm.close()
+
+    lin = []
+
+    for l in atm_lines:
+
+        if len(l.split(' ')) == 2:
+
+            lin.append(l.strip('\n'))
+
+    ray_number = int(np.loadtxt(folder + '/rn.inp'))
+
+    dpn = int(lin[ray_number - 1].split(' ')[1])
+
+    return dpn, hmet, fiet
+
 def exec_time(l):
 
     dpn = 0
@@ -45,6 +93,10 @@ def exec_time(l):
 
                     folder = './groups/' + group + '/' + ray
 
+                    if os.path.isdir(folder):
+
+                        dpn, hmet, fiet = get_time(folder)
+
     if regime == 'hk':
 
         if l != '\n' and len(l.split(':')) == 2:
@@ -55,56 +107,16 @@ def exec_time(l):
 
                 folder = './groups_hk/' + xy
 
-    if os.path.isdir(folder):
+                if os.path.isdir(folder):
 
-        hmlog = open(folder + '/hminus.log', 'r')
-        filog = open(folder + '/fioss.log',  'r')
-
-        hm_lines = hmlog.readlines()
-        fi_lines = filog.readlines()
-
-        hmlog.close()
-        filog.close()
-
-        hm_lines.reverse()
-        fi_lines.reverse()
-
-        hm_user_time_line = hm_lines[21]
-        fi_user_time_line = fi_lines[21]
-
-        hmet = float(hm_user_time_line.split(':')[1].strip('\n'))
-        fiet = float(fi_user_time_line.split(':')[1].strip('\n'))
-
-        atm = open(folder + '/atm.inp', 'r')
-
-        atm_lines = atm.readlines()
-
-        atm.close()
-
-        lin = []
-
-        for l in atm_lines:
-
-            if len(l.split(' ')) == 2:
-
-                lin.append(l.strip('\n'))
-
-#        print(lin)
-
-        ray_number = int(np.loadtxt(folder + '/rn.inp'))
-
-#        print(ray_number)
-
-        dpn = int(lin[ray_number - 1].split(' ')[1])
-
-#        print(dpn)
+                    dpn, hmet, fiet = get_time(folder)
 
     return dpn, hmet, fiet
 
 if regime == 'mr': f = open('success.log',    'r')
 if regime == 'hk': f = open('success.hk.log', 'r')
 
-lines = f.readlines()
+lines = f.readlines()[::step]
 
 f.close()
 
