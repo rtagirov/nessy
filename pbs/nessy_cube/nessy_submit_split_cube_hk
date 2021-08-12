@@ -218,6 +218,9 @@ elif [ $regime == housekeeping ]; then
 
     mkdir -p $ldo $lde
 
+#    echo $ldo
+#    echo $lde
+
     rm -f $slog
     rm -f $flog
     rm -f $ldo/*
@@ -235,7 +238,7 @@ elif [ $regime == housekeeping ]; then
 
         for ((j=1; j<=Ny; j++)); do
 
-#            echo $i $j
+            echo $i $j
 
             if [ ! -s $base/$run/spec/$i.$j ]; then
 
@@ -253,7 +256,13 @@ elif [ $regime == housekeeping ]; then
 
     Nt=${#remaining_rays_arr[@]}
 
-    if ((Nt == 0)); then exit 0; fi
+    if ((Nt == 0)); then
+
+        echo "0 remaining rays."
+
+        exit 0
+
+    fi
 
     Ng=8192; Nr=1
 

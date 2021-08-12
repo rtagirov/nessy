@@ -330,6 +330,10 @@ for ((r=1; r<=Nr; r+=1)); do
 
     seg_fault=$(grep -i "Segmentation fault" $dir/fioss.log | head -1)
 
+    nan_xjc=$(grep -i "NAN XJC" $dir/fioss.log | head -1)
+
+    if [ "$nan_xjc" ];                then echo "$rid: nan xjc" >>            $flog; continue; fi
+
     if [ "$seg_fault" ];              then echo "$rid: segmentation fault" >> $flog; continue; fi
 
     if [ "$fioss_fail" ];             then echo "$rid: fioss" >>              $flog; continue; fi

@@ -84,10 +84,10 @@ def exec_time(l):
 
             group_ray = l.split(';')[0]
 
-            if len(group_ray.split(',')) == 2:
+            if len(group_ray.split('/')) == 2:
 
-                group = group_ray.split(',')[0]
-                ray =   group_ray.split(',')[1]
+                group = group_ray.split('/')[0]
+                ray =   group_ray.split('/')[1]
 
                 if group and ray:
 
