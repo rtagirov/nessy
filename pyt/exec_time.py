@@ -111,7 +111,8 @@ def exec_time(l):
 
                     dpn, hmet, fiet = get_time(folder)
 
-    return dpn, hmet, fiet
+    if regime == 'mr': return group_ray, dpn, hmet, fiet
+    if regime == 'hk': return xy,        dpn, hmet, fiet
 
 if regime == 'mr': f = open('success.log',    'r')
 if regime == 'hk': f = open('success.hk.log', 'r')
@@ -120,6 +121,8 @@ lines = f.readlines()[::step]
 
 f.close()
 
+rid0 = []
+rid1 = []
 num_depth_points = []
 hm_exec_time = []
 fi_exec_time = []
@@ -136,11 +139,23 @@ with Pool(processes = nproc) as p:
 
         for i, result in enumerate(results):
 
-            dpn, hmet, fiet = result
+            rid, dpn, hmet, fiet = result
 
-            if dpn > 0:    num_depth_points.append(dpn)
-            if hmet > 0.0: hm_exec_time.append(hmet)
-            if fiet > 0.0: fi_exec_time.append(fiet)
+            if dpn > 0 and hmet > 0.0 and fiet > 0.0:
+
+                num_depth_points.append(dpn)
+                hm_exec_time.append(hmet)
+                fi_exec_time.append(fiet)
+
+                if regime == 'mr':
+
+                    rid0.append(int(rid.split('/')[0]))
+                    rid1.append(int(rid.split('/')[1]))
+
+                if regime == 'hk':
+
+                    rid0.append(int(rid.split('.')[0]))
+                    rid1.append(int(rid.split('.')[1]))
 
             pbar.update()
 
@@ -152,4 +167,4 @@ num_depth_points = np.array(num_depth_points)
 hm_exec_time = np.array(hm_exec_time) / 60
 fi_exec_time = np.array(fi_exec_time) / 60
 
-np.savetxt('exec_time.out', np.transpose((num_depth_points, hm_exec_time, fi_exec_time)), fmt = ('%4i', '%6.3f', '%6.3f'), delimiter = '  ')
+np.savetxt('exec_time.out', np.transpose((rid0, rid1, num_depth_points, hm_exec_time, fi_exec_time)), fmt = ('%4i', '%4i', '%4i', '%6.3f', '%6.3f'), delimiter = '  ')
