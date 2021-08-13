@@ -238,7 +238,7 @@ elif [ $regime == housekeeping ]; then
 
         for ((j=1; j<=Ny; j++)); do
 
-            echo $i $j
+#            echo $i $j
 
             if [ ! -s $base/$run/spec/$i.$j ]; then
 
