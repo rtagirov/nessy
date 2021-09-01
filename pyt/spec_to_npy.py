@@ -51,7 +51,7 @@ def read_spec(ray_number):
 
 I = np.zeros((Nx, Ny, Nz))
 
-f = open('specification.dat', 'r')
+f = open('specification.log', 'r')
 
 specifications = f.readlines()
 

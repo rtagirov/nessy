@@ -11,8 +11,9 @@ for log in $logs; do
 
     if [[ ! -z $(cat $log) ]]; then 
 
-        echo ${bold}${log}${normal}
-        cat $log | tee -a logs.out
+        echo ${bold}${log}${normal} >> logs.out
+#        cat $log | tee -a logs.out
+        cat $log >> logs.out
 #        echo
 
     fi

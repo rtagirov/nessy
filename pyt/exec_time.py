@@ -32,49 +32,68 @@ if len(sys.argv) < 4:
 
 step = int(sys.argv[3])
 
+def num_lines(f):
+
+    return sum(1 for line in open(f))
+
 def get_time(folder):
 
-    hmlog = open(folder + '/hminus.log', 'r')
-    filog = open(folder + '/fioss.log',  'r')
+    dpn = 0
+    nli = 0
 
-    hm_lines = hmlog.readlines()
-    fi_lines = filog.readlines()
+    fiet = 0.0
+    hmet = 0.0
 
-    hmlog.close()
-    filog.close()
+    if os.path.isfile(folder + '/hminus.log') and \
+       os.path.isfile(folder + '/fioss.log'):
 
-    hm_lines.reverse()
-    fi_lines.reverse()
+        hmlog = open(folder + '/hminus.log', 'r')
+        filog = open(folder + '/fioss.log',  'r')
 
-    hm_user_time_line = hm_lines[21]
-    fi_user_time_line = fi_lines[21]
+        hm_lines = hmlog.readlines()
+        fi_lines = filog.readlines()
 
-    hmet = float(hm_user_time_line.split(':')[1].strip('\n'))
-    fiet = float(fi_user_time_line.split(':')[1].strip('\n'))
+        hmlog.close()
+        filog.close()
 
-    atm = open(folder + '/atm.inp', 'r')
+        hm_lines.reverse()
+        fi_lines.reverse()
 
-    atm_lines = atm.readlines()
+        hm_user_time_line = hm_lines[21]
+        fi_user_time_line = fi_lines[21]
 
-    atm.close()
+        hmet = float(hm_user_time_line.split(':')[1].strip('\n'))
+        fiet = float(fi_user_time_line.split(':')[1].strip('\n'))
 
-    lin = []
+        atm = open(folder + '/atm.inp', 'r')
 
-    for l in atm_lines:
+        atm_lines = atm.readlines()
 
-        if len(l.split(' ')) == 2:
+        atm.close()
 
-            lin.append(l.strip('\n'))
+        lin = []
 
-    ray_number = int(np.loadtxt(folder + '/rn.inp'))
+        for l in atm_lines:
 
-    dpn = int(lin[ray_number - 1].split(' ')[1])
+            if len(l.split(' ')) == 2:
 
-    return dpn, hmet, fiet
+                lin.append(l.strip('\n'))
+
+        ray_number = int(np.loadtxt(folder + '/rn.inp'))
+
+        dpn = int(lin[ray_number - 1].split(' ')[1])
+
+        nli = num_lines(folder + '/conv.out')
+
+    return dpn, nli, hmet, fiet
 
 def exec_time(l):
 
+    group_ray = ''
+    xy = ''
+
     dpn = 0
+    nli = 0
     hmet = 0.0
     fiet = 0.0
 
@@ -95,7 +114,7 @@ def exec_time(l):
 
                     if os.path.isdir(folder):
 
-                        dpn, hmet, fiet = get_time(folder)
+                        dpn, nli, hmet, fiet = get_time(folder)
 
     if regime == 'hk':
 
@@ -109,10 +128,10 @@ def exec_time(l):
 
                 if os.path.isdir(folder):
 
-                    dpn, hmet, fiet = get_time(folder)
+                    dpn, nli, hmet, fiet = get_time(folder)
 
-    if regime == 'mr': return group_ray, dpn, hmet, fiet
-    if regime == 'hk': return xy,        dpn, hmet, fiet
+    if regime == 'mr': return group_ray, dpn, nli, hmet, fiet
+    if regime == 'hk': return xy,        dpn, nli, hmet, fiet
 
 if regime == 'mr': f = open('success.log',    'r')
 if regime == 'hk': f = open('success.hk.log', 'r')
@@ -124,6 +143,7 @@ f.close()
 rid0 = []
 rid1 = []
 num_depth_points = []
+num_lambda_iter = []
 hm_exec_time = []
 fi_exec_time = []
 
@@ -139,11 +159,12 @@ with Pool(processes = nproc) as p:
 
         for i, result in enumerate(results):
 
-            rid, dpn, hmet, fiet = result
+            rid, dpn, nli, hmet, fiet = result
 
             if dpn > 0 and hmet > 0.0 and fiet > 0.0:
 
                 num_depth_points.append(dpn)
+                num_lambda_iter.append(nli)
                 hm_exec_time.append(hmet)
                 fi_exec_time.append(fiet)
 
@@ -162,9 +183,13 @@ with Pool(processes = nproc) as p:
     p.close()
     p.join()
 
+rid0 = np.array(rid0)
+rid1 = np.array(rid1)
+
 num_depth_points = np.array(num_depth_points)
+num_lambda_iter = np.array(num_lambda_iter)
 
 hm_exec_time = np.array(hm_exec_time) / 60
 fi_exec_time = np.array(fi_exec_time) / 60
 
-np.savetxt('exec_time.out', np.transpose((rid0, rid1, num_depth_points, hm_exec_time, fi_exec_time)), fmt = ('%4i', '%4i', '%4i', '%6.3f', '%6.3f'), delimiter = '  ')
+np.savetxt('exec_time.out', np.transpose((rid0, rid1, num_depth_points, num_lambda_iter, hm_exec_time, fi_exec_time)), fmt = ('%4i', '%4i', '%4i', '%4i', '%6.3f', '%6.3f'), delimiter = '  ')

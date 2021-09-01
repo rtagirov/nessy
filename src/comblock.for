@@ -2,6 +2,7 @@
 
 !     hminus variables
 
+      logical ::                                 hpc_run =         .true.
       logical ::                                 damp_acc =        .true.
       logical ::                                 rayleigh =        .false.
       logical ::                                 each_ali =        .false.
