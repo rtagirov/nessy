@@ -2,7 +2,7 @@
 
 clean()
 {
-if [[ $2 == imperial ]] || [[ $2 == dirac_leicester ]]; then
+if [ $2 == imperial ]; then
 
     rm -f $1/atm.inp
 
@@ -24,7 +24,7 @@ if [[ $2 == imperial ]] || [[ $2 == dirac_leicester ]]; then
 
     done
 
-elif [[ $2 == dirac_cambridge ]]; then
+elif [ $2 == dirac_cambridge ]; then
 
 ##    files=($(ls $1))
 #---------------------------------------
@@ -158,9 +158,9 @@ fi
 
 splitlog=$base/$run/split.log
 
-if [ $host == imperial ]; then module load intel-suite; fi
+if [ $host == imperial ]; then
 
-if [[ $host == imperial ]] || [[ $host == dirac_leicester ]]; then
+    module load intel-suite
 
 #    base=/rds/general/user/rtagirov/ephemeral/runs/nessy
 
@@ -190,7 +190,6 @@ if [ $rmode = nlte ]; then fort99=wrstart; fi
 if [ $regime == main_run ]; then
 
     if [ $host == imperial ];        then g=(sub-1)*Ng+$PBS_ARRAY_INDEX;     fi
-    if [ $host == dirac_leicester ]; then g=(sub-1)*Ng+$PBS_ARRAYID;         fi
     if [ $host == dirac_cambridge ]; then g=(sub-1)*Ng+$SLURM_ARRAY_TASK_ID; fi
 
 elif [ $regime = housekeeping ]; then
@@ -198,7 +197,6 @@ elif [ $regime = housekeeping ]; then
     hk_rays=($hk_rays)
 
     if [ $host == imperial ];        then ray_idx=$PBS_ARRAY_INDEX-1;     fi
-    if [ $host == dirac_leicester ]; then ray_idx=$PBS_ARRAYID-1;         fi
     if [ $host == dirac_cambridge ]; then ray_idx=$SLURM_ARRAY_TASK_ID-1; fi
 
 fi
@@ -241,8 +239,6 @@ for ((r=1; r<=Nr; r+=1)); do
     if [ -d $dir ]; then rm -rf $dir; fi
 
     mkdir -p $dir
-
-    if [ $host == dirac_leicester ]; then cd $tmp; fi
 
     if [ $host == dirac_cambridge ]; then
 
@@ -290,7 +286,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
     fi
 
-    if [[ $host == imperial ]] || [[ $host == dirac_leicester ]]; then
+    if [ $host == imperial ]; then
 
         cp -P $tmp/atm.inp $dir
 

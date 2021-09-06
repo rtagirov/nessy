@@ -28,15 +28,11 @@ if [ $rmode != lte ] && [ $rmode != nlte ]; then
 
 fi
 
-if [[ $HOME == /rds/general/user/rtagirov/home ]]; then
+if [ $HOME == /rds/general/user/rtagirov/home ]; then
 
     host=imperial
 
-elif [[ $HOME == /home/dc-tagi1 ]] && [[ $(hostname) == *dirac* ]]; then
-
-    host=dirac_leicester
-
-elif [[ $HOME == /home/dc-tagi1 ]] && [[ $(hostname) == *login* ]]; then
+elif [ $HOME == /home/dc-tagi1 ]; then
 
     host=dirac_cambridge
 
@@ -66,29 +62,6 @@ if [ $host == imperial ]; then
     scr=$HOME/nessy/scr
     obj=$HOME/nessy/obj
     inp=$HOME/nessy/inp
-
-elif [ $host == dirac_leicester ]; then
-
-    rds=/scratch/dp100/dc-tagi1
-
-#    base=$rds/runs/nessy
-    base=$rds/runs
-
-#    atm=$rds/cubes/matthias/$ctype/$csnap/$spath
-    atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
-
-#    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
-#    run=veronika/$stype/$ctype/$csnap/$rangl
-#    run=test_run/$stype/$ctype/$csnap/$rangl
-    run=$stype/$ctype/$csnap/$rangl
-
-#    scr=$HOME/nessy/scr
-#    obj=$HOME/nessy/obj
-#    inp=$HOME/nessy/inp
-
-    scr=$rds/nessy/scr
-    obj=$rds/nessy/obj
-    inp=$rds/nessy/inp
 
 elif [ $host == dirac_cambridge ]; then
 
@@ -387,39 +360,6 @@ we=$we \
 -N $name \
 -lwalltime=$walltime \
 -lselect=1:ncpus=1:mem=3gb:avx2=true nessy_calc_ray_spec_hk
-
-elif [ $host == dirac_leicester ]; then
-
-name=${ctype:0:1}/$rangl
-#name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
-
-if [ $regime == main_run ];     then name=$name:$sub; fi
-if [ $regime == housekeeping ]; then name=$name:hk;   fi
-
-qsub -v \
-host=$host,\
-regime=$regime,\
-hk_rays="$hk_rays",\
-rmode=$rmode,\
-base=$base,\
-run=$run,\
-atm=$atm,\
-slog=$slog,\
-flog=$flog,\
-spec=$spec,\
-reverse_cube_frac=$reverse_cube_frac,\
-Ns=$Ns,\
-Ng=$Ng,\
-Nr=$Nr,\
-sub=$sub,\
-ws=$ws,\
-we=$we \
--A dp100 \
--t 1-${N_jobs[sub-1]} \
--o $ldo \
--e $lde \
--N $name \
--l walltime=$walltime,nodes=1:ppn=1,mem=3gb nessy_calc_ray_spec_hk
 
 elif [ $host == dirac_cambridge ]; then
 

@@ -14,7 +14,13 @@ if [[ $HOME == /rds/general/user/rtagirov/home ]]; then
 
     scr=$HOME/nessy/scr
 
-elif [[ $HOME == /home/dc-tagi1 ]]; then 
+elif [[ $HOME == /home/dc-tagi1 ]] && [[ $(hostname) == *xnode* ]]; then
+
+    host=dirac_leicester
+
+    scr=/scratch/dp100/dc-tagi1/nessy/scr
+
+elif [[ $HOME == /home/dc-tagi1 ]] && [[ $(hostname) == *login* ]]; then 
 
     host=dirac_cambridge
 
