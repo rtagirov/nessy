@@ -158,7 +158,8 @@ fi
 
 splitlog=$base/$run/split.log
 
-if [ $host == imperial ]; then module load intel-suite; fi
+if [ $host == imperial ];        then module load intel-suite;            fi
+if [ $host == dirac_leicester ]; then module load intel/compilers/19.0.3; fi
 
 if [[ $host == imperial ]] || [[ $host == dirac_leicester ]]; then
 
@@ -300,7 +301,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
     clean $tmp $host
 
-    if [ ! -s $dir/hminus.log ];      then echo "$rid: no hminus log" >>     $flog; continue; fi
+    if [ ! -s $dir/hminus.log ];      then echo "$rid: no hminus log" >> $flog; continue; fi
 
     nospace=$(grep 'No space left on device' $dir/hminus.log)
 
@@ -324,45 +325,61 @@ for ((r=1; r<=Nr; r+=1)); do
 
     file_not_found=$(grep -i 'file not found' $dir/hminus.log)
 
-    if [ "$nospace" ];                then echo "$rid: no space" >>          $flog; continue; fi
+    if [ "$nospace" ];                then echo "$rid: hminus: no space" >>             $flog; continue; fi
 
-    if [ "$seg_fault" ];              then echo "$rid: hminus seg fault" >>  $flog; continue; fi
+    if [ "$seg_fault" ];              then echo "$rid: hminus: seg fault" >>            $flog; continue; fi
 
-    if [ "$noconv" ];                 then echo "$rid: no convergence" >>    $flog; continue; fi
+    if [ "$noconv" ];                 then echo "$rid: hminus: no convergence" >>       $flog; continue; fi
 
-    if [ "$rne_fail" ];               then echo "$rid: rne" >>               $flog; continue; fi
+    if [ "$rne_fail" ];               then echo "$rid: hminus: rne" >>                  $flog; continue; fi
 
-    if [ "$ratconan" ];               then echo "$rid: ratco nan" >>         $flog; continue; fi
+    if [ "$ratconan" ];               then echo "$rid: hminus: ratco nan" >>            $flog; continue; fi
 
-    if [ "$dmnan" ];                  then echo "$rid: dm nan" >>            $flog; continue; fi
+    if [ "$dmnan" ];                  then echo "$rid: hminus: dm nan" >>               $flog; continue; fi
 
-    if [ "$library" ];                then echo "$rid: library" >>           $flog; continue; fi
+    if [ "$library" ];                then echo "$rid: hminus: libmkl_intel_lp64.so" >> $flog; continue; fi
 
-    if [ "$malloc" ];                 then echo "$rid: malloc" >>            $flog; continue; fi
+    if [ "$malloc" ];                 then echo "$rid: hminus: malloc" >>               $flog; continue; fi
 
-    if [ "$file_not_found" ];         then echo "$rid: file not found" >>    $flog; continue; fi
+    if [ "$file_not_found" ];         then echo "$rid: hminus: file not found" >>       $flog; continue; fi
 
-    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus unknown" >>    $flog; continue; fi
+    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus: fail" >>                 $flog; continue; fi
 
-    if [ ! -s $dir/fioss.log ];       then echo "$rid: no fioss log" >>      $flog; continue; fi
+    if [ ! -s $dir/fioss.log ];       then echo "$rid: no fioss log" >>                 $flog; continue; fi
 
     nan_xjc=$(grep -i "NAN XJC" $dir/fioss.log | head -1)
 
     seg_fault=$(grep -i "Segmentation fault" $dir/fioss.log | head -1)
 
+    stale_file_handle=$(grep -i "Stale file handle" $dir/fioss.log | head -1)
+
+    stack_trace=$(grep -i "Stack trace terminated abnormally" $dir/fioss.log | head -1)
+
+    library=$(grep 'libmkl_intel_lp64.so' $dir/fioss.log | head -1)
+
+    rdcsarr=$(grep -i 'RDCSARR' $dir/fioss.log | head -1)
+
     unknown=$(grep -i unknown $dir/fioss.log | head -1)
 
     fioss_fail=$(grep -i fail $dir/fioss.log | head -1)
 
-    if [ "$nan_xjc" ];                then echo "$rid: nan xjc" >>           $flog; continue; fi
+    if [ "$nan_xjc" ];                then echo "$rid: fioss: nan xjc" >>              $flog; continue; fi
 
-    if [ "$seg_fault" ];              then echo "$rid: fioss seg fault" >>   $flog; continue; fi
+    if [ "$seg_fault" ];              then echo "$rid: fioss: seg fault" >>            $flog; continue; fi
 
-    if [ "$unknown" ];                then echo "$rid: fioss unknown" >>     $flog; continue; fi
+    if [ "$stale_file_handle" ];      then echo "$rid: fioss: stale file handle" >>    $flog; continue; fi
 
-    if [ "$fioss_fail" ];             then echo "$rid: fioss fail" >>        $flog; continue; fi
+    if [ "$stack_trace" ];            then echo "$rid: fioss: stack trace" >>          $flog; continue; fi
 
-    if [ ! -s $dir/spec.out ];        then echo "$rid: no spectrum" >>       $flog; continue; fi
+    if [ "$library" ];                then echo "$rid: fioss: libmkl_intel_lp64.so" >> $flog; continue; fi
+
+    if [ "$rdcsarr" ];                then echo "$rid: fioss: rdcsarr" >>              $flog; continue; fi
+
+    if [ "$unknown" ];                then echo "$rid: fioss: unknown" >>              $flog; continue; fi
+
+    if [ "$fioss_fail" ];             then echo "$rid: fioss: fail" >>                 $flog; continue; fi
+
+    if [ ! -s $dir/spec.out ];        then echo "$rid: no spectrum" >>                 $flog; continue; fi
 
     spec_nan=$(grep -i nan $dir/spec.out | head -1)
 
