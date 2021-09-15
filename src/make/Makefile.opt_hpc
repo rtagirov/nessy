@@ -1,6 +1,7 @@
 #DEBUG_FLAGS= -traceback -debug inline-debug-info,all
 #DEBUG_FLAGS= -check all -fpe0 -warn none -traceback -debug extended
-DEBUG_FLAGS= -warn none
+#DEBUG_FLAGS= -warn none
+DEBUG_FLAGS= -traceback -heap-arrays -check bounds -check all -assume realloc_lhs
 #PROFILING= -pg
 #DEBUG_FLAGS= -traceback -check all -check bounds
 #F90FLAGS=-O3 -g -warn ignore_loc,nodeclarations, -fp-model fast=1 -r8 -real-size 64 -integer-size 32 -warn all -132 ${DEBUG_FLAGS} $(PROFILING) 

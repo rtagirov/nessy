@@ -79,7 +79,7 @@ elif [ $host == dirac_leicester ]; then
 
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rangl
-    run=test_run_4/$stype/$ctype/$csnap/$rangl
+    run=test_run_5/$stype/$ctype/$csnap/$rangl
 #    run=$stype/$ctype/$csnap/$rangl
 
 #    scr=$HOME/nessy/scr
@@ -419,7 +419,7 @@ we=$we \
 -o $ldo \
 -e $lde \
 -N $name \
--l walltime=$walltime,nodes=1:ppn=1,pmem=3gb nessy_calc_ray_spec_hk
+-l walltime=$walltime,nodes=1:ppn=1,pmem=10gb nessy_calc_ray_spec_hk
 
 elif [ $host == dirac_cambridge ]; then
 

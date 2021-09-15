@@ -301,35 +301,41 @@ for ((r=1; r<=Nr; r+=1)); do
 
     clean $tmp $host
 
-    if [ ! -s $dir/hminus.log ];      then echo "$rid: no hminus log" >> $flog; continue; fi
+    if [ ! -s $dir/hminus.log ]; then echo "$rid: no hminus log" >> $flog; continue; fi
 
-    nospace=$(grep 'No space left on device' $dir/hminus.log)
+    nospace=$(grep -i 'No space left on device' $dir/hminus.log)
 
     seg_fault=$(grep -i "Segmentation fault" $dir/hminus.log)
 
-    noconv=$(grep 'MAX. NUMBER OF JOBS EXCEEDED' $dir/hminus.log)
+    stale_file=$(grep -i "Stale file handle" $dir/hminus.log)
 
-    conv=$(grep 'MODEL FINALLY CONVERGED' $dir/hminus.log)
+    stack_trace=$(grep -i "Stack trace terminated abnormally" $dir/hminus.log)
 
-    lte=$(grep 'END OF LTE RUN' $dir/hminus.log)
+    rne_fail=$(grep -i 'greym: RNEL does not converge' $dir/hminus.log)
 
-    rne_fail=$(grep 'greym: RNEL does not converge' $dir/hminus.log)
-
-    ratconan=$(grep 'coma: ratco NaN' $dir/hminus.log)
+    ratconan=$(grep -i 'coma: ratco NaN' $dir/hminus.log)
 
     dmnan=$(grep -i 'dm NaN' $dir/hminus.log)
 
-    library=$(grep 'libmkl_intel_lp64.so' $dir/hminus.log)
+    library=$(grep -i 'libmkl_intel_lp64.so' $dir/hminus.log)
 
     malloc=$(grep -i 'malloc(): corrupted top size' $dir/hminus.log)
 
     file_not_found=$(grep -i 'file not found' $dir/hminus.log)
 
+    noconv=$(grep -i 'MAX. NUMBER OF JOBS EXCEEDED' $dir/hminus.log)
+
+    conv=$(grep -i 'MODEL FINALLY CONVERGED' $dir/hminus.log)
+
+    lte=$(grep -i 'END OF LTE RUN' $dir/hminus.log)
+
     if [ "$nospace" ];                then echo "$rid: hminus: no space" >>             $flog; continue; fi
 
     if [ "$seg_fault" ];              then echo "$rid: hminus: seg fault" >>            $flog; continue; fi
 
-    if [ "$noconv" ];                 then echo "$rid: hminus: no convergence" >>       $flog; continue; fi
+    if [ "$stale_file" ];             then echo "$rid: hminus: stale file" >>           $flog; continue; fi
+
+    if [ "$stack_trace" ];            then echo "$rid: hminus: stack trace" >>          $flog; continue; fi
 
     if [ "$rne_fail" ];               then echo "$rid: hminus: rne" >>                  $flog; continue; fi
 
@@ -343,6 +349,8 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if [ "$file_not_found" ];         then echo "$rid: hminus: file not found" >>       $flog; continue; fi
 
+    if [ "$noconv" ];                 then echo "$rid: hminus: no convergence" >>       $flog; continue; fi
+
     if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus: fail" >>                 $flog; continue; fi
 
     if [ ! -s $dir/fioss.log ];       then echo "$rid: no fioss log" >>                 $flog; continue; fi
@@ -351,13 +359,15 @@ for ((r=1; r<=Nr; r+=1)); do
 
     seg_fault=$(grep -i "Segmentation fault" $dir/fioss.log | head -1)
 
-    stale_file_handle=$(grep -i "Stale file handle" $dir/fioss.log | head -1)
+    stale_file=$(grep -i "Stale file handle" $dir/fioss.log | head -1)
 
     stack_trace=$(grep -i "Stack trace terminated abnormally" $dir/fioss.log | head -1)
 
     library=$(grep 'libmkl_intel_lp64.so' $dir/fioss.log | head -1)
 
     rdcsarr=$(grep -i 'RDCSARR' $dir/fioss.log | head -1)
+
+    file_not_found=$(grep -i 'file not found' $dir/fioss.log | head -1)
 
     unknown=$(grep -i unknown $dir/fioss.log | head -1)
 
@@ -367,13 +377,15 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if [ "$seg_fault" ];              then echo "$rid: fioss: seg fault" >>            $flog; continue; fi
 
-    if [ "$stale_file_handle" ];      then echo "$rid: fioss: stale file handle" >>    $flog; continue; fi
+    if [ "$stale_file" ];             then echo "$rid: fioss: stale file" >>           $flog; continue; fi
 
     if [ "$stack_trace" ];            then echo "$rid: fioss: stack trace" >>          $flog; continue; fi
 
     if [ "$library" ];                then echo "$rid: fioss: libmkl_intel_lp64.so" >> $flog; continue; fi
 
     if [ "$rdcsarr" ];                then echo "$rid: fioss: rdcsarr" >>              $flog; continue; fi
+
+    if [ "$file_not_found" ];         then echo "$rid: fioss: file not found" >>       $flog; continue; fi
 
     if [ "$unknown" ];                then echo "$rid: fioss: unknown" >>              $flog; continue; fi
 
