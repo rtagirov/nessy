@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export N_sub=1
+export N_sub=32
 
-reverse_cube_frac=32
+reverse_cube_frac=1
 
 #submit_split_cube lte  G2V hydro 123_lte  123_wcr
 #submit_split_cube lte  G2V 300G  118_lte  118_wcr
@@ -107,6 +107,7 @@ csnap=(222809)
 #rangl=(2 4 6 8)
 #rangl=(10)
 rangl=(2)
+#rangl=(6)
 #rangl=(8)
 #rangl=(2 10)
 #rangl=(4)
