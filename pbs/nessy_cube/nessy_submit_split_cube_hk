@@ -79,7 +79,7 @@ elif [ $host == dirac_leicester ]; then
 
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rangl
-    run=test_run_5/$stype/$ctype/$csnap/$rangl
+    run=test_run_angle_2_lte_10gb/$stype/$ctype/$csnap/$rangl
 #    run=$stype/$ctype/$csnap/$rangl
 
 #    scr=$HOME/nessy/scr
