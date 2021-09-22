@@ -272,10 +272,10 @@ for ((r=1; r<=Nr; r+=1)); do
     if [ -s $tmp/hminus.log ]
     then
 
-        rne_fail=$(grep 'greym: RNEL does not converge' $tmp/hminus.log)
+#        rne_fail=$(grep 'greym: RNEL does not converge' $tmp/hminus.log)
 
-        if [ ! "$rne_fail" ]
-        then
+#        if [ ! "$rne_fail" ]
+#        then
 
             conv=$(grep 'MODEL FINALLY CONVERGED' ${tmp}/hminus.log)
             lte=$(grep 'END OF LTE RUN' ${tmp}/hminus.log)
@@ -287,7 +287,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
             fi
 
-        fi
+#        fi
 
     fi
 
