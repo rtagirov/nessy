@@ -44,7 +44,7 @@
       real*8  RSTAR
       real*8  TEFF, TOTIN
       real*8  TOTOUT, VDOP
-      real*8, allocatable :: DUMMY1(:)
+      real*8, allocatable :: DUMMY1(:), dummy2(:)
       character*8, allocatable :: CDUMMY1(:)
       integer tdiff, tstart, tend
       integer, external :: time
@@ -87,6 +87,12 @@
       if (allocated(damp_cont)) deallocate(damp_cont); allocate(damp_cont(ND, NF))
 
       if (allocated(sigmaki))   deallocate(sigmaki);   allocate(sigmaki(NF, N))
+
+      if (allocated(dummy1))    deallocate(dummy1);    allocate(dummy1(N))
+
+      if (allocated(dummy2))    deallocate(dummy2);    allocate(dummy2(N))
+
+      if (allocated(cdummy1))   deallocate(cdummy1);   allocate(cdummy1(N))
 
       damp_cont(1 : ND, 1 : NF) = .false.
 
@@ -135,7 +141,7 @@
          CALL COOP(XLAMBDA(K),ND,T,RNE,POPNUM,ENTOT,RSTAR,
      $             OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,NOM,
      $             N,LEVEL,NCHARG,WEIGHT,ELEVEL,EION,EINST,
-     $             DUMMY1,DUMMY1,CDUMMY1,K,SIGMAKI,WAVARR,SIGARR,NF,NFDIM)
+     $             DUMMY1,DUMMY2,CDUMMY1,K,SIGMAKI,WAVARR,SIGARR,NF,NFDIM)
 
          IF (LSOPA .GT. 0) CALL PRIOPA(XLAMBDA(K),K,ND,LSOPA,RADIUS,OPA,ETA,THOMSON,IWARN,MAINPRO,MAINLEV,JOBNUM,MODHEAD)
 
@@ -199,7 +205,7 @@
       tend=time()
       tdiff = tend-tstart
       write (LCARD,88) JOBNUM,'. COMO   1 -',LASTK,tdiff,' sec'
-   88 FORMAT (1H/,I3,A,I3,' COMPLETE  -  run time all K: ',F10.2,A)
+   88 FORMAT (1H/,I3,A,I3,' COMPLETE  -  run time all K: ',I10,A)
       write (7,'(A100)') LCARD
       close (7)   ! MODHIST
 

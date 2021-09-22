@@ -270,7 +270,21 @@ C***  NEGINTL COUNTS THE ERROR MESSAGES  FROM SUBR. LINPOP
 
          WRITE(19462, '(A8,2x,ES9.3)') time, cormax_fin
 
-         if (hpc_run .and. cormax_fin >= 0.1 .and. lambda_iter > 40) stop 'MAX. NUMBER OF JOBS EXCEEDED'
+         if (hpc_run .and. cormax_fin >= 0.1 .and. lambda_iter > 40) then
+
+            call system('rm BROYDEN')
+            call system('rm fort.99')
+            call system('rm MODFILE')
+            call system('rm MODHIST')
+            call system('rm molconc.out.inp')
+            call system('rm NEWBROYDEN')
+            call system('rm RADIOC')
+            call system('rm RADIOCL')
+            call system('rm RADIOL')
+
+            stop 'MAX. NUMBER OF JOBS EXCEEDED'
+
+         endif
 
       endif
 
