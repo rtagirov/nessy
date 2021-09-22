@@ -188,7 +188,7 @@ declare -i reverse_cube_frac
 if [ $rmode = lte ];  then fort99=lte;     fi
 if [ $rmode = nlte ]; then fort99=wrstart; fi
 
-if [ $regime == main_run ]; then
+if [ $regime == original_run ]; then
 
     if [ $host == imperial ];        then g=(sub-1)*Ng+$PBS_ARRAY_INDEX;     fi
     if [ $host == dirac_leicester ]; then g=(sub-1)*Ng+$PBS_ARRAYID;         fi
@@ -206,7 +206,7 @@ fi
 
 for ((r=1; r<=Nr; r+=1)); do
 
-    if [ $regime == main_run ]; then
+    if [ $regime == original_run ]; then
 
         f=(g-1)*Nr+r
 

@@ -18,7 +18,7 @@ rname=$5 # run name
 rmode=$6 # lte or nlte
 rangl=$7 # run angle (index of the cube inclination)
 spath=$8 # path to cube slices
-regime=$9 # main_run or housekeeping (calculating spectra left over after the main run)
+regime=$9 # original_run or housekeeping (calculating spectra left over after the main run)
 
 if [ $rmode != lte ] && [ $rmode != nlte ]; then
 
@@ -129,7 +129,7 @@ Ny=512
 #Ng - number of groups in each submission
 #Nr - number of rays in each group
 
-if [ $regime == main_run ]; then
+if [ $regime == original_run ]; then
 
     Nt=Nx*Ny
 
@@ -360,7 +360,7 @@ if [ $host == imperial ]; then
 
 name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
-if [ $regime == main_run ];     then name=$name:$sub; fi
+if [ $regime == original_run ]; then name=$name:$sub; fi
 if [ $regime == housekeeping ]; then name=$name:hk;   fi
 
 qsub -v \
@@ -393,7 +393,7 @@ elif [ $host == dirac_leicester ]; then
 name=${ctype:0:1}/$rangl
 #name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
-if [ $regime == main_run ];     then name=$name:$sub; fi
+if [ $regime == original_run ]; then name=$name:$sub; fi
 if [ $regime == housekeeping ]; then name=$name:hk;   fi
 
 qsub -v \
@@ -425,7 +425,7 @@ elif [ $host == dirac_cambridge ]; then
 
 name=${ctype:0:1}/$rangl
 
-if [ $regime == main_run ];     then name=$name:$sub; fi
+if [ $regime == original_run ]; then name=$name:$sub; fi
 if [ $regime == housekeeping ]; then name=$name:hk;   fi
 
 sbatch \
