@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export N_sub=1
+export N_sub=32
 
-reverse_cube_frac=32
+reverse_cube_frac=1
 
 #submit_split_cube lte  G2V hydro 123_lte  123_wcr
 #submit_split_cube lte  G2V 300G  118_lte  118_wcr
@@ -87,27 +87,27 @@ reverse_cube_frac=32
 
 #--------------------------------------------------------
 
-#rmode=(nlte)
-rmode=(lte)
+rmode=(nlte)
+#rmode=(lte)
 
 #ctype=(300G ssd hydro)
 #ctype=(300G ssd)
-#ctype=(300G)
-ctype=(ssd)
+ctype=(300G)
+#ctype=(ssd)
 #ctype=(hydro)
 
 #csnap=(118000 186000 123000)
 #csnap=(627321 222809 214519)
 #csnap=(627321 222809)
-#csnap=(627321)
-csnap=(222809)
+csnap=(627321)
+#csnap=(222809)
 #csnap=(214519)
 
 #rangl=(2 4 6 8 10)
 #rangl=(2 4 6 8)
 #rangl=(10)
-rangl=(2)
-#rangl=(6)
+#rangl=(2)
+rangl=(6)
 #rangl=(8)
 #rangl=(2 10)
 #rangl=(4)
