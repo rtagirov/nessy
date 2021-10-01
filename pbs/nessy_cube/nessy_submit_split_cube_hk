@@ -116,6 +116,7 @@ elif [ $host == dirac_cambridge ]; then
 fi
 
 spec=$base/$run/spec
+ncnv=$base/$run/ncnv
 
 declare -i Nx Ny
 declare -i Nt Ng Ns Nr
@@ -201,6 +202,11 @@ if [ $regime == original_run ]; then
     rm -rf   $spec
     mkdir -p $spec
 
+    echo Removing old non-convergence files...
+
+    rm -rf   $ncnv
+    mkdir -p $ncnv
+
     echo Removing old logs...
 
     rm -f $slog
@@ -267,7 +273,7 @@ elif [ $regime == housekeeping ]; then
 
 #            echo $i $j
 
-            if [ ! -s $base/$run/spec/$i.$j ]; then
+            if [[ ! -s $spec/$i.$j ]] && [[ ! -s $ncnv/$i.$j ]]; then
 
                 remaining_rays=$remaining_rays' '$i.$j
 
@@ -291,7 +297,12 @@ elif [ $regime == housekeeping ]; then
 
     fi
 
-    Ng=8192; Nr=1
+#    Ng=8192; Nr=1
+#    Ng=4096; Nr=1
+#    Ng=2048; Nr=1
+#    Ng=1024; Nr=1
+#    Ng=512; Nr=1
+    Ng=256; Nr=1
 
     Ns=Nt/Ng
 
@@ -361,7 +372,7 @@ if [ $host == imperial ]; then
 name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
 if [ $regime == original_run ]; then name=$name:$sub; fi
-if [ $regime == housekeeping ]; then name=$name:hk;   fi
+if [ $regime == housekeeping ]; then name=$name:hk:$sub;   fi
 
 qsub -v \
 host=$host,\
@@ -374,6 +385,7 @@ atm=$atm,\
 slog=$slog,\
 flog=$flog,\
 spec=$spec,\
+ncnv=$ncnv,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
 Ng=$Ng,\
@@ -394,7 +406,7 @@ name=${ctype:0:1}/$rangl
 #name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
 if [ $regime == original_run ]; then name=$name:$sub; fi
-if [ $regime == housekeeping ]; then name=$name:hk;   fi
+if [ $regime == housekeeping ]; then name=$name:hk:$sub;   fi
 
 qsub -v \
 host=$host,\
@@ -407,6 +419,7 @@ atm=$atm,\
 slog=$slog,\
 flog=$flog,\
 spec=$spec,\
+ncnv=$ncnv,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
 Ng=$Ng,\
@@ -419,14 +432,14 @@ we=$we \
 -o $ldo \
 -e $lde \
 -N $name \
--l walltime=$walltime,nodes=1:ppn=1,mem=80gb nessy_calc_ray_spec_hk
+-l walltime=$walltime,nodes=1:ppn=1,mem=50gb nessy_calc_ray_spec_hk
 
 elif [ $host == dirac_cambridge ]; then
 
 name=${ctype:0:1}/$rangl
 
 if [ $regime == original_run ]; then name=$name:$sub; fi
-if [ $regime == housekeeping ]; then name=$name:hk;   fi
+if [ $regime == housekeeping ]; then name=$name:hk:$sub;   fi
 
 sbatch \
 -A dirac-dp100-cpu \
@@ -441,6 +454,7 @@ atm=$atm,\
 slog=$slog,\
 flog=$flog,\
 spec=$spec,\
+ncnv=$ncnv,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
 Ng=$Ng,\

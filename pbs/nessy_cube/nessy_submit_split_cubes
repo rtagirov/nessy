@@ -106,8 +106,8 @@ csnap=(627321)
 #rangl=(2 4 6 8 10)
 #rangl=(2 4 6 8)
 #rangl=(10)
-rangl=(2)
-#rangl=(6)
+#rangl=(2)
+rangl=(6)
 #rangl=(8)
 #rangl=(2 10)
 #rangl=(4)
@@ -122,8 +122,8 @@ for ((j=0; j<=$lrangl; j+=1)); do
 
         for ((i=0; i<=$lctype; i+=1)); do
 
-#            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy housekeeping
-            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy original_run
+            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy housekeeping
+#            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac 246810 ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy original_run
 
         done
 

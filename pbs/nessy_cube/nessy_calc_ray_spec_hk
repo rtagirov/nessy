@@ -146,6 +146,7 @@ fi
 #flog
 #slog
 #spec
+#ncnv
 #reverse_cube_frac
 #Ns
 #Ng
@@ -349,7 +350,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if [ "$file_not_found" ];         then echo "$rid: hminus: file not found" >>       $flog; continue; fi
 
-    if [ "$noconv" ];                 then echo "$rid: hminus: no convergence" >>       $flog; continue; fi
+    if [ "$noconv" ];                 then echo "$rid: hminus: no convergence" >>       $flog; cp $dir/conv.out $ncnv/$x.$y; continue; fi
 
     if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$rid: hminus: fail" >>                 $flog; continue; fi
 
