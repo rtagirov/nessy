@@ -297,12 +297,12 @@ elif [ $regime == housekeeping ]; then
 
     fi
 
-#    Ng=8192; Nr=1
+    Ng=8192; Nr=1
 #    Ng=4096; Nr=1
 #    Ng=2048; Nr=1
 #    Ng=1024; Nr=1
 #    Ng=512; Nr=1
-    Ng=256; Nr=1
+#    Ng=256; Nr=1
 
     Ns=Nt/Ng
 

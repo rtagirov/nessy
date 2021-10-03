@@ -44,6 +44,9 @@ def get_time(folder):
     fiet = 0.0
     hmet = 0.0
 
+    fime = 0.0
+    hmme = 0.0
+
     if os.path.isfile(folder + '/hminus.log') and \
        os.path.isfile(folder + '/fioss.log'):
 
@@ -62,8 +65,14 @@ def get_time(folder):
         hm_user_time_line = hm_lines[21]
         fi_user_time_line = fi_lines[21]
 
+        hm_mem_line = hm_lines[13]
+        fi_mem_line = fi_lines[13]
+
         hmet = float(hm_user_time_line.split(':')[1].strip('\n'))
         fiet = float(fi_user_time_line.split(':')[1].strip('\n'))
+
+        hmme = float(hm_mem_line.split(':')[1].strip('\n'))
+        fime = float(fi_mem_line.split(':')[1].strip('\n'))
 
         atm = open(folder + '/atm.inp', 'r')
 
@@ -85,7 +94,7 @@ def get_time(folder):
 
         nli = num_lines(folder + '/conv.out')
 
-    return dpn, nli, hmet, fiet
+    return dpn, nli, hmet, fiet, hmme, fime
 
 def exec_time(l):
 
@@ -94,8 +103,12 @@ def exec_time(l):
 
     dpn = 0
     nli = 0
+
     hmet = 0.0
     fiet = 0.0
+
+    hmme = 0.0
+    fime = 0.0
 
     if regime == 'mr':
 
@@ -114,7 +127,7 @@ def exec_time(l):
 
                     if os.path.isdir(folder):
 
-                        dpn, nli, hmet, fiet = get_time(folder)
+                        dpn, nli, hmet, fiet, hmme, fime = get_time(folder)
 
     if regime == 'hk':
 
@@ -128,10 +141,10 @@ def exec_time(l):
 
                 if os.path.isdir(folder):
 
-                    dpn, nli, hmet, fiet = get_time(folder)
+                    dpn, nli, hmet, fiet, hmme, fime = get_time(folder)
 
-    if regime == 'mr': return group_ray, dpn, nli, hmet, fiet
-    if regime == 'hk': return xy,        dpn, nli, hmet, fiet
+    if regime == 'mr': return group_ray, dpn, nli, hmet, fiet, hmme, fime
+    if regime == 'hk': return xy,        dpn, nli, hmet, fiet, hmme, fime
 
 if regime == 'mr': f = open('success.log',    'r')
 if regime == 'hk': f = open('success.hk.log', 'r')
@@ -146,6 +159,8 @@ num_depth_points = []
 num_lambda_iter = []
 hm_exec_time = []
 fi_exec_time = []
+hm_mem = []
+fi_mem = []
 
 with Pool(processes = nproc) as p:
 
@@ -159,7 +174,7 @@ with Pool(processes = nproc) as p:
 
         for i, result in enumerate(results):
 
-            rid, dpn, nli, hmet, fiet = result
+            rid, dpn, nli, hmet, fiet, hmme, fime = result
 
             if dpn > 0 and hmet > 0.0 and fiet > 0.0:
 
@@ -167,6 +182,8 @@ with Pool(processes = nproc) as p:
                 num_lambda_iter.append(nli)
                 hm_exec_time.append(hmet)
                 fi_exec_time.append(fiet)
+                hm_mem.append(hmme)
+                fi_mem.append(fime)
 
                 if regime == 'mr':
 
@@ -192,4 +209,7 @@ num_lambda_iter = np.array(num_lambda_iter)
 hm_exec_time = np.array(hm_exec_time) / 60
 fi_exec_time = np.array(fi_exec_time) / 60
 
-np.savetxt('exec_time.out', np.transpose((rid0, rid1, num_depth_points, num_lambda_iter, hm_exec_time, fi_exec_time)), fmt = ('%4i', '%4i', '%4i', '%4i', '%6.3f', '%6.3f'), delimiter = '  ')
+hm_mem = np.array(hm_mem) / 1000
+fi_mem = np.array(fi_mem) / 1000
+
+np.savetxt('exec_time.out', np.transpose((rid0, rid1, num_depth_points, num_lambda_iter, hm_exec_time, fi_exec_time, hm_mem, fi_mem)), fmt = ('%4i', '%4i', '%4i', '%4i', '%6.3f', '%6.3f', '%6.3f', '%6.3f'), delimiter = '  ')
