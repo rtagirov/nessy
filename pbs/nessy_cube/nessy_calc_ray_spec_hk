@@ -270,6 +270,12 @@ for ((r=1; r<=Nr; r+=1)); do
 
     /usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
 
+    tail -33 $tmp/hminus.log > $tmp/hminus.log.short
+
+    rm -f $tmp/hminus.log
+
+    mv $tmp/hminus.log.short $tmp/hminus.log
+
     if [ -s $tmp/hminus.log ]
     then
 

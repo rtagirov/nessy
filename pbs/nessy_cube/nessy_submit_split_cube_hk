@@ -2,7 +2,7 @@
 
 if [ $# != 9 ]; then
  
-   echo expecting 9 arguments: stype, ctype, csnap, reverse_cube_frac, rname, rmode, rangl, spath, regime
+   echo expecting 9 arguments: stype, ctype, csnap, reverse_cube_frac, N_groups, rmode, rangl, spath, regime
  
    exit 1
  
@@ -14,7 +14,7 @@ stype=$1 # spectral type
 ctype=$2 # cube type
 csnap=$3 # cube snapshot id
 reverse_cube_frac=$4 # reverse of the fraction of the cube to be calculated
-rname=$5 # run name
+N_groups=$5 # number gof groups for houskeeping run
 rmode=$6 # lte or nlte
 rangl=$7 # run angle (index of the cube inclination)
 spath=$8 # path to cube slices
@@ -79,8 +79,8 @@ elif [ $host == dirac_leicester ]; then
 
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rangl
-#    run=test_run_angle_2_lte_10gb/$stype/$ctype/$csnap/$rangl
-    run=$stype/$ctype/$csnap/$rangl
+    run=test_run_8_jobs/$stype/$ctype/$csnap/$rangl
+#    run=$stype/$ctype/$csnap/$rangl
 
 #    scr=$HOME/nessy/scr
 #    obj=$HOME/nessy/obj
@@ -141,7 +141,8 @@ if [ $regime == original_run ]; then
     Ng=8192
     Nr=Nt/Ng/Ns/reverse_cube_frac
 
-    walltime=24:00:00
+#    walltime=24:00:00
+    walltime=4:00:00
 
     ws=1800
     we=2990
@@ -149,15 +150,15 @@ if [ $regime == original_run ]; then
 #---------------------------------------------------------
 
 #   test
-#    Ns=2
-#    Ng=2
-#    Nr=2
+    Ns=2
+    Ng=2
+    Nr=2
 
-#    walltime=00:31:00
+    walltime=00:31:00
 
 #    ws=1800
-#    we=1800
-#    we=2990
+    we=1800
+    we=2990
 
 #---------------------------------------------------------
 
@@ -235,7 +236,8 @@ if [ $regime == original_run ]; then
 
 elif [ $regime == housekeeping ]; then
 
-    walltime=24:00:00
+#    walltime=24:00:00
+    walltime=4:00:00
 
     ws=1800
     we=2990
@@ -297,7 +299,7 @@ elif [ $regime == housekeeping ]; then
 
     fi
 
-    Ng=8192; Nr=1
+    Ng=$N_groups; Nr=1
 #    Ng=4096; Nr=1
 #    Ng=2048; Nr=1
 #    Ng=1024; Nr=1
@@ -432,7 +434,7 @@ we=$we \
 -o $ldo \
 -e $lde \
 -N $name \
--l walltime=$walltime,nodes=1:ppn=1,mem=50gb nessy_calc_ray_spec_hk
+-l walltime=$walltime,nodes=1:ppn=1,mem=3gb nessy_calc_ray_spec_hk
 
 elif [ $host == dirac_cambridge ]; then
 
