@@ -373,8 +373,8 @@ if [ $host == imperial ]; then
 
 name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
-if [ $regime == original_run ]; then name=$name:$sub; fi
-if [ $regime == housekeeping ]; then name=$name:hk:$sub;   fi
+if [ $regime == original_run ]; then name=$name:$sub;    fi
+if [ $regime == housekeeping ]; then name=$name:$sub:hk; fi
 
 qsub -v \
 host=$host,\
@@ -407,8 +407,8 @@ elif [ $host == dirac_leicester ]; then
 name=${ctype:0:1}/$rangl
 #name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
-if [ $regime == original_run ]; then name=$name:$sub; fi
-if [ $regime == housekeeping ]; then name=$name:hk:$sub;   fi
+if [ $regime == original_run ]; then name=$name:$sub;    fi
+if [ $regime == housekeeping ]; then name=$name:$sub:hk; fi
 
 qsub -v \
 host=$host,\
@@ -440,8 +440,8 @@ elif [ $host == dirac_cambridge ]; then
 
 name=${ctype:0:1}/$rangl
 
-if [ $regime == original_run ]; then name=$name:$sub; fi
-if [ $regime == housekeeping ]; then name=$name:hk:$sub;   fi
+if [ $regime == original_run ]; then name=$name:$sub;    fi
+if [ $regime == housekeeping ]; then name=$name:$sub:hk; fi
 
 sbatch \
 -A dirac-dp100-cpu \
