@@ -354,7 +354,7 @@ C***  UPDATING THE MODEL HISTORY
             LSPOP=1
             LPRIH=1
 
-            CALL PRIPOP(LSPOP,WEIGHT,NCHARG,NOM,ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
+!            CALL PRIPOP(LSPOP,WEIGHT,NCHARG,NOM,ND,N,RNE,ITNE,LEVEL,POPNUM,DEPART,JOBNUM,MODHEAD)
 
 !           write out NLTE populations for fioss
 !----------------------------------------------------------------------------
@@ -367,17 +367,20 @@ C***  UPDATING THE MODEL HISTORY
 
 !----------------------------------------------------------------------------
 
-            CALL PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
-     $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,
-     $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
-     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR,NF,NFDIM)
+!            CALL PRITAU(MODHEAD,JOBNUM,RSTAR,ND,RADIUS,RNE,ENTOT,T,
+!     $                  POPNUM,N,LEVEL,NCHARG,WEIGHT,ELEVEL,
+!     $                  EION,EINST,ALPHA,SEXPO,AGAUNT,NOM,XLAMBDA,
+!     $                  FWEIGHT,TAUROSS,WAVARR,SIGARR,NF,NFDIM)
 
-            CALL PRIH(LPRIH,ND,RADIUS,HTOT,TEFFE,T,TAUROSS,JOBNUM,MODHEAD)
+!            CALL PRIH(LPRIH,ND,RADIUS,HTOT,TEFFE,T,TAUROSS,JOBNUM,MODHEAD)
+
             GOTO 20
+
             ELSE
-            IF (LSEXPO .NE. 1)
-     $       CALL PRIEXPO (POPNUM,POP1,POP2,LEVEL,N,ND,MODHEAD,JOBNUM,1)
-              GOTO 15
+
+!            IF (LSEXPO .NE. 1) CALL PRIEXPO (POPNUM,POP1,POP2,LEVEL,N,ND,MODHEAD,JOBNUM,1)
+
+            GOTO 15
 
           ENDIF
 

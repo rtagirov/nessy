@@ -79,7 +79,8 @@ elif [ $host == dirac_leicester ]; then
 
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rangl
-    run=test_run_8_jobs/$stype/$ctype/$csnap/$rangl
+#    run=test_run_8_jobs/$stype/$ctype/$csnap/$rangl
+    run=test_pmem/$stype/$ctype/$csnap/$rangl
 #    run=$stype/$ctype/$csnap/$rangl
 
 #    scr=$HOME/nessy/scr
@@ -138,11 +139,13 @@ if [ $regime == original_run ]; then
 
 #   full cube, Nr rays per core
     Ns=${N_sub:-1}
-    Ng=8192
+#    Ng=8192
+    Ng=$N_groups
     Nr=Nt/Ng/Ns/reverse_cube_frac
 
 #    walltime=24:00:00
-    walltime=4:00:00
+#    walltime=4:00:00
+    walltime=64:00:00
 
     ws=1800
     we=2990
@@ -150,15 +153,15 @@ if [ $regime == original_run ]; then
 #---------------------------------------------------------
 
 #   test
-    Ns=2
-    Ng=2
-    Nr=2
+#    Ns=2
+#    Ng=2
+#    Nr=2
 
-    walltime=00:31:00
+#    walltime=00:31:00
 
 #    ws=1800
-    we=1800
-    we=2990
+#    we=1800
+#    we=2990
 
 #---------------------------------------------------------
 
@@ -174,7 +177,8 @@ if [ $regime == original_run ]; then
     slog=$base/$run/success.log
     flog=$base/$run/fail.log
 
-    mkdir -p $base/$run $ldo $lde
+#    mkdir -p $base/$run $ldo $lde
+    mkdir -p $base/$run
 
     if [ -d $base/$run/inp ]; then rm -r $base/$run/inp; fi
 
@@ -212,8 +216,11 @@ if [ $regime == original_run ]; then
 
     rm -f $slog
     rm -f $flog
-    rm -f $ldo/*
-    rm -f $lde/*
+
+    rm -rf $ldo
+    rm -rf $lde
+
+    mkdir -p $ldo $lde
 
     echo "Reverse of the fraction of the cube: $reverse_cube_frac" >  $base/$run/split.log
     echo "Number of submissions:               $Ns"                >> $base/$run/split.log
@@ -251,15 +258,13 @@ elif [ $regime == housekeeping ]; then
 
 #    remlog=$base/$run/remaining_rays.log
 
-    mkdir -p $ldo $lde
-
-#    echo $ldo
-#    echo $lde
-
     rm -f $slog
     rm -f $flog
-    rm -f $ldo/*
-    rm -f $lde/*
+
+    rm -rf $ldo
+    rm -rf $lde
+
+    mkdir -p $ldo $lde
 
 #    rm -f $remlog
 
@@ -434,7 +439,7 @@ we=$we \
 -o $ldo \
 -e $lde \
 -N $name \
--l walltime=$walltime,nodes=1:ppn=1,mem=3gb nessy_calc_ray_spec_hk
+-l walltime=$walltime,nodes=1:ppn=1,pmem=3gb nessy_calc_ray_spec_hk
 
 elif [ $host == dirac_cambridge ]; then
 
