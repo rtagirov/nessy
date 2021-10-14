@@ -118,6 +118,7 @@ fi
 
 spec=$base/$run/spec
 ncnv=$base/$run/ncnv
+fail=$base/$run/fail
 
 declare -i Nx Ny
 declare -i Nt Ng Ns Nr
@@ -212,6 +213,11 @@ if [ $regime == original_run ]; then
     rm -rf   $ncnv
     mkdir -p $ncnv
 
+    echo Removing old fail files...
+
+    rm -rf   $fail
+    mkdir -p $fail
+
     echo Removing old logs...
 
     rm -f $slog
@@ -261,10 +267,14 @@ elif [ $regime == housekeeping ]; then
     rm -f $slog
     rm -f $flog
 
+    echo Removing old logs...
+
     rm -rf $ldo
     rm -rf $lde
 
     mkdir -p $ldo $lde
+
+    mkdir -p $fail $ncnv
 
 #    rm -f $remlog
 
@@ -280,7 +290,7 @@ elif [ $regime == housekeeping ]; then
 
 #            echo $i $j
 
-            if [[ ! -s $spec/$i.$j ]] && [[ ! -s $ncnv/$i.$j ]]; then
+            if [[ ! -s $spec/$i.$j ]] && [[ ! -s $ncnv/$i.$j ]] && [[ ! -s $fail/$i.$j ]]; then
 
                 remaining_rays=$remaining_rays' '$i.$j
 
@@ -379,7 +389,7 @@ if [ $host == imperial ]; then
 name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
 if [ $regime == original_run ]; then name=$name:$sub;    fi
-if [ $regime == housekeeping ]; then name=$name:$sub:hk; fi
+if [ $regime == housekeeping ]; then name=$name:hk:$sub; fi
 
 qsub -v \
 host=$host,\
@@ -393,6 +403,7 @@ slog=$slog,\
 flog=$flog,\
 spec=$spec,\
 ncnv=$ncnv,\
+fail=$fail,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
 Ng=$Ng,\
@@ -413,7 +424,7 @@ name=${ctype:0:1}/$rangl
 #name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
 if [ $regime == original_run ]; then name=$name:$sub;    fi
-if [ $regime == housekeeping ]; then name=$name:$sub:hk; fi
+if [ $regime == housekeeping ]; then name=$name:hk:$sub; fi
 
 qsub -v \
 host=$host,\
@@ -427,6 +438,7 @@ slog=$slog,\
 flog=$flog,\
 spec=$spec,\
 ncnv=$ncnv,\
+fail=$fail,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
 Ng=$Ng,\
@@ -446,7 +458,7 @@ elif [ $host == dirac_cambridge ]; then
 name=${ctype:0:1}/$rangl
 
 if [ $regime == original_run ]; then name=$name:$sub;    fi
-if [ $regime == housekeeping ]; then name=$name:$sub:hk; fi
+if [ $regime == housekeeping ]; then name=$name:hk:$sub; fi
 
 sbatch \
 -A dirac-dp100-cpu \
@@ -462,6 +474,7 @@ slog=$slog,\
 flog=$flog,\
 spec=$spec,\
 ncnv=$ncnv,\
+fail=$fail,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
 Ng=$Ng,\

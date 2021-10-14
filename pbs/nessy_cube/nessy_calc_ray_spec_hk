@@ -147,6 +147,7 @@ fi
 #slog
 #spec
 #ncnv
+#fail
 #reverse_cube_frac
 #Ns
 #Ng
@@ -270,7 +271,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
     /usr/bin/time -v $tmp/hminus.exe > $tmp/hminus.log 2>&1
 
-    tail -33 $tmp/hminus.log > $tmp/hminus.log.short
+    tail -100 $tmp/hminus.log > $tmp/hminus.log.short
 
     rm -f $tmp/hminus.log
 
@@ -344,11 +345,11 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if [ "$stack_trace" ];            then echo "$PBS_JOBID: $rid: hminus: stack trace" >>          $flog; continue; fi
 
-    if [ "$rne_fail" ];               then echo "$PBS_JOBID: $rid: hminus: rne" >>                  $flog; continue; fi
+    if [ "$rne_fail" ];               then echo "$PBS_JOBID: $rid: hminus: rne" >>                  $flog; touch $fail/$x.$y; continue; fi
 
-    if [ "$ratconan" ];               then echo "$PBS_JOBID: $rid: hminus: ratco nan" >>            $flog; continue; fi
+    if [ "$ratconan" ];               then echo "$PBS_JOBID: $rid: hminus: ratco nan" >>            $flog; touch $fail/$x.$y; continue; fi
 
-    if [ "$dmnan" ];                  then echo "$PBS_JOBID: $rid: hminus: dm nan" >>               $flog; continue; fi
+    if [ "$dmnan" ];                  then echo "$PBS_JOBID: $rid: hminus: dm nan" >>               $flog; touch $fail/$x.$y; continue; fi
 
     if [ "$library" ];                then echo "$PBS_JOBID: $rid: hminus: libmkl_intel_lp64.so" >> $flog; continue; fi
 
