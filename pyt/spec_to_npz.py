@@ -37,7 +37,7 @@ def read_spec(ray_number):
 
         j = 512
 
-    name = './spec/' + str(i) + '.' + str(j)
+    name = './spec/' + str(i) + '/' + str(j)
 
     intensity = np.zeros(Nz)
 

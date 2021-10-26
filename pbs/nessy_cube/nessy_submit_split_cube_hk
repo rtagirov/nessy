@@ -14,7 +14,7 @@ stype=$1 # spectral type
 ctype=$2 # cube type
 csnap=$3 # cube snapshot id
 reverse_cube_frac=$4 # reverse of the fraction of the cube to be calculated
-N_groups=$5 # number gof groups for houskeeping run
+N_groups=$5 # number of groups for housekeeping run
 rmode=$6 # lte or nlte
 rangl=$7 # run angle (index of the cube inclination)
 spath=$8 # path to cube slices
@@ -63,9 +63,11 @@ if [ $host == imperial ]; then
 #    run=test_run/$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
     run=$stype/$ctype/$csnap/$reverse_cube_frac/$rmode/$rangl
 
-    scr=$HOME/nessy/scr
-    obj=$HOME/nessy/obj
-    inp=$HOME/nessy/inp
+    nes=$HOME/nessy
+
+    scr=$nes/scr
+    obj=$nes/obj
+    inp=$nes/inp
 
 elif [ $host == dirac_leicester ]; then
 
@@ -87,9 +89,11 @@ elif [ $host == dirac_leicester ]; then
 #    obj=$HOME/nessy/obj
 #    inp=$HOME/nessy/inp
 
-    scr=$rds/nessy/scr
-    obj=$rds/nessy/obj
-    inp=$rds/nessy/inp
+    nes=$rds/nessy
+
+    scr=$nes/scr
+    obj=$nes/obj
+    inp=$nes/inp
 
 elif [ $host == dirac_cambridge ]; then
 
@@ -110,9 +114,19 @@ elif [ $host == dirac_cambridge ]; then
 #    obj=$HOME/nessy/obj
 #    inp=$HOME/nessy/inp
 
-    scr=$rds/nessy/scr
-    obj=$rds/nessy/obj
-    inp=$rds/nessy/inp
+    nes=$rds/nessy
+
+    scr=$nes/scr
+    obj=$nes/obj
+    inp=$nes/inp
+
+fi
+
+if [ ! -s $atm/1 ]; then
+
+    echo "Atmospheres not found. Abort."
+
+    exit 1
 
 fi
 
@@ -121,15 +135,17 @@ ncnv=$base/$run/ncnv
 fail=$base/$run/fail
 
 declare -i Nx Ny
-declare -i Nt Ng Ns Nr
+declare -i i j
 declare -i sub
+declare -i Nt N_groups Ns Nr
+#declare -i ray_number group_number ray_number_in_group
 
 Nx=512
 Ny=512
 
 #Nt - total number of rays
 #Ns - number of submissions
-#Ng - number of groups in each submission
+#N_groups - number of groups in each submission
 #Nr - number of rays in each group
 
 if [ $regime == original_run ]; then
@@ -140,13 +156,14 @@ if [ $regime == original_run ]; then
 
 #   full cube, Nr rays per core
     Ns=${N_sub:-1}
-#    Ng=8192
-    Ng=$N_groups
-    Nr=Nt/Ng/Ns/reverse_cube_frac
+    Nr=Nt/N_groups/Ns/reverse_cube_frac
 
-#    walltime=24:00:00
-#    walltime=4:00:00
-    walltime=64:00:00
+    if ((Nr == 1));  then walltime=04:00:00; fi
+    if ((Nr == 2));  then walltime=08:00:00; fi
+    if ((Nr == 4));  then walltime=16:00:00; fi
+    if ((Nr == 8));  then walltime=32:00:00; fi
+    if ((Nr == 16)); then walltime=64:00:00; fi
+    if ((Nr == 32)); then walltime=72:00:00; fi
 
     ws=1800
     we=2990
@@ -155,7 +172,7 @@ if [ $regime == original_run ]; then
 
 #   test
 #    Ns=2
-#    Ng=2
+#    N_groups=2
 #    Nr=2
 
 #    walltime=00:31:00
@@ -168,7 +185,7 @@ if [ $regime == original_run ]; then
 
     N_jobs=' '
 
-    for ((i=1; i<=Ns; i++)); do N_jobs=$N_jobs' '$Ng; done
+    for ((i=1; i<=Ns; i++)); do N_jobs=$N_jobs' '$N_groups; done
 
     N_jobs=($N_jobs)
 
@@ -205,18 +222,21 @@ if [ $regime == original_run ]; then
 
     echo Removing old spectra...
 
-    rm -rf   $spec
-    mkdir -p $spec
+    rm -rf $spec
+
+#    for ((i=1; i<=Nx; i++)); do mkdir -p $spec/$i; done
 
     echo Removing old non-convergence files...
 
     rm -rf   $ncnv
-    mkdir -p $ncnv
+
+#    for ((i=1; i<=Nx; i++)); do mkdir -p $ncnv/$i; done
 
     echo Removing old fail files...
 
     rm -rf   $fail
-    mkdir -p $fail
+
+#    for ((i=1; i<=Nx; i++)); do mkdir -p $fail/$i; done
 
     echo Removing old logs...
 
@@ -226,11 +246,11 @@ if [ $regime == original_run ]; then
     rm -rf $ldo
     rm -rf $lde
 
-    mkdir -p $ldo $lde
+#    mkdir -p $ldo $lde
 
     echo "Reverse of the fraction of the cube: $reverse_cube_frac" >  $base/$run/split.log
     echo "Number of submissions:               $Ns"                >> $base/$run/split.log
-    echo "Number of groups in each submission: $Ng"                >> $base/$run/split.log
+    echo "Number of groups in each submission: $N_groups"          >> $base/$run/split.log
     echo "Number of rays in each group:        $Nr"                >> $base/$run/split.log
 
     echo $stype             >  $base/$run/specification.log
@@ -247,22 +267,20 @@ if [ $regime == original_run ]; then
     cp $scr/fioss_mv_results $base/$run
     cp $scr/fioss_do2        $base/$run
 
+    ln -s $nes/pyt/spec_to_npz.py $base/$run
+
 elif [ $regime == housekeeping ]; then
 
-#    walltime=24:00:00
     walltime=4:00:00
 
     ws=1800
     we=2990
-#    we=1800
 
     ldo=$rds/logs/nessy/$run/hk/out
     lde=$rds/logs/nessy/$run/hk/err
 
     slog=$base/$run/success.hk.log
     flog=$base/$run/fail.hk.log
-
-#    remlog=$base/$run/remaining_rays.log
 
     rm -f $slog
     rm -f $flog
@@ -272,11 +290,7 @@ elif [ $regime == housekeeping ]; then
     rm -rf $ldo
     rm -rf $lde
 
-    mkdir -p $ldo $lde
-
     mkdir -p $fail $ncnv
-
-#    rm -f $remlog
 
     declare -i N_remainder
 
@@ -288,13 +302,18 @@ elif [ $regime == housekeeping ]; then
 
         for ((j=1; j<=Ny; j++)); do
 
-#            echo $i $j
+#            ray_number=(i-1)*512+j
 
-            if [[ ! -s $spec/$i.$j ]] && [[ ! -s $ncnv/$i.$j ]] && [[ ! -s $fail/$i.$j ]]; then
+#            group_number=ray_number/8192+1
 
-                remaining_rays=$remaining_rays' '$i.$j
+#            ray_number_in_group=ray_number%8192
 
-#                echo $i.$j >> $remlog
+#            if ((ray_number_in_group == 0)); then group_number=group_number-1; fi
+
+            if [[ ! -s $spec/$i/$j ]] && [[ ! -s $ncnv/$i/$j ]] && [[ ! -f $fail/$i/$j ]]; then
+
+#                remaining_rays=$remaining_rays' '$i.$j
+                remaining_rays=$remaining_rays' '$i/$j
 
             fi
 
@@ -314,20 +333,15 @@ elif [ $regime == housekeeping ]; then
 
     fi
 
-    Ng=$N_groups; Nr=1
-#    Ng=4096; Nr=1
-#    Ng=2048; Nr=1
-#    Ng=1024; Nr=1
-#    Ng=512; Nr=1
-#    Ng=256; Nr=1
+    Nr=1
 
-    Ns=Nt/Ng
+    Ns=Nt/N_groups
 
     N_jobs=' '
 
-    for ((i=1; i<=Ns; i++)); do N_jobs=$N_jobs' '$Ng; done
+    for ((i=1; i<=Ns; i++)); do N_jobs=$N_jobs' '$N_groups; done
 
-    N_remainder=Nt%Ng
+    N_remainder=Nt%N_groups
 
     if ((N_remainder != 0)); then Ns=Ns+1; N_jobs=$N_jobs' '$N_remainder; fi
 
@@ -365,6 +379,8 @@ else
 fi
 
 for ((sub=1; sub<=Ns; sub+=1)); do
+
+mkdir -p $ldo/$sub $lde/$sub
 
 #echo ${N_jobs[sub-1]}
 
@@ -406,14 +422,14 @@ ncnv=$ncnv,\
 fail=$fail,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
-Ng=$Ng,\
+N_groups=$N_groups,\
 Nr=$Nr,\
 sub=$sub,\
 ws=$ws,\
 we=$we \
 -J 1-${N_jobs[sub-1]}:1 \
--o $ldo \
--e $lde \
+-o $ldo/$sub \
+-e $lde/$sub \
 -N $name \
 -lwalltime=$walltime \
 -lselect=1:ncpus=1:mem=3gb:avx2=true nessy_calc_ray_spec_hk
@@ -441,15 +457,15 @@ ncnv=$ncnv,\
 fail=$fail,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
-Ng=$Ng,\
+N_groups=$N_groups,\
 Nr=$Nr,\
 sub=$sub,\
 ws=$ws,\
 we=$we \
 -A dp100 \
 -t 1-${N_jobs[sub-1]} \
--o $ldo \
--e $lde \
+-o $ldo/$sub \
+-e $lde/$sub \
 -N $name \
 -l walltime=$walltime,nodes=1:ppn=1,pmem=3gb nessy_calc_ray_spec_hk
 
@@ -477,14 +493,14 @@ ncnv=$ncnv,\
 fail=$fail,\
 reverse_cube_frac=$reverse_cube_frac,\
 Ns=$Ns,\
-Ng=$Ng,\
+N_groups=$N_groups,\
 Nr=$Nr,\
 sub=$sub,\
 ws=$ws,\
 we=$we \
 -a 1-${N_jobs[sub-1]}:1 \
--o $ldo/%A[%a] \
--e $lde/%A[%a] \
+-o $ldo/$sub/%A[%a] \
+-e $lde/$sub/%A[%a] \
 -J $name \
 -t $walltime \
 -n 1 -c 1 --mem 3gb nessy_calc_ray_spec_hk

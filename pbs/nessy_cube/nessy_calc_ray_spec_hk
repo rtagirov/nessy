@@ -108,11 +108,11 @@ fi
 time_stamp()
 {
 
-declare -i Ns Ng Nr
+declare -i Ns N_groups Nr
 declare -i group ray
 
 Ns=$1
-Ng=$2
+N_groups=$2
 Nr=$3
 
 group=$4
@@ -126,7 +126,7 @@ if ((group == 1)) && ((ray == 1)); then
 
     date >> $log
 
-elif ((group == Ns*Ng)) && ((ray == Nr)); then
+elif ((group == Ns*N_groups)) && ((ray == Nr)); then
 
     echo -n "End of the run:   " >> $log
 
@@ -150,7 +150,7 @@ fi
 #fail
 #reverse_cube_frac
 #Ns
-#Ng
+#N_groups
 #Nr
 #sub
 #ws
@@ -182,19 +182,21 @@ fi
 
 declare -i sub
 declare -i ray_idx
-declare -i Ns Ng Nr
-declare -i f x y g r
+declare -i x y g r
+declare -i ray_number
+declare -i Ns N_groups Nr
 declare -i num_of_spec_wvl
 declare -i reverse_cube_frac
+#declare -i ray_number group_number ray_number_in_group
 
 if [ $rmode = lte ];  then fort99=lte;     fi
 if [ $rmode = nlte ]; then fort99=wrstart; fi
 
 if [ $regime == original_run ]; then
 
-    if [ $host == imperial ];        then g=(sub-1)*Ng+$PBS_ARRAY_INDEX;     fi
-    if [ $host == dirac_leicester ]; then g=(sub-1)*Ng+$PBS_ARRAYID;         fi
-    if [ $host == dirac_cambridge ]; then g=(sub-1)*Ng+$SLURM_ARRAY_TASK_ID; fi
+    if [ $host == imperial ];        then g=(sub-1)*N_groups+$PBS_ARRAY_INDEX;     fi
+    if [ $host == dirac_leicester ]; then g=(sub-1)*N_groups+$PBS_ARRAYID;         fi
+    if [ $host == dirac_cambridge ]; then g=(sub-1)*N_groups+$SLURM_ARRAY_TASK_ID; fi
 
 elif [ $regime = housekeeping ]; then
 
@@ -210,36 +212,54 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if [ $regime == original_run ]; then
 
-        f=(g-1)*Nr+r
+        ray_number=(g-1)*Nr+r
 
-        f=f*reverse_cube_frac
+        ray_number=ray_number*reverse_cube_frac
 
-        x=f/512+1
-        y=f%512
+        x=ray_number/512+1
+        y=ray_number%512
 
         if ((y == 0)); then x=x-1; y=512; fi
 
-        rid="$g/$r;$x.$y"
+#        group_number=ray_number/8192+1
 
-        time_stamp $Ns $Ng $Nr $g $r $splitlog
+#        ray_number_in_group=ray_number%8192
 
-        dir=$base/$run/groups/$g/$r
+#        if ((ray_number_in_group == 0)); then group_number=group_number-1; ray_number_in_group=32; fi
+
+#        rid="$group_number/$ray_number_in_group;$x.$y"
+#        rid="$x.$y"
+
+        xy=$x/$y
+
+        time_stamp $Ns $N_groups $Nr $g $r $splitlog
+
+#        dir=$base/$run/groups/$x/$y
 
     elif [ $regime == housekeeping ]; then
 
         xy=${hk_rays[ray_idx]}
 
-        IFS='.' read -r -a array <<< $xy
+#        rid="$xy"
+
+#        dir=$base/$run/groups/$xy
+
+        IFS='/' read -r -a array <<< $xy
 
         x=${array[0]}
 
         y=${array[1]}
 
-        rid="$x.$y"
+#        rid="$x.$y"
 
-        dir=$base/$run/groups_hk/$x.$y
+#        dir=$base/$run/groups_hk/$x.$y
+#        dir=$base/$run/groups/$x/$y
 
     fi
+
+    rid="$xy"
+
+    dir=$base/$run/groups/$xy
 
     if [ -d $dir ]; then rm -rf $dir; fi
 
@@ -265,6 +285,14 @@ for ((r=1; r<=Nr; r+=1)); do
     fi
 
     ln -s $atm/$x $tmp/atm.inp
+
+    if [ ! -s $atm/$x ]; then
+
+        echo "Atmospheres not found. Abort."
+
+        exit 1
+
+    fi
 
     echo $fort99 > $tmp/fort.99
     echo $y      > $tmp/rn.inp
@@ -345,11 +373,11 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if [ "$stack_trace" ];            then echo "$PBS_JOBID: $rid: hminus: stack trace" >>          $flog; continue; fi
 
-    if [ "$rne_fail" ];               then echo "$PBS_JOBID: $rid: hminus: rne" >>                  $flog; touch $fail/$x.$y; continue; fi
+    if [ "$rne_fail" ];               then echo "$PBS_JOBID: $rid: hminus: rne" >>                  $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
 
-    if [ "$ratconan" ];               then echo "$PBS_JOBID: $rid: hminus: ratco nan" >>            $flog; touch $fail/$x.$y; continue; fi
+    if [ "$ratconan" ];               then echo "$PBS_JOBID: $rid: hminus: ratco nan" >>            $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
 
-    if [ "$dmnan" ];                  then echo "$PBS_JOBID: $rid: hminus: dm nan" >>               $flog; touch $fail/$x.$y; continue; fi
+    if [ "$dmnan" ];                  then echo "$PBS_JOBID: $rid: hminus: dm nan" >>               $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
 
     if [ "$library" ];                then echo "$PBS_JOBID: $rid: hminus: libmkl_intel_lp64.so" >> $flog; continue; fi
 
@@ -357,7 +385,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if [ "$file_not_found" ];         then echo "$PBS_JOBID: $rid: hminus: file not found" >>       $flog; continue; fi
 
-    if [ "$noconv" ];                 then echo "$PBS_JOBID: $rid: hminus: no convergence" >>       $flog; cp $dir/conv.out $ncnv/$x.$y; continue; fi
+    if [ "$noconv" ];                 then echo "$PBS_JOBID: $rid: hminus: no convergence" >>       $flog; mkdir -p $ncnv/$x; cp $dir/conv.out $ncnv/$x/$y; continue; fi
 
     if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$PBS_JOBID: $rid: hminus: fail" >>                 $flog; continue; fi
 
@@ -417,9 +445,11 @@ for ((r=1; r<=Nr; r+=1)); do
 
     if ((num_of_spec_wvl != 120));    then echo "$PBS_JOBID: $rid: less than 120 wvl" >> $flog; continue; fi
 
-    echo $PBS_JOBID: $rid: >> $slog
+    echo $PBS_JOBID: $rid >> $slog
 
-    mv $dir/spec.out $spec/$x.$y
+    mkdir -p $spec/$x
+
+    mv $dir/spec.out $spec/$x/$y
 
 #    rm $dir/fioss.log
 #    rm $dir/hminus.log
