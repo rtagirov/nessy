@@ -267,7 +267,7 @@ if [ $regime == original_run ]; then
     cp $scr/fioss_mv_results $base/$run
     cp $scr/fioss_do2        $base/$run
 
-    ln -s $nes/pyt/spec_to_npz.py $base/$run
+    if [ ! -e $nes/pyt/spec_to_npz.py ]; then ln -s $nes/pyt/spec_to_npz.py $base/$run; fi
 
 elif [ $regime == housekeeping ]; then
 
@@ -478,7 +478,7 @@ if [ $regime == housekeeping ]; then name=$name:hk:$sub; fi
 
 sbatch \
 -A dirac-dp100-cpu \
--p skylake \
+-p cclake \
 --export=host=$host,\
 regime=$regime,\
 hk_rays="$hk_rays",\

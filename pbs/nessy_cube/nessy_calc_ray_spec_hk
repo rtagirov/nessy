@@ -208,6 +208,10 @@ elif [ $regime = housekeeping ]; then
 
 fi
 
+if [ $host == imperial ];        then jobid=$PBS_JOBID;                                   fi
+if [ $host == dirac_leicester ]; then jobid=$PBS_JOBID;                                   fi
+if [ $host == dirac_cambridge ]; then jobid=${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}; fi
+
 for ((r=1; r<=Nr; r+=1)); do
 
     if [ $regime == original_run ]; then
@@ -337,7 +341,7 @@ for ((r=1; r<=Nr; r+=1)); do
 
     clean $tmp $host
 
-    if [ ! -s $dir/hminus.log ]; then echo "$PBS_JOBID: $rid: no hminus log" >> $flog; continue; fi
+    if [ ! -s $dir/hminus.log ]; then echo "$jobid: $rid: no hminus log" >> $flog; continue; fi
 
     nospace=$(grep -i 'No space left on device' $dir/hminus.log)
 
@@ -365,31 +369,31 @@ for ((r=1; r<=Nr; r+=1)); do
 
     lte=$(grep -i 'END OF LTE RUN' $dir/hminus.log)
 
-    if [ "$nospace" ];                then echo "$PBS_JOBID: $rid: hminus: no space" >>             $flog; continue; fi
+    if [ "$nospace" ];                then echo "$jobid: $rid: hminus: no space" >>             $flog; continue; fi
 
-    if [ "$seg_fault" ];              then echo "$PBS_JOBID: $rid: hminus: seg fault" >>            $flog; continue; fi
+    if [ "$seg_fault" ];              then echo "$jobid: $rid: hminus: seg fault" >>            $flog; continue; fi
 
-    if [ "$stale_file" ];             then echo "$PBS_JOBID: $rid: hminus: stale file" >>           $flog; continue; fi
+    if [ "$stale_file" ];             then echo "$jobid: $rid: hminus: stale file" >>           $flog; continue; fi
 
-    if [ "$stack_trace" ];            then echo "$PBS_JOBID: $rid: hminus: stack trace" >>          $flog; continue; fi
+    if [ "$stack_trace" ];            then echo "$jobid: $rid: hminus: stack trace" >>          $flog; continue; fi
 
-    if [ "$rne_fail" ];               then echo "$PBS_JOBID: $rid: hminus: rne" >>                  $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
+    if [ "$rne_fail" ];               then echo "$jobid: $rid: hminus: rne" >>                  $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
 
-    if [ "$ratconan" ];               then echo "$PBS_JOBID: $rid: hminus: ratco nan" >>            $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
+    if [ "$ratconan" ];               then echo "$jobid: $rid: hminus: ratco nan" >>            $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
 
-    if [ "$dmnan" ];                  then echo "$PBS_JOBID: $rid: hminus: dm nan" >>               $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
+    if [ "$dmnan" ];                  then echo "$jobid: $rid: hminus: dm nan" >>               $flog; mkdir -p $fail/$x; touch $fail/$x/$y; continue; fi
 
-    if [ "$library" ];                then echo "$PBS_JOBID: $rid: hminus: libmkl_intel_lp64.so" >> $flog; continue; fi
+    if [ "$library" ];                then echo "$jobid: $rid: hminus: libmkl_intel_lp64.so" >> $flog; continue; fi
 
-    if [ "$malloc" ];                 then echo "$PBS_JOBID: $rid: hminus: malloc" >>               $flog; continue; fi
+    if [ "$malloc" ];                 then echo "$jobid: $rid: hminus: malloc" >>               $flog; continue; fi
 
-    if [ "$file_not_found" ];         then echo "$PBS_JOBID: $rid: hminus: file not found" >>       $flog; continue; fi
+    if [ "$file_not_found" ];         then echo "$jobid: $rid: hminus: file not found" >>       $flog; continue; fi
 
-    if [ "$noconv" ];                 then echo "$PBS_JOBID: $rid: hminus: no convergence" >>       $flog; mkdir -p $ncnv/$x; cp $dir/conv.out $ncnv/$x/$y; continue; fi
+    if [ "$noconv" ];                 then echo "$jobid: $rid: hminus: no convergence" >>       $flog; mkdir -p $ncnv/$x; cp $dir/conv.out $ncnv/$x/$y; continue; fi
 
-    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$PBS_JOBID: $rid: hminus: fail" >>                 $flog; continue; fi
+    if [ ! "$conv" ] && [ ! "$lte" ]; then echo "$jobid: $rid: hminus: fail" >>                 $flog; continue; fi
 
-    if [ ! -s $dir/fioss.log ];       then echo "$PBS_JOBID: $rid: no fioss log" >>                 $flog; continue; fi
+    if [ ! -s $dir/fioss.log ];       then echo "$jobid: $rid: no fioss log" >>                 $flog; continue; fi
 
     nospace=$(grep -i 'No space left on device' $dir/fioss.log | head -1)
 
@@ -413,39 +417,39 @@ for ((r=1; r<=Nr; r+=1)); do
 
     fioss_fail=$(grep -i fail $dir/fioss.log | head -1)
 
-    if [ "$nospace" ];         then echo "$PBS_JOBID: $rid: fioss: no space" >>             $flog; continue; fi
+    if [ "$nospace" ];         then echo "$jobid: $rid: fioss: no space" >>             $flog; continue; fi
 
-    if [ "$nan_xjc" ];         then echo "$PBS_JOBID: $rid: fioss: nan xjc" >>              $flog; continue; fi
+    if [ "$nan_xjc" ];         then echo "$jobid: $rid: fioss: nan xjc" >>              $flog; continue; fi
 
-    if [ "$seg_fault" ];       then echo "$PBS_JOBID: $rid: fioss: seg fault" >>            $flog; continue; fi
+    if [ "$seg_fault" ];       then echo "$jobid: $rid: fioss: seg fault" >>            $flog; continue; fi
 
-    if [ "$stale_file" ];      then echo "$PBS_JOBID: $rid: fioss: stale file" >>           $flog; continue; fi
+    if [ "$stale_file" ];      then echo "$jobid: $rid: fioss: stale file" >>           $flog; continue; fi
 
-    if [ "$stack_trace" ];     then echo "$PBS_JOBID: $rid: fioss: stack trace" >>          $flog; continue; fi
+    if [ "$stack_trace" ];     then echo "$jobid: $rid: fioss: stack trace" >>          $flog; continue; fi
 
-    if [ "$library1" ];        then echo "$PBS_JOBID: $rid: fioss: libmkl_intel_lp64.so" >> $flog; continue; fi
+    if [ "$library1" ];        then echo "$jobid: $rid: fioss: libmkl_intel_lp64.so" >> $flog; continue; fi
 
-    if [ "$library2" ];        then echo "$PBS_JOBID: $rid: fioss: libmkl_avx2.so" >>       $flog; continue; fi
+    if [ "$library2" ];        then echo "$jobid: $rid: fioss: libmkl_avx2.so" >>       $flog; continue; fi
 
-    if [ "$rdcsarr" ];         then echo "$PBS_JOBID: $rid: fioss: rdcsarr" >>              $flog; continue; fi
+    if [ "$rdcsarr" ];         then echo "$jobid: $rid: fioss: rdcsarr" >>              $flog; continue; fi
 
-    if [ "$file_not_found" ];  then echo "$PBS_JOBID: $rid: fioss: file not found" >>       $flog; continue; fi
+    if [ "$file_not_found" ];  then echo "$jobid: $rid: fioss: file not found" >>       $flog; continue; fi
 
-    if [ "$unknown" ];         then echo "$PBS_JOBID: $rid: fioss: unknown" >>              $flog; continue; fi
+    if [ "$unknown" ];         then echo "$jobid: $rid: fioss: unknown" >>              $flog; continue; fi
 
-    if [ "$fioss_fail" ];      then echo "$PBS_JOBID: $rid: fioss: fail" >>                 $flog; continue; fi
+    if [ "$fioss_fail" ];      then echo "$jobid: $rid: fioss: fail" >>                 $flog; continue; fi
 
-    if [ ! -s $dir/spec.out ]; then echo "$PBS_JOBID: $rid: no spectrum" >>                 $flog; continue; fi
+    if [ ! -s $dir/spec.out ]; then echo "$jobid: $rid: no spectrum" >>                 $flog; continue; fi
 
     spec_nan=$(grep -i nan $dir/spec.out | head -1)
 
     num_of_spec_wvl=$(cat $dir/spec.out | wc -l)
 
-    if [ "$spec_nan" ];               then echo "$PBS_JOBID: $rid: nan in spectrum" >>   $flog; continue; fi
+    if [ "$spec_nan" ];               then echo "$jobid: $rid: nan in spectrum" >>   $flog; continue; fi
 
-    if ((num_of_spec_wvl != 120));    then echo "$PBS_JOBID: $rid: less than 120 wvl" >> $flog; continue; fi
+    if ((num_of_spec_wvl != 120));    then echo "$jobid: $rid: less than 120 wvl" >> $flog; continue; fi
 
-    echo $PBS_JOBID: $rid >> $slog
+    echo $jobid: $rid >> $slog
 
     mkdir -p $spec/$x
 

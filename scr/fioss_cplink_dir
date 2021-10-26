@@ -20,7 +20,7 @@ elif [[ $HOME == /home/dc-tagi1 ]] && [[ $(hostname) == *xnode* ]]; then
 
     scr=/scratch/dp100/dc-tagi1/nessy/scr
 
-elif [[ $HOME == /home/dc-tagi1 ]] && [[ $(hostname) == *login* ]]; then 
+elif [[ $HOME == /home/dc-tagi1 ]] && [[ $(hostname) == *cpu-* ]]; then 
 
     host=dirac_cambridge
 
