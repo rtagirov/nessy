@@ -99,15 +99,15 @@ rmode=(nlte)
 
 #ctype=(300G ssd hydro)
 #ctype=(300G ssd)
-ctype=(300G)
-#ctype=(ssd)
+#ctype=(300G)
+ctype=(ssd)
 #ctype=(hydro)
 
 #csnap=(118000 186000 123000)
 #csnap=(627321 222809 214519)
 #csnap=(627321 222809)
-csnap=(627321)
-#csnap=(222809)
+#csnap=(627321)
+csnap=(222809)
 #csnap=(214519)
 
 #rangl=(2 4 6 8 10)
@@ -129,8 +129,8 @@ for ((j=0; j<=$lrangl; j+=1)); do
 
         for ((i=0; i<=$lctype; i+=1)); do
 
-#            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy housekeeping
-            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy original_run
+            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy housekeeping
+#            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy original_run
 
         done
 

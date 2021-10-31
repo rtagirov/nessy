@@ -267,7 +267,7 @@ if [ $regime == original_run ]; then
     cp $scr/fioss_mv_results $base/$run
     cp $scr/fioss_do2        $base/$run
 
-    if [ ! -e $nes/pyt/spec_to_npz.py ]; then ln -s $nes/pyt/spec_to_npz.py $base/$run; fi
+    if [ ! -e $base/$run/spec_to_npz.py ]; then ln -s $nes/pyt/spec_to_npz.py $base/$run; fi
 
 elif [ $regime == housekeeping ]; then
 
