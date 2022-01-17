@@ -260,6 +260,8 @@ C***  NEGINTL COUNTS THE ERROR MESSAGES  FROM SUBR. LINPOP
          WRITE(1001 + NATOM, '(I5,5x,A8,4(2x,ES9.3),2x,I3)') LAMBDA_ITER, time, CORMAX_ALL,
      $                                                       CORMAX_NHE, CORMAX_NHN, CORMAX_ELE(1), DCM_FIN
 
+         close(unit = 1001 + natom)
+
       else
 
          CALL OPEN_TO_APPEND(19462, 'conv.out')
