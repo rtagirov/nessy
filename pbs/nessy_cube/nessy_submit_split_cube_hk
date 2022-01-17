@@ -55,7 +55,8 @@ if [ $host == imperial ]; then
     base=$rds/runs/nessy
 
 #    atm=$HOME/cubes/matthias/$ctype/$csnap/$spath
-    atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
+#    atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
+    atm=$HOME/cubes/veronika/$stype/$ctype/$csnap/$spath
 
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rmode/$rangl
@@ -271,7 +272,7 @@ if [ $regime == original_run ]; then
 
 elif [ $regime == housekeeping ]; then
 
-    walltime=4:00:00
+    walltime=24:00:00
 
     ws=1800
     we=2990
