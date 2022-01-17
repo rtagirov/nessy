@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [ ! "$1" ]; then
+
+    echo "No directory given. Abort."
+
+    exit 0
+
+fi
+
+target_dirs="$1"
+
+declare -i num_files nf
+
+for dir in $target_dirs; do
+
+#    echo $dir
+
+    cd $dir
+
+    subdirs=$(ls)
+
+    num_files=0
+
+    for subdir in $subdirs; do
+
+        if [ -d $subdir ]; then
+
+            cd $subdir
+
+            nf=$(ls -l | wc -l)
+
+            num_files=num_files+nf-1
+
+            cd ..
+
+        fi
+
+    done
+
+    echo $dir: $num_files
+
+    cd ..
+
+done

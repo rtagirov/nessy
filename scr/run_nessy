@@ -13,6 +13,7 @@ if [ $# != 4 ]; then
 fi
 
 mode=$1
+maxproc=$2
 run=$3
 atm=$inp/atm/$4
 
@@ -57,12 +58,13 @@ echo $fort99 > fort.99
 
 wait
 
+modf=$(grep 'stop after MODFILE' ${dir}/hminus.log)
 conv=$(grep 'MODEL FINALLY CONVERGED' ${dir}/hminus.log)
 lte=$(grep 'END OF LTE RUN' ${dir}/hminus.log)
 
-if [[ ! -z $conv ]] || [[ ! -z $lte ]]; then
+if [[ ! -z $conv ]] || [[ ! -z $lte ]] || [[ ! -z $modf ]]; then
 
-   export MAX_PROC=$2
+   export MAX_PROC=$maxproc
 
    /usr/bin/time -v fioss_do2 1800 10 2990 > fioss.log 2>&1 &
 
