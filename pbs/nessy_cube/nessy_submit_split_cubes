@@ -1,10 +1,10 @@
 #!/bin/bash
 
-export N_sub=32
-#export N_sub=1
+#export N_sub=32
+export N_sub=1
 
-#reverse_cube_frac=32
-reverse_cube_frac=1
+reverse_cube_frac=32
+#reverse_cube_frac=1
 
 N_groups=8192
 #N_groups=2048
@@ -94,8 +94,8 @@ N_groups=8192
 
 #--------------------------------------------------------
 
-rmode=(nlte)
-#rmode=(lte)
+#rmode=(nlte)
+rmode=(lte)
 
 #ctype=(300G ssd hydro)
 #ctype=(300G ssd)
@@ -112,9 +112,9 @@ csnap=(627321)
 
 #rangl=(2 4 6 8 10)
 #rangl=(2 4 6 8)
-rangl=(6)
+#rangl=(6)
 #rangl=(6 8)
-#rangl=(10)
+rangl=(10)
 #rangl=(2)
 #rangl=(6)
 #rangl=(8)
@@ -131,8 +131,11 @@ for ((j=0; j<=$lrangl; j+=1)); do
 
         for ((i=0; i<=$lctype; i+=1)); do
 
-            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy housekeeping
-#            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy original_run
+#            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy housekeeping
+            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy/T10P10D10 original_run
+            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy/T10P20D20 original_run
+            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy/T20P10D10 original_run
+            nessy_submit_split_cube_hk G2V ${ctype[i]} ${csnap[i]} $reverse_cube_frac $N_groups ${rmode[k]} ${rangl[j]} ${rangl[j]}/atms/nessy/T20P20D20 original_run
 
         done
 

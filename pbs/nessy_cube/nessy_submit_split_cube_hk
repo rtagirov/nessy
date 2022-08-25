@@ -56,7 +56,16 @@ if [ $host == imperial ]; then
 
 #    atm=$HOME/cubes/matthias/$ctype/$csnap/$spath
 #    atm=$rds/cubes/veronika/$stype/$ctype/$csnap/$spath
-    atm=$HOME/cubes/veronika/$stype/$ctype/$csnap/$spath
+#    atm=$HOME/cubes/veronika/$stype/$ctype/$csnap/$spath
+    atm=$rds/cubes/blake/$stype/$ctype/$csnap/$spath
+
+    IFS='/' read -r -a array <<< $spath
+
+    csnap=${array[-1]}
+
+#    echo $csnap
+
+#    exit 0
 
 #    run=veronika/$stype/$ctype/$csnap/$reverse_cube_frac/$rname/$rmode/$rangl
 #    run=veronika/$stype/$ctype/$csnap/$rmode/$rangl
@@ -405,6 +414,10 @@ if [ $host == imperial ]; then
 
 name=n:${ctype:0:1}/$reverse_cube_frac/${rmode:0:1}/$rangl
 
+name=tes
+
+#echo $name
+
 if [ $regime == original_run ]; then name=$name:$sub;    fi
 if [ $regime == housekeeping ]; then name=$name:hk:$sub; fi
 
@@ -431,9 +444,9 @@ we=$we \
 -J 1-${N_jobs[sub-1]}:1 \
 -o $ldo/$sub \
 -e $lde/$sub \
--N $name \
 -lwalltime=$walltime \
 -lselect=1:ncpus=1:mem=3gb:avx2=true nessy_calc_ray_spec_hk
+#-N $name \
 
 elif [ $host == dirac_leicester ]; then
 
