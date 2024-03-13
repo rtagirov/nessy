@@ -1,14 +1,15 @@
 #!/bin/bash
 
-if [ ! "$1" ]; then
+#if [ ! "$1" ]; then
 
-    echo "No directory given. Abort."
+#    echo "No directory given. Abort."
 
-    exit 0
+#    exit 0
 
-fi
+#fi
 
-target_dirs="$1"
+#target_dirs="$1"
+target_dirs=spec
 
 declare -i num_files nf
 
